@@ -1,6 +1,6 @@
 # World Of Balance client
 
-This repository contains the Unity Source code for World of Balances
+This repository contains the Unity Source code for World of Balance
 
 ## Installation instructions
 1. Clone this repository to your local machine.
