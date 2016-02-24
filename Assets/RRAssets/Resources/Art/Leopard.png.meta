@@ -1,0 +1,381 @@
+fileFormatVersion: 2
+guid: 4938573e894f2a840aa1df29ae2da977
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Leopard_0
+    21300002: Leopard_1
+    21300004: Leopard_2
+    21300006: Leopard_3
+    21300008: Leopard_4
+    21300010: Leopard_5
+    21300012: Leopard_6
+    21300014: Leopard_7
+    21300016: Leopard_8
+    21300018: Leopard_9
+    21300020: Leopard_10
+    21300022: Leopard_11
+    21300024: Leopard_12
+    21300026: Leopard_13
+    21300028: Leopard_14
+    21300030: Leopard_15
+    21300032: Leopard_16
+    21300034: Leopard_17
+    21300036: Leopard_18
+    21300038: Leopard_19
+    21300040: Leopard_20
+    21300042: Leopard_21
+    21300044: Leopard_22
+    21300046: Leopard_23
+    21300048: Leopard_24
+    21300050: Leopard_25
+    21300052: Leopard_26
+    21300054: Leopard_27
+    21300056: Leopard_28
+    21300058: Leopard_29
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: 0
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 16
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings:
+  - buildTarget: Standalone
+    maxTextureSize: 1024
+    textureFormat: -3
+    compressionQuality: 50
+  spriteSheet:
+    sprites:
+    - name: Leopard_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 88
+        width: 52
+        height: 26
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_1
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 89
+        width: 51
+        height: 24
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_2
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 89
+        width: 49
+        height: 24
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_3
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 89
+        width: 59
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_4
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 90
+        width: 63
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_5
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 90
+        width: 62
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_6
+      rect:
+        serializedVersion: 2
+        x: 354
+        y: 87
+        width: 55
+        height: 27
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_7
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 88
+        width: 50
+        height: 27
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_8
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 59
+        width: 50
+        height: 27
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_9
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 58
+        width: 55
+        height: 27
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_10
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 61
+        width: 62
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_11
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 61
+        width: 63
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_12
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 60
+        width: 59
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_13
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 60
+        width: 49
+        height: 24
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_14
+      rect:
+        serializedVersion: 2
+        x: 361
+        y: 60
+        width: 51
+        height: 24
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_15
+      rect:
+        serializedVersion: 2
+        x: 414
+        y: 59
+        width: 52
+        height: 26
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_16
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 29
+        width: 58
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_17
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 29
+        width: 54
+        height: 21
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_18
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 28
+        width: 53
+        height: 21
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_19
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 28
+        width: 53
+        height: 21
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_20
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 28
+        width: 54
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_21
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 29
+        width: 58
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_22
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 1
+        width: 55
+        height: 27
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_23
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 1
+        width: 62
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_24
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 1
+        width: 62
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_25
+      rect:
+        serializedVersion: 2
+        x: 185
+        y: 1
+        width: 63
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_26
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 1
+        width: 63
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_27
+      rect:
+        serializedVersion: 2
+        x: 314
+        y: 1
+        width: 62
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_28
+      rect:
+        serializedVersion: 2
+        x: 378
+        y: 1
+        width: 62
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Leopard_29
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 1
+        width: 55
+        height: 26
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 

@@ -1,0 +1,479 @@
+fileFormatVersion: 2
+guid: 578c3d6eaebf74361b9b32054db588d6
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Armature
+    100002: Camera
+    100004: head
+    100006: head_end
+    100008: Lamp
+    100010: LFleg1
+    100012: LFleg2
+    100014: LFleg3
+    100016: LFlegCont
+    100018: LFlegCont_end
+    100020: LRleg1
+    100022: LRleg2
+    100024: LRleg3
+    100026: LRlegCont
+    100028: LRlegCont_end
+    100030: master
+    100032: Mesh
+    100034: neck1
+    100036: neck2
+    100038: neck3
+    100040: RFleg1
+    100042: RFleg2
+    100044: RFleg3
+    100046: RFlegCont
+    100048: RFlegCont_end
+    100050: RRleg1
+    100052: RRleg2
+    100054: RRleg3
+    100056: RRlegCont
+    100058: RRlegCont_end
+    100060: spine1
+    100062: spine2
+    100064: spine3
+    100066: spine3_end
+    100068: spine4
+    100070: spine4_end
+    100072: tail1
+    100074: tail1_end
+    100076: tail2
+    100078: tail3
+    100080: tail4
+    100082: //RootNode
+    400000: Armature
+    400002: Camera
+    400004: head
+    400006: head_end
+    400008: Lamp
+    400010: LFleg1
+    400012: LFleg2
+    400014: LFleg3
+    400016: LFlegCont
+    400018: LFlegCont_end
+    400020: LRleg1
+    400022: LRleg2
+    400024: LRleg3
+    400026: LRlegCont
+    400028: LRlegCont_end
+    400030: master
+    400032: Mesh
+    400034: neck1
+    400036: neck2
+    400038: neck3
+    400040: RFleg1
+    400042: RFleg2
+    400044: RFleg3
+    400046: RFlegCont
+    400048: RFlegCont_end
+    400050: RRleg1
+    400052: RRleg2
+    400054: RRleg3
+    400056: RRlegCont
+    400058: RRlegCont_end
+    400060: spine1
+    400062: spine2
+    400064: spine3
+    400066: spine3_end
+    400068: spine4
+    400070: spine4_end
+    400072: tail1
+    400074: tail1_end
+    400076: tail2
+    400078: tail3
+    400080: tail4
+    400082: //RootNode
+    4300000: Mesh
+    7400000: Armature|Die
+    7400002: Armature|Eat
+    7400004: Armature|Walk
+    9500000: //RootNode
+    13700000: Mesh
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Armature|Die
+      takeName: Armature|Die
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/LFleg1
+        weight: 1
+      - path: Armature/LFleg1/LFleg2
+        weight: 1
+      - path: Armature/LFleg1/LFleg2/LFleg3
+        weight: 1
+      - path: Armature/LFleg1/LFleg2/LFleg3/LFlegCont
+        weight: 1
+      - path: Armature/LFleg1/LFleg2/LFleg3/LFlegCont/LFlegCont_end
+        weight: 1
+      - path: Armature/LRleg1
+        weight: 1
+      - path: Armature/LRleg1/LRleg2
+        weight: 1
+      - path: Armature/LRleg1/LRleg2/LRleg3
+        weight: 1
+      - path: Armature/LRleg1/LRleg2/LRleg3/LRlegCont
+        weight: 1
+      - path: Armature/LRleg1/LRleg2/LRleg3/LRlegCont/LRlegCont_end
+        weight: 1
+      - path: Armature/master
+        weight: 1
+      - path: Armature/master/spine1
+        weight: 1
+      - path: Armature/master/spine1/spine2
+        weight: 1
+      - path: Armature/master/spine1/spine2/spine3
+        weight: 1
+      - path: Armature/master/spine1/spine2/spine3/spine3_end
+        weight: 1
+      - path: Armature/master/spine4
+        weight: 1
+      - path: Armature/master/spine4/spine4_end
+        weight: 1
+      - path: Armature/neck3
+        weight: 1
+      - path: Armature/neck3/neck2
+        weight: 1
+      - path: Armature/neck3/neck2/neck1
+        weight: 1
+      - path: Armature/neck3/neck2/neck1/head
+        weight: 1
+      - path: Armature/neck3/neck2/neck1/head/head_end
+        weight: 1
+      - path: Armature/RFleg1
+        weight: 1
+      - path: Armature/RFleg1/RFleg2
+        weight: 1
+      - path: Armature/RFleg1/RFleg2/RFleg3
+        weight: 1
+      - path: Armature/RFleg1/RFleg2/RFleg3/RFlegCont
+        weight: 1
+      - path: Armature/RFleg1/RFleg2/RFleg3/RFlegCont/RFlegCont_end
+        weight: 1
+      - path: Armature/RRleg1
+        weight: 1
+      - path: Armature/RRleg1/RRleg2
+        weight: 1
+      - path: Armature/RRleg1/RRleg2/RRleg3
+        weight: 1
+      - path: Armature/RRleg1/RRleg2/RRleg3/RRlegCont
+        weight: 1
+      - path: Armature/RRleg1/RRleg2/RRleg3/RRlegCont/RRlegCont_end
+        weight: 1
+      - path: Armature/tail4
+        weight: 1
+      - path: Armature/tail4/tail3
+        weight: 1
+      - path: Armature/tail4/tail3/tail2
+        weight: 1
+      - path: Armature/tail4/tail3/tail2/tail1
+        weight: 1
+      - path: Armature/tail4/tail3/tail2/tail1/tail1_end
+        weight: 1
+      - path: Camera
+        weight: 1
+      - path: Lamp
+        weight: 1
+      - path: Mesh
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Armature|Eat
+      takeName: Armature|Eat
+      firstFrame: 0
+      lastFrame: 29
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/LFleg1
+        weight: 1
+      - path: Armature/LFleg1/LFleg2
+        weight: 1
+      - path: Armature/LFleg1/LFleg2/LFleg3
+        weight: 1
+      - path: Armature/LFleg1/LFleg2/LFleg3/LFlegCont
+        weight: 1
+      - path: Armature/LFleg1/LFleg2/LFleg3/LFlegCont/LFlegCont_end
+        weight: 1
+      - path: Armature/LRleg1
+        weight: 1
+      - path: Armature/LRleg1/LRleg2
+        weight: 1
+      - path: Armature/LRleg1/LRleg2/LRleg3
+        weight: 1
+      - path: Armature/LRleg1/LRleg2/LRleg3/LRlegCont
+        weight: 1
+      - path: Armature/LRleg1/LRleg2/LRleg3/LRlegCont/LRlegCont_end
+        weight: 1
+      - path: Armature/master
+        weight: 1
+      - path: Armature/master/spine1
+        weight: 1
+      - path: Armature/master/spine1/spine2
+        weight: 1
+      - path: Armature/master/spine1/spine2/spine3
+        weight: 1
+      - path: Armature/master/spine1/spine2/spine3/spine3_end
+        weight: 1
+      - path: Armature/master/spine4
+        weight: 1
+      - path: Armature/master/spine4/spine4_end
+        weight: 1
+      - path: Armature/neck3
+        weight: 1
+      - path: Armature/neck3/neck2
+        weight: 1
+      - path: Armature/neck3/neck2/neck1
+        weight: 1
+      - path: Armature/neck3/neck2/neck1/head
+        weight: 1
+      - path: Armature/neck3/neck2/neck1/head/head_end
+        weight: 1
+      - path: Armature/RFleg1
+        weight: 1
+      - path: Armature/RFleg1/RFleg2
+        weight: 1
+      - path: Armature/RFleg1/RFleg2/RFleg3
+        weight: 1
+      - path: Armature/RFleg1/RFleg2/RFleg3/RFlegCont
+        weight: 1
+      - path: Armature/RFleg1/RFleg2/RFleg3/RFlegCont/RFlegCont_end
+        weight: 1
+      - path: Armature/RRleg1
+        weight: 1
+      - path: Armature/RRleg1/RRleg2
+        weight: 1
+      - path: Armature/RRleg1/RRleg2/RRleg3
+        weight: 1
+      - path: Armature/RRleg1/RRleg2/RRleg3/RRlegCont
+        weight: 1
+      - path: Armature/RRleg1/RRleg2/RRleg3/RRlegCont/RRlegCont_end
+        weight: 1
+      - path: Armature/tail4
+        weight: 1
+      - path: Armature/tail4/tail3
+        weight: 1
+      - path: Armature/tail4/tail3/tail2
+        weight: 1
+      - path: Armature/tail4/tail3/tail2/tail1
+        weight: 1
+      - path: Armature/tail4/tail3/tail2/tail1/tail1_end
+        weight: 1
+      - path: Camera
+        weight: 1
+      - path: Lamp
+        weight: 1
+      - path: Mesh
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Armature|Walk
+      takeName: Armature|Walk
+      firstFrame: 0
+      lastFrame: 14
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/LFleg1
+        weight: 1
+      - path: Armature/LFleg1/LFleg2
+        weight: 1
+      - path: Armature/LFleg1/LFleg2/LFleg3
+        weight: 1
+      - path: Armature/LFleg1/LFleg2/LFleg3/LFlegCont
+        weight: 1
+      - path: Armature/LFleg1/LFleg2/LFleg3/LFlegCont/LFlegCont_end
+        weight: 1
+      - path: Armature/LRleg1
+        weight: 1
+      - path: Armature/LRleg1/LRleg2
+        weight: 1
+      - path: Armature/LRleg1/LRleg2/LRleg3
+        weight: 1
+      - path: Armature/LRleg1/LRleg2/LRleg3/LRlegCont
+        weight: 1
+      - path: Armature/LRleg1/LRleg2/LRleg3/LRlegCont/LRlegCont_end
+        weight: 1
+      - path: Armature/master
+        weight: 1
+      - path: Armature/master/spine1
+        weight: 1
+      - path: Armature/master/spine1/spine2
+        weight: 1
+      - path: Armature/master/spine1/spine2/spine3
+        weight: 1
+      - path: Armature/master/spine1/spine2/spine3/spine3_end
+        weight: 1
+      - path: Armature/master/spine4
+        weight: 1
+      - path: Armature/master/spine4/spine4_end
+        weight: 1
+      - path: Armature/neck3
+        weight: 1
+      - path: Armature/neck3/neck2
+        weight: 1
+      - path: Armature/neck3/neck2/neck1
+        weight: 1
+      - path: Armature/neck3/neck2/neck1/head
+        weight: 1
+      - path: Armature/neck3/neck2/neck1/head/head_end
+        weight: 1
+      - path: Armature/RFleg1
+        weight: 1
+      - path: Armature/RFleg1/RFleg2
+        weight: 1
+      - path: Armature/RFleg1/RFleg2/RFleg3
+        weight: 1
+      - path: Armature/RFleg1/RFleg2/RFleg3/RFlegCont
+        weight: 1
+      - path: Armature/RFleg1/RFleg2/RFleg3/RFlegCont/RFlegCont_end
+        weight: 1
+      - path: Armature/RRleg1
+        weight: 1
+      - path: Armature/RRleg1/RRleg2
+        weight: 1
+      - path: Armature/RRleg1/RRleg2/RRleg3
+        weight: 1
+      - path: Armature/RRleg1/RRleg2/RRleg3/RRlegCont
+        weight: 1
+      - path: Armature/RRleg1/RRleg2/RRleg3/RRlegCont/RRlegCont_end
+        weight: 1
+      - path: Armature/tail4
+        weight: 1
+      - path: Armature/tail4/tail3
+        weight: 1
+      - path: Armature/tail4/tail3/tail2
+        weight: 1
+      - path: Armature/tail4/tail3/tail2/tail1
+        weight: 1
+      - path: Armature/tail4/tail3/tail2/tail1/tail1_end
+        weight: 1
+      - path: Camera
+        weight: 1
+      - path: Lamp
+        weight: 1
+      - path: Mesh
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .5
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

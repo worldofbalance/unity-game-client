@@ -1,0 +1,312 @@
+fileFormatVersion: 2
+guid: 767b917fd01b95b418f85bc01fd88269
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: TreeMouse_anim_0
+    21300002: TreeMouse_anim_1
+    21300004: TreeMouse_anim_2
+    21300006: TreeMouse_anim_3
+    21300008: TreeMouse_anim_4
+    21300010: TreeMouse_anim_5
+    21300012: TreeMouse_anim_6
+    21300014: TreeMouse_anim_7
+    21300016: TreeMouse_anim_8
+    21300018: TreeMouse_anim_9
+    21300020: TreeMouse_anim_10
+    21300022: TreeMouse_anim_11
+    21300024: TreeMouse_anim_12
+    21300026: TreeMouse_anim_13
+    21300028: TreeMouse_anim_14
+    21300030: TreeMouse_anim_15
+    21300032: TreeMouse_anim_16
+    21300034: TreeMouse_anim_17
+    21300036: TreeMouse_anim_18
+    21300038: TreeMouse_anim_19
+    21300040: TreeMouse_anim_20
+    21300042: TreeMouse_anim_21
+    21300044: TreeMouse_anim_14
+    21300046: TreeMouse_anim_22
+    21300048: TreeMouse_anim_23
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: 0
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 20
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: TreeMouse_anim_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 45
+        width: 35
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_1
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 45
+        width: 35
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_2
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 45
+        width: 35
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_3
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 45
+        width: 35
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_4
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 45
+        width: 35
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_5
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 45
+        width: 35
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_6
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 45
+        width: 35
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_7
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 45
+        width: 35
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_8
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 30
+        width: 35
+        height: 10
+      alignment: 0
+      pivot: {x: .349999994, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_9
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 30
+        width: 35
+        height: 10
+      alignment: 0
+      pivot: {x: .349999994, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_10
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 30
+        width: 35
+        height: 10
+      alignment: 0
+      pivot: {x: .349999994, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_11
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 30
+        width: 35
+        height: 10
+      alignment: 0
+      pivot: {x: .349999994, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_12
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 30
+        width: 35
+        height: 10
+      alignment: 0
+      pivot: {x: .349999994, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_13
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 30
+        width: 35
+        height: 11
+      alignment: 0
+      pivot: {x: .349999994, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_14
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 30
+        width: 35
+        height: 12
+      alignment: 0
+      pivot: {x: .349999994, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_15
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 30
+        width: 35
+        height: 12
+      alignment: 0
+      pivot: {x: .349999994, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_16
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 13
+        width: 32
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_17
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 13
+        width: 34
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_18
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 14
+        width: 33
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_19
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 15
+        width: 33
+        height: 12
+      alignment: 0
+      pivot: {x: .349999994, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_20
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 14
+        width: 34
+        height: 11
+      alignment: 0
+      pivot: {x: .349999994, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_21
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 14
+        width: 32
+        height: 12
+      alignment: 0
+      pivot: {x: .349999994, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_22
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 1
+        width: 25
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeMouse_anim_23
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 1
+        width: 25
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 

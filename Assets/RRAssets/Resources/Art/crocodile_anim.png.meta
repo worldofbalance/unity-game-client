@@ -1,0 +1,377 @@
+fileFormatVersion: 2
+guid: 31815dd5be9ddf844b3ace95ba0ff4a7
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: crocodile_anim_0
+    21300002: crocodile_anim_1
+    21300004: crocodile_anim_2
+    21300006: crocodile_anim_3
+    21300008: crocodile_anim_4
+    21300010: crocodile_anim_5
+    21300012: crocodile_anim_6
+    21300014: crocodile_anim_7
+    21300016: crocodile_anim_8
+    21300018: crocodile_anim_9
+    21300020: crocodile_anim_10
+    21300022: crocodile_anim_11
+    21300024: crocodile_anim_12
+    21300026: crocodile_anim_13
+    21300028: crocodile_anim_14
+    21300030: crocodile_anim_15
+    21300032: crocodile_anim_16
+    21300034: crocodile_anim_17
+    21300036: crocodile_anim_18
+    21300038: crocodile_anim_19
+    21300040: crocodile_anim_20
+    21300042: crocodile_anim_21
+    21300044: crocodile_anim_22
+    21300046: crocodile_anim_23
+    21300048: crocodile_anim_24
+    21300050: crocodile_anim_25
+    21300052: crocodile_anim_26
+    21300054: crocodile_anim_27
+    21300056: crocodile_anim_28
+    21300058: crocodile_anim_29
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: 0
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 16
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: crocodile_anim_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 109
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_1
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 109
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_2
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 109
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_3
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 109
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_4
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 109
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_5
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 109
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_6
+      rect:
+        serializedVersion: 2
+        x: 476
+        y: 109
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_7
+      rect:
+        serializedVersion: 2
+        x: 555
+        y: 109
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_8
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 90
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_9
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 90
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_10
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 90
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_11
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 90
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_12
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 90
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_13
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 90
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_14
+      rect:
+        serializedVersion: 2
+        x: 476
+        y: 90
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_15
+      rect:
+        serializedVersion: 2
+        x: 555
+        y: 90
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_16
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 68
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_17
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 68
+        width: 78
+        height: 18
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_18
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 68
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_19
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 68
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_20
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 68
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_21
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 68
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_22
+      rect:
+        serializedVersion: 2
+        x: 476
+        y: 68
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_23
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 49
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_24
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 49
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_25
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 49
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_26
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 49
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_27
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 49
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_28
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 49
+        width: 78
+        height: 18
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: crocodile_anim_29
+      rect:
+        serializedVersion: 2
+        x: 476
+        y: 49
+        width: 78
+        height: 17
+      alignment: 7
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 

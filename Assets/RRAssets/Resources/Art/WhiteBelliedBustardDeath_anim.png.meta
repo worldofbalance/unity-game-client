@@ -1,0 +1,147 @@
+fileFormatVersion: 2
+guid: 244c19157e2880641883b55ceeea1e29
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: WhiteBelliedBustardDeath_anim_0
+    21300002: WhiteBelliedBustardDeath_anim_1
+    21300004: WhiteBelliedBustardDeath_anim_4
+    21300006: WhiteBelliedBustardDeath_anim_5
+    21300008: WhiteBelliedBustardDeath_anim_5
+    21300010: WhiteBelliedBustardDeath_anim_6
+    21300012: WhiteBelliedBustardDeath_anim_7
+    21300014: WhiteBelliedBustardDeath_anim_8
+    21300016: WhiteBelliedBustardDeath_anim_3
+    21300018: WhiteBelliedBustardDeath_anim_2
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: 0
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 16
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: WhiteBelliedBustardDeath_anim_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 1
+        width: 30
+        height: 30
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WhiteBelliedBustardDeath_anim_1
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 1
+        width: 30
+        height: 30
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WhiteBelliedBustardDeath_anim_3
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 1
+        width: 34
+        height: 22
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WhiteBelliedBustardDeath_anim_4
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 0
+        width: 34
+        height: 22
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WhiteBelliedBustardDeath_anim_5
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 0
+        width: 35
+        height: 20
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WhiteBelliedBustardDeath_anim_6
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 1
+        width: 35
+        height: 13
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WhiteBelliedBustardDeath_anim_7
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 1
+        width: 34
+        height: 10
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WhiteBelliedBustardDeath_anim_8
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 4
+        width: 24
+        height: 4
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WhiteBelliedBustardDeath_anim_2
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 1
+        width: 30
+        height: 29
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
