@@ -20,23 +20,23 @@ public class Game : MonoBehaviour
         texture = Functions.CreateTexture2D (Color.black);
     }
 
-  // Use this for initialization
+    // Use this for initialization
     void Start ()
     {
-//    NetworkManager.Send(
-//      SpeciesListProtocol.Prepare(),
-//      ProcessSpeciesList
-//    );
+        // NetworkManager.Send(
+        //     speciesListProtocol.Prepare(),
+        //     ProcessSpeciesList
+        // );
 
         if (scene != "") {
-//      Application.LoadLevel(scene);
+            // Application.LoadLevel(scene);
             Game.SwitchScene (scene);
         } else {
             Debug.Log ("Missing Scene");
         }
     }
 
-  // Update is called once per frame
+    // Update is called once per frame
     void Update ()
     {
         if (isFading != 0) {
@@ -137,8 +137,8 @@ public class Game : MonoBehaviour
     public void ProcessSpeciesList (NetworkResponse response)
     {
         ResponseSpeciesList args = response as ResponseSpeciesList;
-    //    SpeciesTable.Update(args.speciesList);
-    //    SpeciesTable.speciesList = args.speciesList;
+        // SpeciesTable.Update(args.speciesList);
+        // SpeciesTable.speciesList = args.speciesList;
     }
 
     public GameObject CreateMessageBox (string message)
