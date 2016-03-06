@@ -90,10 +90,10 @@ public class RunnerUI : MonoBehaviour {
 		percentDone1 = 1 - ((end - x1) / end);
 		percentDone2 = 1 - ((end - x2) / end);
 
-        if (percentDone1 > .95 || percentDone2 > .95)
-        {
-            dealWithNearFinish();
-        }
+    if (percentDone1 > .95 || percentDone2 > .95)
+    {
+        dealWithNearFinish();
+    }
 
 		barPos1 = 723.42f * percentDone1;
 		barPos2 = 723.42f * percentDone2;
@@ -102,10 +102,10 @@ public class RunnerUI : MonoBehaviour {
 		r2.localPosition = new Vector3 (-363.71f + barPos2, -274.3f, 0f);
 	}
 
-    //Add logic for when one player is close to finishing
-    void dealWithNearFinish()
-    {
-        // Add logic
-        Debug.Log("Player near finish");
-    }
+  //Add logic for when one player is close to finishing
+  void dealWithNearFinish()
+  {
+      // Add logic
+      Debug.Log("Player near finish");
+  }
 }

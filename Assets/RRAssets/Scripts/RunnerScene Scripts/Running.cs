@@ -94,17 +94,13 @@ namespace RR
 		
 			GUI.Label (new Rect (Screen.width - 150, 0, 200, 100), "Running Time:  " + time, myStyle);
 		
-			if (GUI.Button (new Rect (10, //left
-			                          10, //height
-			                          120, 
-			                          (Screen.width / 12.8f) / 100 * 40), "Back to Lobby")) {
+			if (GUI.Button (new Rect (10,10,120, (Screen.width / 12.8f) / 100 * 40), "Back to Lobby")) {
 				Game.SwitchScene("World");
 			}
 		}
 
 		void Start ()
 		{
-	
 			time = 0.0f;
 			mainObject = GameObject.Find ("MainObject");
 			cManager = RRConnectionManager.getInstance ();
@@ -114,7 +110,6 @@ namespace RR
 	
 		public void RunOnce ()
 		{
-	
 			player2 = GameObject.Find ("Player_sprite_2(Clone)");
 	
 		}
@@ -146,7 +141,6 @@ namespace RR
 		// every 1 second, player1's speed will return towards the base value a little
 		private IEnumerator SpeedReturnDelay ()
 		{
-	
 			speedReturnFlag = false;
 			yield return new WaitForSeconds (1f);
 	
@@ -172,7 +166,6 @@ namespace RR
 		// comunication with server
 		private IEnumerator Delay ()
 		{
-	
 			flag = false;
 			yield return new WaitForSeconds (4f);
 	
@@ -182,7 +175,6 @@ namespace RR
 				cManager.Send (rp);
 	
 			}
-	
 			flag = true;
 		}
 	
@@ -251,27 +243,22 @@ namespace RR
 					rk.send (1, -1);
 					cManager.Send (rk);
 				}
-	
 			}
 			
 			if (Input.GetKeyDown (KeyCode.RightArrow)) {
-	
 				if (cManager) {
 					RequestKeyboard rk = new RequestKeyboard ();
 					rk.send (1, 1);
 					cManager.Send (rk);
 				}
-	
 			}
 			
 			if (Input.GetKeyDown (KeyCode.Space)) {
-	
 				if (cManager) {
 					RequestKeyboard rk = new RequestKeyboard ();
 					rk.send (2, 1);
 					cManager.Send (rk);
 				}
-	
 			}
 	
 			if (Input.GetKeyUp (KeyCode.LeftArrow) && cManager) {
@@ -281,7 +268,6 @@ namespace RR
 			}
 			
 			if (Input.GetKeyUp (KeyCode.RightArrow) && cManager) {
-	
 				RequestKeyboard rk = new RequestKeyboard ();
 				rk.send (1, 0);
 				cManager.Send (rk);
@@ -289,7 +275,6 @@ namespace RR
 			}
 	
 			if (Input.GetKeyUp (KeyCode.Space) && cManager) {
-	
 				RequestKeyboard rk = new RequestKeyboard ();
 				rk.send (2, 0);
 				cManager.Send (rk);

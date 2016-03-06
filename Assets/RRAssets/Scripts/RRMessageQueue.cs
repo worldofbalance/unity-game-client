@@ -9,13 +9,10 @@ namespace RR
 	{
 	
 		public delegate void Callback (ExtendedEventArgs eventArgs);
-
 		public Dictionary<int, Callback> callbackList { get; set; }
-
 		public Queue<ExtendedEventArgs> msgQueue { get; set; }
-
 		static private RRMessageQueue sInstance;
-		
+
 		public static RRMessageQueue getInstance() {
 			return sInstance;
 		}

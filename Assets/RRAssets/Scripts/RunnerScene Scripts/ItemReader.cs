@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace RR {
 	public class ItemReader : MonoBehaviour {
-	
 		public static Dictionary<string, string> ReadFile(string filename) {
 			Dictionary<string, string> items = new Dictionary<string, string>();
 	
@@ -28,7 +27,6 @@ namespace RR {
 			} catch {
 				Debug.Log("file read error!!!!");
 			}
-			
 			return items;
 		}
 	}

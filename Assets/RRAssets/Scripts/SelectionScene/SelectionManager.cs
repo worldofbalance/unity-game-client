@@ -82,9 +82,8 @@ namespace RR
 			setButtonActive (spot1);
 			//setButtonActive(spot2);
     
-			/*
-    		 * BACK BUTTON
-    		 */
+			/** BACK BUTTON*/
+
 			GameObject bBack = new GameObject ();
 			bBack.name = "backButton";
 			bBack.transform.parent = gObj.transform;
@@ -106,9 +105,8 @@ namespace RR
     
 			But.onClick.AddListener (() => previous ());
     
-			/*
-    		 * NEXT BUTTON
-    		 */
+			/** NEXT BUTTON*/
+
 			GameObject bNext = new GameObject ();
 			bNext.name = "forwardButton";
 			bNext.transform.parent = gObj.transform;
@@ -130,9 +128,8 @@ namespace RR
     
 			But2.onClick.AddListener (() => next ());
     
-			/*
-             * Submit Button
-             */
+			/** Submit Button*/
+
 			submit = new GameObject ();
 			submit.name = "forwardButton";
 			submit.transform.parent = gObj.transform;
@@ -156,9 +153,8 @@ namespace RR
     
 			submit.SetActive (false);
     
-			/*
-             * Feeding Chart 
-             */
+			/** Feeding Chart */
+			
 			chart = new GameObject ();
 			chart.name = "PredatorPreyChart";
 			chart.transform.parent = gObj.transform;
@@ -181,9 +177,7 @@ namespace RR
 			speciesButtons = new GameObject[5];
 			buttonImages = new GameObject[5];
     
-			/*
-             * Species buttons
-             */
+			/** Species buttons*/
 			for (int i = 0; i < 5; i++) {
 				speciesButtons [i] = new GameObject ();
 				buttonImages [i] = new GameObject ();
@@ -257,11 +251,8 @@ namespace RR
     
 		void setButtonActive (int num)
 		{
-    
 			if (num == 5) {
-    
 				submit.SetActive (true);
-    
 				return;
 			}
     
@@ -284,36 +275,35 @@ namespace RR
     
 		void next ()
 		{
-            
 			/*
-            int temp1, temp2;
-            temp1 = spot1;
-            temp2 = spot2;
-    
-            Debug.Log("Next has been called");
-            
-            if (spot2 == 4)
-            {
-                spot2 = 0;
-                spot1 = 4;
-            }
-            else if (spot1 == 4)
-            {
-                spot1 = 0;
-                spot2 = 1;
-            }
-            else
-            {
-                spot1 += 1;
-                spot2 += 1;
-            }
-    
-            //Set the correct buttons to active
-            setButtonInactive(temp1);
-            setButtonInactive(temp2);
-            setButtonActive(spot1);
-            setButtonActive(spot2);
-             */
+        int temp1, temp2;
+        temp1 = spot1;
+        temp2 = spot2;
+
+        Debug.Log("Next has been called");
+        
+        if (spot2 == 4)
+        {
+            spot2 = 0;
+            spot1 = 4;
+        }
+        else if (spot1 == 4)
+        {
+            spot1 = 0;
+            spot2 = 1;
+        }
+        else
+        {
+            spot1 += 1;
+            spot2 += 1;
+        }
+
+        //Set the correct buttons to active
+        setButtonInactive(temp1);
+        setButtonInactive(temp2);
+        setButtonActive(spot1);
+        setButtonActive(spot2);
+       */
     
 			setButtonInactive (spot1);
     
@@ -330,34 +320,34 @@ namespace RR
 		{
     
 			/*
-            int temp1, temp2;
-            temp1 = spot1;
-            temp2 = spot2;
-    
-            Debug.Log("Previous has been called");
-    
-            if (spot2 == 0)
-            {
-                spot2 = 4;
-                spot1 = 3;
-            }
-            else if (spot1 == 0)
-            {
-                spot1 = 4;
-                spot2 = 0;
-            }
-            else
-            {
-                spot1 -= 1;
-                spot2 -= 1;
-            }
-    
-            //Set the correct buttons to active
-            setButtonInactive(temp1);
-            setButtonInactive(temp2);
-            setButtonActive(spot1);
-            setButtonActive(spot2);
-             */
+        int temp1, temp2;
+        temp1 = spot1;
+        temp2 = spot2;
+
+        Debug.Log("Previous has been called");
+
+        if (spot2 == 0)
+        {
+            spot2 = 4;
+            spot1 = 3;
+        }
+        else if (spot1 == 0)
+        {
+            spot1 = 4;
+            spot2 = 0;
+        }
+        else
+        {
+            spot1 -= 1;
+            spot2 -= 1;
+        }
+
+        //Set the correct buttons to active
+        setButtonInactive(temp1);
+        setButtonInactive(temp2);
+        setButtonActive(spot1);
+        setButtonActive(spot2);
+       */
     
 			setButtonInactive (spot1);
     
@@ -398,12 +388,10 @@ namespace RR
 			RequestRRSpecies rs = new RequestRRSpecies ();
 			rs.send (selectedSpecies);
     		
-    		
 			if (cManager) {
 				cManager.Send (rs);
 			}
-    		
-    		
+      
 			RequestRRStartGame request = new RequestRRStartGame ();
 			request.Send (Constants.USER_ID);
 			cManager.Send (request);
@@ -412,9 +400,6 @@ namespace RR
 			// Give the client a message about waiting for the other player to finish selecting.  Hide the PLAY button so 
 			// player can't send another RequestRRStartGame.  It is cruicial only one RequestRRstartGame is sent from each
 			// player.
-
-
-
 		}
     	
 		public void ResponseRRStartGame (ExtendedEventArgs eventArgs)
@@ -432,7 +417,6 @@ namespace RR
 
 		public void ResponseRRGetMap (ExtendedEventArgs eventArgs)
 		{
-
 			ResponseRRGetMapEventArgs args = eventArgs as ResponseRRGetMapEventArgs;
 			GameManager.mapSeed = args.mapNumber;
 			//Debug.Log("Get map seed from server! The number is " + args.mapNumber);

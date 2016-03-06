@@ -17,7 +17,7 @@ namespace RR {
 	
 		private bool wallJumped;
 	
-	    private Animator anim;
+    private Animator anim;
 		private PlayerPhysics playerPhysics;
 		public  ArrayList allkeys;
 		public int keytype, key;
@@ -43,15 +43,15 @@ namespace RR {
 				if(key > 0)
 				{
 					jump = true;
-				}else
+				} else
 				{
 					jump = false;
 				}
 	
 			}
 	
-	        //Updating animation variables
-	        updateAnimation();
+      //Updating animation variables
+      updateAnimation();
 		
 			//Reseting speeds if collide with wall
 			if (playerPhysics.movementStopped) {
@@ -66,8 +66,8 @@ namespace RR {
 			targetSpeed = direction * speed;
 			currentSpeed = IncrementTowards(currentSpeed, targetSpeed, acceleration);
 	
-	        //Animation code
-	        anim.SetFloat("speed", currentSpeed);
+      //Animation code
+      anim.SetFloat("speed", currentSpeed);
 	
 			// Check if on ground then jump
 			if (playerPhysics.grounded) {
@@ -86,7 +86,6 @@ namespace RR {
 				if(jump) {
 					amountToMove.y = jumpHeight;
 					currentSpeed = IncrementTowards ( 10 * ((targetSpeed/Mathf.Abs(targetSpeed)*-1)) , targetSpeed * -1, 100);
-				
 				} 
 			}
 			jump = false;
@@ -98,32 +97,32 @@ namespace RR {
 	
 	    private void updateAnimation()
 	    {
-	        if (keytype == 1)
-	        {
-	            if (key == 1)
-	            {
-	                anim.SetInteger("facing", 0);
-	            }
-	            else if (key == -1)
-	            {
-	                anim.SetInteger("facing", 1);
-	            }
-	            else
-	            {
-	                //Look into what needs to be here
-	            }
-	        }
-	        else if (keytype == 2)
-	        {
-	            if (key == 1)
-	            {
-	                anim.SetBool("jumping", true);
-	            }
-	            else
-	            {
-	                anim.SetBool("jumping", false);
-	            }
-	        }
+        if (keytype == 1)
+        {
+          if (key == 1)
+          {
+              anim.SetInteger("facing", 0);
+          }
+          else if (key == -1)
+          {
+              anim.SetInteger("facing", 1);
+          }
+          else
+          {
+              //Look into what needs to be here
+          }
+        }
+        else if (keytype == 2)
+        {
+          if (key == 1)
+          {
+              anim.SetBool("jumping", true);
+          }
+          else
+          {
+              anim.SetBool("jumping", false);
+          }
+        }
 	    }
 		
 		// Increase n towards target by speed
@@ -137,8 +136,5 @@ namespace RR {
 				return (dir == Mathf.Sign(target-n))? n: target; // if n has now passed target then return target, otherwise return n
 			}
 		}
-	
-	
-	
 	}
 }

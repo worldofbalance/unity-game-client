@@ -7,14 +7,14 @@ namespace RR {
 	
 		public GameObject player1;
 		public GameObject player2;
-	    public GameObject map;
-	    public GameObject endFlag;
+    public GameObject map;
+    public GameObject endFlag;
 		public GameObject item1;
 		public ArrayList items;
 		private GameCamera cam;
-	    private float raceTime;
-	    private static float startPoint = 0;
-	    private static float endPoint;
+    private float raceTime;
+    private static float startPoint = 0;
+    private static float endPoint;
 		private int species1;
 		public static int species2;
 		private int mapLength;
@@ -37,33 +37,32 @@ namespace RR {
 			species1 = PlayerPrefs.GetInt ("species1");
 			GameObject.Find("GameLogic").GetComponent<Running>().species1 = "animal" + species1;
 			
-	        cam = GetComponent<GameCamera>();
+      cam = GetComponent<GameCamera>();
 
 			itemCounter = 1;
-	        SpawnMap();
+      SpawnMap();
 			SpawnItem();
-	        SpawnPlayer();
-	
-	        player2 = Instantiate(Resources.Load("Prefabs/Species/animal" + species2 + "copy"), new Vector3(0f, 0f, 0f), Quaternion.identity) as GameObject;
-	        player2.name = Constants.PLAYER2_NAME;
-	
-	        raceTime = 0;
-	        //Debug.Log("Before!!!!!!!!!");
-	
-	        items = new ArrayList();
-	        //repeat until none
-	        // item = new GO();
-	        // PlaItem(item, xy);
-	        // items.Add (items);
-	
-	        GameObject.Find("GameLogic").GetComponent<Running>().RunOnce();
+      SpawnPlayer();
+
+      player2 = Instantiate(Resources.Load("Prefabs/Species/animal" + species2 + "copy"), new Vector3(0f, 0f, 0f), Quaternion.identity) as GameObject;
+      player2.name = Constants.PLAYER2_NAME;
+
+      raceTime = 0;
+      //Debug.Log("Before!!!!!!!!!");
+
+      items = new ArrayList();
+      //repeat until none
+      // item = new GO();
+      // PlaItem(item, xy);
+      // items.Add (items);
+
+      GameObject.Find("GameLogic").GetComponent<Running>().RunOnce();
 	
 			GameObject.Find("GameLogic").GetComponent<RunnerUI>().setStartandEndPoints(startPoint, endPoint);
-	        GameObject.Find("GameLogic").GetComponent<RunnerUI>().setPlayer1(player1);
-	        GameObject.Find("GameLogic").GetComponent<RunnerUI>().SetPlayer2(player2);
+      GameObject.Find("GameLogic").GetComponent<RunnerUI>().setPlayer1(player1);
+      GameObject.Find("GameLogic").GetComponent<RunnerUI>().SetPlayer2(player2);
 			
 			buildRelationship();
-	  
 		}
 	
 		// Hard code for now!!
@@ -95,47 +94,45 @@ namespace RR {
 		}
 		
 		private void SpawnPlayer() {
-	        player1 = Instantiate(Resources.Load("Prefabs/Species/animal" + species1), new Vector3(0f, 0f, 0f), Quaternion.identity) as GameObject;
-	        cam.SetTarget(player1.transform);
+      player1 = Instantiate(Resources.Load("Prefabs/Species/animal" + species1), new Vector3(0f, 0f, 0f), Quaternion.identity) as GameObject;
+      cam.SetTarget(player1.transform);
 	
 			player1.name = Constants.PLAYER1_NAME;
 			GameObject.Find("GameLogic").GetComponent<Running>().player1 = this.player1;
 		}
 	
-	    private void SpawnMap()
-	    {
-	
-	        float tempEnd = -35f;
-	        mapLength = 20;
+    private void SpawnMap()
+    {
+
+      float tempEnd = -35f;
+      mapLength = 20;
 			if (mapSeed != null) {
 				Debug.Log("Map seed is " + mapSeed);
 				Random.seed = mapSeed;
 			} else {
 				Debug.Log("Not receive map seed!! Will use random number!!");
 			}
-	        for (int i = 0; i < mapLength; i++)
-	        {
-	           
-	          // Instantiate(map, new Vector3((float)(20 + (i * 62.9)), 0.507454f, 0), Quaternion.identity);
+      for (int i = 0; i < mapLength; i++)
+      {
+        // Instantiate(map, new Vector3((float)(20 + (i * 62.9)), 0.507454f, 0), Quaternion.identity);
 				//map = Instantiate(Resources.Load("Box")) as GameObject;
-	
-	            if (i == 0)
-	                map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
-	            else if (i == mapLength - 1)
-	                map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
-	            else
-	                map = Instantiate(Resources.Load("Prefabs/Maps/MapVar_" + Random.Range(0, 6)), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
-	
+
+        if (i == 0)
+          map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
+        else if (i == mapLength - 1)
+          map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
+        else
+          map = Instantiate(Resources.Load("Prefabs/Maps/MapVar_" + Random.Range(0, 6)), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
+
 				//map.name = map.name + " " + i;
 				map.name = "aMap" + i;
 				//(float)(20 + (i * 62.9))
-			    tempEnd += 50f;
+		    tempEnd += 50f;
 				endPoint = tempEnd - 24;
-	
-	        }
+      }
 	
 			Instantiate(endFlag, new Vector3(endPoint, -8.5f, 0), Quaternion.identity);
-	    } 
+    } 
 	
 		private void PlaceItem(int speciesId, float x) {
 			//Debug.Log("Prefabs/Items/item" + speciesId.ToString());

@@ -61,7 +61,6 @@ namespace RR {
 				}
 			}
 			
-			
 			Vector2 finalTransform = new Vector2(deltaX, deltaY);
 			
 			transform.Translate(finalTransform);
@@ -199,18 +198,16 @@ namespace RR {
 		
 		private void doPlayerFinish()
 		{
-			
 			Debug.Log(this + " has finished the race");
 			Application.LoadLevel("RREndScene");
-			
-			
 		}
+		
 		//This has been called on by the item that was collided with
-	    private void doDestroyPlayer()
-	    {
-	        //Need to add logic for removing the calling item
+    private void doDestroyPlayer()
+    {
+      //Need to add logic for removing the calling item
 			//Debug.Log("doDestroyPlayer is called!! Should I destroy: " + this.name);
 			GameObject.Destroy(GameObject.Find(this.name));
-	    }
+    }
 	}
 }

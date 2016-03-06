@@ -31,8 +31,8 @@ namespace RR {
 			SpawnPlayer ();
 	
 	
-	        player2 = Instantiate(player2, Vector3.zero, Quaternion.identity) as GameObject;
-	        player2.name = "Player_sprite_2(Clone)";
+      player2 = Instantiate(player2, Vector3.zero, Quaternion.identity) as GameObject;
+      player2.name = "Player_sprite_2(Clone)";
 	
 			raceTime = 0;
 			//Debug.Log("Before!!!!!!!!!");
@@ -44,14 +44,12 @@ namespace RR {
 			// items.Add (items);
 			
 			GameObject.Find("GameLogic").GetComponent<Running>().RunOnce();
-			
 		}
 		
 		private void SpawnPlayer() {
-	        player1 = Instantiate (player1, new Vector3(-19f, 0f,0f), Quaternion.identity) as GameObject;
+      player1 = Instantiate (player1, new Vector3(-19f, 0f,0f), Quaternion.identity) as GameObject;
 			cam.SetTarget(player1.transform);
-	
-	        player1.name = "Player_sprite(Clone)";
+      player1.name = "Player_sprite(Clone)";
 		}
 		
 		private void SpawnMap()
@@ -62,10 +60,10 @@ namespace RR {
 			}
 	
 			float tempEnd = 20;
-	        int mapUnitLength = 1;
+      int mapUnitLength = 1;
 			for (int i = 0; i < mapUnitLength; i++)
 			{
-	            tempEnd += 62.9f;
+        tempEnd += 62.9f;
 				Instantiate(MapVars[Random.Range (0,2)], new Vector3((float)(20 + (i * 62.9)), 0.507454f, 0), Quaternion.identity);
 			}
 			
@@ -79,12 +77,9 @@ namespace RR {
 	
 		private void Countdown(){
 			//Logic for game countdown
-	
 			GameObject temp = Resources.Load<GameObject> ("Art/Animations/Numbers/num0");
 			temp.transform.localScale = new Vector3 (3f, 3f, 1f);
 			Instantiate (temp, new Vector3(-19f, -2.5f,0f), Quaternion.identity);
-	
 		}
-	
 	}
 }

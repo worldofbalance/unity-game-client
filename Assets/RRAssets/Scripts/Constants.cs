@@ -9,8 +9,8 @@ namespace RR {
 		// Request (1xx) + Response (2xx)
 		public static readonly short CMSG_AUTH = 101;
 		public static readonly short SMSG_AUTH = 201;
-	    public static readonly short CMSG_HEARTBEAT = 102;
-	    public static readonly short SMSG_HEARTBEAT = 202;
+    public static readonly short CMSG_HEARTBEAT = 102;
+    public static readonly short SMSG_HEARTBEAT = 202;
 	
 		public static readonly short CMSG_GAMEOVER = 103;
 		public static readonly short SMSG_GAMEOVER = 203;

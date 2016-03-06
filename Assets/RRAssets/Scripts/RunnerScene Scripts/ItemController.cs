@@ -102,14 +102,10 @@ namespace RR {
 		
 		private int doKeyboardInput()
 		{
-			
-			
-			
 			foreach (KeyCode vKey in System.Enum.GetValues(typeof(KeyCode)))
 			{
 				if (Input.GetKey(vKey))
 				{
-					
 					switch (vKey)
 					{
 					case KeyCode.LeftArrow:

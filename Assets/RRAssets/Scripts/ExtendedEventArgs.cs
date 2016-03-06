@@ -9,8 +9,8 @@ namespace RR {
 	
 			foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(this)) {
 				string name = descriptor.Name;
-			    object value = descriptor.GetValue(this);
-			    output += name + " " + value + "\n";
+		    object value = descriptor.GetValue(this);
+		    output += name + " " + value + "\n";
 			}
 			
 			return output;
