@@ -60,4 +60,5 @@ Network Trash Folder
 Temporary Items
 .apdisk
 # DO NOT INSERT ANYTHING BELOW Icon? Special characters below
-Icon?
+Icon?
+*.meta
