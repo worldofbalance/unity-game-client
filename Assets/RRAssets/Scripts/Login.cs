@@ -9,7 +9,6 @@ namespace RR
 {
 	public class Login : MonoBehaviour
 	{
-		
 		private GameObject mainObject;
 		// Window Properties
 		private float width = 280;
@@ -24,7 +23,9 @@ namespace RR
 		void Awake ()
 		{
 			mainObject = GameObject.Find ("MainObject");
-	
+			
+			mainObject.AddComponent<RRMessageQueue>();
+			mainObject.AddComponent<RRConnectionManager>();
 			mainObject.GetComponent<RRMessageQueue> ().AddCallback (Constants.SMSG_AUTH, ResponseLogin);
 			//		mainObject.GetComponent<MessageQueue>().AddCallback(Constants.SMSG_SPECIES_LIST, ResponseSpeciesList);
 			mainObject.GetComponent<RRMessageQueue> ().AddCallback (Constants.SMSG_RACE_INIT, ResponseRaceInit);
