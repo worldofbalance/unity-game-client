@@ -181,27 +181,15 @@ public class SpawnPredator : MonoBehaviour
 		int maxIndex = spawnArray.GetLength(0);
 		int spawnLag = 0;
 
-<<<<<<< HEAD
 		// Initialize spawns array (used for the hint board, at least for now)
 		int[] spawns = new int[MAX_ROWS];
 
 		// Initialize hint board
 		HintBoard hintBoard = GameObject.Find ("HintBoard").GetComponent<HintBoard>();
-=======
-		
-		currIndex = 0;
-		nextSpawn = 0;
-		maxIndex = spawnArray.GetLength (0);
-
-
-
-		
->>>>>>> 7def163c71d37a88a7d0ae61a36b96f95f351f79
 
 		// Loop until all predators have been spawned
 		while(currIndex < maxIndex && !gameOver)
 		{
-<<<<<<< HEAD
 			// Parse wait time for next spawn
 			spawnLag = spawnArray[currIndex,0];
 
@@ -219,17 +207,6 @@ public class SpawnPredator : MonoBehaviour
 			yield return new WaitForSeconds(spawnLag);
 
 			// If game is not over, spawn the next predator
-=======
-			nextSpawn = spawnArray[currIndex,0];
-			spawnOne = spawnArray[currIndex,1];
-			spawnTwo = spawnArray[currIndex,2];
-			spawnThree = spawnArray[currIndex,3];
-
-
-			//Debug.Log ("Sleeping");
-			yield return new WaitForSeconds(nextSpawn); // wait x seconds
-			//Debug.Log ("Waited " + nextSpawn + " seconds!" + gameOver);
->>>>>>> 7def163c71d37a88a7d0ae61a36b96f95f351f79
 			if (!gameOver) {
 				for (int i = 1; i < 4; i++)
 					// Create the next predator
