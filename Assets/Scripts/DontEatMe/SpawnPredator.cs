@@ -122,7 +122,7 @@ public class SpawnPredator : MonoBehaviour
 		largeFont.normal.textColor = Color.green;
 
 		// TODO: figure out what "MyEvent" is... and why it's called something so 'tutorial-ly'
-		StartCoroutine("MyEvent");
+		//StartCoroutine("MyEvent");
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class SpawnPredator : MonoBehaviour
 		}
 		spawnedPredator = (GameObject) Instantiate(Resources.Load("Prefabs/Carnivore/" + carnivoreName), currSpawnPoint,  Quaternion.identity);
 
-		/*
+
 		switch (creatureId)
 		{
 		case 1:
@@ -200,7 +200,7 @@ public class SpawnPredator : MonoBehaviour
 			spawnedPredator = (GameObject) Instantiate(Resources.Load("Prefabs/Carnivore/Lion"), currSpawnPoint,  Quaternion.identity);
 			break;
 		}
-		*/
+	
 
 	}
 

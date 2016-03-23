@@ -26,7 +26,7 @@ public class BuildMenu : MonoBehaviour {
 	void OnGUI() {
 
 		// draw resource menu
-		GUILayout.BeginArea (new Rect (150, 90, 155, 200));
+		GUILayout.BeginArea (new Rect (0, 0, 155, 200));
 		GUILayout.BeginHorizontal ("box");
 
 		// draw resource counter
@@ -37,7 +37,7 @@ public class BuildMenu : MonoBehaviour {
 		GUILayout.EndArea ();
 
 		// draw score menu
-		GUILayout.BeginArea (new Rect (800, 90, 155, 200));
+		GUILayout.BeginArea (new Rect (800, 0, 155, 200));
 		GUILayout.BeginHorizontal ("box");
 		
 		// draw score counter
@@ -63,7 +63,7 @@ public class BuildMenu : MonoBehaviour {
 		GUILayout.EndArea ();
 
 		// Now, draw prey menu
-		GUILayout.BeginArea (new Rect (300, 90, 500, 220));
+		GUILayout.BeginArea (new Rect (300, 0, 500, 220));
 		GUILayout.BeginHorizontal ("box");
 
 		// draw each prey's build info

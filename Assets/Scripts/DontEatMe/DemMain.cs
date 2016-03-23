@@ -17,11 +17,11 @@ public class DemMain : MonoBehaviour {
     for(int x = 0; x < 9; x++){
       
       for (int y = 0; y < 5; y++) {
-        //board = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        //DemTile tile = DemTile.Create(x,y,0);
+
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cube.transform.parent = board.transform;
-        cube.transform.position = new Vector3(x, y, -1);
+        cube.transform.position = new Vector3(x-2, y-2, -1);
+        cube.name = x + "," + y;
 
         if ((x % 2) == (y % 2)) {
           cube.GetComponent<Renderer> ().material = grass1;

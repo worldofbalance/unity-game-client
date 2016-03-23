@@ -16,7 +16,7 @@ public class Predator_Hunger : MonoBehaviour {
 	int amountToEatPerTick = 20;
 
 	GameObject gameOverWall = null;
-	GameOverWall gameOverWallScript = null;
+
 
 	Health currentHP;
 
@@ -30,9 +30,7 @@ public class Predator_Hunger : MonoBehaviour {
 
 		// Collided with a plant!? Game over, buddy
 		if (collision.gameObject.tag == "Plant") {
-			gameOverWall = GameObject.Find ("EndOfGameWall");
-			gameOverWallScript = gameOverWall.GetComponent<GameOverWall>();
-			gameOverWallScript.LostGame();
+
 		}
 		
 		// Collided with a prey? Eat it, yo
