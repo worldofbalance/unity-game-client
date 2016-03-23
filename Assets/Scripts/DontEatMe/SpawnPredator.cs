@@ -4,77 +4,77 @@ using System.Collections;
 /**
 	This class is responsible for spawning predators.
 	TODO: tweak, upgrade, and add some proper comments
+	(in progress... almost done)
 */
 public class SpawnPredator : MonoBehaviour
 {
 	// DECLARATIONS //
 	//
-	int currIndex;
-	int maxIndex;
-	int nextSpawn;
+	public const int MIN_ROWS = 3; // Minimum number of rows
+	public const int MAX_ROWS = 5; // Maximum number of rows
 
-	int spawnOne;
-	int spawnTwo;
-	int spawnThree;
+	Vector3[] spawnPoints; // Spawn points for each row
+	int numRows; // Number of rows
 
-	// Spawn points for each row
-	Vector3 spawnPointOne;
-	Vector3 spawnPointTwo;
-	Vector3 spawnPointThree;
+	string[] carnivoreNames; // Holds the names of carnivores
 
-	GUIStyle largeFont;
+	GUIStyle largeFont; // GUI font
 
-	// INITIALIZATIONS //
-	//
 	float time; // Game timer
 	bool gameOver; // Denotes game over status
 
 	bool spawnedLastPredator; // If true, all predators have been spawned
 	bool drawYouWon; // If true, draws the winning screen
 
-	BuildMenu buildMenu; // The BuildMenu script object from the MainCamera
-
-	// Not sure what hintBoard does at the moment...
-	/*
-	 * hintBoard = GameObject.Find ("HintBoard");
-		hintBoardScript = hintBoard.GetComponent<HintBoard>();
-		Acquire object like this.
-	 * */
-
+	// METHODS //
+	//
 	/**
-		Updates once per frame
+		Called once the script is activated.
 	*/
-	void Update()
+	void Start ()
 	{
-		// Game over check
-		if (!gameOver) {
-			// Advance timer
-			// TODO: find where the Time class originates
-			time += Time.deltaTime;
-			//Debug.Log (time);
+		// Initializations
+		time = 0; // Init time to 0
+		gameOver = false; // Init game over status to false
+		spawnedLastPredator = false; // Init to false
+		drawYouWon = false; // You just started, you haven't won yet
 
-			// Perform final steps after last predator has spawned
-			if (spawnedLastPredator) {
+		// Initialize number of rows to MIN_ROWS; update with 'setNumRows'
+		numRows = MIN_ROWS;
 
-				GameObject[] arr = GameObject.FindGameObjectsWithTag("Carnivore");
+		// Define GUI font
+		largeFont = new GUIStyle();
+		largeFont.fontSize = 32;
+		largeFont.normal.textColor = Color.green;
 
-				if (arr.Length == 0) {
-					// TODO: not sure why the MainCamera object is called "buildMenu", and the actual
-					// BuildMenu object is called "buildMenuScript"...
-					// FIXME: buildMenu = GameObject.Find("MainCamera").GetComponent<BuildMenu>();
-					buildMenu = GameObject.Find ("MainCamera").GetComponent<BuildMenu>();
+		// Initialize constant spawn points (x, y, z = 0)
+		// TODO: determine points 4 and 5 after more rows are implemented in the game.
+		spawnPoints = new Vector3[MAX_ROWS]
+		{
+			new Vector3(8.7f, 1.4f),
+			new Vector3(8.7f, -0.45f),
+			new Vector3(8.7f, -1.9f),
+			new Vector3(),
+			new Vector3()
+		};
 
-					// Set winning bools to true
-					drawYouWon = true;
-					gameOver = true;
+		// Initialize carnivore names
+		carnivoreNames = new string[MAX_ROWS]
+		{
+			"Lion",
+			"DwarfSandSnake",
+			"Leopard",
+			"AfricanWildDog",
+			"ServalCat"
+		};
 
-					// Trigger end of game
-					buildMenu.endGame();
-				}
-			}
-		}
+		// Start spawn event
+		StartCoroutine("SpawnEvent");
 	}
 
+	/**
+		TODO: documentation...
+	*/
 	void OnGUI() {
 		// TODO: improve upon the "You Won" action; currently, predators continue to spawn once the game is won.
 		if (drawYouWon) {
@@ -92,124 +92,34 @@ public class SpawnPredator : MonoBehaviour
 	}
 
 	/**
-		TODO: figure out what this does
+		Updates once per frame
 	*/
-	public float getRunTime() {
-		return time;
-	}
-
-	/**
-		TODO: figure out what this does
-	*/
-	public void stopRunTime() {
-		gameOver = true;
-	}
-
-	/**
-		Called once the script is activated.
-	*/
-	void Start ()
+	void Update()
 	{
-		// Initializations
-		time = 0; // Init time to 0
-		gameOver = false; // Init game over status to false
-		spawnedLastPredator = false; // Init to false
-		drawYouWon = false; // You just started, you haven't won yet
 
-		// Create a large font for display
-		largeFont = new GUIStyle();
-		largeFont.fontSize = 32;
-		largeFont.normal.textColor = Color.green;
-
-		// TODO: figure out what "MyEvent" is... and why it's called something so 'tutorial-ly'
-		//StartCoroutine("MyEvent");
 	}
 
 	/**
-		TODO: figure out what this does.
-		Based on the name of the method, I'm assuming it creates a creature.
-		Most likely a predator...
+		TODO: documentation...
 	*/
 	void createCreature(int spawnLevel, int creatureId) {
-		spawnPointOne.x = 8.7f;
-		spawnPointOne.y = 1.4f;
-		spawnPointOne.z = 0f;
 
-		spawnPointTwo.x = 8.7f;
-		spawnPointTwo.y = -0.45f;
-		spawnPointTwo.z = 0f;
-
-		spawnPointThree.x = 8.7f;
-		spawnPointThree.y = -1.9f;
-		spawnPointThree.z = 0f;
-
-		GameObject spawnedPredator;
-
-		Vector3 currSpawnPoint;
-		if (spawnLevel == 1) {
-			currSpawnPoint = spawnPointOne;
-		} else if (spawnLevel == 2) {
-			currSpawnPoint = spawnPointTwo;
-		} else {
-			currSpawnPoint = spawnPointThree;
-		}
-
-		// TODO: just make a string with the load path and make one call to Instantiate
-		string carnivoreName; // Name of carnivore to load on Instantiate
-		switch (creatureId) {
-			case 1:
-				carnivoreName = "Lion";
-				break;
-			case 2:
-				carnivoreName = "DwarfSandSnake";
-				break;
-			case 3:
-				carnivoreName = "Leopard";
-				break;
-			case 4:
-				carnivoreName = "AfricanWildDog";
-				break;
-			case 5:
-				carnivoreName = "ServalCat";
-				break;
-			default:
-				carnivoreName = "Lion";
-				break;
-		}
-		spawnedPredator = (GameObject) Instantiate(Resources.Load("Prefabs/Carnivore/" + carnivoreName), currSpawnPoint,  Quaternion.identity);
-
-
-		switch (creatureId)
-		{
-		case 1:
-			spawnedPredator = (GameObject) Instantiate(Resources.Load("Prefabs/Carnivore/Lion"), currSpawnPoint,  Quaternion.identity);
-			break;
-		case 2:
-			spawnedPredator = (GameObject) Instantiate(Resources.Load("Prefabs/Carnivore/DwarfSandSnake"), currSpawnPoint,  Quaternion.identity);
-			break;
-		case 3:
-			spawnedPredator = (GameObject) Instantiate(Resources.Load("Prefabs/Carnivore/Leopard"), currSpawnPoint,  Quaternion.identity);
-			break;
-		case 4:
-			spawnedPredator = (GameObject) Instantiate(Resources.Load("Prefabs/Carnivore/AfricanWildDog"), currSpawnPoint,  Quaternion.identity);
-			break;
-		case 5:
-			spawnedPredator = (GameObject) Instantiate(Resources.Load("Prefabs/Carnivore/ServalCat"), currSpawnPoint,  Quaternion.identity);
-			break;
-		default:
-			spawnedPredator = (GameObject) Instantiate(Resources.Load("Prefabs/Carnivore/Lion"), currSpawnPoint,  Quaternion.identity);
-			break;
-		}
-	
 
 	}
 
 	/**
-		TODO: figure out what this does, and rename it something that actually sounds somewhat descriptive.
+		TODO: documentation...
 	*/
-	public IEnumerator MyEvent()
+	public IEnumerator SpawnEvent()
 	{
-		int[,] spawnArray = new int[,] {
+		// Determines the wait time and the type of predator to be spawned at each of the three original rows.
+		// The format for each array row is:
+		// {wait time in seconds, row 1 creatureId, row 2 creatureId, row 3 creatureId}
+		// Problem with this: it's the same pattern every time.
+		// Solution? Randomize some of these numbers.
+		// TODO: randomize the array values within a realistic range to make each round unique.
+		int[,] spawnArray = new int[,]
+		{
 			{2, 0, 1, 0}, 
 			{11, 2, 0, 0},
 			{15, 0, 0, 3},
@@ -232,44 +142,84 @@ public class SpawnPredator : MonoBehaviour
 			{32, 5, 0, 0},
 			{45, 0, 0, 5}
 		};
-										
 
+		// Initialize iterables
+		int currIndex = 0;
+		int maxIndex = spawnArray.GetLength(0);
+		int spawnLag = 0;
 
-		
-		currIndex = 0;
-		nextSpawn = 0;
-		maxIndex = spawnArray.GetLength (0);
+		// Initialize hint board
+		// TODO: eliminiate entirely; apparently the HintBoard.cs script was removed without my knowledge.
+		// It was an eye sore anyway.
+		//HintBoard hintBoard = GameObject.Find ("HintBoard").GetComponent<HintBoard>();
 
+		// Initialize spawns array (used for the hint board, at least for now)
+		// TODO: eliminate since the HintBoard.cs script is now gone
+		//int[] spawns = new int[MAX_ROWS];
 
-
-		
-
+		// Loop until all predators have been spawned
 		while(currIndex < maxIndex && !gameOver)
 		{
-			nextSpawn = spawnArray[currIndex,0];
-			spawnOne = spawnArray[currIndex,1];
-			spawnTwo = spawnArray[currIndex,2];
-			spawnThree = spawnArray[currIndex,3];
+			// Parse wait time for next spawn
+			spawnLag = spawnArray[currIndex,0];
 
+			// Parse creatureId values for each row
+			// TODO: eliminate since the HintBoard.cs script is now gone
+			/*
+			for (int i = 1; i < numRows; i++) {
+				spawns[i] = spawnArray[currIndex, i];
 
-			//Debug.Log ("Sleeping");
-			yield return new WaitForSeconds(nextSpawn); // wait x seconds
-			//Debug.Log ("Waited " + nextSpawn + " seconds!" + gameOver);
+				//Set hint screen to image
+
+				if (spawns[i] != 0)
+					hintBoard.setNextPredator(spawns[i]);
+				
+			}
+			*/
+
+			// Wait for next spawn
+			yield return new WaitForSeconds(spawnLag);
+
+			// If game is not over, spawn the next predator
 			if (!gameOver) {
-				//Debug.Log ("Spawning Something!" + gameOver);
-				for (int i = 1; i < 4; i++) {
-					if (spawnArray[currIndex,i] != 0) {
-						createCreature(i, spawnArray[currIndex,i]);
-					}
-				}
-				currIndex++; //Move onto next predator
+				for (int i = 1; i < 4; i++)
+					// Create the next predator
+					createCreature(i, spawnArray[currIndex,i]);
+
+				// Advance to next predator
+				currIndex++;
 			}
 		}
-
+		// Spawn array has been exhausted
 		spawnedLastPredator = true;
-
 	}
 
+	/**
+		Returns the current number of rows
+	*/
+	public int getNumRows () {
+		return numRows;
+	}
 
+	/**
+		Sets the number of rows.
+		Discards new values that are out of bounds.
+	*/
+	public void setNumRows (int rows) {
+		numRows = rows >= MIN_ROWS && rows <= MAX_ROWS ? rows : numRows;
+	}
+
+	/**
+		TODO: figure out what this does
+	*/
+	public float getRunTime() {
+		return time;
+	}
+
+	/**
+		Stops gameplay
+	*/
+	public void stopRunTime() {
+		gameOver = true;
+	}
 }
-
