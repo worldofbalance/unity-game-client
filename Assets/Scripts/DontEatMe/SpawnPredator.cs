@@ -240,13 +240,9 @@ public class SpawnPredator : MonoBehaviour
 		nextSpawn = 0;
 		maxIndex = spawnArray.GetLength (0);
 
-		HintBoard hintBoardScript;
-		GameObject hintBoard;
+
 
 		
-		hintBoard = GameObject.Find ("HintBoard");
-		hintBoardScript = hintBoard.GetComponent<HintBoard>();
-
 
 		while(currIndex < maxIndex && !gameOver)
 		{
@@ -255,15 +251,7 @@ public class SpawnPredator : MonoBehaviour
 			spawnTwo = spawnArray[currIndex,2];
 			spawnThree = spawnArray[currIndex,3];
 
-			//Set hint screen to image
 
-			if (spawnOne != 0) {
-				hintBoardScript.setNextPredator(spawnOne);
-			} else if (spawnTwo != 0) {
-				hintBoardScript.setNextPredator(spawnTwo);
-			} else if (spawnThree != 0) {
-				hintBoardScript.setNextPredator(spawnThree);
-			}
 			//Debug.Log ("Sleeping");
 			yield return new WaitForSeconds(nextSpawn); // wait x seconds
 			//Debug.Log ("Waited " + nextSpawn + " seconds!" + gameOver);
