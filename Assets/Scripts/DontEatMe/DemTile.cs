@@ -19,9 +19,4 @@ public class DemTile : MonoBehaviour {
 	void Update () {
 	
 	}
-
-\
-
-
-
 }

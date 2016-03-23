@@ -181,11 +181,14 @@ public class SpawnPredator : MonoBehaviour
 		int maxIndex = spawnArray.GetLength(0);
 		int spawnLag = 0;
 
-		// Initialize spawns array (used for the hint board, at least for now)
-		int[] spawns = new int[MAX_ROWS];
-
 		// Initialize hint board
-		HintBoard hintBoard = GameObject.Find ("HintBoard").GetComponent<HintBoard>();
+		// TODO: eliminiate entirely; apparently the HintBoard.cs script was removed without my knowledge.
+		// It was an eye sore anyway.
+		//HintBoard hintBoard = GameObject.Find ("HintBoard").GetComponent<HintBoard>();
+
+		// Initialize spawns array (used for the hint board, at least for now)
+		// TODO: eliminate since the HintBoard.cs script is now gone
+		//int[] spawns = new int[MAX_ROWS];
 
 		// Loop until all predators have been spawned
 		while(currIndex < maxIndex && !gameOver)
@@ -194,14 +197,18 @@ public class SpawnPredator : MonoBehaviour
 			spawnLag = spawnArray[currIndex,0];
 
 			// Parse creatureId values for each row
+			// TODO: eliminate since the HintBoard.cs script is now gone
+			/*
 			for (int i = 1; i < numRows; i++) {
 				spawns[i] = spawnArray[currIndex, i];
 
-				//Set hint screen to image 
-				// TODO: eliminate the hint board at some point. It's an eye sore.
+				//Set hint screen to image
+
 				if (spawns[i] != 0)
 					hintBoard.setNextPredator(spawns[i]);
+				
 			}
+			*/
 
 			// Wait for next spawn
 			yield return new WaitForSeconds(spawnLag);
