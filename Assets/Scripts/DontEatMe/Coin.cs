@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/**
+	Defines coin rules.
+	NOTE: this class may not be in the final game.
+*/
 public class Coin : MonoBehaviour {
 
 	// Use this for initialization
