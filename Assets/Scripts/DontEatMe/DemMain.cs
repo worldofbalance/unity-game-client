@@ -33,9 +33,7 @@ public class DemMain : MonoBehaviour
 
                 GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 cube.transform.parent = board.transform;
-                //Something is still funky with the positioning
-                //cube.transform.position = new Vector3( x, bottomEdge + 1 + y, -1);
-                cube.transform.position = new Vector3( x-2 , y-2, -1);
+                cube.transform.position = new Vector3(rightEdge - 1 - x, bottomEdge + 1 + y, -1);
 
                 cube.name = x + "," + y;
 
@@ -54,64 +52,65 @@ public class DemMain : MonoBehaviour
 
         }
 
-   
+
         //// Adjusting camera now
-        //Had to put back in for now  
+        ////Had to put back in for now  
 
         //// Get the highest object needed for game
-        float bottom = GameObject.Find("0,0").GetComponent<BoxCollider>().bounds.min.y;
+        //float bottom = GameObject.Find("0,0").GetComponent<BoxCollider>().bounds.min.y;
 
         //// Get lowest object needed for game
-        float top = GameObject.Find("0,4").GetComponent<BoxCollider>().bounds.max.y;
+        //float top = GameObject.Find("0,4").GetComponent<BoxCollider>().bounds.max.y;
 
         //// Vertically align the camera
-        float verticalCenter = (top + bottom) / 2;
-        Vector3 newPosition = Camera.main.transform.position;
-        newPosition.y = verticalCenter;
-        Camera.main.transform.position = newPosition;
+        //float verticalCenter = (top + bottom) / 2;
+        //Vector3 newPosition = Camera.main.transform.position;
+        //newPosition.y = verticalCenter;
+        //Camera.main.transform.position = newPosition;
 
 
 
 
 
+        //Now aligning the background so that it is always in the view port, and scaled as best it can
 
-    //Now aligning the background so that it is always in the view port, and scaled as best it can
-
-    GameObject background = GameObject.Find ("DemBackGround");
-    float bgRight= background.GetComponent<BoxCollider> ().bounds.max.x;
-    float bgLeft= background.GetComponent<BoxCollider> ().bounds.min.x;
-    float bgClose = background.GetComponent<BoxCollider> ().bounds.min.z;
-
-
-    float bgDistance = Vector3.Distance(background.transform.position, Camera.main.transform.position);
-    Vector3 viewTopMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0f, bgDistance));
-    Vector3 viewBottomMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 1f,bgDistance));
-
-    Vector3 viewLeftMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0f, 0.5f, bgDistance));
-    Vector3 viewRightMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(1f, 0.5f,bgDistance));
+        GameObject background = GameObject.Find("DemBackGround");
+        float bgRight = background.GetComponent<BoxCollider>().bounds.max.x;
+        float bgLeft = background.GetComponent<BoxCollider>().bounds.min.x;
+        float bgClose = background.GetComponent<BoxCollider>().bounds.min.z;
 
 
-    float bgRatio = 526f / 350f;
-    Vector3 scale = viewTopMiddleBg - viewBottomMiddleBg;
-    Vector3 scaleX = viewLeftMiddleBg - viewRightMiddleBg;
-    //set a min for x scale
-    if (-scaleX.x < 14f) {
-      scaleX.x = -14f;
+        float bgDistance = Vector3.Distance(background.transform.position, Camera.main.transform.position);
+        Vector3 viewTopMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0f, bgDistance));
+        Vector3 viewBottomMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 1f, bgDistance));
+
+        Vector3 viewLeftMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0f, 0.5f, bgDistance));
+        Vector3 viewRightMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(1f, 0.5f, bgDistance));
+
+
+        float bgRatio = 526f / 350f;
+        Vector3 scale = viewTopMiddleBg - viewBottomMiddleBg;
+        Vector3 scaleX = viewLeftMiddleBg - viewRightMiddleBg;
+        //set a min for x scale
+        if (-scaleX.x < 14f)
+        {
+            scaleX.x = -14f;
+        }
+
+        scale.z = background.transform.localScale.z;
+        scale.x = -scaleX.x;
+        scale.y = -scale.y;
+        background.transform.localScale = scale;
+
+
+
     }
 
-    scale.z = background.transform.localScale.z;
-    scale.x = -scaleX.x;
-    scale.y = -scale.y;
-    background.transform.localScale = scale;
+    // Update is called once per frame
+    void Update()
+    {
 
 
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-  
-	
-	}
+    }
 
 }
