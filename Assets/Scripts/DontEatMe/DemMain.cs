@@ -32,11 +32,12 @@ public class DemMain : MonoBehaviour
             {
 
                 GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                //cube.tag = "Tile"; // Add a "Tile" tag to each cube
                 cube.transform.parent = board.transform;
                 cube.transform.position = new Vector3(rightEdge - 1 - x, bottomEdge + 1 + y, -1);
 
                 cube.name = x + "," + y;
-
+   
                 if ((x % 2) == (y % 2))
                 {
                     cube.GetComponent<Renderer>().material = grass1;
@@ -47,7 +48,7 @@ public class DemMain : MonoBehaviour
                     cube.GetComponent<Renderer>().material = grass2;
                 }
 
-
+                cube.AddComponent<DemTile>(); // Add the DemTile script
             }
 
         }
@@ -109,8 +110,7 @@ public class DemMain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
+    	
     }
 
 }
