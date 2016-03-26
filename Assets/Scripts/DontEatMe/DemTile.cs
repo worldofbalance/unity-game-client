@@ -6,7 +6,7 @@ public class DemTile : MonoBehaviour {
   int idX; // X-coord for DemTile
   int idY; // Y-coord for DemTile
 
-  GameObject tile;
+  GameObject resident;
 
 	// Use this for initialization
   	void Start () {
@@ -17,6 +17,9 @@ public class DemTile : MonoBehaviour {
 		idX = this.name[0] - 0x30; 
 		idY = this.name[2] - 0x30;
 		//Debug.Log("Cube at (" + idX + ", " + idY + ")");
+
+		// Set resident to null
+		resident = null;
 	}
 
 
@@ -41,5 +44,28 @@ public class DemTile : MonoBehaviour {
 	void OnMouseExit () {
 		// Reset highlight color
 		this.GetComponent<Renderer>().material.color = Color.white;
+	}
+
+	/**
+		Activates on mouse click
+	*/
+	void OnMouseDown () {
+		Vector3 center = this.GetComponent<Renderer>().bounds.center;
+		Debug.Log("Tile (" + idX + ", " + idY + ") clicked, center @ (" + center.x + ", " + center.y + ", " + center.z + ")");
+		// Test spawn a resident
+		// NOTE: for testing purposes, the resident is hard coded to a TreeMouse @ it's normal size
+		// TODO: spawn resident based on species ID, resize resident appropriately
+		BuildInfo currCreature = BuildMenu.currentlyBuilding;
+		if (!resident && currCreature) {
+			Debug.Log("Placing " + currCreature.name + ", speciesId = " + currCreature.GetSpeciesId());
+			GameObject treemouse = (GameObject) Resources.Load("Prefabs/Herbivores/TreeMouse");
+			treemouse.GetComponent<Prey_Hunger>().enabled = false;
+			resident = (GameObject) Instantiate(treemouse, new Vector3(center.x, center.y, (center.z - 0.5f)), Quaternion.identity);
+			if (resident != null)
+				Debug.Log("Placed " + resident.name + " @ " + resident.GetComponent<Transform>().position);
+		} 
+		else {
+			Debug.Log("Tile already taken!");
+		}
 	}
 }
