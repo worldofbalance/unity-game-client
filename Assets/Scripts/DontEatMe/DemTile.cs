@@ -3,10 +3,10 @@ using System.Collections;
 
 public class DemTile : MonoBehaviour {
 
-  int idX; // X-coord for DemTile
-  int idY; // Y-coord for DemTile
+  	int idX; // X-coord for DemTile
+  	int idY; // Y-coord for DemTile
 
-  GameObject resident;
+  	GameObject resident;
 
 	// Use this for initialization
   	void Start () {
@@ -50,19 +50,35 @@ public class DemTile : MonoBehaviour {
 		Activates on mouse click
 	*/
 	void OnMouseDown () {
-		Vector3 center = this.GetComponent<Renderer>().bounds.center;
+		Vector3 center = this.GetComponent<Renderer>().bounds.center; // Get center coords of tile
+
 		Debug.Log("Tile (" + idX + ", " + idY + ") clicked, center @ (" + center.x + ", " + center.y + ", " + center.z + ")");
+
 		// Test spawn a resident
 		// NOTE: for testing purposes, the resident is hard coded to a TreeMouse @ it's normal size
 		// TODO: spawn resident based on species ID, resize resident appropriately
 		BuildInfo currCreature = BuildMenu.currentlyBuilding;
-		if (!resident && currCreature) {
-			Debug.Log("Placing " + currCreature.name + ", speciesId = " + currCreature.GetSpeciesId());
-			GameObject treemouse = (GameObject) Resources.Load("Prefabs/Herbivores/TreeMouse");
-			treemouse.GetComponent<Prey_Hunger>().enabled = false;
-			resident = (GameObject) Instantiate(treemouse, new Vector3(center.x, center.y, (center.z - 0.5f)), Quaternion.identity);
-			if (resident != null)
-				Debug.Log("Placed " + resident.name + " @ " + resident.GetComponent<Transform>().position);
+		if (!resident) { // If there is no current resident on tile
+			if (currCreature) {
+				Debug.Log("Placing " + currCreature.name + ", speciesId = " + currCreature.GetSpeciesId());
+
+				// Create Herbivore GameObject from currentlyBuilding type
+				GameObject herbivore = (GameObject) Resources.Load("Prefabs/Herbivores/" + currCreature.name);
+
+				// NOTE: the Prey_Hunger.cs script must be disabled for the moment to prevent compiler errors
+				herbivore.GetComponent<Prey_Hunger>().enabled = false;
+
+				// Calculate the exact offset needed for herbivore placement on the tile
+				float z_offset = 0.5f * Mathf.Abs(center.z + herbivore.transform.position.z);
+
+				// Instantiate the resident
+				resident = (GameObject) Instantiate(herbivore, new Vector3(center.x, center.y, center.z - z_offset), Quaternion.identity);
+
+				Debug.Log("resident size: " + resident.transform.localScale.ToString());
+
+				if (resident != null)
+					Debug.Log("Placed " + resident.name + " @ " + resident.GetComponent<Transform>().position);
+				}
 		} 
 		else {
 			Debug.Log("Tile already taken!");
