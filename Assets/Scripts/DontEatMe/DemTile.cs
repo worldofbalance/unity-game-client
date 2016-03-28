@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/**
+	The DemTile class represents a single tile of the Don't Eat Me grid board.
+*/
 public class DemTile : MonoBehaviour {
 
   	int idX; // X-coord for DemTile
@@ -21,14 +24,9 @@ public class DemTile : MonoBehaviour {
 		// Set resident to null
 		resident = null;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	/**
-		Activates on mouse enter
+		Activates on mouse enter.
 	*/
 	void OnMouseEnter () {
 		// Set highlight color
@@ -40,7 +38,7 @@ public class DemTile : MonoBehaviour {
 	}
 
 	/**
-		Activates on mouse exit
+		Activates on mouse exit.
 	*/
 	void OnMouseExit () {
 		// Reset highlight color
@@ -48,8 +46,7 @@ public class DemTile : MonoBehaviour {
 	}
 
 	/**
-		Activates on mouse click
-		NOTE: this is an experimental implementation for placing game objects.
+		Activates on mouse click.
 	*/
 	void OnMouseDown () {
 		// Get center coords of tile, set z offset for resident placement
@@ -59,10 +56,6 @@ public class DemTile : MonoBehaviour {
 		// DEBUG
 		Debug.Log("Tile (" + idX + ", " + idY + ") clicked, center @ (" + center.x + ", " + center.y + ", " + center.z + ")");
 
-		// Test spawn a resident
-		// TODO: spawn resident based on species ID, resize resident appropriately
-		// DONE
-		// TODO: implement spawning of plants
 		// If tile is empty...
 		if (!resident) {
 			// If a creature is flagged for building...
@@ -81,7 +74,8 @@ public class DemTile : MonoBehaviour {
 				if (resident)
 					Debug.Log("Placed " + resident.name + " @ " + resident.GetComponent<Transform>().position);
 				}
-		} 
+		}
+		// If tile is inhabited...
 		else {
 			// DEBUG
 			Debug.Log("Tile inhabited by " + resident.name);
