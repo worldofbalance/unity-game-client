@@ -26,6 +26,7 @@ namespace CW
 	
 		void Start ()
 		{
+            Debug.Log("GameManager CWAssets start");
 			// Needed to to fade into scene
 			Game.StartEnterTransition ();
 			showLoading = 300; //5 seconds

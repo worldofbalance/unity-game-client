@@ -39,20 +39,27 @@ namespace CW
 		}
 	
 		// Update is called once per frame
-		void Update ()
-		{
-			if (!cManager.Connected) {
-				return;
-			}
+		void Update()
+        {
+            if (!cManager.Connected)
+            {
+                return;
+            }
 
-			while (requests.Count > 0) {
-				NetworkRequest packet = requests.Peek ();
+            while (requests.Count > 0)
+            {
+                NetworkRequest packet = requests.Peek();
 
-				if (cManager.Send (packet.GetBytes ())) {
-					requests.Dequeue ();
+                if (cManager.Send(packet.GetBytes()))
+                {
+                    requests.Dequeue();
 
-					if (packet.GetID () != 211)
-						Debug.Log ("CW: Sent Request No. " + packet.GetID () + " [" + NetworkProtocolTable.Get (packet.GetID ()).ToString () + "]");
+                    if (packet.GetID() != 211)
+                    {
+                        // commented by Rujoota
+                        //Debug.Log ("CW: Sent Request No. " + packet.GetID () + " [" + NetworkProtocolTable.Get (packet.GetID ()).ToString () + "]");
+                    }
+
 				}
 			}
 
