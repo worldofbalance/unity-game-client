@@ -71,6 +71,9 @@ public class DemTile : MonoBehaviour {
 				resident = DemMain.currentSelection;
 				resident.transform.position = center;
 
+				// Subtract the appropriate resources for the build
+				BuildMenu.currentResources -= BuildMenu.currentlyBuilding.price;
+
 				// Set BuildMenu.currentlyBuilding to null after successful placement
 				BuildMenu.currentlyBuilding = null;
 
