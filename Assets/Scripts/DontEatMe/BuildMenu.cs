@@ -55,7 +55,30 @@ public class BuildMenu : MonoBehaviour {
 		foreach (BuildInfo info in plants) {
 			GUI.enabled = currentResources >= info.price;
 			// if button is clicked, then set currentlyBuilding to the info of the button you clicked
-			if (GUILayout.Button(new GUIContent(info.price.ToString(), info.previewImage))) currentlyBuilding = info;
+			if (GUILayout.Button(new GUIContent(info.price.ToString(), info.previewImage))) {
+				currentlyBuilding = info;
+
+				// Create the current prey object
+				GameObject currentPlant = (GameObject) Resources.Load("Prefabs/Plants/" + currentlyBuilding.name);
+
+				// Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
+				Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
+				init_pos.z = -1.5f;
+
+				// Instantiate the current prey
+				DemMain.currentSelection = (GameObject) Instantiate
+				(
+					currentPlant,
+					init_pos,
+					Quaternion.identity
+				);
+
+				// Set DemMain's preyOrigin as the center of the button
+				DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+				// DEBUG MESSAGE
+				Debug.Log("currentPlant set to " + currentPlant.name);
+			}
 		}
 
 		// End GUI for plant menu
@@ -88,7 +111,7 @@ public class BuildMenu : MonoBehaviour {
 				);
 
 				// Set DemMain's preyOrigin as the center of the button
-				DemMain.setPreyOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+				DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
 				// DEBUG MESSAGE
 				Debug.Log("currentPrey set to " + currentPrey.name);

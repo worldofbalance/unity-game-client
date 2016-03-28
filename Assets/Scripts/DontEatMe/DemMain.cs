@@ -6,7 +6,7 @@ public class DemMain : MonoBehaviour
 
 	public static GameObject currentSelection;
 
-	static Vector3 preyOrigin;
+	static Vector3 buildOrigin;
 
 
     // Use this for initialization
@@ -129,7 +129,7 @@ public class DemMain : MonoBehaviour
     			BuildMenu.currentlyBuilding = null;
     			//Destroy(currentSelection);
     			// DEBUG MESSAGE
-    			//Debug.Log("currentlyBuilding reset to 'null', returning object to (" + preyOrigin.x + ", " + preyOrigin.y + ")");
+    			//Debug.Log("currentlyBuilding reset to 'null', returning object to (" + buildOrigin.x + ", " + buildOrigin.y + ")");
 
     			// Start easing animation
     			StartCoroutine(easeReturn(0.05f));
@@ -148,22 +148,22 @@ public class DemMain : MonoBehaviour
     /**
     	Sets the current prey's origin, i.e. the corresponding button
     */
-    public static void setPreyOrigin (Vector3 origin) {
-    	preyOrigin = origin;
+    public static void setBuildOrigin (Vector3 origin) {
+    	buildOrigin = origin;
     }
 
     /**
     	Eases a cancelled currentlyBuilding object back to its respective button.
     */
     IEnumerator easeReturn (float easing) {
-		float startDistance = Vector3.Distance(preyOrigin, currentSelection.transform.position);
-    	while (Vector3.Distance(preyOrigin, currentSelection.transform.position) > startDistance/10) {
+		float startDistance = Vector3.Distance(buildOrigin, currentSelection.transform.position);
+    	while (Vector3.Distance(buildOrigin, currentSelection.transform.position) > startDistance/10) {
 
 			currentSelection.transform.position = Vector3.Lerp
 			(
 				currentSelection.transform.position,
-				preyOrigin,
-				easing * Vector3.Distance(preyOrigin, currentSelection.transform.position)
+				buildOrigin,
+				easing * Vector3.Distance(buildOrigin, currentSelection.transform.position)
 			);
 			yield return new WaitForSeconds(0.01f);
     	}
