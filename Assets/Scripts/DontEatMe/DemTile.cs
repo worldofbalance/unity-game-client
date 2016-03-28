@@ -52,59 +52,36 @@ public class DemTile : MonoBehaviour {
 		NOTE: this is an experimental implementation for placing game objects.
 	*/
 	void OnMouseDown () {
-		Vector3 center = this.GetComponent<Renderer>().bounds.center; // Get center coords of tile
+		// Get center coords of tile, set z offset for resident placement
+		Vector3 center = this.GetComponent<Renderer>().bounds.center;
+		center.z = -1.5f;
 
+		// DEBUG
 		Debug.Log("Tile (" + idX + ", " + idY + ") clicked, center @ (" + center.x + ", " + center.y + ", " + center.z + ")");
 
 		// Test spawn a resident
-		// NOTE: for testing purposes, the resident is hard coded to a TreeMouse @ it's normal size
 		// TODO: spawn resident based on species ID, resize resident appropriately
-		BuildInfo currCreature = BuildMenu.currentlyBuilding;
-		if (!resident) { // If there is no current resident on tile
-			if (currCreature) {
-				Debug.Log("Placing " + currCreature.name + ", speciesId = " + currCreature.GetSpeciesId());
+		// DONE
+		// TODO: implement spawning of plants
+		// If tile is empty...
+		if (!resident) {
+			// If a creature is flagged for building...
+			if (BuildMenu.currentlyBuilding) {
+				// Set the resident as the DemMain's current selection if clicked within the tile; center resident on tile
+				resident = DemMain.currentSelection;
+				resident.transform.position = center;
 
-				// Create Herbivore GameObject from currentlyBuilding type
-				GameObject herbivore = (GameObject) Resources.Load("Prefabs/Herbivores/" + currCreature.name);
+				// Set BuildMenu.currentlyBuilding to null after successful placement
+				BuildMenu.currentlyBuilding = null;
 
-				// NOTE: the Prey_Hunger.cs script must be disabled for the moment to prevent compiler errors
-				herbivore.GetComponent<Prey_Hunger>().enabled = false;
-
-
-				// Calculate the exact offset needed for herbivore placement on the tile
-				float z_offset = 0.5f * Mathf.Abs(center.z + herbivore.transform.position.z);
-
-				// Instantiate the resident
-				resident = (GameObject) Instantiate(herbivore, new Vector3(center.x, center.y, center.z - z_offset), Quaternion.identity);
-				// Assign species ID
-				// NOTE: all the species ID's for the prefabs are set to zero, so for now I will simply set the ID for each instance.
-				resident.GetComponent<BuildInfo>().speciesId = SpeciesConstants.SpeciesIdByName(currCreature.name);
-
-				Vector3 tilesize = transform.lossyScale;
-
-				Debug.Log("tile size: " + tilesize.ToString());
-
-				// Define new scale for resident object
-				tilesize.Scale
-				(
-					new Vector3
-					(
-						SpeciesConstants.ScaleBySpeciesId(resident.GetComponent<BuildInfo>().GetSpeciesId()),
-						SpeciesConstants.ScaleBySpeciesId(resident.GetComponent<BuildInfo>().GetSpeciesId()),
-						1.0f
-					)
-				);
-				// Apply the new scale
-				resident.transform.localScale = tilesize;
-
-				Debug.Log("resident size: " + resident.transform.localScale.ToString());
-
-				if (resident != null)
+				// DEBUG 
+				if (resident)
 					Debug.Log("Placed " + resident.name + " @ " + resident.GetComponent<Transform>().position);
 				}
 		} 
 		else {
-			Debug.Log("Tile already taken!");
+			// DEBUG
+			Debug.Log("Tile inhabited by " + resident.name);
 		}
 	}
 }
