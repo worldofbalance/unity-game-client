@@ -6,6 +6,8 @@ public class DemMain : MonoBehaviour
 
 	public static GameObject currentSelection;
 
+	static Vector3 preyOrigin;
+
 
     // Use this for initialization
     void Start()
@@ -125,9 +127,12 @@ public class DemMain : MonoBehaviour
     		// Cancel currently selected species on Escape key press
     		if (Input.GetKeyDown(KeyCode.Escape)) {
     			BuildMenu.currentlyBuilding = null;
-    			Destroy(currentSelection);
+    			//Destroy(currentSelection);
     			// DEBUG MESSAGE
-    			Debug.Log("currentlyBuilding reset to 'null'");
+    			//Debug.Log("currentlyBuilding reset to 'null', returning object to (" + preyOrigin.x + ", " + preyOrigin.y + ")");
+
+    			// Start easing animation
+    			StartCoroutine(easeReturn(0.05f));
     		}
 		}
 
@@ -138,6 +143,31 @@ public class DemMain : MonoBehaviour
 			if (currentSelection != null)
 				Debug.Log("currentSelection at (" + currentSelection.transform.position.x + ", " + currentSelection.transform.position.y + ")");
 		}
+    }
+
+    /**
+    	Sets the current prey's origin, i.e. the corresponding button
+    */
+    public static void setPreyOrigin (Vector3 origin) {
+    	preyOrigin = origin;
+    }
+
+    /**
+    	Eases a cancelled currentlyBuilding object back to its respective button.
+    */
+    IEnumerator easeReturn (float easing) {
+		float startDistance = Vector3.Distance(preyOrigin, currentSelection.transform.position);
+    	while (Vector3.Distance(preyOrigin, currentSelection.transform.position) > startDistance/10) {
+
+			currentSelection.transform.position = Vector3.Lerp
+			(
+				currentSelection.transform.position,
+				preyOrigin,
+				easing * Vector3.Distance(preyOrigin, currentSelection.transform.position)
+			);
+			yield return new WaitForSeconds(0.01f);
+    	}
+    	Destroy(currentSelection);
     }
 
 }

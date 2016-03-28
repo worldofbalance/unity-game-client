@@ -87,6 +87,9 @@ public class BuildMenu : MonoBehaviour {
 					Quaternion.identity
 				);
 
+				// Set DemMain's preyOrigin as the center of the button
+				DemMain.setPreyOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
 				// DEBUG MESSAGE
 				Debug.Log("currentPrey set to " + currentPrey.name);
 			}
