@@ -69,7 +69,27 @@ public class BuildMenu : MonoBehaviour {
 		// draw each prey's build info
 		foreach (BuildInfo info in prey) {
 			GUI.enabled = currentResources >= info.price;
-			if (GUILayout.Button(new GUIContent(info.price.ToString(), info.previewImage))) currentlyBuilding = info;
+			if (GUILayout.Button(new GUIContent(info.price.ToString(), info.previewImage))) {
+				currentlyBuilding = info;
+
+				// Create the current prey object
+				GameObject currentPrey = (GameObject) Resources.Load("Prefabs/Herbivores/" + currentlyBuilding.name);
+
+				// Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
+				Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
+				init_pos.z = -1.5f;
+
+				// Instantiate the current prey
+				DemMain.currentSelection = (GameObject) Instantiate
+				(
+					currentPrey,
+					init_pos,
+					Quaternion.identity
+				);
+
+				// DEBUG MESSAGE
+				Debug.Log("currentPrey set to " + currentPrey.name);
+			}
 		}
 
 		// End GUI for prey menu

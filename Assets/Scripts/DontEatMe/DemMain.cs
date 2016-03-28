@@ -4,10 +4,13 @@ using System.Collections;
 public class DemMain : MonoBehaviour
 {
 
+	public static GameObject currentSelection;
+
 
     // Use this for initialization
     void Start()
     {
+    	currentSelection = null;
 
 
         Material grass1 = (Material)Resources.Load("DontEatMe/Materials/tile_1", typeof(Material));
@@ -48,7 +51,7 @@ public class DemMain : MonoBehaviour
                     cube.GetComponent<Renderer>().material = grass2;
                 }
 
-                cube.AddComponent<DemTile>(); // Add the DemTile script
+                cube.AddComponent<DemTile>(); // Add the DemTile script to each cube
             }
 
         }
@@ -110,7 +113,31 @@ public class DemMain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-    	
+    	// If a species is currently selected for building, update its position to the cursor
+    	if (BuildMenu.currentlyBuilding) {
+    		if (currentSelection) {
+    			Vector3 world_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
+    			world_pos.z = -1.5f;
+    			currentSelection.transform.position = world_pos;
+ 
+    		}
+
+    		// Cancel currently selected species on Escape key press
+    		if (Input.GetKeyDown(KeyCode.Escape)) {
+    			BuildMenu.currentlyBuilding = null;
+    			Destroy(currentSelection);
+    			// DEBUG MESSAGE
+    			Debug.Log("currentlyBuilding reset to 'null'");
+    		}
+		}
+
+		// DEBUGGING STUFF
+		if (Input.GetKeyDown(KeyCode.Space)) {
+			Vector3 wp = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -1.5f));
+			Debug.Log("Cursor at (" + wp.x + ", " + wp.y + ")");
+			if (currentSelection != null)
+				Debug.Log("currentSelection at (" + currentSelection.transform.position.x + ", " + currentSelection.transform.position.y + ")");
+		}
     }
 
 }
