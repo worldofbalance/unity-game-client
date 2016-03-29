@@ -56,6 +56,11 @@ public class BuildMenu : MonoBehaviour {
 			GUI.enabled = currentResources >= info.price;
 			// if button is clicked, then set currentlyBuilding to the info of the button you clicked
 			if (GUILayout.Button(new GUIContent(info.price.ToString(), info.previewImage))) {
+
+        if (BuildMenu.currentlyBuilding != null)
+          return; 
+
+
 				currentlyBuilding = info;
 
 				// Create the current prey object
@@ -91,8 +96,15 @@ public class BuildMenu : MonoBehaviour {
 
 		// draw each prey's build info
 		foreach (BuildInfo info in prey) {
+
+
 			GUI.enabled = currentResources >= info.price;
 			if (GUILayout.Button(new GUIContent(info.price.ToString(), info.previewImage))) {
+
+        if (BuildMenu.currentlyBuilding != null)
+          return; 
+
+
 				currentlyBuilding = info;
 
 				// Create the current prey object
@@ -102,6 +114,7 @@ public class BuildMenu : MonoBehaviour {
 				Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
 				init_pos.z = -1.5f;
 
+
 				// Instantiate the current prey
 				DemMain.currentSelection = (GameObject) Instantiate
 				(
@@ -109,9 +122,9 @@ public class BuildMenu : MonoBehaviour {
 					init_pos,
 					Quaternion.identity
 				);
-
+        
 				// Set DemMain's preyOrigin as the center of the button
-				DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+				//DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
 				// DEBUG MESSAGE
 				Debug.Log("currentPrey set to " + currentPrey.name);

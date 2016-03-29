@@ -29,6 +29,10 @@ public class DemTile : MonoBehaviour {
 		Activates on mouse enter.
 	*/
 	void OnMouseEnter () {
+
+    if (BuildMenu.currentlyBuilding == null)
+      return; 
+    
 		// Set highlight color
 		// TODO: change highlight color based on a tile's legality
 		if (!resident)
