@@ -7,7 +7,7 @@ public class DontEatMeGUI : MonoBehaviour {
 	private GameObject mainObject;
 	// Window Properties
 	private float width = 400;
-	private float height = 500;
+	private float height = 300;
 	// Other
 	private int window_id;
 	private string message = "Single Player Game. Click start to play.";

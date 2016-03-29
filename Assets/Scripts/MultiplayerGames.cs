@@ -7,8 +7,8 @@ public class MultiplayerGames : MonoBehaviour {
 	private GameObject mainObject;
 
 	// Window Properties
-	private float width = 600;
-	private float height = 300;
+	private float width = 400;
+	private float height = 200;
 
 	// Other
 	private int window_id;
