@@ -6,16 +6,6 @@ using System.Collections;
 */
 public class DemTile : MonoBehaviour
 {
-
-<<<<<<< HEAD
-        int idX;
-    // X-coord for DemTile
-    int idY;
-    // Y-coord for DemTile
-
-    GameObject resident;
-    // Resident object (HerbivoreObject or PlantObject) placed on tile
-=======
   	int idX; // X-coord for DemTile
   	int idY; // Y-coord for DemTile
     public Color currentColor;
@@ -23,7 +13,6 @@ public class DemTile : MonoBehaviour
     public bool available;
 
   	public GameObject resident; // Resident object (HerbivoreObject or PlantObject) placed on tile
->>>>>>> 61409eb52bbae153003ddaf44c2cbafbc6ff3736
 
     // Use this for initialization
     void Start ()
@@ -36,7 +25,6 @@ public class DemTile : MonoBehaviour
         idY = this.name[2] - 0x30;
         //Debug.Log("Cube at (" + idX + ", " + idY + ")");
 
-<<<<<<< HEAD
         // Set resident to null
         resident = null;
     }
@@ -67,37 +55,6 @@ public class DemTile : MonoBehaviour
         // Reset highlight color
         this.GetComponent<Renderer>().material.color = Color.white;
     }
-=======
-		// Set resident to null
-		resident = null;
-
-    currentColor = Color.white;
-	}
-
-	/**
-		Activates on mouse enter.
-	*/
-	void OnMouseEnter () {
-
-    if (BuildMenu.currentlyBuilding == null)
-      return; 
-    
-		// Set highlight color
-		// TODO: change highlight color based on a tile's legality
-		if (!resident)
-			this.GetComponent<Renderer>().material.color = Color.cyan;
-		else
-			this.GetComponent<Renderer>().material.color = Color.red;
-	}
-
-	/**
-		Activates on mouse exit.
-	*/
-	void OnMouseExit () {
-		// Reset highlight color
-    this.GetComponent<Renderer>().material.color = currentColor;
-	}
->>>>>>> 61409eb52bbae153003ddaf44c2cbafbc6ff3736
 
     /**
         Activates on mouse click.
@@ -131,9 +88,9 @@ public class DemTile : MonoBehaviour
                     BuildMenu.currentlyBuilding.name == "TreeMouse")
                     resident.GetComponent<Animator>().SetTrigger("initialized");
 
-<<<<<<< HEAD
                 // Set BuildMenu.currentlyBuilding to null after successful placement
                 BuildMenu.currentlyBuilding = null;
+                DemMain.boardController.ClearAvailableTiles();
 
                 // DEBUG 
                 if (resident)
@@ -146,20 +103,4 @@ public class DemTile : MonoBehaviour
             Debug.Log("Tile inhabited by " + resident.name);
         }
     }
-=======
-        //Clear Tile Helper
-        DemMain.boardController.ClearAvailableTiles();
-
-				// DEBUG 
-				if (resident)
-					Debug.Log("Placed " + resident.name + " @ " + resident.GetComponent<Transform>().position);
-				}
-		}
-		// If tile is inhabited...
-		else {
-			// DEBUG
-			Debug.Log("Tile inhabited by " + resident.name);
-		}
-	}
->>>>>>> 61409eb52bbae153003ddaf44c2cbafbc6ff3736
 }
