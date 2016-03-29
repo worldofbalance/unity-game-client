@@ -101,7 +101,8 @@ namespace CW
 			} else {
 				//Hide popup
 				//popup.renderer.enabled = false;
-				Debug.Log ("Loading destroyed");
+                // commented by Rujoota
+				//Debug.Log ("Loading destroyed");
 				Destroy (popup);
 			}
 		}
