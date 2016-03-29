@@ -37,7 +37,9 @@ public class Room {
 			return "Don't Eat Me";
 		} else if (type == Constants.MINIGAME_RUNNING_RHINO) {
 			return "Running Rhino";
-		} else {
+        } else if (type == Constants.MINIGAME_SEA_DIVIDED) {
+            return "Sea Divided";
+        } else {
 			return "Unknown Game";
 		}
 	}
