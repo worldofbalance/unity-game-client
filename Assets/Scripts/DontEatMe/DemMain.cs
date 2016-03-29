@@ -19,7 +19,7 @@ public class DemMain : MonoBehaviour
     	currentSelection = null;
 
       //Testing object factory
-       GameObject test = DemAnimalFactory.Create("an Animal" , 0 , 0);
+       GameObject test = DemAnimalFactory.Create("Trees And Shrubs" , 0 , 0);
 
 
  

@@ -27,6 +27,8 @@ public class DemTile : MonoBehaviour
 
         // Set resident to null
         resident = null;
+
+        this.currentColor = Color.white;
     }
 
     /**
@@ -53,7 +55,7 @@ public class DemTile : MonoBehaviour
     void OnMouseExit ()
     {
         // Reset highlight color
-        this.GetComponent<Renderer>().material.color = Color.white;
+      this.GetComponent<Renderer>().material.color = currentColor;
     }
 
     /**
