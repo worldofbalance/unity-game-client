@@ -8,7 +8,7 @@ public class DemMain : MonoBehaviour
 
   public static GameObject boardGroup;
 
-  public DemBoard boardController;
+  public static DemBoard boardController;
 
 	static Vector3 buildOrigin;
 
@@ -83,6 +83,7 @@ public class DemMain : MonoBehaviour
     	// If a species is currently selected for building, update its position to the cursor
     	if (BuildMenu.currentlyBuilding) {
     		if (currentSelection) {
+          
     			Vector3 world_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
     			world_pos.z = -1.5f;
     			currentSelection.transform.position = world_pos;

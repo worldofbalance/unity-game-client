@@ -81,6 +81,8 @@ public class BuildMenu : MonoBehaviour {
 				// Set DemMain's preyOrigin as the center of the button
 				DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
+        DemMain.boardController.SetAvailableTiles();
+
 				// DEBUG MESSAGE
 				Debug.Log("currentPlant set to " + currentPlant.name);
 			}
@@ -125,6 +127,8 @@ public class BuildMenu : MonoBehaviour {
         
 				// Set DemMain's preyOrigin as the center of the button
 				//DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+        DemMain.boardController.SetAvailableTiles();
 
 				// DEBUG MESSAGE
 				Debug.Log("currentPrey set to " + currentPrey.name);

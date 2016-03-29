@@ -8,8 +8,11 @@ public class DemTile : MonoBehaviour {
 
   	int idX; // X-coord for DemTile
   	int idY; // Y-coord for DemTile
+    public Color currentColor;
 
-  	GameObject resident; // Resident object (HerbivoreObject or PlantObject) placed on tile
+    public bool available;
+
+  	public GameObject resident; // Resident object (HerbivoreObject or PlantObject) placed on tile
 
 	// Use this for initialization
   	void Start () {
@@ -23,6 +26,8 @@ public class DemTile : MonoBehaviour {
 
 		// Set resident to null
 		resident = null;
+
+    currentColor = Color.white;
 	}
 
 	/**
@@ -46,7 +51,7 @@ public class DemTile : MonoBehaviour {
 	*/
 	void OnMouseExit () {
 		// Reset highlight color
-		this.GetComponent<Renderer>().material.color = Color.white;
+    this.GetComponent<Renderer>().material.color = currentColor;
 	}
 
 	/**
@@ -73,6 +78,9 @@ public class DemTile : MonoBehaviour {
 
 				// Set BuildMenu.currentlyBuilding to null after successful placement
 				BuildMenu.currentlyBuilding = null;
+
+        //Clear Tile Helper
+        DemMain.boardController.ClearAvailableTiles();
 
 				// DEBUG 
 				if (resident)

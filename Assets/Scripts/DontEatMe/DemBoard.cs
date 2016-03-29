@@ -11,6 +11,8 @@ public class DemBoard : MonoBehaviour {
   private Material grass1;
   public Material grass2;
 
+  private Color highlightColor;
+
 	// Use this for initialization
 	void Awake () {
 
@@ -27,6 +29,10 @@ public class DemBoard : MonoBehaviour {
 
     // Calculate the bottom edge of the screen based on the aspect ratio
     bottomEdge = 0 - Camera.main.orthographicSize;
+
+
+    //We need to pick a better color
+    highlightColor = new Color(0.0F, 0.0F, 1.0F, 0.1F);
  
 	
 	}
@@ -53,5 +59,44 @@ public class DemBoard : MonoBehaviour {
 
     Tiles[x, y].AddComponent<DemTile>(); // Add the DemTile script to each cube
   }
+
+  public void SetAvailableTiles(){
+    Debug.Log ("showing");
+    
+    for (int x = 0; x < 9; x++){
+      
+
+      for (int y = 0; y < 5; y++){
+        
+        if( !Tiles[x, y].GetComponent<DemTile>().resident ){
+          
+          Tiles [x, y].GetComponent<Renderer> ().material.color = highlightColor;
+          Tiles[x, y].GetComponent<DemTile>().currentColor = highlightColor;
+          Tiles [x, y].GetComponent<DemTile> ().available = true;
+
+        }
+
+      }
+
+    }
+
+  }
+
+  public void ClearAvailableTiles(){
+    for (int x = 0; x < 9; x++){
+
+      for (int y = 0; y < 5; y++){
+        Tiles [x, y].GetComponent<Renderer> ().material.color = Color.white;
+        Tiles [x, y].GetComponent<DemTile> ().currentColor = Color.white;
+        Tiles [x, y].GetComponent<DemTile> ().available = false;
+
+      }
+
+    }
+    
+  }
+
+
+
 
 }
