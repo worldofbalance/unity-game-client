@@ -16,8 +16,10 @@ public class DemMain : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+    
     	currentSelection = null;
 
+      
 
 
 

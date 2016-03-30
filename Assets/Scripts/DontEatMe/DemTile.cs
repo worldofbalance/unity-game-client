@@ -38,6 +38,7 @@ public class DemTile : MonoBehaviour
     */
     void OnMouseEnter ()
     {
+        
         // Set highlight color
         // TODO: change highlight color based on a tile's legality
         if (BuildMenu.currentAnimalFactory!= null) {
@@ -72,11 +73,15 @@ public class DemTile : MonoBehaviour
         // DEBUG
         Debug.Log("Tile (" + idX + ", " + idY + ") clicked, center @ (" + center.x + ", " + center.y + ", " + center.z + ")");
 
-        // If tile is empty...
-        if (available) {
+        
             // If a creature is flagged for building...
       if (BuildMenu.currentAnimalFactory != null) {
                 // Set the resident as the DemMain's current selection if clicked within the tile; center resident on tile
+
+      // If tile is empty...
+          if (available) {
+
+                DemAudioManager.audioUiLoad.Play ();
                 resident = DemMain.currentSelection;
 
                 resident.transform.position = center;
@@ -103,13 +108,13 @@ public class DemTile : MonoBehaviour
                 // DEBUG 
                 if (resident)
                     Debug.Log("Placed " + resident.name + " @ " + resident.GetComponent<Transform>().position);
-            }
+           }else {
+              DemAudioManager.audioFail2.Play ();
+           }
+
         }
         // If tile is inhabited...
-        else {
-            // DEBUG
-            //Debug.Log("Tile inhabited by " + resident.name);
-        }
+        
     }
 
 
@@ -122,4 +127,6 @@ public class DemTile : MonoBehaviour
     }
 
   }
+
+
 }

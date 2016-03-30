@@ -58,6 +58,7 @@ public class BuildMenu : MonoBehaviour
 			//GUI.enabled = currentResources >= info.price;
 			// if button is clicked, then set currentlyBuilding to the info of the button you clicked
       if (GUILayout.Button(new GUIContent(plant.GetImage()) , GUILayout.Width(40), GUILayout.Height(40)) ){
+        DemAudioManager.audioClick.Play ();
 
 				// If a selection is currently in progress...
         if (DemMain.currentSelection) {
@@ -111,6 +112,7 @@ public class BuildMenu : MonoBehaviour
 			// if button is clicked, then set currentlyBuilding to the info of the button you clicked
 
       if (GUILayout.Button(new GUIContent(singlePrey.GetImage()) , GUILayout.Width(40), GUILayout.Height(40))) {
+        DemAudioManager.audioClick.Play ();
 				// If a selection is currently in progress...
 				if (DemMain.currentSelection) {
 					// Ignore button click if for the same species
