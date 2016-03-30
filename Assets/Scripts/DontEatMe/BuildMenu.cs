@@ -80,7 +80,7 @@ public class BuildMenu : MonoBehaviour
 				// Set / reset currentlyBuilding
 
 				currentlyBuilding = info;
-        currentlyBuilding.isPlant = true;
+
 
 				// Create the current prey object
         GameObject currentPlant = DemAnimalFactory.Create(currentlyBuilding.name , 0 ,0) as GameObject;
@@ -96,6 +96,8 @@ public class BuildMenu : MonoBehaviour
 					init_pos,
 					Quaternion.identity
 				);
+
+        DemMain.currentSelection.GetComponent<BuildInfo> ().isPlant = true;
   
 
 				// Set DemMain's preyOrigin as the center of the button

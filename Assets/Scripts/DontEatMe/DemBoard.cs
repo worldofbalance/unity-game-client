@@ -61,22 +61,47 @@ public class DemBoard : MonoBehaviour {
   }
 
   public void SetAvailableTiles(){
-    Debug.Log ("showing");
+    Debug.Log (DemMain.currentSelection.GetComponent<BuildInfo>().isPlant);
+
     
     for (int x = 0; x < 9; x++){
       
 
       for (int y = 0; y < 5; y++){
-        
-        if( !Tiles[x, y].GetComponent<DemTile>().resident ){
 
-      
+        if (DemMain.currentSelection.GetComponent<BuildInfo>().isPlant) {
           
-          Tiles [x, y].GetComponent<Renderer> ().material.color = highlightColor;
-          Tiles[x, y].GetComponent<DemTile>().currentColor = highlightColor;
-          Tiles [x, y].GetComponent<DemTile> ().available = true;
+          if (!Tiles [x, y].GetComponent<DemTile> ().resident) {
+            Tiles [x, y].GetComponent<Renderer> ().material.color = highlightColor;
+            Tiles [x, y].GetComponent<DemTile> ().currentColor = highlightColor;
+            Tiles [x, y].GetComponent<DemTile> ().available = true;
+          }
+
+        } else {
+          
+              if (Tiles [x, y].GetComponent<DemTile> ().resident != null) {
+            
+                 if(Tiles [x, y].GetComponent<DemTile> ().resident.GetComponent<BuildInfo>().isPlant){
+              Debug.Log ("test");
+                       if (x - 1 >= 0) {
+                
+                          if (!Tiles [x - 1, y].GetComponent<DemTile> ().resident) {
+                            Tiles [x-1, y].GetComponent<Renderer> ().material.color = highlightColor;
+                            Tiles [x-1, y].GetComponent<DemTile> ().currentColor = highlightColor;
+                            Tiles [x-1, y].GetComponent<DemTile> ().available = true;
+
+
+                          }
+                       }
+                }
+              }
+          
+
+
 
         }
+        
+
 
       }
 

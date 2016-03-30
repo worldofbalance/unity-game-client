@@ -71,11 +71,12 @@ public class DemTile : MonoBehaviour
         Debug.Log("Tile (" + idX + ", " + idY + ") clicked, center @ (" + center.x + ", " + center.y + ", " + center.z + ")");
 
         // If tile is empty...
-        if (!resident) {
+        if (available) {
             // If a creature is flagged for building...
             if (BuildMenu.currentlyBuilding) {
                 // Set the resident as the DemMain's current selection if clicked within the tile; center resident on tile
                 resident = DemMain.currentSelection;
+        Debug.Log (DemMain.currentSelection.GetComponent<BuildInfo>().isPlant);
                 resident.transform.position = center;
 
                 // Subtract the appropriate resources for the build
@@ -102,7 +103,7 @@ public class DemTile : MonoBehaviour
         // If tile is inhabited...
         else {
             // DEBUG
-            Debug.Log("Tile inhabited by " + resident.name);
+            //Debug.Log("Tile inhabited by " + resident.name);
         }
     }
 }

@@ -25,6 +25,7 @@ public class BuildInfo : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+    
 
 	}
 	
