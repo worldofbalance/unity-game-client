@@ -24,7 +24,7 @@ public class BuildMenu : MonoBehaviour
 	// Prey prefabs
   public DemAnimalFactory[] prey;
 
-	int coins = 0;
+
 
 
 	void OnGUI ()
@@ -41,17 +41,6 @@ public class BuildMenu : MonoBehaviour
 		GUILayout.Button(new GUIContent("Resources: " + currentResources.ToString()), GUILayout.Height(70));
 
 		// end GUI for resource menu
-		GUILayout.EndHorizontal();
-		GUILayout.EndArea();
-
-		// draw score menu
-		GUILayout.BeginArea(new Rect(800, 0, 155, 200));
-		GUILayout.BeginHorizontal("box");
-
-		// draw score counter
-		GUILayout.Button(new GUIContent("Coins: " + coins.ToString()), GUILayout.Height(70));
-
-		// end GUI for score menu
 		GUILayout.EndHorizontal();
 		GUILayout.EndArea();
 
@@ -192,31 +181,11 @@ public class BuildMenu : MonoBehaviour
 
 	}
 
-	public void CalculateCoins ()
-	{
-		int newCoins = (score / 100);
-
-		int numCoinsDrop = (newCoins - coins);
-
-		if (newCoins > 0) {
-			dropCoins(newCoins);
-		}
-
-	}
-
-	void dropCoins (int numCoins)
-	{
-		//Drop numCoins from screen
-		//Debug.Log ("DropCoins: " + numCoins);
-		coins += numCoins;
-
-		Vector3 spawnPoint = new Vector3(8f, 3.3f, 0f);
-		Instantiate(Resources.Load("Prefabs/SpinCoin"), spawnPoint, Quaternion.identity);
-	}
 
 
 	public void endGame ()
 	{
+    /*
 		Debug.Log("Game ended with X coins: " + coins);
 
 		//LOBBY TEAM, PUT YOUR RETURN CODE HERE, PASS BACK
@@ -225,6 +194,7 @@ public class BuildMenu : MonoBehaviour
 			EndGameProtocol.Prepare(1, coins),
 			ProcessEndGame
 		);
+  */  
 	}
 
 	// Updates player's credits
