@@ -13,6 +13,8 @@ public class BuildInfo : MonoBehaviour {
 	// the cost to build the item
 	public int price;
 
+  public bool isPlant;
+
 	// Current Health
 	//[SerializeField]
 	//int speciesId = 0;

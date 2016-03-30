@@ -69,6 +69,8 @@ public class DemBoard : MonoBehaviour {
       for (int y = 0; y < 5; y++){
         
         if( !Tiles[x, y].GetComponent<DemTile>().resident ){
+
+      
           
           Tiles [x, y].GetComponent<Renderer> ().material.color = highlightColor;
           Tiles[x, y].GetComponent<DemTile>().currentColor = highlightColor;
