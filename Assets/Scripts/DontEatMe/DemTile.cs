@@ -76,7 +76,7 @@ public class DemTile : MonoBehaviour
             if (BuildMenu.currentlyBuilding) {
                 // Set the resident as the DemMain's current selection if clicked within the tile; center resident on tile
                 resident = DemMain.currentSelection;
-        Debug.Log (DemMain.currentSelection.GetComponent<BuildInfo>().isPlant);
+
                 resident.transform.position = center;
 
                 // Subtract the appropriate resources for the build
@@ -106,4 +106,15 @@ public class DemTile : MonoBehaviour
             //Debug.Log("Tile inhabited by " + resident.name);
         }
     }
+
+
+  public bool hasPlant(){
+    
+    if (this.resident) {
+      return this.resident.GetComponent<BuildInfo> ().isPlant;
+    } else {
+      return false;
+    }
+
+  }
 }

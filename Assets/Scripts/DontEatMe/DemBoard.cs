@@ -79,10 +79,10 @@ public class DemBoard : MonoBehaviour {
 
         } else {
           
-              if (Tiles [x, y].GetComponent<DemTile> ().resident != null) {
+      
             
-                 if(Tiles [x, y].GetComponent<DemTile> ().resident.GetComponent<BuildInfo>().isPlant){
-              Debug.Log ("test");
+            if(Tiles [x, y].GetComponent<DemTile> ().hasPlant()){
+              
                        if (x - 1 >= 0) {
                 
                           if (!Tiles [x - 1, y].GetComponent<DemTile> ().resident) {
@@ -94,7 +94,7 @@ public class DemBoard : MonoBehaviour {
                           }
                        }
                 }
-              }
+              
           
 
 
