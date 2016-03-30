@@ -7,6 +7,8 @@ public class BuildMenu : MonoBehaviour
 	// Currently building...
 	public static BuildInfo currentlyBuilding;
 
+  public static DemAnimalFactory currentAnimalFactory;
+
 	// Currently about to delete?
 	public static bool currentlyDeleting = false;
 
@@ -17,10 +19,10 @@ public class BuildMenu : MonoBehaviour
 	public static int score = 0;
 
 	// Plant prefabs
-  public GameObject[] plants;
+  public DemAnimalFactory[] plants;
 
 	// Prey prefabs
-	public BuildInfo[] prey;
+  public DemAnimalFactory[] prey;
 
 	int coins = 0;
 
@@ -60,53 +62,48 @@ public class BuildMenu : MonoBehaviour
 		// Draw each plant's build info
 
 
-    foreach (GameObject plant in plants) {
+    foreach (DemAnimalFactory plant in plants) {
      
-      BuildInfo info = plant.GetComponent<BuildInfo> ();
+      //BuildInfo info = plant.GetComponent<BuildInfo> ();
 
-			GUI.enabled = currentResources >= info.price;
+			//GUI.enabled = currentResources >= info.price;
 			// if button is clicked, then set currentlyBuilding to the info of the button you clicked
-      if (GUILayout.Button(new GUIContent(info.previewImage) , GUILayout.Width(40), GUILayout.Height(40)) ){
+      if (GUILayout.Button(new GUIContent(plant.GetImage()) , GUILayout.Width(40), GUILayout.Height(40)) ){
 
 				// If a selection is currently in progress...
-				if (currentlyBuilding && DemMain.currentSelection) {
+        if (DemMain.currentSelection) {
 					// Ignore button click if for the same species
-					if (currentlyBuilding.name == info.name)
-						continue;
+          if (currentAnimalFactory == plant)
+            return;
 					// Otherwise, destroy the current selection before continuing
 					else
-						Destroy(DemMain.currentSelection);
+            Destroy(DemMain.currentSelection);
 				}
 				// Set / reset currentlyBuilding
 
-				currentlyBuilding = info;
+				//currentlyBuilding = info;
+        currentAnimalFactory =  plant;
 
 
 				// Create the current prey object
-        GameObject currentPlant = DemAnimalFactory.Create(currentlyBuilding.name , 0 ,0) as GameObject;
+        //GameObject currentPlant = plant.Create(); //DemAnimalFactory.Create(currentlyBuilding.name , 0 ,0) as GameObject;
 
 				// Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
 				Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
 				init_pos.z = -1.5f;
 
 				// Instantiate the current prey
-        DemMain.currentSelection = (GameObject)Instantiate
-				(
-					currentPlant,
-					init_pos,
-					Quaternion.identity
-				);
-
+        DemMain.currentSelection = plant.Create();
         DemMain.currentSelection.GetComponent<BuildInfo> ().isPlant = true;
   
 
 				// Set DemMain's preyOrigin as the center of the button
 				DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
-        		DemMain.boardController.SetAvailableTiles();
+        DemMain.boardController.SetAvailableTiles();
 
 				// DEBUG MESSAGE
-				Debug.Log("currentPlant set to " + currentPlant.name);
+				//Debug.Log("currentPlant set to " + currentPlant.name);
 			}
 
 		}
@@ -120,26 +117,25 @@ public class BuildMenu : MonoBehaviour
 		GUILayout.BeginHorizontal("box");
 
 		// draw each prey's build info
-		foreach (BuildInfo info in prey) {
-			GUI.enabled = currentResources >= info.price;
+    foreach (DemAnimalFactory singlePrey in prey) {
+
 			// if button is clicked, then set currentlyBuilding to the info of the button you clicked
 
-      if (GUILayout.Button(new GUIContent(info.price.ToString(), info.previewImage)  )) {
+      if (GUILayout.Button(new GUIContent(singlePrey.GetImage()) , GUILayout.Width(40), GUILayout.Height(40))) {
 				// If a selection is currently in progress...
-				if (currentlyBuilding && DemMain.currentSelection) {
+				if (DemMain.currentSelection) {
 					// Ignore button click if for the same species
-					if (currentlyBuilding.name == info.name)
-						continue;
+          if (currentAnimalFactory ==  singlePrey)
+						return;
 					// Otherwise, destroy the current selection before continuing
 					else
-						Destroy(DemMain.currentSelection);
+            Destroy(DemMain.currentSelection);
 				}
 				// Set / reset currentlyBuilding
 
-				currentlyBuilding = info;
+        currentAnimalFactory = singlePrey;
 
-				// Create the current prey object
-				GameObject currentPrey = (GameObject)Resources.Load("Prefabs/Herbivores/" + currentlyBuilding.name);
+
 
 				// Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
 				Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
@@ -147,20 +143,14 @@ public class BuildMenu : MonoBehaviour
 
 
 				// Instantiate the current prey
-				DemMain.currentSelection = (GameObject)Instantiate
-				(
-					currentPrey,
-					init_pos,
-					Quaternion.identity
-				);
+        DemMain.currentSelection = singlePrey.Create();
         
 				// Set DemMain's preyOrigin as the center of the button
 				DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
-        		DemMain.boardController.SetAvailableTiles();
+        DemMain.boardController.SetAvailableTiles();
 
-				// DEBUG MESSAGE
-				Debug.Log("currentPrey set to " + currentPrey.name);
+
 			}
 		}
 
@@ -181,15 +171,23 @@ public class BuildMenu : MonoBehaviour
 		// set resources to grow over time
 		InvokeRepeating("increaseResources", 2, 3.0F);
 
-    plants = new GameObject[7];
-    plants [0] = DemAnimalFactory.Create("Acacia" , 0 , 0);
-    plants [1] = DemAnimalFactory.Create("Baobab" , 0 , 0);
-    plants [2] = DemAnimalFactory.Create("Big Tree" , 0 , 0);
-    plants [3] = DemAnimalFactory.Create("Fruits And Nectar" , 0 , 0);
-    plants [4] = DemAnimalFactory.Create("Grains And Seeds" , 0 , 0);
-    plants [5] = DemAnimalFactory.Create("Grass And Herbs" , 0 , 0);
-    plants [6] = DemAnimalFactory.Create("Trees And Shrubs" , 0 , 0);
+    plants = new DemAnimalFactory[6];
+ 
+    plants [0] = new DemAnimalFactory ("Acacia"); 
+    plants [1] =  new DemAnimalFactory ("Baobab"); 
+    plants [2] =  new DemAnimalFactory ("Big Tree"); 
+    plants [3] =  new DemAnimalFactory ("Fruits And Nectar"); 
+    plants [4] =  new DemAnimalFactory ("Grass And Herbs"); 
+    plants [5] =  new DemAnimalFactory ("Trees And Shrubs"); 
 
+
+    prey = new DemAnimalFactory[6];
+    prey [0] = new DemAnimalFactory ("Bohor Reedbuck");
+    prey [1] = new DemAnimalFactory ("Bat-Eared Fox");
+    prey [2] = new DemAnimalFactory ("Kori Buskard");
+    prey [3] = new DemAnimalFactory ("Black Backed Jackal");
+    prey [4] = new DemAnimalFactory ("Dwarf Mongoose");
+    prey [5] = new DemAnimalFactory ("Dwarf Epauletted Bat");
 
 
 	}

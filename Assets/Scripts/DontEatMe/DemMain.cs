@@ -18,8 +18,8 @@ public class DemMain : MonoBehaviour
     {
     	currentSelection = null;
 
-      //Testing object factory
-       GameObject test = DemAnimalFactory.Create("Trees And Shrubs" , 0 , 0);
+
+
 
 
  
@@ -84,7 +84,7 @@ public class DemMain : MonoBehaviour
     void Update()
     {
     	// If a species is currently selected for building, update its position to the cursor
-    	if (BuildMenu.currentlyBuilding) {
+    if (BuildMenu.currentAnimalFactory != null) {
     		if (currentSelection) {
           
     			Vector3 world_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
@@ -95,7 +95,7 @@ public class DemMain : MonoBehaviour
 
     		// Cancel currently selected species on Escape key press
     		if (Input.GetKeyDown(KeyCode.Escape)) {
-    			BuildMenu.currentlyBuilding = null;
+          BuildMenu.currentAnimalFactory = null;
     			//Destroy(currentSelection);
     			// DEBUG MESSAGE
     			//Debug.Log("currentlyBuilding reset to 'null', returning object to (" + buildOrigin.x + ", " + buildOrigin.y + ")");

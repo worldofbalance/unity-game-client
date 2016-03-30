@@ -3,15 +3,29 @@ using System.Collections;
 using UnityEditor; // Contains the PrefabUtility class.
 
 public class DemAnimalFactory{
+  
 
-  public static GameObject Create(string name, int speciesId, int price){
+  //private SpeciesData speciesData;
+  private string speciesName;
+
+  private int speciesId;
+
+  private Texture image;
+
+  public DemAnimalFactory(string _speciesName){
+    
+    this.speciesId = 0; //When SpeciesData is available then load it
+    this.speciesName = _speciesName;
+    this.image = Resources.Load ("Textures/Species/" + this.speciesName) as Texture;
+    
+  }
+
+  public GameObject Create(){
 
     //GameObject animal = PrefabUtility.CreateEmptyPrefab ("./" + name) as GameObject;
-    GameObject animal = new GameObject (name);
+    GameObject animal = new GameObject (this.speciesName);
     BuildInfo info = animal.AddComponent<BuildInfo> ();
-    info.speciesId = speciesId;
-    info.price = price; 
-    info.previewImage = Resources.Load ("Textures/Species/" + name) as Texture;
+    info.previewImage = Resources.Load ("Textures/Species/" + this.speciesName) as Texture;
 
 
     SpriteRenderer renderer = animal.AddComponent<SpriteRenderer> ();
@@ -19,14 +33,21 @@ public class DemAnimalFactory{
     renderer.transform.parent = animal.transform;
     animal.transform.localScale = new Vector3(0.4F, 0.4f, 0);
 
-    //renderer.sprite.pivot = SpriteAlignment.Center;
-    //renderer.bounds.size.x = 1;
-    //renderer.bounds.size.y = 1;
-
- 
-
-   
 
     return animal;
   }
+
+
+  public string GetName(){
+    return this.speciesName;
+  }
+
+  public int GetId(){
+    return this.speciesId;
+  }
+
+  public Texture GetImage(){
+    return this.image;
+  }
+
 }

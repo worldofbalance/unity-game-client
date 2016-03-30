@@ -14,6 +14,8 @@ public class DemTile : MonoBehaviour
 
   	public GameObject resident; // Resident object (HerbivoreObject or PlantObject) placed on tile
 
+    
+
     // Use this for initialization
     void Start ()
     {
@@ -38,8 +40,8 @@ public class DemTile : MonoBehaviour
     {
         // Set highlight color
         // TODO: change highlight color based on a tile's legality
-        if (BuildMenu.currentlyBuilding) {
-	        if (!resident)
+        if (BuildMenu.currentAnimalFactory!= null) {
+         if (available)
 	            this.GetComponent<Renderer>().material.color = Color.cyan;
 	        else
 	            this.GetComponent<Renderer>().material.color = Color.red;
@@ -73,26 +75,29 @@ public class DemTile : MonoBehaviour
         // If tile is empty...
         if (available) {
             // If a creature is flagged for building...
-            if (BuildMenu.currentlyBuilding) {
+      if (BuildMenu.currentAnimalFactory != null) {
                 // Set the resident as the DemMain's current selection if clicked within the tile; center resident on tile
                 resident = DemMain.currentSelection;
 
                 resident.transform.position = center;
 
                 // Subtract the appropriate resources for the build
-                BuildMenu.currentResources -= BuildMenu.currentlyBuilding.price;
+                //BuildMenu.currentResources -= BuildMenu.currentlyBuilding.price;
 
                 // Testing animation transition from IDLE to animated once placed on board
                 // NOTE: only supported species (i.e. those currently with animations) should call 'SetTrigger';
                 // unsupported species will cause unpredictable behavior
                 // TODO: implement animations for all species
+                /*
                 if (
                     BuildMenu.currentlyBuilding.name == "BushHyrax" ||
                     BuildMenu.currentlyBuilding.name == "TreeMouse")
                     resident.GetComponent<Animator>().SetTrigger("initialized");
+                    */
 
                 // Set BuildMenu.currentlyBuilding to null after successful placement
-                BuildMenu.currentlyBuilding = null;
+                BuildMenu.currentAnimalFactory = null;
+                DemMain.currentSelection = null;
                 DemMain.boardController.ClearAvailableTiles();
 
                 // DEBUG 

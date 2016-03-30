@@ -61,12 +61,8 @@ public class DemBoard : MonoBehaviour {
   }
 
   public void SetAvailableTiles(){
-    Debug.Log (DemMain.currentSelection.GetComponent<BuildInfo>().isPlant);
-
-    
-    for (int x = 0; x < 9; x++){
       
-
+    for (int x = 0; x < 9; x++){
       for (int y = 0; y < 5; y++){
 
         if (DemMain.currentSelection.GetComponent<BuildInfo>().isPlant) {
@@ -79,8 +75,6 @@ public class DemBoard : MonoBehaviour {
 
         } else {
           
-      
-            
             if(Tiles [x, y].GetComponent<DemTile> ().hasPlant()){
               
                        if (x - 1 >= 0) {

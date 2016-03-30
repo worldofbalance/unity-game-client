@@ -136,6 +136,7 @@ public class Game : MonoBehaviour
 
     public void ProcessSpeciesList (NetworkResponse response)
     {
+    Debug.Log ("ProcessSpeciesList");
         ResponseSpeciesList args = response as ResponseSpeciesList;
         // SpeciesTable.Update(args.speciesList);
         // SpeciesTable.speciesList = args.speciesList;
