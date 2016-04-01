@@ -14,7 +14,7 @@ public class GameResources : MonoBehaviour {
 	private int[] topPlayerScores = new int[3];
 	
 	void Awake() {
-		skin = Resources.Load("Skins/DefaultSkin") as GUISkin;
+		skin = Resources.Load("Skins/DefaultSkin") as GUISkin; 
 	}
 	
 	// Use this for initialization
@@ -52,35 +52,57 @@ public class GameResources : MonoBehaviour {
 		
 		if (GUI.Button (new Rect (Screen.width - 170, 90, 150, 30), "Top 3 players")) {
 			showTopListDialog = true;
+            getTopPlayers();
 		}
-		
-		if (showTopListDialog) {
-			GUI.BeginGroup(new Rect(Screen.width/2 - 150, Screen.height/2 - 100, 300, 200), GUI.skin.box);
-			
-			style.font = skin.font;
-			style.fontSize = 20;
-			style.alignment = TextAnchor.UpperCenter;
-			
-			GUIExtended.Label(new Rect(20, 10, 250, 50), " Top players ranking", style, Color.black, Color.white);
-			
-			style.fontSize = 15;
-			style.alignment = TextAnchor.UpperCenter;
-			
-			getTopPlayers();
-			
-			GUIExtended.Label(new Rect(10, 50, 250, 50), topPlayerNames[0] + "\t" + topPlayerScores[0], style, Color.black, Color.white);
-			GUIExtended.Label(new Rect(10, 100, 250, 50), topPlayerNames[1] + "\t" + topPlayerScores[1], style, Color.black, Color.white);
-			GUIExtended.Label(new Rect(10, 150, 250, 50), topPlayerNames[2] + "\t" + topPlayerScores[2], style, Color.black, Color.white);
-			
-			GUI.EndGroup();
-		}
-		
-		if (Input.GetKeyDown ("return") || Input.GetMouseButtonDown (0)) {
-			showTopListDialog = false;
-		}
-	}
-	
-	private void getTopPlayers() {
+
+        if (showTopListDialog)
+        {
+            GUI.BeginGroup(new Rect(Screen.width / 2 - 150, Screen.height / 2 - 100, 300, 200), GUI.skin.box);
+
+            style.font = skin.font;
+            style.fontSize = 20;
+            style.alignment = TextAnchor.UpperCenter;
+
+            GUIExtended.Label(new Rect(20, 10, 250, 50), " Top players ranking", style, Color.black, Color.white);
+
+            style.fontSize = 15;
+            style.alignment = TextAnchor.UpperCenter;
+
+            //getTopPlayers();
+
+            GUIExtended.Label(new Rect(10, 50, 250, 50), topPlayerNames[0] + "\t" + topPlayerScores[0], style, Color.black, Color.white);
+            GUIExtended.Label(new Rect(10, 100, 250, 50), topPlayerNames[1] + "\t" + topPlayerScores[1], style, Color.black, Color.white);
+            GUIExtended.Label(new Rect(10, 150, 250, 50), topPlayerNames[2] + "\t" + topPlayerScores[2], style, Color.black, Color.white);
+
+            GUI.EndGroup();
+        }
+
+        if (Input.GetKeyDown("return") || Input.GetMouseButtonDown(0))
+        {
+            showTopListDialog = false;
+
+            //// Test for TopPlayers script from different script.
+            //// pass function that uses data as shown below
+
+            //GetComponent<TopPlayers>().getTopPlayers(testFunc);
+      
+        }
+    }
+
+    //// Write gui logic for using top player data and pass to the getTopPlayers Method as above
+    
+    //private void testFunc()
+    //{  
+
+    //    String[] testTopNames = GetComponent<TopPlayers>().getTopPlayerNames();
+    //    int[] testTopScores = GetComponent<TopPlayers>().getTopPlayerScores();
+    //    Debug.Log("Top players test function called");
+    //    Debug.Log("rank 1 player: " + testTopNames[0] + " with " + testTopScores[0] + " points.");
+    //    Debug.Log("rank 2 player: " + testTopNames[1] + " with " + testTopScores[1] + " points.");
+    //    Debug.Log("rank 3 player: " + testTopNames[2] + " with " + testTopScores[2] + " points.");
+    //}
+
+    private void getTopPlayers() {
 		NetworkManager.Send(
 			TopListProtocol.Prepare(),
 			ProcessTopList
@@ -95,11 +117,13 @@ public class GameResources : MonoBehaviour {
 		topPlayerScores [0] = args.score1;
 		topPlayerScores [1] = args.score2;
 		topPlayerScores [2] = args.score3;
+        //Debug.Log("Inside Game Resources");
 		//Debug.Log ("rank 1 player: " + args.name1 + " with " + args.score1 + " points.");
 		//Debug.Log ("rank 2 player: " + args.name2 + " with " + args.score2 + " points.");
 		//Debug.Log ("rank 3 player: " + args.name3 + " with " + args.score3 + " points.");
 	}
-	
+
+    	
 	public void SetCredits(int credits) {
 		this.credits = credits;
 	}
