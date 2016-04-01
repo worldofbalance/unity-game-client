@@ -15,6 +15,10 @@ public class BuildInfo : MonoBehaviour {
 
   public bool isPlant;
 
+  public DemTile tile = null;
+
+
+
 	// Current Health
 	//[SerializeField]
 	//int speciesId = 0;
@@ -30,8 +34,8 @@ public class BuildInfo : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+  public DemTile GetTile () {
+    return tile;
 	}
 
 

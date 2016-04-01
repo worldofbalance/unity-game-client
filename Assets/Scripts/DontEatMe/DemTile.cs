@@ -6,8 +6,8 @@ using System.Collections;
 */
 public class DemTile : MonoBehaviour
 {
-  	int idX; // X-coord for DemTile
-  	int idY; // Y-coord for DemTile
+  	public int idX; // X-coord for DemTile
+  	public int idY; // Y-coord for DemTile
     public Color currentColor;
 
     public bool available;
@@ -140,6 +140,8 @@ public class DemTile : MonoBehaviour
   public void AddAnimal(GameObject animal){
 
     this.resident = animal;
+
+    this.resident.GetComponent<BuildInfo> ().tile = this;
 
     this.resident.transform.position = this.center;
 
