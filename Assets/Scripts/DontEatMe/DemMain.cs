@@ -12,12 +12,24 @@ public class DemMain : MonoBehaviour
 
 	static Vector3 buildOrigin;
 
+  public static DemAnimalFactory[] predators;
+
+
 
     // Use this for initialization
     void Start()
     {
+
+
+      //Pick predators
+
     
     	currentSelection = null;
+
+      predators = new DemAnimalFactory[2];
+      predators [0] = new DemAnimalFactory ("Aardvark"); 
+      predators [1] =  new DemAnimalFactory ("African Marsh Owl"); 
+
 
       
 
@@ -44,8 +56,9 @@ public class DemMain : MonoBehaviour
             }
 
         }
+        
 
-
+        boardController.AddAnimal ();
 
 
         //Now aligning the background so that it is always in the view port, and scaled as best it can
@@ -77,6 +90,10 @@ public class DemMain : MonoBehaviour
         scale.x = -scaleX.x;
         scale.y = -scale.y;
         background.transform.localScale = scale;
+
+
+        //TESTING
+        //DemTurnSystem.PredatorTurn();
 
 
 

@@ -12,6 +12,8 @@ public class DemTile : MonoBehaviour
 
     public bool available;
 
+    private Vector3 center;
+
   	public GameObject resident; // Resident object (HerbivoreObject or PlantObject) placed on tile
 
     
@@ -29,6 +31,12 @@ public class DemTile : MonoBehaviour
 
         // Set resident to null
         resident = null;
+
+
+        center = this.GetComponent<Renderer>().bounds.center;
+        center.z = -1.5f;
+
+        
 
         this.currentColor = Color.white;
     }
@@ -67,8 +75,7 @@ public class DemTile : MonoBehaviour
     void OnMouseDown ()
     {
         // Get center coords of tile, set z offset for resident placement
-        Vector3 center = this.GetComponent<Renderer>().bounds.center;
-        center.z = -1.5f;
+        
 
         // DEBUG
         Debug.Log("Tile (" + idX + ", " + idY + ") clicked, center @ (" + center.x + ", " + center.y + ", " + center.z + ")");
@@ -82,10 +89,10 @@ public class DemTile : MonoBehaviour
           if (available) {
 
                 DemAudioManager.audioUiLoad.Play ();
-                resident = DemMain.currentSelection;
+                //resident = DemMain.currentSelection;
 
-                resident.transform.position = center;
-
+                //resident.transform.position = center;
+                AddAnimal(DemMain.currentSelection);
                 // Subtract the appropriate resources for the build
                 //BuildMenu.currentResources -= BuildMenu.currentlyBuilding.price;
 
@@ -126,6 +133,24 @@ public class DemTile : MonoBehaviour
       return false;
     }
 
+  }
+
+
+  public void AddAnimal(GameObject animal){
+    
+    Debug.Log (animal.transform.position);
+    Debug.Log (center);
+
+    resident = animal;
+
+    resident.transform.position = this.center;
+
+  }
+
+  public void RemoveAnimal(){
+    
+    Destroy (resident);
+  
   }
 
 

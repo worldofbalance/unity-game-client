@@ -2,14 +2,14 @@
 using System.Collections;
 
 public class DemBoard : MonoBehaviour {
-  private GameObject[,] Tiles;
+  public GameObject[,] Tiles;
 
   private float rightEdge ;
 
   private float bottomEdge;
 
   private Material grass1;
-  public Material grass2;
+  private Material grass2;
 
   private Color highlightColor;
 
@@ -117,6 +117,16 @@ public class DemBoard : MonoBehaviour {
     
   }
 
+
+
+
+  public void AddAnimal(){
+    //DemBoard board = GameObject.Find ("GameBoard").GetComponent<DemBoard>() as DemBoard;
+    //Debug.Log (board.Tiles[0,2].GetComponent<DemTile> ().resident = animal);
+    Debug.Log(Tiles[0,0].transform.position);
+    Tiles [0, 0].GetComponent<DemTile> ().resident = DemMain.predators [0].Create ();
+
+  }
 
 
 
