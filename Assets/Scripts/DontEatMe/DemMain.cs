@@ -17,7 +17,7 @@ public class DemMain : MonoBehaviour
 
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
 
 
@@ -57,8 +57,9 @@ public class DemMain : MonoBehaviour
 
         }
         
+        
 
-        boardController.AddAnimal ();
+       
 
 
         //Now aligning the background so that it is always in the view port, and scaled as best it can

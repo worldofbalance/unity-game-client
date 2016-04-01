@@ -92,6 +92,7 @@ public class BuildMenu : MonoBehaviour
 
         DemMain.boardController.SetAvailableTiles();
 
+
 				// DEBUG MESSAGE
 				//Debug.Log("currentPlant set to " + currentPlant.name);
 			}

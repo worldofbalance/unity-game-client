@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class DemBoard : MonoBehaviour {
-  public GameObject[,] Tiles;
+  public GameObject[,] Tiles = new GameObject[9 , 5];
 
   private float rightEdge ;
 
@@ -20,7 +20,7 @@ public class DemBoard : MonoBehaviour {
     grass2 = (Material)Resources.Load("DontEatMe/Materials/tile_2", typeof(Material));
 
     Debug.Log (grass1);
-    Tiles = new GameObject[9 , 5];
+    //Tiles = new GameObject[9 , 5];
 
     // Calculate the right edge of the screen based on the aspect ratio 
     rightEdge = Camera.main.orthographicSize * Screen.width / Screen.height;
@@ -120,11 +120,9 @@ public class DemBoard : MonoBehaviour {
 
 
 
-  public void AddAnimal(){
-    //DemBoard board = GameObject.Find ("GameBoard").GetComponent<DemBoard>() as DemBoard;
-    //Debug.Log (board.Tiles[0,2].GetComponent<DemTile> ().resident = animal);
-    Debug.Log(Tiles[0,0].transform.position);
-    Tiles [0, 0].GetComponent<DemTile> ().resident = DemMain.predators [0].Create ();
+  public void AddAnimal(int x , int y, GameObject animal){
+
+    Tiles [0, 0].GetComponent<DemTile> ().AddAnimal(animal);
 
   }
 

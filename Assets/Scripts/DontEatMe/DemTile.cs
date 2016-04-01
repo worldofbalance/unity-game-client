@@ -111,6 +111,7 @@ public class DemTile : MonoBehaviour
                 BuildMenu.currentAnimalFactory = null;
                 DemMain.currentSelection = null;
                 DemMain.boardController.ClearAvailableTiles();
+                DemTurnSystem.PredatorTurn();
 
                 // DEBUG 
                 if (resident)
@@ -137,13 +138,10 @@ public class DemTile : MonoBehaviour
 
 
   public void AddAnimal(GameObject animal){
-    
-    Debug.Log (animal.transform.position);
-    Debug.Log (center);
 
-    resident = animal;
+    this.resident = animal;
 
-    resident.transform.position = this.center;
+    this.resident.transform.position = this.center;
 
   }
 
