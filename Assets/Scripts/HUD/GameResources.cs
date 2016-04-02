@@ -2,6 +2,7 @@ using UnityEngine;
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameResources : MonoBehaviour {
 	
@@ -81,25 +82,34 @@ public class GameResources : MonoBehaviour {
         {
             showTopListDialog = false;
 
-            //// Test for TopPlayers script from different script.
+            //// Test for TopPlayers script from different script
             //// pass function that uses data as shown below
 
-            //GetComponent<TopPlayers>().getTopPlayers(testFunc);
-      
+            //GetComponent<TopPlayers>().requestTopPlayers(testFunc);
+
+            //// Test currentlyOnline from different script
+            //GetComponent<CurrentlyOnline>().requestOnlinePlayers(testFunc2);
         }
     }
 
-    //// Write gui logic for using top player data and pass to the getTopPlayers Method as above
-    
-    //private void testFunc()
-    //{  
+    ////// Write gui logic for using top player data and pass to the getTopPlayers Method as above
 
-    //    String[] testTopNames = GetComponent<TopPlayers>().getTopPlayerNames();
-    //    int[] testTopScores = GetComponent<TopPlayers>().getTopPlayerScores();
+    //private void testFunc2(Dictionary<int, Player> playerList)
+    //{
+    //    Debug.Log(playerList.Count);
+
+    //    Debug.Log("successfully called");
+    //}
+
+    //// New iteration provides necessary components in function signature
+    //private void testFunc(String[] testTopNames, int[] testTopScores)
+    //{
     //    Debug.Log("Top players test function called");
-    //    Debug.Log("rank 1 player: " + testTopNames[0] + " with " + testTopScores[0] + " points.");
-    //    Debug.Log("rank 2 player: " + testTopNames[1] + " with " + testTopScores[1] + " points.");
-    //    Debug.Log("rank 3 player: " + testTopNames[2] + " with " + testTopScores[2] + " points.");
+    //    for (int i = 0; i < testTopNames.Length; i++)
+    //    {
+    //        Debug.Log("rank " + (i + 1) + " player: " + testTopNames[i] + " with " + testTopScores[i] + " points.");
+    //    }
+
     //}
 
     private void getTopPlayers() {

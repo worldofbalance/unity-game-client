@@ -5,37 +5,15 @@ using System.Collections;
 public class TopPlayers : MonoBehaviour
 {
     // This class is used to send a network request to 
-    // retrieve the top rated players in the database
-    
-    
+    // retrieve the top rated players from the server
 
     private String[] topPlayerNames = new String[3];
     private int[] topPlayerScores = new int[3];
-    public delegate void Callback ();
+    public delegate void Callback (String[] topPlayerNames, int[] topPlayerscores);
     private Callback passedInFunc;
+    
 
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    //// Used to test functionality
-    //
-    //void OnGUI()
-    //{
-    //    if (Input.GetKeyDown("return") || Input.GetMouseButtonDown(0))
-    //    {
-    //        getTopPlayers();
-    //        String[] testTopNames = getTopPlayerNames();
-    //        int[] testTopScores = getTopPlayerScores();
-    //        Debug.Log ("rank 1 player: " + testTopNames[0] + " with " + testTopScores[0] + " points.");
-    //        Debug.Log ("rank 2 player: " + testTopNames[1] + " with " + testTopScores[1] + " points.");
-    //        Debug.Log ("rank 3 player: " + testTopNames[2] + " with " + testTopScores[2] + " points.");
-    //    }
-    //}
-
-    public void getTopPlayers(Callback callback)
+    public void requestTopPlayers(Callback callback)
     {
        passedInFunc = callback;
 
@@ -43,17 +21,6 @@ public class TopPlayers : MonoBehaviour
             TopListProtocol.Prepare(),
             ProcessTopList
        );
-    }
-    
-    // have to find a way to make these methods wait for response
-    public String[] getTopPlayerNames()
-    {
-        return topPlayerNames;
-    }
-
-    public int[] getTopPlayerScores()
-    {
-        return topPlayerScores;
     }
 
     private void ProcessTopList(NetworkResponse response)
@@ -66,12 +33,8 @@ public class TopPlayers : MonoBehaviour
         topPlayerScores[1] = args.score2;
         topPlayerScores[2] = args.score3;
 
-        passedInFunc();
+        passedInFunc(topPlayerNames, topPlayerScores);
         
     }
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
 }
