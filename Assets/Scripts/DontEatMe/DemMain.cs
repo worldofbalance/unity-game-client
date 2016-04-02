@@ -61,36 +61,39 @@ public class DemMain : MonoBehaviour
 
        
 
-
+        /**
+         * Creating the background through BuildMenu.cs
+         * Commenting out for now
+         */
         //Now aligning the background so that it is always in the view port, and scaled as best it can
 
-        GameObject background = GameObject.Find("DemBackGround");
-        float bgRight = background.GetComponent<BoxCollider>().bounds.max.x;
-        float bgLeft = background.GetComponent<BoxCollider>().bounds.min.x;
-        float bgClose = background.GetComponent<BoxCollider>().bounds.min.z;
+        //GameObject background = GameObject.Find("DemBackGround");
+        //float bgRight = background.GetComponent<BoxCollider>().bounds.max.x;
+        //float bgLeft = background.GetComponent<BoxCollider>().bounds.min.x;
+        //float bgClose = background.GetComponent<BoxCollider>().bounds.min.z;
 
 
-        float bgDistance = Vector3.Distance(background.transform.position, Camera.main.transform.position);
-        Vector3 viewTopMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0f, bgDistance));
-        Vector3 viewBottomMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 1f, bgDistance));
+        //float bgDistance = Vector3.Distance(background.transform.position, Camera.main.transform.position);
+        //Vector3 viewTopMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0f, bgDistance));
+        //Vector3 viewBottomMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 1f, bgDistance));
 
-        Vector3 viewLeftMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0f, 0.5f, bgDistance));
-        Vector3 viewRightMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(1f, 0.5f, bgDistance));
+        //Vector3 viewLeftMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(0f, 0.5f, bgDistance));
+        //Vector3 viewRightMiddleBg = Camera.main.ViewportToWorldPoint(new Vector3(1f, 0.5f, bgDistance));
 
 
-        float bgRatio = 526f / 350f;
-        Vector3 scale = viewTopMiddleBg - viewBottomMiddleBg;
-        Vector3 scaleX = viewLeftMiddleBg - viewRightMiddleBg;
-        //set a min for x scale
-        if (-scaleX.x < 14f)
-        {
-            scaleX.x = -14f;
-        }
+        //float bgRatio = 526f / 350f;
+        //Vector3 scale = viewTopMiddleBg - viewBottomMiddleBg;
+        //Vector3 scaleX = viewLeftMiddleBg - viewRightMiddleBg;
+        ////set a min for x scale
+        //if (-scaleX.x < 14f)
+        //{
+        //    scaleX.x = -14f;
+        //}
 
-        scale.z = background.transform.localScale.z;
-        scale.x = -scaleX.x;
-        scale.y = -scale.y;
-        background.transform.localScale = scale;
+        //scale.z = background.transform.localScale.z;
+        //scale.x = -scaleX.x;
+        //scale.y = -scale.y;
+        //background.transform.localScale = scale;
 
 
         //TESTING
