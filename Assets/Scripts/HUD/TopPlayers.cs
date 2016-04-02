@@ -12,12 +12,11 @@ public class TopPlayers : MonoBehaviour
     public delegate void Callback (String[] topPlayerNames, int[] topPlayerscores);
     private Callback passedInFunc;
     
-
     public void requestTopPlayers(Callback callback)
     {
-       passedInFunc = callback;
+        passedInFunc = callback;
 
-       NetworkManager.Send(
+        NetworkManager.Send(
             TopListProtocol.Prepare(),
             ProcessTopList
        );

@@ -14,8 +14,8 @@ public class CurrentlyOnline : MonoBehaviour
         passedInFunc = callback;
 
         NetworkManager.Send(
-             PlayersProtocol.Prepare(),
-             ProcessOnlinePlayers
+            PlayersProtocol.Prepare(),
+            ProcessOnlinePlayers
         );
     }
 
