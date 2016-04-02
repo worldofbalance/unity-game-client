@@ -122,7 +122,7 @@ public class DemBoard : MonoBehaviour {
 
   public void AddAnimal(int x , int y, GameObject animal){
 
-    Tiles [0, 0].GetComponent<DemTile> ().AddAnimal(animal);
+    Tiles [x, y].GetComponent<DemTile> ().AddAnimal(animal);
 
   }
 
