@@ -7,12 +7,6 @@ public class BuildMenu : MonoBehaviour
     // Background material
     public Material backgroundMaterial;
 
-    // Button prefab
-    public GameObject buttonPrefab;
-
-    // Canvas Object
-    public GameObject canvasObject;
-
     public DemButton buttons;
 
     // Currently building...
@@ -36,8 +30,130 @@ public class BuildMenu : MonoBehaviour
     public DemAnimalFactory[] prey;
 
 
+    void OnGUI()
+    {
+        // draw resource menu
+        GUILayout.BeginArea(new Rect(0, 0, 155, 200));
+        GUILayout.BeginHorizontal("box");
+
+        // draw resource counter
+        GUILayout.Button(new GUIContent("Resources: " + currentResources.ToString()), GUILayout.Height(70));
+
+        // end GUI for resource menu
+        GUILayout.EndHorizontal();
+        GUILayout.EndArea();
+
+        // draw the plant menu
+        GUILayout.BeginArea(new Rect(0, 80, 100, 400));
+        GUILayout.BeginVertical();
+
+        // Draw each plant's build info
 
 
+        foreach (DemAnimalFactory plant in plants)
+        {
+
+            //BuildInfo info = plant.GetComponent<BuildInfo> ();
+
+            //GUI.enabled = currentResources >= info.price;
+            // if button is clicked, then set currentlyBuilding to the info of the button you clicked
+            if (GUILayout.Button(new GUIContent(plant.GetImage()), GUILayout.Width(40), GUILayout.Height(40)))
+            {
+                DemAudioManager.audioClick.Play();
+
+                // If a selection is currently in progress...
+                if (DemMain.currentSelection)
+                {
+                    // Ignore button click if for the same species
+                    if (currentAnimalFactory == plant)
+                        return;
+                    // Otherwise, destroy the current selection before continuing
+                    else
+                        Destroy(DemMain.currentSelection);
+                }
+                // Set / reset currentlyBuilding
+
+                //currentlyBuilding = info;
+                currentAnimalFactory = plant;
+
+
+                // Create the current prey object
+                //GameObject currentPlant = plant.Create(); //DemAnimalFactory.Create(currentlyBuilding.name , 0 ,0) as GameObject;
+
+                // Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
+                Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
+                init_pos.z = -1.5f;
+
+                // Instantiate the current prey
+                DemMain.currentSelection = plant.Create();
+                DemMain.currentSelection.GetComponent<BuildInfo>().isPlant = true;
+
+
+                // Set DemMain's preyOrigin as the center of the button
+                DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+                DemMain.boardController.SetAvailableTiles();
+
+                // DEBUG MESSAGE
+                //Debug.Log("currentPlant set to " + currentPlant.name);
+            }
+
+        }
+
+        // End GUI for plant menu
+        GUILayout.EndVertical();
+        GUILayout.EndArea();
+
+        // Now, draw prey menu
+        GUILayout.BeginArea(new Rect(300, 0, 500, 220));
+        GUILayout.BeginHorizontal("box");
+
+        // draw each prey's build info
+        foreach (DemAnimalFactory singlePrey in prey)
+        {
+
+            // if button is clicked, then set currentlyBuilding to the info of the button you clicked
+
+            if (GUILayout.Button(new GUIContent(singlePrey.GetImage()), GUILayout.Width(40), GUILayout.Height(40)))
+            {
+                DemAudioManager.audioClick.Play();
+                // If a selection is currently in progress...
+                if (DemMain.currentSelection)
+                {
+                    // Ignore button click if for the same species
+                    if (currentAnimalFactory == singlePrey)
+                        return;
+                    // Otherwise, destroy the current selection before continuing
+                    else
+                        Destroy(DemMain.currentSelection);
+                }
+                // Set / reset currentlyBuilding
+
+                currentAnimalFactory = singlePrey;
+
+
+
+                // Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
+                Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
+                init_pos.z = -1.5f;
+
+
+                // Instantiate the current prey
+                DemMain.currentSelection = singlePrey.Create();
+
+                // Set DemMain's preyOrigin as the center of the button
+                DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+                DemMain.boardController.SetAvailableTiles();
+
+
+            }
+        }
+
+        // End GUI for prey menu
+        GUILayout.EndVertical();
+        GUILayout.EndArea();
+    }
 
 
     // this method increases score every 2s
@@ -46,31 +162,14 @@ public class BuildMenu : MonoBehaviour
         currentResources += 50;
     }
 
-    void MakeButton(int numberButtons, float xPos, float yPos, float zPos)
-    {
-        float buttonWidth = buttonPrefab.GetComponent<RectTransform>().sizeDelta.x;
-        float buttonHeight = buttonPrefab.GetComponent<RectTransform>().sizeDelta.y;
-        Debug.Log(buttonHeight);
-
-        for(int i = 0; i < numberButtons; i++)
-        {
-            GameObject button = Instantiate(buttonPrefab) as GameObject;
-            button.name = "Button" + i;
-
-            button.transform.SetParent(canvasObject.transform);
-            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, 0 - yPos - i * buttonHeight);
-        }
-        
-    }
-
+    
     //Loading Resources
     void Awake()
     {
-        backgroundMaterial = Resources.Load<Material>("DontEatMe/Materials/DontEatMeBg");
-        buttonPrefab = Resources.Load<GameObject>("DontEatMe/Prefabs/Button2");
-        canvasObject = GameObject.Find("Canvas");
-
+        backgroundMaterial = Resources.Load<Material>("DontEatMe/Materials/DontEatMeBg");                                                                                      
     }
+
+
     // Use this for initialization
     void Start()
     {
@@ -96,9 +195,12 @@ public class BuildMenu : MonoBehaviour
             new Vector3(backgroundImage.transform.localPosition.x, backgroundImage.transform.localPosition.y, 1);
         backgroundImage.transform.localScale = new Vector3(14, 7, backgroundImage.transform.localScale.z);
 
+        /**
+         * Uncomment the following 2 lines out and comment out the OnGUI() code to check out the new buttons
+         */
         // Creates the buttons
-        buttons = gameObject.AddComponent<DemButton>();
-        buttons.MakeButton(5, 2, 59, 80);
+        //buttons = gameObject.AddComponent<DemButton>();
+        //buttons.MakeButton(5, 2, 59, 80);
 
         plants = new DemAnimalFactory[6];
 
@@ -120,6 +222,7 @@ public class BuildMenu : MonoBehaviour
 
 
     }
+    
 
     public void endGame()
     {
@@ -135,6 +238,7 @@ public class BuildMenu : MonoBehaviour
       */
     }
 
+
     // Updates player's credits
     public void ProcessEndGame(NetworkResponse response)
     {
@@ -148,11 +252,10 @@ public class BuildMenu : MonoBehaviour
         }
     }
 
+
     // Update is called once per frame
     void Update()
     {
 
     }
-
-
 }
