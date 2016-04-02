@@ -123,6 +123,7 @@ namespace CW
 	
 			// If two_player, only switch turns if player1 isActive
 			if (!Constants.SINGLE_PLAYER && player1.isActive) {
+				Debug.Log ("End Turn");
 				protocols.sendEndTurn (player1.playerID);
 				//Player's endturn refreshes the player's minions so they can attack next turn.
 				player1.endTurn ();
@@ -169,6 +170,12 @@ namespace CW
 		
 		}
 
+		//Wrapper for endturn function
+		public void endTurnWrapper ()
+		{
+			endTurn();
+		}
+
 		/*
 	 This is called when the game is over and the player 
 	 selects "ReturnToLobby button" or if the player fails
@@ -187,6 +194,9 @@ namespace CW
 		
 			//End turn button, on left side of screen
 			//TODO maybe make a new graphic for the button
+			/*
+			 * Removing old end turn button
+			 * using one from canvas
 			if (GUI.Button (new Rect (0, //left
 		                       (Screen.height / 2.0f), //height
 		                       (Screen.width / 12.8f) / 100 * 150, 
@@ -194,6 +204,7 @@ namespace CW
 		              			"End Turn")) {
 				endTurn ();
 			}
+			*/
 			if (GUI.Button (new Rect (0, //left
 			                          (Screen.height / 2.0f - 80), //height
 			                          (Screen.width / 12.8f) / 100 * 150, 
