@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 namespace CW{
 public class Trees : MonoBehaviour {
@@ -9,6 +10,8 @@ public class Trees : MonoBehaviour {
 	private bool removeAfterDelay;
 	private float delayTimer = 0, DELAY_CONSTANT = 3;
 	private bool surrendering = false;
+    
+    
 
 	Texture2D tree1Texture = (Texture2D) Resources.Load ("Images/Battle/tree1", typeof(Texture2D));
 	Texture2D tree2Texture = (Texture2D) Resources.Load ("Images/Battle/tree2", typeof(Texture2D));
@@ -16,7 +19,11 @@ public class Trees : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+        GameObject optionsButton = GameObject.Find ("/OptionsButtonCanvas/OptionsButton");
+        
+        optionsButton.GetComponent<Button> ().onClick.AddListener (() => {
+            toggleSurrender ();
+        });
 	}
 
 	public void init(BattlePlayer player){
@@ -126,11 +133,13 @@ public class Trees : MonoBehaviour {
 	void OnGUI(){
 		
 		//End game
+        /*
 		if(GUI.Button(new Rect(Screen.width-(Screen.width/12.8f)/100 *150, (Screen.height/2.0f), 
 		                       (Screen.width/12.8f)/100 *150, (Screen.width/12.8f)/100 *40), 
 		              			"Surrender")){
 			toggleSurrender();
 		}
+        */
 		if (surrendering) { //should only show when surrendering  is true
 			GUI.skin.box.fontStyle = FontStyle.Bold;
 			GUI.skin.box.fontSize = 30;
@@ -159,12 +168,27 @@ public class Trees : MonoBehaviour {
 	}
 
 	//Toggles surrender gui true or false
-	void toggleSurrender(){
+
+	/*
+    void toggleSurrender(){
 		if (surrendering) {
 			surrendering=false;
 		} else if (!surrendering){
 			surrendering=true;
 		}
 	}
+    */
+    void toggleSurrender()
+    {
+        GameObject optionCanvas = GameObject.Find ("OptionsCanvas");
+        if (optionCanvas.GetComponent<CanvasGroup>().alpha == 0)
+        {
+            optionCanvas.GetComponent<CanvasGroup>().alpha = 1;
+        }
+        else
+        {
+            optionCanvas.GetComponent<CanvasGroup>().alpha = 0;
+        }
+    }
 }
 }
