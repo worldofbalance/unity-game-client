@@ -1,20 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ClashReticle : MonoBehaviour {
+public class ClashReticle : MonoBehaviour
+{
 
-	// Use this for initialization
-	void Start () {}
+    // Use this for initialization
+    ClashHealthBar bar;
 
-    void OnTriggerEnter(Collider other) {
-        if (other.gameObject.tag == "Ally" || other.gameObject.tag == "Enemy") {
+    void Start()
+    {
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Ally" || other.gameObject.tag == "Enemy")
+        {
             var bar = other.gameObject.GetComponentsInChildren<ClashHealthBar>(true);
             bar[0].gameObject.SetActive(true);
         }
+
+//        bar.dummyTest();
     }
 
-    void OnTriggerExit(Collider other) {
-        if (other.gameObject.tag == "Ally" || other.gameObject.tag == "Enemy") {
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Ally" || other.gameObject.tag == "Enemy")
+        {
             var bar = other.gameObject.GetComponentsInChildren<ClashHealthBar>(true);
             bar[0].gameObject.SetActive(false);
         }
