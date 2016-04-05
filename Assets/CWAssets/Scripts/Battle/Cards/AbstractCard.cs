@@ -198,6 +198,12 @@ namespace CW
 		public void attackTree (Trees tree)
 		{
 			tree.receiveAttack (dmg);
+
+			//by Pedro
+			audioSource.clip = Resources.Load ("Sounds/attack") as AudioClip;
+			//audioSource.PlayDelayed (1);
+			audioSource.Play ();
+
 			setCanAttack (false);
 			player.clickedCard = null;
 			calculateDirection (tree.transform.position, true);
