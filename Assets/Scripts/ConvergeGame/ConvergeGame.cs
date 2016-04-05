@@ -511,6 +511,7 @@ public class ConvergeGame : MonoBehaviour
 
 		//if the submission resulted in a valid attempt, add to attempt list and reinitialize 
 		//currAttempt for next attempt.  Otherwise, keep current attempt
+		Debug.Log("Attempt: " + attempt +" attempt.attempt_id " + attempt.attempt_id);
 		if (attempt != null && attempt.attempt_id != Constants.ID_NOT_SET) {
 			currAttempt.attempt_id = attempt.attempt_id;
 			currAttempt.SetCSV (attempt.csv_string);
