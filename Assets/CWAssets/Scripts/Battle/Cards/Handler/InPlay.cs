@@ -4,6 +4,7 @@ using UnityEngine;
 namespace CW{
 public class InPlay : AbstractCardHandler
 {
+	//player is owner of the card
 	public InPlay(AbstractCard card, BattlePlayer player) : base(card, player) {
 	
 	}

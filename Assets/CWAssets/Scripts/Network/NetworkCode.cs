@@ -76,5 +76,7 @@ public class NetworkCode {
 	public static readonly short MATCH_ACTION = 211;
 	public static readonly short MATCH_START = 212;
 	public static readonly short RETURN_LOBBY = 213;
+	public static readonly short APPLY_FOOD = 214;
+	public static readonly short APPLY_WEATHER = 215;
 }
 }
