@@ -1,5 +1,4 @@
 using UnityEngine;
-
 using System.Collections;
 
 public class Game : MonoBehaviour
@@ -10,9 +9,14 @@ public class Game : MonoBehaviour
     private static int isFading = 0;
     private static float alphaFadeValue;
     private static string nextScene;
+		private NetworkManager networkManager;
 
     void Awake ()
     {
+				networkManager = new NetworkManager(
+					this,
+					new ConnectionManager(Config.REMOTE_HOST, Constants.REMOTE_PORT)
+				);
         scene = "Login";
         DontDestroyOnLoad (gameObject);
 
@@ -39,6 +43,7 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
+				networkManager.Update();
         if (isFading != 0) {
             PerformTransition ();
         }
