@@ -66,13 +66,15 @@ namespace CW
 				}		
 				
 			}else if(currentPlayer.clickedCard != null){
-				currentPlayer.targetCard = card;
-
-				currentPlayer.clickedCard.applyFood(currentPlayer.targetCard, 1, 1);
+				/*currentPlayer.targetCard = card;
+				Debug.Log ("Before apply food buff. Target: " + currentPlayer.ta);
+				player.applyFoodBuff(currentPlayer.targetCard, 1, 1);
+				Debug.Log ("After food buff");
+				//currentPlayer.clickedCard.applyFood(currentPlayer.targetCard, 1, 1);
 				currentPlayer.getProtocolManager().sendFoodBuff(currentPlayer.playerID, currentPlayer.targetCard.fieldIndex);
 				
 				currentPlayer.clickedCard = null;
-				currentPlayer.targetCard = null;
+				currentPlayer.targetCard = null;*/
 				
 			}
 			

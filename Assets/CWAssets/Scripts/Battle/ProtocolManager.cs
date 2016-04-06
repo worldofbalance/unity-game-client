@@ -102,7 +102,7 @@ public class ProtocolManager : MonoBehaviour{
 	                      string description){
 
 			NetworkManager.Send (
-			SummonCardProtocol.Prepare ( playerID, cardID,  diet, 
+			SummonCardProtocol.Prepare (playerID, cardID,  diet, 
 		                             level, attack,  health, 
 		                            species_name,  type, 
 		                            description), 
