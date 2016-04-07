@@ -25,23 +25,36 @@ public class DemTurnSystem : MonoBehaviour {
       int x = tile.idX;
       int y = tile.idY;
 
-      //Check if next location to left is open
-		if (board.Tiles [x + 1, y].GetComponent<DemTile> ().resident == null) {
+		try{
+		  //Check if next location to left is open
+			if (board.Tiles [x + 1, y].GetComponent<DemTile> ().resident == null) {
 
-			board.Tiles [x + 1, y].GetComponent<DemTile> ().AddAnimal (predator);
-			board.Tiles [x, y].GetComponent<DemTile> ().resident = null;
-			animal.tile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
-			tempPredators.Add (predator);	//add survivied predator to temp list; the predator didn't eat prey
+				board.Tiles [x + 1, y].GetComponent<DemTile> ().AddAnimal (predator);
+				board.Tiles [x, y].GetComponent<DemTile> ().resident = null;
+				animal.tile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
+				tempPredators.Add (predator);	//add survived predator to temp list; the predator didn't eat prey
 
-		}		//Check if next Location to left is prey, if it is , eat it
-		else if (board.Tiles [x + 1, y].GetComponent<DemTile> ().resident.GetComponent<BuildInfo> ().isPrey ()) {
-			board.Tiles [x + 1, y].GetComponent<DemTile> ().RemoveAnimal ();	//remove prey from tile
-			board.Tiles [x, y].GetComponent<DemTile> ().RemoveAnimal ();	//remove predator from tile, predator distroyed, but predator reference is still in list
+			}		//Check if next Location to left is plant, if it is , destroy it
+			else if (board.Tiles [x + 1, y].GetComponent<DemTile> ().resident.GetComponent<BuildInfo> ().isPlant ()) {
+				board.Tiles [x + 1, y].GetComponent<DemTile> ().RemoveAnimal ();	//remove plant from tile
+				board.Tiles [x + 1, y].GetComponent<DemTile> ().AddAnimal (predator);
+				board.Tiles [x, y].GetComponent<DemTile> ().resident = null;
+				animal.tile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
+				tempPredators.Add(predator);	
 
-		} else {//leftover case, next location is predator
-			tempPredators.Add (predator);	//add survived predator to temp list
+			}		//Check if next Location to left is prey, if it is , eat it
+			else if (board.Tiles [x + 1, y].GetComponent<DemTile> ().resident.GetComponent<BuildInfo> ().isPrey ()) {
+				board.Tiles [x + 1, y].GetComponent<DemTile> ().RemoveAnimal ();	//remove prey from tile
+				board.Tiles [x, y].GetComponent<DemTile> ().RemoveAnimal ();	//remove predator from tile, predator distroyed, but predator reference is still in list
+
+			} else {//leftover case, next location is predator
+				tempPredators.Add (predator);	//add survived predator to temp list
+			}
+		}catch(System.IndexOutOfRangeException e){	//catch predator out of bound exception when predator reach the end of board
+				board.Tiles [x, y].GetComponent<DemTile> ().RemoveAnimal (); //remove predator
+				Debug.Log("you lost, or whatever, bla bla bla...");
 		}
-
+			
     }
 
 	//swap list
