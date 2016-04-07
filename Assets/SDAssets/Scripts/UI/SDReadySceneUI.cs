@@ -8,6 +8,6 @@ public class SDReadySceneUI : MonoBehaviour {
     }
 
     public void BtnPlaySDVClick() {
-        SceneManager.LoadScene ("SDVGameMain");
+        SceneManager.LoadScene ("SDGameMain");
     }
 }
