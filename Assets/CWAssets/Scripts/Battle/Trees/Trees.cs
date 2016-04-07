@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.EventSystems;
 namespace CW{
-public class Trees : MonoBehaviour {
+public class Trees : MonoBehaviour
+{
 
     private int hp, maxHP, dmgTimer = 0;
     private BattlePlayer player;
@@ -14,6 +16,14 @@ public class Trees : MonoBehaviour {
     Texture2D tree1Texture = (Texture2D) Resources.Load ("Images/Battle/tree1", typeof(Texture2D));
     Texture2D tree2Texture = (Texture2D) Resources.Load ("Images/Battle/tree2", typeof(Texture2D));
     Texture2D tree3Texture = (Texture2D) Resources.Load ("Images/Battle/tree3", typeof(Texture2D));
+
+    //initializing all canvases and buttons
+    GameObject optionsButton;
+    GameObject surrenderButton;
+    GameObject yesButton;
+    GameObject noButton;
+    GameObject optionCanvas;
+    GameObject confirmCanvas;
 
     // Use this for initialization
     void Start () {
@@ -39,10 +49,19 @@ public class Trees : MonoBehaviour {
         handler = new LivingTreeClick(this, player);
         transform.position = new Vector3(player.TreePos.x, player.TreePos.y, player.TreePos.z);
 
-        GameObject optionsButton = GameObject.Find ("/OptionsButtonCanvas/OptionsButton");
-        GameObject surrenderButton = GameObject.Find ("/OptionsCanvas/OptionsPanel/QuitButtons/SurrenderButton");
+        //assigning all buttons and canvases
+        optionsButton = GameObject.Find ("/OptionsButtonCanvas/OptionsButton");
+        surrenderButton = GameObject.Find ("/OptionsCanvas/OptionsPanel/QuitButtons/SurrenderButton");
+        yesButton = GameObject.Find("/ConfirmCanvas/ConfirmPanel/YesButton");
+        noButton = GameObject.Find("/ConfirmCanvas/ConfirmPanel/NoButton");
+        optionCanvas = GameObject.Find ("OptionsCanvas");
+        confirmCanvas = GameObject.Find ("ConfirmCanvas");
+
+        //adding listeners for buttons
         optionsButton.GetComponent<Button> ().onClick.AddListener (() => {toggleSurrender();});
         surrenderButton.GetComponent<Button>().onClick.AddListener (() => {surrenderConfirm();});
+        yesButton.GetComponent<Button>().onClick.AddListener(() => {surrenderOn();});
+        noButton.GetComponent<Button>().onClick.AddListener(() => {surrenderConfirm();});
         Debug.Log("adding listeners");
     }
     
@@ -58,12 +77,15 @@ public class Trees : MonoBehaviour {
 //  }
     void OnMouseOver ()
     {
-        //Debug.Log ("MouseOver Clicked the Tree");
-        if (Input.GetMouseButtonDown (0)) {
-            if(handler != null )
-                handler.clicked ();
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            //Debug.Log ("MouseOver Clicked the Tree");
+            if (Input.GetMouseButtonDown (0)) {
+                if(handler != null )
+                    handler.clicked ();
+            }
+            this.transform.localScale = new Vector3 (25.5f, 1, 30);
         }
-        this.transform.localScale = new Vector3 (25.5f, 1, 30);
     }
     
     void OnMouseExit()
@@ -131,6 +153,7 @@ public class Trees : MonoBehaviour {
             transform.Find("DamageText").GetComponent<TextMesh>().text = "";
         }
     }
+    /*
     void OnGUI(){
         
         //End game
@@ -141,6 +164,7 @@ public class Trees : MonoBehaviour {
             toggleSurrender();
         }
         */
+        /*
         if (surrendering) { //should only show when surrendering  is true
             GUI.skin.box.fontStyle = FontStyle.Bold;
             GUI.skin.box.fontSize = 30;
@@ -166,7 +190,7 @@ public class Trees : MonoBehaviour {
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
         }
-    }
+    }*/
 
     //Toggles surrender gui true or false
 
@@ -179,13 +203,15 @@ public class Trees : MonoBehaviour {
         }
     }
     */
+
     void toggleSurrender()
     {
 
-        GameObject optionCanvas = GameObject.Find ("OptionsCanvas");
+        //GameObject optionCanvas = GameObject.Find ("OptionsCanvas");
         if (optionCanvas.GetComponent<CanvasGroup>().alpha == 0 && player.player1)
         {
-            Debug.Log("openned");
+            Debug.Log("options openned");
+            //optionsButton.GetComponent<CanvasGroup>().interactable = false;
             optionCanvas.GetComponent<CanvasGroup>().alpha = 1;
             optionCanvas.GetComponent<CanvasGroup>().interactable = true;
             optionCanvas.GetComponent<CanvasGroup>().blocksRaycasts = true;
@@ -193,34 +219,46 @@ public class Trees : MonoBehaviour {
         }
         else if (optionCanvas.GetComponent<CanvasGroup>().alpha == 1 && player.player1)
         {
-            Debug.Log("closed");
+            Debug.Log("options closed");
             optionCanvas.GetComponent<CanvasGroup>().alpha = 0;
             optionCanvas.GetComponent<CanvasGroup>().interactable = false;
             optionCanvas.GetComponent<CanvasGroup>().blocksRaycasts = false;
+            confirmCanvas.GetComponent<CanvasGroup>().alpha = 0;
+            confirmCanvas.GetComponent<CanvasGroup>().interactable = false;
+            confirmCanvas.GetComponent<CanvasGroup>().blocksRaycasts = false;
         }
     }
 
     void surrenderConfirm()
     {
         Debug.Log("confirm dialog");
-        GameObject confirmCanvas = GameObject.Find ("ConfirmCanvas");
-        GameObject optionCanvas = GameObject.Find ("OptionsCanvas");
-        if (confirmCanvas.GetComponent<CanvasGroup>().alpha == 0)
+        //GameObject confirmCanvas = GameObject.Find ("ConfirmCanvas");
+        //GameObject optionCanvas = GameObject.Find ("OptionsCanvas");
+        if (confirmCanvas.GetComponent<CanvasGroup>().alpha == 0 && player.player1)
         {
-            optionCanvas.GetComponent<CanvasGroup>().alpha = 0;
+            //disable options panel
+            //show/enable confirm dialog
+            //optionCanvas.GetComponent<CanvasGroup>().alpha = 0;
             optionCanvas.GetComponent<CanvasGroup>().interactable = false;
             optionCanvas.GetComponent<CanvasGroup>().blocksRaycasts = false;
             confirmCanvas.GetComponent<CanvasGroup>().alpha = 1;
             confirmCanvas.GetComponent<CanvasGroup>().interactable = true;
             confirmCanvas.GetComponent<CanvasGroup>().blocksRaycasts = true;
         }
-        GameObject yesButton = GameObject.Find("/ConfirmCanvas/ConfirmPanel/YesButton");
-        yesButton.GetComponent<Button>().onClick.AddListener(() => {surrenderOn();});
+        else if (confirmCanvas.GetComponent<CanvasGroup>().alpha == 1 && player.player1)
+        {
+            //optionsButton.GetComponent<CanvasGroup>().interactable = true;
+            optionCanvas.GetComponent<CanvasGroup>().alpha = 0;
+            confirmCanvas.GetComponent<CanvasGroup>().alpha = 0;
+            confirmCanvas.GetComponent<CanvasGroup>().interactable = false;
+            confirmCanvas.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        }
     }
 
     void surrenderOn()
     {
         //toggleSurrender();//get rid of buttons
+        surrenderConfirm();//hide the opened canvases
         Debug.Log("End Game");  
         this.player.isWon=false;
         //handler = new EndGame(this, player);
@@ -231,5 +269,6 @@ public class Trees : MonoBehaviour {
         GameManager.protocols.sendQuitMatch(player.playerID);
     }
     
+
 }
 }
