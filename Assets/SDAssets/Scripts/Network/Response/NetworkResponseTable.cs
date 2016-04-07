@@ -22,7 +22,7 @@ namespace SD
 
         public static void add(short response_id, string name)
         {
-            responseTable.Add(response_id, Type.GetType("RR." + name));
+            responseTable.Add(response_id, Type.GetType("SD." + name));
         }
 
         public static NetworkResponse get(short response_id)

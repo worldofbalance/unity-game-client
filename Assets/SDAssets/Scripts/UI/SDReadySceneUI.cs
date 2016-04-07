@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SDReadySceneUI : MonoBehaviour {
 
@@ -7,7 +8,6 @@ public class SDReadySceneUI : MonoBehaviour {
     }
 
     public void BtnPlaySDVClick() {
-       
-        Game.SwitchScene ("SDVGameMain");
+        SceneManager.LoadScene ("SDVGameMain");
     }
 }
