@@ -52,8 +52,8 @@ public class MenuScript : MonoBehaviour {
 		CloseAllMenus ();
 	}
 		
-	public void OpenRunningRhino(){
-		Debug.Log("You Pressed RunningRhino");
+	public void OpenMultiplayerGames(){
+		Debug.Log("You Pressed Open Multiplayer Games");
 		gameObject.AddComponent <MultiplayerGames>();
 		menuOpen=true;
 	}
