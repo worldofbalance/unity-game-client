@@ -171,6 +171,8 @@ public class MultiplayerGames : MonoBehaviour {
 				                        (GameState.player.GetID(), args.id), 
 				                        ProcessMatchInit);
             } else if (args.gameID == Constants.MINIGAME_SEA_DIVIDED) {
+                SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
+                sManager.Send(SD_RequestPlayInit());
                 Game.SwitchScene ("SDReadyScene");
             }
 		} else {
@@ -209,4 +211,11 @@ public class MultiplayerGames : MonoBehaviour {
 		request.Send (RR.Constants.USER_ID, this.room_id);
 		return request;
 	}
+    public SD.RequestPlayInit SD_RequestPlayInit()
+    {
+        SD.RequestPlayInit request = new SD.RequestPlayInit();
+        request.Send(SD.Constants.USER_ID, this.room_id);
+        return request;
+    }
+   
 }
