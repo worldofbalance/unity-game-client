@@ -70,6 +70,7 @@ public class BuildMenu : MonoBehaviour
                     // Otherwise, destroy the current selection before continuing
                     else
                         Destroy(DemMain.currentSelection);
+						DemMain.boardController.ClearAvailableTiles (); //fix bug
                 }
                 // Set / reset currentlyBuilding
 
@@ -127,6 +128,7 @@ public class BuildMenu : MonoBehaviour
                     // Otherwise, destroy the current selection before continuing
                     else
                         Destroy(DemMain.currentSelection);
+						DemMain.boardController.ClearAvailableTiles ();		//fix the prey placement bug after change currentSelection from plant to prey
                 }
                 // Set / reset currentlyBuilding
 
