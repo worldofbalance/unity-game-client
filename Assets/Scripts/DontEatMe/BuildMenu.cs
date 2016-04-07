@@ -86,7 +86,8 @@ public class BuildMenu : MonoBehaviour
 
                 // Instantiate the current prey
                 DemMain.currentSelection = plant.Create();
-                DemMain.currentSelection.GetComponent<BuildInfo>().isPlant = true;
+				//DemMain.currentSelection.GetComponent<BuildInfo>().isPlant = true;
+				DemMain.currentSelection.GetComponent<BuildInfo>().speciesType = 0;
 
 
                 // Set DemMain's preyOrigin as the center of the button
@@ -140,6 +141,8 @@ public class BuildMenu : MonoBehaviour
 
                 // Instantiate the current prey
                 DemMain.currentSelection = singlePrey.Create();
+				DemMain.currentSelection.GetComponent<BuildInfo>().speciesType = 1;
+
 
                 // Set DemMain's preyOrigin as the center of the button
                 DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));

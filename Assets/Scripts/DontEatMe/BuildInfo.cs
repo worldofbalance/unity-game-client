@@ -13,7 +13,8 @@ public class BuildInfo : MonoBehaviour {
 	// the cost to build the item
 	public int price;
 
-  public bool isPlant;
+    //public bool isPlant;
+	public short speciesType; //for classify if it is plant =0, prey =1, or preditor =2
 
   public DemTile tile = null;
 
@@ -38,5 +39,22 @@ public class BuildInfo : MonoBehaviour {
     return tile;
 	}
 
+	public bool isPlant(){
+		if (speciesType == 0)
+			return true;
+		return false;
+	}
+
+	public bool isPrey(){
+		if (speciesType == 1)
+			return true;
+		return false;
+	}
+
+	public bool isPredator(){
+		if (speciesType == 2)
+			return true;
+		return false;
+	}
 
 }

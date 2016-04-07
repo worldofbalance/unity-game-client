@@ -129,7 +129,7 @@ public class DemTile : MonoBehaviour
   public bool hasPlant(){
     
     if (this.resident) {
-      return this.resident.GetComponent<BuildInfo> ().isPlant;
+		return this.resident.GetComponent<BuildInfo> ().isPlant();
     } else {
       return false;
     }
