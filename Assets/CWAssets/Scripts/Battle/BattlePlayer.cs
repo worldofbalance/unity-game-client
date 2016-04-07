@@ -65,7 +65,7 @@ namespace CW
 				DeckPos = new Vector3 (825, 10, -400);
 				handPos = new Vector3 (150, 10, -375);
 				FieldPos = new Vector3 (-450, 10, -150);
-				TreePos = new Vector3 (-800, 10, -300);
+				TreePos = new Vector3 (0, 10, -375);//org(-800,10, -300)
 			
 				//Player 1 takes first turn every time
 				currentMana = 1;
@@ -79,7 +79,7 @@ namespace CW
 				handPos = new Vector3 (150, 10, 400);
 				FieldPos = new Vector3 (-450, 10, 150);
 				DeckPos = new Vector3 (-825, 10, 400);
-				TreePos = new Vector3 (800, 10, 300);
+				TreePos = new Vector3 (0, 10, 375);//org(800, 10, 300)
 			
 				//Mana and sets p2's inactive to false
 				currentMana = 1;
@@ -110,9 +110,9 @@ namespace CW
 			//Instantiates the Graphic for the Mana and sets it's position
 			manaObj = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/Mana"));
 			if (player1) {
-				manaObj.transform.position = new Vector3 (TreePos.x + 200, TreePos.y, TreePos.z);
+				manaObj.transform.position = new Vector3 (TreePos.x - 800, TreePos.y, TreePos.z);//org(tree +200, y, z)
 			} else {
-				manaObj.transform.position = new Vector3 (TreePos.x - 200, TreePos.y, TreePos.z);
+				manaObj.transform.position = new Vector3 (TreePos.x + 800, TreePos.y, TreePos.z);//org(tree -200, y, z)
 			}
 		}
 
