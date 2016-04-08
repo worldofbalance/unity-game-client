@@ -8,6 +8,6 @@ public class SDReadySceneUI : MonoBehaviour {
 
     public void BtnPlaySDVClick() {
        
-        Game.SwitchScene ("SDVGameMain");
+        Game.SwitchScene ("SDGameMain");
     }
 }
