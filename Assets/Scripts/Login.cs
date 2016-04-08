@@ -149,7 +149,10 @@ public class Login : MonoBehaviour {
 
 			RR.RRConnectionManager cManager = RR.RRConnectionManager.getInstance();
 			cManager.Send(RR_RequestLogin(user_id, password));
-		}
+
+            SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
+            sManager.Send(SD_RequestLogin(user_id, password));
+        }
 	}
 	
 	public IEnumerator AutoLogin() {
@@ -259,4 +262,25 @@ public class Login : MonoBehaviour {
 			Debug.Log ("RR: Login Failed");
 		}
 	}
+
+    public SD.RequestLogin SD_RequestLogin(string username, string password)
+    {
+        SD.RequestLogin request = new SD.RequestLogin();
+        request.send(username, password);
+        return request;
+    }
+
+    public void SD_ResponseLogin(SD.ExtendedEventArgs eventArgs)
+    {
+
+        SD.ResponseLoginEventArgs args = eventArgs as SD.ResponseLoginEventArgs;
+
+        if (args.status == 0)
+        {
+            SD.Constants.USER_ID = args.user_id;
+        }
+        else {
+            Debug.Log("SD: Login Failed");
+        }
+    }
 }
