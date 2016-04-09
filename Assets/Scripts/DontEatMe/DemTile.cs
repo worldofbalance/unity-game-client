@@ -136,6 +136,14 @@ public class DemTile : MonoBehaviour
 
   }
 
+  public GameObject GetResident(){
+    return resident;
+  }
+
+  public void SetResident(GameObject newResident){
+    resident = newResident;
+  }
+
 
   public void AddAnimal(GameObject animal){
 
@@ -151,6 +159,14 @@ public class DemTile : MonoBehaviour
     
     Destroy (resident);
   
+  }
+
+  public int GetIdX(){
+    return idX;
+  }
+
+  public int GetIdY(){
+    return idY;
   }
 
 

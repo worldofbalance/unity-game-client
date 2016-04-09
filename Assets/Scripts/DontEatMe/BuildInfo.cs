@@ -39,6 +39,10 @@ public class BuildInfo : MonoBehaviour {
     return tile;
 	}
 
+  public void SetTile(DemTile newTile){
+    tile = newTile;
+  }
+
 	public bool isPlant(){
 		if (speciesType == 0)
 			return true;
@@ -56,5 +60,6 @@ public class BuildInfo : MonoBehaviour {
 			return true;
 		return false;
 	}
+
 
 }

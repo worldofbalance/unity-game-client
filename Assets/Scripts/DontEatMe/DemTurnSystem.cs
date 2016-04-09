@@ -5,8 +5,11 @@ using System.Collections.Generic;
 public class DemTurnSystem : MonoBehaviour {
   
 	private static DemBoard board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
-    public static List<GameObject> activePredators = new List<GameObject>();
-	public static List<GameObject> tempPredators = new List<GameObject> ();
+  public static List<GameObject> activePredators = new List<GameObject>();
+  private static DemTile nextTile;
+  private static DemTile currentTile;
+  public static bool turnLock = false;
+  private static GameObject predator;
 
 
   DemTile tile;
@@ -18,50 +21,52 @@ public class DemTurnSystem : MonoBehaviour {
 
   public static void PredatorTurn(){
 
-    foreach (GameObject predator in activePredators) {
+    turnLock = true;
+    for(int i = activePredators.Count - 1; i >=0 ; i--){
+      
+    //foreach (GameObject predator in activePredators) {
+      predator = activePredators[i];
 
       BuildInfo animal = predator.GetComponent<BuildInfo> ();
-      DemTile tile = animal.tile;
-      int x = tile.idX;
-      int y = tile.idY;
+      int x = animal.GetTile ().GetIdX ();
+      int y = animal.GetTile ().GetIdY ();
+	
+      if(x+1 == 9){
+          //Do the bounds checking first instead of last
+          currentTile.RemoveAnimal (); //remove predator
+          Debug.Log("you lost, or whatever, bla bla bla...");
+          continue;
+      }
 
-		try{
+      nextTile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
+      currentTile = board.Tiles [x, y].GetComponent<DemTile> ();
+
 		  //Check if next location to left is open
-			if (board.Tiles [x + 1, y].GetComponent<DemTile> ().resident == null) {
+      if (nextTile.GetResident() == null) {
 
-				board.Tiles [x + 1, y].GetComponent<DemTile> ().AddAnimal (predator);
-				board.Tiles [x, y].GetComponent<DemTile> ().resident = null;
-				animal.tile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
-				tempPredators.Add (predator);	//add survived predator to temp list; the predator didn't eat prey
+				nextTile.AddAnimal (predator);
+        currentTile.SetResident (null);
+        animal.SetTile (nextTile);
+
 
 			}		//Check if next Location to left is plant, if it is , destroy it
-			else if (board.Tiles [x + 1, y].GetComponent<DemTile> ().resident.GetComponent<BuildInfo> ().isPlant ()) {
-				board.Tiles [x + 1, y].GetComponent<DemTile> ().RemoveAnimal ();	//remove plant from tile
-				board.Tiles [x + 1, y].GetComponent<DemTile> ().AddAnimal (predator);
-				board.Tiles [x, y].GetComponent<DemTile> ().resident = null;
-				animal.tile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
-				tempPredators.Add(predator);	
+			else if (nextTile.resident.GetComponent<BuildInfo> ().isPlant ()) {
+				nextTile.RemoveAnimal ();	//remove plant from tile
+				nextTile.AddAnimal (predator);
+        currentTile.SetResident (null);
+        animal.SetTile (nextTile);
 
 			}		//Check if next Location to left is prey, if it is , eat it
-			else if (board.Tiles [x + 1, y].GetComponent<DemTile> ().resident.GetComponent<BuildInfo> ().isPrey ()) {
-				board.Tiles [x + 1, y].GetComponent<DemTile> ().RemoveAnimal ();	//remove prey from tile
-				board.Tiles [x, y].GetComponent<DemTile> ().RemoveAnimal ();	//remove predator from tile, predator distroyed, but predator reference is still in list
+			else if (nextTile.resident.GetComponent<BuildInfo> ().isPrey ()) {
+				nextTile.RemoveAnimal ();	//remove prey from tile
+				currentTile.RemoveAnimal ();	//remove predator from tile, predator distroyed, but predator reference is still in list
+        activePredators.RemoveAt(i);
 
-			} else {//leftover case, next location is predator
-				tempPredators.Add (predator);	//add survived predator to temp list
-			}
-		}catch(System.IndexOutOfRangeException e){	//catch predator out of bound exception when predator reach the end of board
-				board.Tiles [x, y].GetComponent<DemTile> ().RemoveAnimal (); //remove predator
-				Debug.Log("you lost, or whatever, bla bla bla...");
-		}
+
+			} 
+		
 			
     }
-
-	//swap list
-		activePredators.Clear();	//remove all the predator, clear the predator reference
-		List <GameObject> temp = activePredators;
-		activePredators = tempPredators;	//the survived predator set to active
-		tempPredators = temp;
 
 
     //For Testing
@@ -70,12 +75,14 @@ public class DemTurnSystem : MonoBehaviour {
     int randomPredator = Random.Range (0, DemMain.predators.Length);
 
     GameObject newPredator = DemMain.predators [randomPredator].Create ();
-	newPredator.GetComponent<BuildInfo> ().speciesType = 2;
+	  newPredator.GetComponent<BuildInfo> ().speciesType = 2;
 
     activePredators.Add (newPredator);
 
 
     board.AddAnimal(0, random, newPredator );
+
+    turnLock = false;
 
 
   }
