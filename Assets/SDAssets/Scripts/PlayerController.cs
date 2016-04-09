@@ -21,6 +21,9 @@ public class PlayerController : MonoBehaviour {
     private int speed = 20;
     public int speedUpFactor;
     private const int MaxSpeed = 30;
+    private float turnSpeed = 10f;
+    private Vector3 turn;
+    private Vector3 goUpDown;
 
     private float movementHorizontal;
     private float movementVertical;
@@ -34,10 +37,16 @@ public class PlayerController : MonoBehaviour {
     private float currentStamina;
     private const float MinimunStamina = 10;
 
+
+
 	// Detects the player object, and reads the 'GameController' Object
     void Start () {
         rb = GetComponent<Rigidbody> ();
         scale = rb.transform.localScale;
+        turn = new Vector3 (0f, turnSpeed, 0f);
+        goUpDown = new Vector3 (turnSpeed/2, 0f, 0f);
+
+
 
         GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
         if (gameControllerObject != null) {
@@ -63,17 +72,23 @@ public class PlayerController : MonoBehaviour {
             Mathf.Clamp (rb.position.y, boundary.yMin, boundary.yMax),
             0.0f
         );
-
+            
         // Flips the player object left or right
         // depending on the direction the player is moving
+        // Moving to Right
         if (rb.velocity.x > 0) {
-            scale.z = 1;
+            if (rb.transform.rotation.eulerAngles.y > 90) {
+            //turnSpeed = turnSpeed * -1;
+            rb.transform.Rotate (-turn);
+            }
         } 
+        // Moving to Left
         if (rb.velocity.x < 0) {
-            scale.z = -1;
-        }
-        transform.localScale = scale;
+            if (rb.transform.rotation.eulerAngles.y < 270) {
+            rb.transform.Rotate (turn);
 
+            }
+        }
         //rb.rotation = Quaternion.Euler (0.0f, rb.velocity.z * -tilt,  0.0f);
 	}
         
