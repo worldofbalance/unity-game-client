@@ -14,12 +14,15 @@ public class DemMain : MonoBehaviour
 
   public static DemAnimalFactory[] predators;
 
+  public static DemTweenManager tweenManager;
+
 
 
     // Use this for initialization
     void Awake()
     {
 
+      tweenManager = new DemTweenManager ();
 
       //Pick predators
 

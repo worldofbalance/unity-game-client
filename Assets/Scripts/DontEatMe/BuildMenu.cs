@@ -49,6 +49,8 @@ public class BuildMenu : MonoBehaviour
 
         // Draw each plant's build info
 
+        GUI.enabled = DemTurnSystem.IsTurnLocked ();
+
 
         foreach (DemAnimalFactory plant in plants)
         {

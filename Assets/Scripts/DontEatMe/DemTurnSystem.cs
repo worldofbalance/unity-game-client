@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class DemTurnSystem : MonoBehaviour {
   
@@ -10,12 +12,16 @@ public class DemTurnSystem : MonoBehaviour {
   private static DemTile currentTile;
   public static bool turnLock = false;
   private static GameObject predator;
+  public  delegate void PredatorFinishCallback ();
+  public static PredatorFinishCallback callBackFunction;
 
 
   DemTile tile;
 
   void Start(){
     board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
+
+    callBackFunction = PredatorFinishedMove;
   }
 	
 
@@ -43,7 +49,7 @@ public class DemTurnSystem : MonoBehaviour {
 
 		  //Check if next location to left is open
       if (nextTile.GetResident() == null) {
-
+        DemTweenManager.AddTween (new DemTween(predator, nextTile.GetComponent<Transform>().position, 2000, callBackFunction ));
 				nextTile.AddAnimal (predator);
         currentTile.SetResident (null);
         animal.SetTile (nextTile);
@@ -70,9 +76,9 @@ public class DemTurnSystem : MonoBehaviour {
 
 
     //For Testing
-    int random = Random.Range (0, 5);
+    int random = UnityEngine.Random.Range (0, 5);
 
-    int randomPredator = Random.Range (0, DemMain.predators.Length);
+    int randomPredator = UnityEngine.Random.Range (0, DemMain.predators.Length);
 
     GameObject newPredator = DemMain.predators [randomPredator].Create ();
 	  newPredator.GetComponent<BuildInfo> ().speciesType = 2;
@@ -85,6 +91,15 @@ public class DemTurnSystem : MonoBehaviour {
     turnLock = false;
 
 
+  }
+
+  public static bool IsTurnLocked(){
+    return !turnLock;
+  }
+
+
+  public static void PredatorFinishedMove (){
+    Debug.Log ("A predator has finished moving");
   }
 
 
