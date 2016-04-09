@@ -26,11 +26,14 @@ public class GameController : MonoBehaviour {
     private float staminaRecoveryRate = 0.02f;
 
     public Boundary boundary;
-   
+    public Rigidbody player;
+    private Vector3 playerInitialPosition = new Vector3(0,0,0);
+    private Quaternion playerInitialRotation = Quaternion.Euler(0,90,0);
+
     // Initializes the player's score, and UI texts.
     // Also spawns numbers of prey at random positions.
     void Start () {
-        Debug.Log ("gc started");
+        Rigidbody playerClone = (Rigidbody)Instantiate (player, playerInitialPosition, playerInitialRotation);
         score = 0;
         UpdateScore ();
         UpdateStamina ();
@@ -44,11 +47,11 @@ public class GameController : MonoBehaviour {
         RecoverStamina ();
         UpdateStamina ();
     }
-    
+
     // Spawns prey at a random position within the boundary
     void spawnPrey(){
         Vector3 spawnPosition = new Vector3 (Random.Range(boundary.xMin, boundary.xMax), 
-                                             Random.Range(boundary.yMin, boundary.yMax), 0);
+            Random.Range(boundary.yMin, boundary.yMax), 0);
         Quaternion spawnRotation = Quaternion.identity;
         Instantiate (Prey, spawnPosition, spawnRotation);
     }
@@ -60,7 +63,7 @@ public class GameController : MonoBehaviour {
         score += newScoreValue;
         UpdateScore ();
     }
-    
+
     // Updates scoreText UI.
     void UpdateScore () {
         scoreText.text = "Score: " + score;
