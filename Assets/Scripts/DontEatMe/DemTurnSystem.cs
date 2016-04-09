@@ -12,8 +12,14 @@ public class DemTurnSystem : MonoBehaviour {
   private static DemTile currentTile;
   public static bool turnLock = false;
   private static GameObject predator;
+
+
   public  delegate void PredatorFinishCallback ();
   public static PredatorFinishCallback callBackFunction;
+
+  //Need to make a utility to make these generic later
+  public  delegate void PredatorAdvanceCallback ();
+  public static PredatorAdvanceCallback AdvanceCallback;
 
 
   DemTile tile;
@@ -22,6 +28,8 @@ public class DemTurnSystem : MonoBehaviour {
     board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
 
     callBackFunction = PredatorFinishedMove;
+
+    AdvanceCallback = AdvanceCallbackFunction;
   }
 	
 
@@ -49,10 +57,10 @@ public class DemTurnSystem : MonoBehaviour {
 
 		  //Check if next location to left is open
       if (nextTile.GetResident() == null) {
-        DemTweenManager.AddTween (new DemTween(predator, nextTile.GetComponent<Transform>().position, 2000, callBackFunction ));
-				nextTile.AddAnimal (predator);
-        currentTile.SetResident (null);
-        animal.SetTile (nextTile);
+        DemTweenManager.AddTween (new DemTween(predator, nextTile.GetCenter(), 1000, AdvanceCallback ));
+				//nextTile.AddAnimal (predator);
+        //currentTile.SetResident (null);
+        //animal.SetTile (nextTile);
 
 
 			}		//Check if next Location to left is plant, if it is , destroy it
@@ -100,6 +108,12 @@ public class DemTurnSystem : MonoBehaviour {
 
   public static void PredatorFinishedMove (){
     Debug.Log ("A predator has finished moving");
+  }
+
+
+  public static void AdvanceCallbackFunction(){
+    //Logic for simple predator advance callback
+
   }
 
 

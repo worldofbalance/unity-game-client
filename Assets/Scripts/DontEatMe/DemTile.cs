@@ -169,5 +169,9 @@ public class DemTile : MonoBehaviour
     return idY;
   }
 
+  public Vector3 GetCenter(){
+    return center;
+  }
+
 
 }

@@ -3,6 +3,7 @@ using System.Collections;
 
 public class DemMain : MonoBehaviour
 {
+  public static GameObject mainObject;
 
 	public static GameObject currentSelection;
 
@@ -14,7 +15,6 @@ public class DemMain : MonoBehaviour
 
   public static DemAnimalFactory[] predators;
 
-  public static DemTweenManager tweenManager;
 
 
 
@@ -22,7 +22,9 @@ public class DemMain : MonoBehaviour
     void Awake()
     {
 
-      tweenManager = new DemTweenManager ();
+      mainObject = GameObject.Find ("MainObject");
+      mainObject.AddComponent<DemTweenManager>();
+
 
       //Pick predators
 
@@ -109,6 +111,8 @@ public class DemMain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+    DemTweenManager.Update ();
     	// If a species is currently selected for building, update its position to the cursor
     if (BuildMenu.currentAnimalFactory != null) {
     		if (currentSelection) {
