@@ -95,15 +95,14 @@ public class ProtocolManager : MonoBehaviour{
 		}
 
 	}
-
 	
-	public void sendSummon(int playerID, int cardID,  int diet, 
+	public void sendSummon(int playerID, int cardID,  string diet, 
 	                      int level, int attack, int health, 
 	                       string species_name,  string type, 
 	                      string description){
 
 			NetworkManager.Send (
-			SummonCardProtocol.Prepare ( playerID, cardID,  diet, 
+			SummonCardProtocol.Prepare (playerID, cardID,  diet, 
 		                             level, attack,  health, 
 		                            species_name,  type, 
 		                            description), 
@@ -204,6 +203,16 @@ public class ProtocolManager : MonoBehaviour{
 	}
 
 
+	public void sendFoodBuff(int playerID, int targetPosition){
+			NetworkManager.Send (
+				ApplyFoodBuffProtocol.Prepare(playerID, targetPosition),
+				ProcessFoodBuff);
+		}
+
+	public void ProcessFoodBuff(NetworkResponse response){
+				ResponseFoodBuff args = response as ResponseFoodBuff;
+				Debug.Log ("Food Buff MatchID: " + args.status);
+		}
 	// Sent when attacking opponents cards
 	public void sendCardAttack(int playerID, int attackersPosition, int attackedPosition){
 		NetworkManager.Send (
