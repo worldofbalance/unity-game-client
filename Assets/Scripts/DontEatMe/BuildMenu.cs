@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class BuildMenu : MonoBehaviour
@@ -7,7 +8,7 @@ public class BuildMenu : MonoBehaviour
     // Background material
     public Material backgroundMaterial;
 
-    public DemButton buttons;
+    public static DemButton buttons;
 
     // Currently building...
     public static BuildInfo currentlyBuilding;
@@ -30,143 +31,18 @@ public class BuildMenu : MonoBehaviour
     public DemAnimalFactory[] prey;
 
 
-    void OnGUI()
-    {
-        // draw resource menu
-        GUILayout.BeginArea(new Rect(0, 0, 155, 200));
-        GUILayout.BeginHorizontal("box");
-
-        // draw resource counter
-        GUILayout.Button(new GUIContent("Resources: " + currentResources.ToString()), GUILayout.Height(70));
-
-        // end GUI for resource menu
-        GUILayout.EndHorizontal();
-        GUILayout.EndArea();
-
-        // draw the plant menu
-        GUILayout.BeginArea(new Rect(0, 80, 100, 400));
-        GUILayout.BeginVertical();
-
-        // Draw each plant's build info
-
-
-        foreach (DemAnimalFactory plant in plants)
-        {
-
-            //BuildInfo info = plant.GetComponent<BuildInfo> ();
-
-            //GUI.enabled = currentResources >= info.price;
-            // if button is clicked, then set currentlyBuilding to the info of the button you clicked
-            if (GUILayout.Button(new GUIContent(plant.GetImage()), GUILayout.Width(40), GUILayout.Height(40)))
-            {
-                DemAudioManager.audioClick.Play();
-
-                // If a selection is currently in progress...
-                if (DemMain.currentSelection)
-                {
-                    // Ignore button click if for the same species
-                    if (currentAnimalFactory == plant)
-                        return;
-                    // Otherwise, destroy the current selection before continuing
-                    else
-                        Destroy(DemMain.currentSelection);
-                }
-                // Set / reset currentlyBuilding
-
-                //currentlyBuilding = info;
-                currentAnimalFactory = plant;
-
-
-                // Create the current prey object
-                //GameObject currentPlant = plant.Create(); //DemAnimalFactory.Create(currentlyBuilding.name , 0 ,0) as GameObject;
-
-                // Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
-                Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
-                init_pos.z = -1.5f;
-
-                // Instantiate the current prey
-                DemMain.currentSelection = plant.Create();
-                DemMain.currentSelection.GetComponent<BuildInfo>().isPlant = true;
-
-
-                // Set DemMain's preyOrigin as the center of the button
-                DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-
-                DemMain.boardController.SetAvailableTiles();
-
-                // DEBUG MESSAGE
-                //Debug.Log("currentPlant set to " + currentPlant.name);
-            }
-
-        }
-
-        // End GUI for plant menu
-        GUILayout.EndVertical();
-        GUILayout.EndArea();
-
-        // Now, draw prey menu
-        GUILayout.BeginArea(new Rect(300, 0, 500, 220));
-        GUILayout.BeginHorizontal("box");
-
-        // draw each prey's build info
-        foreach (DemAnimalFactory singlePrey in prey)
-        {
-
-            // if button is clicked, then set currentlyBuilding to the info of the button you clicked
-
-            if (GUILayout.Button(new GUIContent(singlePrey.GetImage()), GUILayout.Width(40), GUILayout.Height(40)))
-            {
-                DemAudioManager.audioClick.Play();
-                // If a selection is currently in progress...
-                if (DemMain.currentSelection)
-                {
-                    // Ignore button click if for the same species
-                    if (currentAnimalFactory == singlePrey)
-                        return;
-                    // Otherwise, destroy the current selection before continuing
-                    else
-                        Destroy(DemMain.currentSelection);
-                }
-                // Set / reset currentlyBuilding
-
-                currentAnimalFactory = singlePrey;
-
-
-
-                // Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
-                Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
-                init_pos.z = -1.5f;
-
-
-                // Instantiate the current prey
-                DemMain.currentSelection = singlePrey.Create();
-
-                // Set DemMain's preyOrigin as the center of the button
-                DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-
-                DemMain.boardController.SetAvailableTiles();
-
-
-            }
-        }
-
-        // End GUI for prey menu
-        GUILayout.EndVertical();
-        GUILayout.EndArea();
-    }
-
-
     // this method increases score every 2s
     void increaseResources()
     {
         currentResources += 50;
     }
 
-    
+
     //Loading Resources
     void Awake()
     {
-        backgroundMaterial = Resources.Load<Material>("DontEatMe/Materials/DontEatMeBg");                                                                                      
+        backgroundMaterial = Resources.Load<Material>("DontEatMe/Materials/DontEatMeBg");
+
     }
 
 
@@ -175,7 +51,7 @@ public class BuildMenu : MonoBehaviour
     {
         // set resources to grow over time
         InvokeRepeating("increaseResources", 2, 3.0F);
-        
+
         /**
          * Elaine:
          * All this can be done in the editor beforehand since the background never changes
@@ -190,20 +66,14 @@ public class BuildMenu : MonoBehaviour
         Destroy(backgroundImage.GetComponent<MeshCollider>());
 
         backgroundImage.GetComponent<Renderer>().material = backgroundMaterial;
-        
-        backgroundImage.transform.localPosition = 
+
+        backgroundImage.transform.localPosition =
             new Vector3(backgroundImage.transform.localPosition.x, backgroundImage.transform.localPosition.y, 1);
         backgroundImage.transform.localScale = new Vector3(14, 7, backgroundImage.transform.localScale.z);
 
-        /**
-         * Uncomment the following 2 lines out and comment out the OnGUI() code to check out the new buttons
-         */
-        // Creates the buttons
-        //buttons = gameObject.AddComponent<DemButton>();
-        //buttons.MakeButton(5, 2, 59, 80);
+
 
         plants = new DemAnimalFactory[6];
-
         plants[0] = new DemAnimalFactory("Acacia");
         plants[1] = new DemAnimalFactory("Baobab");
         plants[2] = new DemAnimalFactory("Big Tree");
@@ -221,8 +91,66 @@ public class BuildMenu : MonoBehaviour
         prey[5] = new DemAnimalFactory("Dwarf Epauletted Bat");
 
 
+        buttons = gameObject.AddComponent<DemButton>();
+ 
+        // Creates a button for each plant
+        int i = 0;
+        foreach (DemAnimalFactory plant in plants)
+        {
+            GameObject button = buttons.CreateButton(59, 0 - (80 + i * (buttons.getYSize() - 2)));
+
+            buttons.MakeButtonImage(plant, button);
+
+            // Add an onClick listener to detect button clicks
+            button.GetComponent<Button>().onClick.AddListener(() => { selectSpecies(button); });
+
+            i++;
+        }
+ 
     }
-    
+
+
+    void selectSpecies(GameObject button)
+    {
+        Debug.Log("Clicked " + button.name);
+        
+
+        DemAudioManager.audioClick.Play();
+
+        // If a selection is currently in progress...
+        if (DemMain.currentSelection)
+        {
+            // Ignore button click if for the same species
+            if (currentAnimalFactory == plants[System.Int32.Parse(button.name)])
+                return;
+            // Otherwise, destroy the current selection before continuing
+            else
+                Destroy(DemMain.currentSelection);
+        }
+        // Set / reset currentlyBuilding
+
+        //currentlyBuilding = info;
+        currentAnimalFactory = plants[System.Int32.Parse(button.name)];
+
+
+        // Create the current prey object
+        //GameObject currentPlant = plant.Create(); //DemAnimalFactory.Create(currentlyBuilding.name , 0 ,0) as GameObject;
+
+        // Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
+        Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
+        init_pos.z = -1.5f;
+
+        // Instantiate the current prey
+        DemMain.currentSelection = plants[System.Int32.Parse(button.name)].Create();
+        DemMain.currentSelection.GetComponent<BuildInfo>().isPlant = true;
+
+
+        // Set DemMain's preyOrigin as the center of the button
+        DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+        DemMain.boardController.SetAvailableTiles();
+    }
+
 
     public void endGame()
     {
