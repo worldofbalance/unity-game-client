@@ -167,22 +167,24 @@ public class Login : MonoBehaviour {
 	
 	public void ProcessLogin(NetworkResponse response) {
 		ResponseLogin args = response as ResponseLogin;
-		
+		Debug.Log("inside process login");
 		if (args.status == 0) {
 			GameState.account = args.account;
-
+      
 			NetworkManager.Send(
 				TopListProtocol.Prepare(),
 				ProcessTopList
-				);
+			);
 			NetworkManager.Send(
 				PlayerSelectProtocol.Prepare(0),
 				ProcessPlayerSelect
-				);
-			NetworkManager.Send(
-				CW.PlayerSelectProtocol.Prepare(0),
-				CW_ProcessPlayerSelect
-				);
+			);
+
+// commented by Rujoota
+//			NetworkManager.Send(
+//				CW.PlayerSelectProtocol.Prepare(0),
+//				CW_ProcessPlayerSelect
+//			);
 		} else {
 			Debug.Log ("login failed, server message = " + args.status);
 			//mainObject.GetComponent<Main>().CreateMessageBox("Login Failed");
@@ -190,6 +192,7 @@ public class Login : MonoBehaviour {
 	}
 
 	public void ProcessTopList(NetworkResponse response) {
+        Debug.Log("Process top list");
 		ResponseTopList args = response as ResponseTopList;
 		//client team -- use this data for the toplist functionality
 		topPlayers = new string[3];
@@ -203,7 +206,8 @@ public class Login : MonoBehaviour {
 	
 	public void ProcessPlayerSelect(NetworkResponse response) {
 		ResponsePlayerSelect args = response as ResponsePlayerSelect;
-		
+		Debug.Log("inside processplayerselect");
+        Debug.Log("response:"+user_id);
 		if (args.status == 0) {
 			isActive = false;
 			GameState.player = args.player;

@@ -50,9 +50,8 @@ public class NetworkManager {
 
 			if (cManager.Send(packet.GetBytes())) {
 				requests.Dequeue();
-
-				Debug.Log("Sent Request No. " + packet.GetID() + " [" +  
-				          NetworkProtocolTable.Get(packet.GetID()).ToString() + "]");
+                // commented by Rujoota
+				//Debug.Log("Sent Request No. " + packet.GetID() + " [" +  NetworkProtocolTable.Get(packet.GetID()).ToString() + "]");
 			}
 		}
 

@@ -9,14 +9,14 @@ public class SummonCardProtocol {
 	//public void init(BattlePlayer player, int cardID, int diet, 
 	// int level, int attack, int health,string species_name, string type, string description
 	
-	public static NetworkRequest Prepare(int playerID, int cardID, int diet, 
+	public static NetworkRequest Prepare(int playerID, int cardID, string diet, 
 	                                     int level, int attack, int health, 
 	                                     string species_name, string type, 
 	                                     string description) {
 		NetworkRequest request = new NetworkRequest(NetworkCode.SUMMON_CARD);
 		request.AddInt32(playerID);
 		request.AddInt32(cardID);
-		request.AddInt32 (diet);
+		request.AddString (diet);
 		request.AddInt32(level);
 		request.AddInt32(attack);
 		request.AddInt32 (health);

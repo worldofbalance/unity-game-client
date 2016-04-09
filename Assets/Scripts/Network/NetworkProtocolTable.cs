@@ -71,6 +71,7 @@ public class NetworkProtocolTable {
 		Add(NetworkCode.MATCH_ACTION, "CW.MatchAction");
 		Add(NetworkCode.MATCH_START, "CW.MatchStart");
 		Add(NetworkCode.RETURN_LOBBY, "CW.ReturnLobby");
+		Add(NetworkCode.APPLY_FOOD, "CW.ApplyFoodBuff");
 
 	}
 	
