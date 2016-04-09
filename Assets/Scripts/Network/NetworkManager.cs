@@ -6,39 +6,41 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 
-public class NetworkManager : MonoBehaviour {
+public class NetworkManager {
 
 	public delegate void Callback(NetworkResponse response);
 	private static Dictionary<int, Queue<Callback>> callbackList = new Dictionary<int, Queue<Callback>>();
 	private static Dictionary<int, List<Callback>> listenList = new Dictionary<int, List<Callback>>();
-
+	private MonoBehaviour owner;
 	// Connection
-	private ConnectionManager cManager = new ConnectionManager();
+	private ConnectionManager cManager;
 	private static Queue<NetworkRequest> requests = new Queue<NetworkRequest>();
 	private static int counter = 0;
 	private static int interval = 50;
 
 	private static bool lostConnection = false;
 
-	void Awake() {
+	// The NetworkManager needs a MonoBehaviour instance to start co-routines on
+	public NetworkManager(MonoBehaviour owner, ConnectionManager cManager) {
+		this.owner = owner;
+		this.cManager = cManager;
+		
 		NetworkProtocolTable.Init();
 
 		NetworkManager.Listen (NetworkCode.HEARTBEAT, ProcessHeartbeat);
-	}
-	
-	// Use this for initialization
-	void Start() {
-		if (cManager.Connect(Config.REMOTE_HOST, Constants.REMOTE_PORT) == ConnectionManager.SUCCESS) {
+
+		if (cManager.Connect() == ConnectionManager.SUCCESS) {
 			NetworkManager.Send(
 				ClientProtocol.Prepare(Constants.CLIENT_VERSION, Constants.SESSION_ID),
 				ProcessClient
 			);
 		}
-		StartCoroutine(Poll(Constants.HEARTBEAT_RATE));
+
+		owner.StartCoroutine(Poll(Constants.HEARTBEAT_RATE));
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	// Update should be called within a Game's Update method
+	public void Update () {
 		if (!cManager.Connected) {
 			return;
 		}
@@ -148,7 +150,7 @@ public class NetworkManager : MonoBehaviour {
 		if (!lostConnection) {
 			Debug.LogWarning ("Lost connection!");
 
-			gameObject.AddComponent <ConnectionLostGUI>();
+			owner.gameObject.AddComponent <ConnectionLostGUI>();
 
 			lostConnection = true;
 		}

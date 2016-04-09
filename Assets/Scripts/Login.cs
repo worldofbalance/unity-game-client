@@ -142,16 +142,17 @@ public class Login : MonoBehaviour {
 			//			mainObject.GetComponent<Main>().CreateMessageBox("Password Required");
 			GUI.FocusControl("password_field");
 		} else {
+			
 			NetworkManager.Send(
-				LoginProtocol.Prepare(user_id, password),
-				ProcessLogin
-				);
-
-			CW.NetworkManager.Send(CW.LoginProtocol.Prepare(user_id, password));
+				LoginProtocol.Prepare(user_id, password), ProcessLogin
+			);
 
 			RR.RRConnectionManager cManager = RR.RRConnectionManager.getInstance();
 			cManager.Send(RR_RequestLogin(user_id, password));
-		}
+
+            SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
+            sManager.Send(SD_RequestLogin(user_id, password));
+        }
 	}
 	
 	public IEnumerator AutoLogin() {
@@ -178,7 +179,7 @@ public class Login : MonoBehaviour {
 				PlayerSelectProtocol.Prepare(0),
 				ProcessPlayerSelect
 				);
-			CW.NetworkManager.Send(
+			NetworkManager.Send(
 				CW.PlayerSelectProtocol.Prepare(0),
 				CW_ProcessPlayerSelect
 				);
@@ -210,7 +211,7 @@ public class Login : MonoBehaviour {
 		}
 	}
 
-	public void CW_ProcessPlayerSelect(CW.NetworkResponse response) {
+	public void CW_ProcessPlayerSelect(NetworkResponse response) {
 		CW.ResponsePlayerSelect args = response as CW.ResponsePlayerSelect;
 	}
 
@@ -261,4 +262,25 @@ public class Login : MonoBehaviour {
 			Debug.Log ("RR: Login Failed");
 		}
 	}
+
+    public SD.RequestLogin SD_RequestLogin(string username, string password)
+    {
+        SD.RequestLogin request = new SD.RequestLogin();
+        request.send(username, password);
+        return request;
+    }
+
+    public void SD_ResponseLogin(SD.ExtendedEventArgs eventArgs)
+    {
+
+        SD.ResponseLoginEventArgs args = eventArgs as SD.ResponseLoginEventArgs;
+
+        if (args.status == 0)
+        {
+            SD.Constants.USER_ID = args.user_id;
+        }
+        else {
+            Debug.Log("SD: Login Failed");
+        }
+    }
 }
