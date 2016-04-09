@@ -17,10 +17,12 @@ public class GameController : MonoBehaviour {
     // Number of prey spawn at a game start
     public int numPrey;
 
-    public Text scoreText; 
+    public Text scoreText;
+    public Text UnscoredPointText; 
     public Text staminaText;
 
     private int score;          // Player's score
+    private int unscoredPoint;
     public float stamina;       // Player's stamina
     private const float MaxStamina = 100;
     private float staminaRecoveryRate = 0.02f;
@@ -35,8 +37,10 @@ public class GameController : MonoBehaviour {
     void Start () {
         Rigidbody playerClone = (Rigidbody)Instantiate (player, playerInitialPosition, playerInitialRotation);
         score = 0;
+        unscoredPoint = 0; 
         UpdateScore ();
         UpdateStamina ();
+        UpdateUnscoredPoint ();
         for (int i = 0; i < numPrey; i++) {
             spawnPrey ();
         }    
@@ -46,6 +50,8 @@ public class GameController : MonoBehaviour {
     void Update() {
         RecoverStamina ();
         UpdateStamina ();
+        UpdateUnscoredPoint ();
+        Debug.Log (score);
     }
 
     // Spawns prey at a random position within the boundary
@@ -69,6 +75,16 @@ public class GameController : MonoBehaviour {
         scoreText.text = "Score: " + score;
     }
 
+    public void AddUnscoredPoint(int newScoreValue) {
+        unscoredPoint += newScoreValue;
+        UpdateUnscoredPoint ();
+    }
+
+    // Updates scoreText UI.
+    void UpdateUnscoredPoint() {
+        UnscoredPointText.text = "Unscored Point: " + unscoredPoint;
+    }
+
     // Updates staminaText UI with no decimal place.
     void UpdateStamina() {
         staminaText.text = "Stamina: " + stamina.ToString("F0");
@@ -89,5 +105,25 @@ public class GameController : MonoBehaviour {
     // Sets stamina
     public void SetStamina(float newStamina){
         this.stamina = newStamina;
+    }
+
+    // Sets score
+    public void SetScore(int newScore){
+        this.score = newScore;
+    }
+
+
+    public int GetUnscored(){
+        return this.unscoredPoint;
+    }
+
+    public void ResetUnscored(){
+        this.unscoredPoint = 0;
+    }
+
+    // Adds unscored points to player's actual score
+    public void Score(){
+        this.score += this.unscoredPoint;
+        UpdateScore ();
     }
 }

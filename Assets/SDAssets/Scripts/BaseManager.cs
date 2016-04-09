@@ -1,0 +1,58 @@
+﻿/*
+ * File Name: BaseManager.cs
+ * Description: Will Handle all events between the player and the base
+ *              So far,
+ *              1. Player can score their unscored points staying more than 3 second in the base
+ *              2. While player is in the base. The stamina stays at 100.
+ * 
+ */ 
+
+
+using UnityEngine;
+using System.Collections;
+
+public class BaseManager : MonoBehaviour {
+
+    public GameController gameController;
+    private float time;
+    private float secondsToScore = 3f;
+
+    // Use this for initialization
+    void Start () {
+        GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
+        if (gameControllerObject != null) {
+            gameController = gameControllerObject.GetComponent<GameController> ();
+        } else {
+            Debug.Log ("Game controller not found");
+        }
+    }
+
+    // Update is called once per frame
+    void Update () {
+
+    }
+
+    // Runs when the player collides the base
+    void OnTriggerEnter(Collider other) {
+        if (other.tag == "Player") {
+            time = secondsToScore;
+           
+        }
+    }
+
+    // Runs while the player is staying in the base
+    void OnTriggerStay(Collider other) {
+        if (other.tag == "Player") {
+            gameController.stamina = 100;
+
+            // After couplse seconds that is defined by timeToScore, 
+            // add unscored points to the actual score
+            time -= 1f * Time.deltaTime;
+            if (time <= 0) {
+                gameController.Score ();
+                gameController.ResetUnscored ();
+            }
+
+        }
+    }
+}
