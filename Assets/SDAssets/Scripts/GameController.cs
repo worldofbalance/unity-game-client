@@ -51,7 +51,6 @@ public class GameController : MonoBehaviour {
         RecoverStamina ();
         UpdateStamina ();
         UpdateUnscoredPoint ();
-        Debug.Log (score);
     }
 
     // Spawns prey at a random position within the boundary
