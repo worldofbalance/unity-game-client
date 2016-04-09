@@ -8,18 +8,13 @@ public class DemTurnSystem : MonoBehaviour {
   
 	private static DemBoard board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
   public static List<GameObject> activePredators = new List<GameObject>();
+  private static Stack<DemTween> tweenList = new Stack<DemTween>();
   private static DemTile nextTile;
   private static DemTile currentTile;
   public static bool turnLock = false;
   private static GameObject predator;
 
 
-  public  delegate void PredatorFinishCallback ();
-  public static PredatorFinishCallback callBackFunction;
-
-  //Need to make a utility to make these generic later
-  public  delegate void PredatorAdvanceCallback ();
-  public static PredatorAdvanceCallback AdvanceCallback;
 
 
   DemTile tile;
@@ -27,9 +22,8 @@ public class DemTurnSystem : MonoBehaviour {
   void Start(){
     board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
 
-    callBackFunction = PredatorFinishedMove;
 
-    AdvanceCallback = AdvanceCallbackFunction;
+
   }
 	
 
@@ -57,7 +51,13 @@ public class DemTurnSystem : MonoBehaviour {
 
 		  //Check if next location to left is open
       if (nextTile.GetResident() == null) {
-        DemTweenManager.AddTween (new DemTween(predator, nextTile.GetCenter(), 1000, AdvanceCallback ));
+        animal.SetNextTile (nextTile);
+
+        tweenList.Push(new DemTween (predator, nextTile.GetCenter (), 700));
+        //DemTweenManager.AddTween (new DemTween(predator, nextTile.GetCenter(), 1000));
+
+
+
 				//nextTile.AddAnimal (predator);
         //currentTile.SetResident (null);
         //animal.SetTile (nextTile);
@@ -78,25 +78,25 @@ public class DemTurnSystem : MonoBehaviour {
 
 
 			} 
+
+
+        
+
+ 
+
 		
 			
     }
 
-
-    //For Testing
-    int random = UnityEngine.Random.Range (0, 5);
-
-    int randomPredator = UnityEngine.Random.Range (0, DemMain.predators.Length);
-
-    GameObject newPredator = DemMain.predators [randomPredator].Create ();
-	  newPredator.GetComponent<BuildInfo> ().speciesType = 2;
-
-    activePredators.Add (newPredator);
+    if (tweenList.Count > 0) {
+      DemTweenManager.AddTween (tweenList.Pop ());
+    } else {
+      GenerateNewPredators ();
+    }
 
 
-    board.AddAnimal(0, random, newPredator );
 
-    turnLock = false;
+
 
 
   }
@@ -106,15 +106,39 @@ public class DemTurnSystem : MonoBehaviour {
   }
 
 
-  public static void PredatorFinishedMove (){
+  public static void PredatorFinishedMove (GameObject finishedPredator){
+    BuildInfo animal = finishedPredator.GetComponent<BuildInfo> ();
+    animal.AdvanceTile ();
+    if (tweenList.Count > 0) {
+      DemTweenManager.AddTween (tweenList.Pop ());
+    } else {
+      GenerateNewPredators ();
+    }
     Debug.Log ("A predator has finished moving");
+
+  }
+
+  public static void GenerateNewPredators(){
+
+    //For Testing
+    int random = UnityEngine.Random.Range (0, 5);
+
+    int randomPredator = UnityEngine.Random.Range (0, DemMain.predators.Length);
+
+    GameObject newPredator = DemMain.predators [randomPredator].Create ();
+    newPredator.GetComponent<BuildInfo> ().speciesType = 2;
+
+    activePredators.Add (newPredator);
+
+
+    board.AddAnimal(0, random, newPredator );
+
+    tweenList.Clear ();
+
+    turnLock = false;
   }
 
 
-  public static void AdvanceCallbackFunction(){
-    //Logic for simple predator advance callback
-
-  }
 
 
 

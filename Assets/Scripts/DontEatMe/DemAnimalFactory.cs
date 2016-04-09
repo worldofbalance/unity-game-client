@@ -25,6 +25,7 @@ public class DemAnimalFactory{
     //GameObject animal = PrefabUtility.CreateEmptyPrefab ("./" + name) as GameObject;
     GameObject animal = new GameObject (this.speciesName);
     BuildInfo info = animal.AddComponent<BuildInfo> ();
+    info.SetParent (animal);
     info.previewImage = Resources.Load ("Textures/Species/" + this.speciesName) as Texture;
 
 

@@ -9,10 +9,11 @@ public class DemTweenManager : MonoBehaviour{
 
   public static void AddTween(DemTween tween){
     tweens.Add (tween);
+    tween.Start ();
   }
 
   public static void Update(){
-    Debug.Log ("Active Tweens : " + tweens.Count);
+    
 
     if (tweens.Count == 0) {
       return;

@@ -8,33 +8,38 @@ public class DemTween {
   private Vector3 oldPosition;
   private Vector3 newPosition;
   private int tweenTime;
-  private DemTurnSystem.PredatorAdvanceCallback callback;
   private float initialTime;
   private float deltaTime;
   private float progress;
   private Transform originalTransform;
   private Vector3 journeyLength;
   private bool complete;
+  public bool running;
 
 
-  public DemTween(GameObject _tweenObject , Vector3 _newPosition, int _tweenTime, DemTurnSystem.PredatorAdvanceCallback _callback){
-    
+  public DemTween(GameObject _tweenObject , Vector3 _newPosition, int _tweenTime){
+    running = false;
     complete = false;
     progress = 0;
-    initialTime = Time.time;
     tweenTime = _tweenTime;
     this.tweenObject = _tweenObject;
     originalTransform = this.tweenObject.GetComponent<Transform> ();
     oldPosition = originalTransform.position;
     this.newPosition = _newPosition;
-    callback = _callback;
+
+  }
+
+  public void Start(){
+    
+    initialTime = Time.time;
+    running = true;
 
   }
 
   public void Update(int id){
 
 
-    if (complete) {
+    if (complete || !running) {
       //Just in case it gets called after completed
       return;
     }
@@ -46,7 +51,7 @@ public class DemTween {
       //Mark for deletion
       complete = true;
       DemTweenManager.RemoveTween (id);
-      callback();
+      DemTurnSystem.PredatorFinishedMove (tweenObject);
       return;
     }
 
