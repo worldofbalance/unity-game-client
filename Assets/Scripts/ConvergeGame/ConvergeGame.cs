@@ -15,9 +15,10 @@ public class ConvergeGame : MonoBehaviour
 	private float top;
 	private float width = Screen.width;
 	private float height = Screen.height;
+	private float emptySpace;
 	private float widthGraph;
 	private float heightGraph;
-	private int bufferBorder = 10;
+	private int bufferBorder = 2; //////////////////////////////////
 	private float leftGraph = 10;
 	private float topGraph = 75;
 	private Rect windowRect;
@@ -68,14 +69,29 @@ public class ConvergeGame : MonoBehaviour
 		DontDestroyOnLoad (gameObject.GetComponent ("Login"));
 		player_id = GameState.player.GetID ();
 
-		left = (Screen.width - width) / 2;
-		top = (Screen.height - height) / 2;
+		//Depending on the screen width and height will create game at 16:9 aspect ratio
+		//the larger of the number will be scaled down to complete the perfect box
+		if(width*0.5625 > height){
+			//this means width is wide beyond the 16:9 ratio
+			width = height*1.77777777777777777777777778f;
+			//variable will be used to center the scaled down playing window
+			emptySpace = Screen.width-width;
+			windowRect = new Rect (emptySpace/2, 0, width, height);
+		} else {
+			//this means height is high beyond the 16:9 ratio
+			height = width*0.5625f;
+			//variable will be used to center the scaled down playing window
+			emptySpace = Screen.height-height;
+			windowRect = new Rect (0, emptySpace/2, width, height);
+		}
 		
-		windowRect = new Rect (left, top, width, height);
+		
 		widthGraph = windowRect.width - (bufferBorder * 2);
+
 		heightGraph = windowRect.height / 2;
-		popupRect = new Rect ((Screen.width / 2) - 250, (Screen.height / 2) - 125,
-		                        500, 200);
+
+		popupRect = new Rect ((Screen.width/3), (Screen.height /3),
+		                        100, 100);
 
 		bgTexture = Resources.Load<Texture2D> (Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
 		font = Resources.Load<Font> ("Fonts/" + "Chalkboard");
