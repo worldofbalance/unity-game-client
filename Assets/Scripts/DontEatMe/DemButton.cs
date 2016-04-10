@@ -3,16 +3,16 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 
-public class DemButton : MonoBehaviour//, IPointerClickHandler
+public class DemButton : MonoBehaviour
 {
 
-
+    
     //Button prefab
     public GameObject buttonPrefab;
 
     //Canvas Object
     public GameObject canvasObject;
-
+    
 
     //width of button
     private float xSize;
@@ -38,10 +38,10 @@ public class DemButton : MonoBehaviour//, IPointerClickHandler
 
 
     // Instantiate and place the buttons on the scene
-    public GameObject CreateButton(float xPos, float yPos)
+    public GameObject CreateButton(float xPos, float yPos, string name)
     {
         GameObject button = Instantiate(buttonPrefab) as GameObject;
-        button.name = buttonId.ToString();
+        button.name = name;
         buttonId += 1;
 
         button.transform.SetParent(canvasObject.transform);
@@ -54,9 +54,9 @@ public class DemButton : MonoBehaviour//, IPointerClickHandler
 
 
     // Create image for the button
-    public void MakeButtonImage(DemAnimalFactory species, GameObject button)
+    public void SetButtonImage(DemAnimalFactory species, GameObject button)
     {
-        GameObject buttonImage = new GameObject("buttonImg");
+        GameObject buttonImage = new GameObject("buttonImg - " + species.GetName());
         buttonImage.transform.SetParent(button.transform);
 
         // Set the layer to UI layer
@@ -69,10 +69,31 @@ public class DemButton : MonoBehaviour//, IPointerClickHandler
         buttonImage.GetComponent<RectTransform>().localScale = new Vector3(0.7f, 0.7f, 1);
     }
 
+    // Create text for the button
+    public void SetButtonText(GameObject button, string text)
+    {
+        GameObject buttonText = new GameObject("buttonTxt");
+        buttonText.transform.SetParent(button.transform);
+
+        // Set the layer to UI layer
+        buttonText.layer = 5;
+
+        //Set text and its position on the button
+        buttonText.AddComponent<Text>();
+        buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Chalkboard");           
+        buttonText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
+        buttonText.GetComponent<Text>().color = Color.black;
+        buttonText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+
+        buttonText.GetComponent<Text>().text = text;
+
+    }
+
 
     // Change the size of the button
     public void setSize(float newSizeX, float newSizeY)
     {
+        buttonPrefab.GetComponent<RectTransform>().sizeDelta = new Vector2 (newSizeX, newSizeY);
         xSize = newSizeX;
         ySize = newSizeY;
     }

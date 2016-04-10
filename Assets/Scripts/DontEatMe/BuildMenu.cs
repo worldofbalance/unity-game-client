@@ -8,7 +8,11 @@ public class BuildMenu : MonoBehaviour
     // Background material
     public Material backgroundMaterial;
 
-    public static DemButton buttons;
+    // Access to DemButton script for button creation
+    public DemButton demButton;
+
+    // Toggle counter
+    int toggleCount = 0;
 
     // Currently building...
     public static BuildInfo currentlyBuilding;
@@ -29,6 +33,9 @@ public class BuildMenu : MonoBehaviour
 
     // Prey prefabs
     public DemAnimalFactory[] prey;
+
+    // Menu buttons
+    public GameObject[] menuButtons ;
 
 
     // this method increases score every 2s
@@ -72,7 +79,7 @@ public class BuildMenu : MonoBehaviour
         backgroundImage.transform.localScale = new Vector3(14, 7, backgroundImage.transform.localScale.z);
 
 
-
+        // Constructing the plants and prey the player can use
         plants = new DemAnimalFactory[6];
         plants[0] = new DemAnimalFactory("Acacia");
         plants[1] = new DemAnimalFactory("Baobab");
@@ -91,29 +98,85 @@ public class BuildMenu : MonoBehaviour
         prey[5] = new DemAnimalFactory("Dwarf Epauletted Bat");
 
 
-        buttons = gameObject.AddComponent<DemButton>();
- 
-        // Creates a button for each plant
-        int i = 0;
-        foreach (DemAnimalFactory plant in plants)
-        {
-            GameObject button = buttons.CreateButton(59, 0 - (80 + i * (buttons.getYSize() - 2)));
+        // Building the buttons
+        gameObject.AddComponent<DemButton>();
+        demButton = gameObject.GetComponent<DemButton>();
 
-            buttons.MakeButtonImage(plant, button);
+
+        // Toggle button to switch between plant and prey menu
+        demButton.setSize(120, 30);
+        GameObject toggleButton = demButton.CreateButton(59, -15, "Toggle");
+        demButton.SetButtonText(toggleButton, "Plants");
+
+
+        // Creates a buttons for plant/prey menu
+        demButton.setSize(120, 80);
+        menuButtons = new GameObject[6];
+        for (int i = 0; i < 6; i++)
+        {
+
+            GameObject button = demButton.CreateButton(59, 0 - (80 + i * (demButton.getYSize() - 2)), i.ToString());
+
+            // Set the button images
+            demButton.SetButtonImage(plants[i], button);
+            demButton.SetButtonImage(prey[i], button);
+            
+            // Set the images of the untoggled menu to inactive
+            button.transform.Find("buttonImg - " + prey[i].GetName()).gameObject.SetActive(false);
 
             // Add an onClick listener to detect button clicks
             button.GetComponent<Button>().onClick.AddListener(() => { selectSpecies(button); });
 
-            i++;
+            menuButtons[i] = button;
         }
- 
+
+        // Add an onClick listener to dectect button clicks
+        toggleButton.GetComponent<Button>().onClick.AddListener(() => { selectMenu(toggleButton, menuButtons); });
+
     }
 
 
+    // Toggle between plant and prey menu when the toggle button is clicked
+    void selectMenu(GameObject tButton, GameObject[] mButtons)
+    {
+        Debug.Log("Clicked " + tButton.name);
+
+        toggleCount += 1;
+
+        if (toggleCount % 2 == 0)
+
+            for (int i = 0; i < 6; i++)
+            {
+                menuButtons[i].transform.Find("buttonImg - " + prey[i].GetName()).gameObject.SetActive(false);
+                menuButtons[i].transform.Find("buttonImg - " + plants[i].GetName()).gameObject.SetActive(true);
+            }
+
+        else
+
+            for (int i = 0; i < 6; i++)
+            {
+                menuButtons[i].transform.Find("buttonImg - " + plants[i].GetName()).gameObject.SetActive(false);
+                menuButtons[i].transform.Find("buttonImg - " + prey[i].GetName()).gameObject.SetActive(true);
+            }
+
+    }
+
+
+    // Specie selection based on the button clicked and setting down species on the gameboard
     void selectSpecies(GameObject button)
     {
         Debug.Log("Clicked " + button.name);
-        
+
+        DemAnimalFactory[] species;
+
+        if (toggleCount % 2 == 0)
+        {
+            species = plants;
+        }
+        else
+        {
+            species = prey;
+        }
 
         DemAudioManager.audioClick.Play();
 
@@ -121,7 +184,7 @@ public class BuildMenu : MonoBehaviour
         if (DemMain.currentSelection)
         {
             // Ignore button click if for the same species
-            if (currentAnimalFactory == plants[System.Int32.Parse(button.name)])
+            if (currentAnimalFactory == species[System.Int32.Parse(button.name)])
                 return;
             // Otherwise, destroy the current selection before continuing
             else
@@ -130,7 +193,7 @@ public class BuildMenu : MonoBehaviour
         // Set / reset currentlyBuilding
 
         //currentlyBuilding = info;
-        currentAnimalFactory = plants[System.Int32.Parse(button.name)];
+        currentAnimalFactory = species[System.Int32.Parse(button.name)];
 
 
         // Create the current prey object
@@ -141,7 +204,7 @@ public class BuildMenu : MonoBehaviour
         init_pos.z = -1.5f;
 
         // Instantiate the current prey
-        DemMain.currentSelection = plants[System.Int32.Parse(button.name)].Create();
+        DemMain.currentSelection = species[System.Int32.Parse(button.name)].Create();
         DemMain.currentSelection.GetComponent<BuildInfo>().isPlant = true;
 
 
@@ -150,6 +213,7 @@ public class BuildMenu : MonoBehaviour
 
         DemMain.boardController.SetAvailableTiles();
     }
+
 
 
     public void endGame()
