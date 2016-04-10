@@ -111,6 +111,7 @@ public class DemBoard : MonoBehaviour {
     for (int x = 0; x < 9; x++){
 
       for (int y = 0; y < 5; y++){
+        
         Tiles [x, y].GetComponent<Renderer> ().material.color = Color.white;
         Tiles [x, y].GetComponent<DemTile> ().currentColor = Color.white;
         Tiles [x, y].GetComponent<DemTile> ().available = false;

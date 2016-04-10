@@ -16,24 +16,21 @@ public class DemTurnSystem : MonoBehaviour {
   private DemMain main;
   private GameObject mainObject;
   private DemTweenManager tweenManager;
-
-
-
-
   DemTile tile;
 
-  void Awake(){
+  void Awake()
+  {
     
     mainObject = GameObject.Find ("MainObject");
     board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
     main = mainObject.GetComponent<DemMain> ();
     tweenManager = mainObject.GetComponent<DemTweenManager> ();
 
-
   }
 	
 
-  public  void PredatorTurn(){
+  public  void PredatorTurn()
+  {
 
     turnLock = true;
     for(int i = activePredators.Count - 1; i >=0 ; i--){
@@ -44,7 +41,9 @@ public class DemTurnSystem : MonoBehaviour {
       BuildInfo animal = predator.GetComponent<BuildInfo> ();
       int x = animal.GetTile ().GetIdX ();
       int y = animal.GetTile ().GetIdY ();
-	
+	    
+      currentTile = board.Tiles [x, y].GetComponent<DemTile> ();
+
       if(x+1 == 9){
           //Do the bounds checking first instead of last
           currentTile.RemoveAnimal (); //remove predator
@@ -53,70 +52,27 @@ public class DemTurnSystem : MonoBehaviour {
       }
 
       nextTile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
-      currentTile = board.Tiles [x, y].GetComponent<DemTile> ();
+
 
       animal.SetNextTile (nextTile);
       tweenList.Push(new DemTween (predator, nextTile.GetCenter (), 700));
 
-      /*
-		  //Check if next location to left is open
-      if (nextTile.GetResident() == null) {
-        animal.SetNextTile (nextTile);
-
-        tweenList.Push(new DemTween (predator, nextTile.GetCenter (), 700));
-        //DemTweenManager.AddTween (new DemTween(predator, nextTile.GetCenter(), 1000));
-
-
-
-				//nextTile.AddAnimal (predator);
-        //currentTile.SetResident (null);
-        //animal.SetTile (nextTile);
-
-
-			}		//Check if next Location to left is plant, if it is , destroy it
-			else if (nextTile.resident.GetComponent<BuildInfo> ().isPlant ()) 
-      {
-        tweenList.Push(new DemTween (predator, nextTile.GetCenter (), 700));
-				nextTile.RemoveAnimal ();	//remove plant from tile
-				nextTile.AddAnimal (predator);
-        currentTile.SetResident (null);
-        animal.SetTile (nextTile);
-
-			}		//Check if next Location to left is prey, if it is , eat it
-			else if (nextTile.resident.GetComponent<BuildInfo> ().isPrey ()) 
-      {
-        
-				nextTile.RemoveAnimal ();	//remove prey from tile
-				currentTile.RemoveAnimal ();	//remove predator from tile, predator distroyed, but predator reference is still in list
-        activePredators.RemoveAt(i);
-
-
-			} 
-
-
-        
-      */
- 
-
-		
-			
     }
 
     ProcessTweens ();
 
-
-
-
-
-
   }
 
   public  bool IsTurnLocked(){
+    
     return !turnLock;
+
   }
 
 
-  public  void PredatorFinishedMove (GameObject finishedPredator){
+  public  void PredatorFinishedMove (GameObject finishedPredator)
+  {
+    
     BuildInfo animal = finishedPredator.GetComponent<BuildInfo> ();
 
     if( animal.GetNextTile().resident  != null){
@@ -129,7 +85,8 @@ public class DemTurnSystem : MonoBehaviour {
 
   }
 
-  public  void GenerateNewPredators(){
+  public  void GenerateNewPredators()
+  {
 
     //For Testing
     int random = UnityEngine.Random.Range (0, 5);
@@ -150,12 +107,15 @@ public class DemTurnSystem : MonoBehaviour {
 
   }
 
-  void ProcessTweens(){
+  void ProcessTweens()
+  {
+    
     if (tweenList.Count > 0) {
       tweenManager.AddTween (tweenList.Pop ());
     } else {
       GenerateNewPredators ();
     }
+
   }
 
 
