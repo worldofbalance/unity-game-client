@@ -151,13 +151,16 @@ public class DemMain : MonoBehaviour
     	Sets the current prey's origin, i.e. the corresponding button
     */
     public  void setBuildOrigin (Vector3 origin) {
+    
     	buildOrigin = origin;
+
     }
 
     /**
     	Eases a cancelled currentlyBuilding object back to its respective button.
     */
     IEnumerator easeReturn (float easing) {
+    
 		float startDistance = Vector3.Distance(buildOrigin, currentSelection.transform.position);
     	while (Vector3.Distance(buildOrigin, currentSelection.transform.position) > startDistance/10) {
 
@@ -170,6 +173,7 @@ public class DemMain : MonoBehaviour
 			yield return new WaitForSeconds(0.01f);
     	}
     	Destroy(currentSelection);
+
     }
 
 }

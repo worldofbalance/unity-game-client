@@ -23,7 +23,7 @@ public class DemTweenManager : MonoBehaviour{
     for (int i = tweens.Count - 1; i >= 0; i--) {
       
       tweens [i].Update(i);
-
+     
     }
     
   }

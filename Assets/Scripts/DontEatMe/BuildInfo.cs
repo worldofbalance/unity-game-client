@@ -53,8 +53,10 @@ public class BuildInfo : MonoBehaviour {
 
   public void AdvanceTile(){
     Debug.Log (parent +" : "+ nextTile);
+
+    DemTile oldTile = tile;
     nextTile.AddAnimal (parent);
-    tile.SetResident (null);
+    oldTile.SetResident (null);
     tile = nextTile;
     nextTile = null;
   }
@@ -81,5 +83,11 @@ public class BuildInfo : MonoBehaviour {
     parent = _parent;
   }
 
+  public DemTile GetNextTile()
+  {
+
+    return nextTile;
+
+  }
 
 }

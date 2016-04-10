@@ -23,6 +23,7 @@ public class DemTurnSystem : MonoBehaviour {
   DemTile tile;
 
   void Awake(){
+    
     mainObject = GameObject.Find ("MainObject");
     board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
     main = mainObject.GetComponent<DemMain> ();
@@ -54,6 +55,10 @@ public class DemTurnSystem : MonoBehaviour {
       nextTile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
       currentTile = board.Tiles [x, y].GetComponent<DemTile> ();
 
+      animal.SetNextTile (nextTile);
+      tweenList.Push(new DemTween (predator, nextTile.GetCenter (), 700));
+
+      /*
 		  //Check if next location to left is open
       if (nextTile.GetResident() == null) {
         animal.SetNextTile (nextTile);
@@ -69,14 +74,18 @@ public class DemTurnSystem : MonoBehaviour {
 
 
 			}		//Check if next Location to left is plant, if it is , destroy it
-			else if (nextTile.resident.GetComponent<BuildInfo> ().isPlant ()) {
+			else if (nextTile.resident.GetComponent<BuildInfo> ().isPlant ()) 
+      {
+        tweenList.Push(new DemTween (predator, nextTile.GetCenter (), 700));
 				nextTile.RemoveAnimal ();	//remove plant from tile
 				nextTile.AddAnimal (predator);
         currentTile.SetResident (null);
         animal.SetTile (nextTile);
 
 			}		//Check if next Location to left is prey, if it is , eat it
-			else if (nextTile.resident.GetComponent<BuildInfo> ().isPrey ()) {
+			else if (nextTile.resident.GetComponent<BuildInfo> ().isPrey ()) 
+      {
+        
 				nextTile.RemoveAnimal ();	//remove prey from tile
 				currentTile.RemoveAnimal ();	//remove predator from tile, predator distroyed, but predator reference is still in list
         activePredators.RemoveAt(i);
@@ -86,18 +95,14 @@ public class DemTurnSystem : MonoBehaviour {
 
 
         
-
+      */
  
 
 		
 			
     }
 
-    if (tweenList.Count > 0) {
-      tweenManager.AddTween (tweenList.Pop ());
-    } else {
-      GenerateNewPredators ();
-    }
+    ProcessTweens ();
 
 
 
@@ -113,13 +118,14 @@ public class DemTurnSystem : MonoBehaviour {
 
   public  void PredatorFinishedMove (GameObject finishedPredator){
     BuildInfo animal = finishedPredator.GetComponent<BuildInfo> ();
-    animal.AdvanceTile ();
-    if (tweenList.Count > 0) {
-      tweenManager.AddTween (tweenList.Pop ());
-    } else {
-      GenerateNewPredators ();
+
+    if( animal.GetNextTile().resident  != null){
+      animal.GetNextTile ().RemoveAnimal();
     }
-    Debug.Log ("A predator has finished moving");
+
+    animal.AdvanceTile ();
+    ProcessTweens ();
+
 
   }
 
@@ -141,6 +147,15 @@ public class DemTurnSystem : MonoBehaviour {
     tweenList.Clear ();
 
     turnLock = false;
+
+  }
+
+  void ProcessTweens(){
+    if (tweenList.Count > 0) {
+      tweenManager.AddTween (tweenList.Pop ());
+    } else {
+      GenerateNewPredators ();
+    }
   }
 
 

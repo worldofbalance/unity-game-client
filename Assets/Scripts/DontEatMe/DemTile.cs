@@ -164,6 +164,7 @@ public class DemTile : MonoBehaviour
   public void RemoveAnimal(){
     
     Destroy (resident);
+    this.resident = null;
   
   }
 
