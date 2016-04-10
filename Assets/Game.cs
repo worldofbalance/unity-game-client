@@ -31,7 +31,7 @@ public class Game : MonoBehaviour
         //     speciesListProtocol.Prepare(),
         //     ProcessSpeciesList
         // );
-
+        Debug.Log("started...");
         if (scene != "") {
             // Application.LoadLevel(scene);
             Game.SwitchScene (scene);
