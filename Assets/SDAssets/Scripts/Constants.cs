@@ -16,6 +16,12 @@ namespace SD
         public static readonly short CMSG_RACE_INIT = 501;
         public static readonly short SMSG_RACE_INIT = 601;
 
+        public static readonly short CMSG_SDSTART_GAME = 301;
+        public static readonly short SMSG_SDSTART_GAME = 401;
+
+        public static readonly short CMSG_SDEND_GAME = 701;
+        public static readonly short SMSG_SDEND_GAME = 801;
+
         public static int USER_ID = -1;
     }
 }

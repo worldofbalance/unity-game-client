@@ -47,7 +47,15 @@ namespace SD
 
         try
         {
-            mySocket = new TcpClient(Config.REMOTE_HOST, SD.Constants.REMOTE_PORT);
+            mySocket = new TcpClient();
+            IAsyncResult result = mySocket.BeginConnect(Config.REMOTE_HOST, SD.Constants.REMOTE_PORT, null, null);
+            int cTimeoutSeconds = 2;
+            result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(cTimeoutSeconds));
+            if (!mySocket.Connected) {
+                throw new Exception("Connection Timeout: Could not connect to Sea Divided Server in " + cTimeoutSeconds + " seconds.");
+            }
+            mySocket.EndConnect(result);
+            //mySocket = new TcpClient(Config.REMOTE_HOST, SD.Constants.REMOTE_PORT);
             theStream = mySocket.GetStream();
             socketReady = true;
 
