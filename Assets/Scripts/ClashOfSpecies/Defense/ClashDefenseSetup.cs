@@ -88,7 +88,7 @@ public class ClashDefenseSetup : MonoBehaviour
                     allyObject.tag = "Ally";
                     
                     Vector2 normPos = new Vector2(placement.position.x - terrain.transform.position.x,
-                           placement.position.z - terrain.transform.position.z);
+                                          placement.position.z - terrain.transform.position.z);
                     normPos.x = normPos.x / terrain.terrainData.size.x;
                     normPos.y = normPos.y / terrain.terrainData.size.z;
 
@@ -128,7 +128,7 @@ public class ClashDefenseSetup : MonoBehaviour
 
         var request = ClashDefenseSetupProtocol.Prepare(pending.terrain, mappedLayout);
 
-        NetworkManager.Send(request, (res) =>
+        NetworkManagerCOS.getInstance().Send(request, (res) =>
             {
                 var response = res as ResponseClashDefenseSetup;
                 if (response.valid)

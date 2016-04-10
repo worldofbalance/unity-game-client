@@ -105,7 +105,7 @@ public class Game : MonoBehaviour
                     break;
                 case "World":
                     Debug.Log("The client is requesting for quiting...");
-                    NetworkManager.Send(BackToLobbyProtocol.Prepare());
+                    NetworkManager.getInstance().Send(BackToLobbyProtocol.Prepare());
                     break;
                 case "Ecosystem":
                     break;

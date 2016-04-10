@@ -6,28 +6,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 
-public class NetworkManager : NetworkAbstractManager
+public class NetworkManagerCOS : NetworkAbstractManager
 {
+    private static NetworkManagerCOS instance;
 
-    private static NetworkManager instance;
-
-    public static NetworkManager getInstance()
+    public static NetworkManagerCOS getInstance()
     {
         if (instance == null)
-            throw new Exception("NetworkManager awake not called");
+            throw new Exception("NetworkManagerCOS awake not called");
         else
             return instance;
-    }
-
-    protected override String toString()
-    {
-        return "NetworkManager  used for login";
     }
 
     void Awake()
     {
         instance = this;
-        netProtTable = new NetworkProtocolTable();
+        netProtTable = new NetworkProtocolTableCOS();
         cManager = new ConnectionManager(netProtTable);
         Listen(NetworkCode.HEARTBEAT, ProcessHeartbeat);
     }
@@ -35,7 +29,8 @@ public class NetworkManager : NetworkAbstractManager
     // Use this for initialization
     void Start()
     {
-        if (cManager.Connect(Config.REMOTE_HOST, Constants.REMOTE_PORT) == ConnectionManager.SUCCESS)
+        
+        if (cManager.Connect(Config.REMOTE_HOST, Constants.REMOTE_PORT_COS) == ConnectionManager.SUCCESS)
         {
             Send(
                 ClientProtocol.Prepare(Constants.CLIENT_VERSION, Constants.SESSION_ID),
@@ -44,5 +39,9 @@ public class NetworkManager : NetworkAbstractManager
         }
         StartCoroutine(Poll(Constants.HEARTBEAT_RATE));
     }
-	
+
+    protected override String toString()
+    {
+        return "NetworkManagerCOS";
+    }
 }

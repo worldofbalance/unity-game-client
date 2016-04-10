@@ -56,7 +56,7 @@ public class ClashSplash : MonoBehaviour
     IEnumerator Execute(NetworkRequest req, NetworkManager.Callback cb)
     {
         bool done = false;
-        NetworkManager.Send(req, (res) =>
+        NetworkManagerCOS.getInstance().Send(req, (res) =>
             {
                 cb(res);
                 done = true;

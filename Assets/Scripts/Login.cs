@@ -162,12 +162,16 @@ public class Login : MonoBehaviour
         }
         else
         {
-            NetworkManager.Send(
+            NetworkManager.getInstance().Send(
                 LoginProtocol.Prepare(user_id, password),
                 ProcessLogin
             );
 
-//            CW.NetworkManager.Send(CW.LoginProtocol.Prepare(user_id, password));
+//            NetworkManagerCOS.getInstance().Send(
+//                LoginProtocol.Prepare(user_id, password),
+//                ProcessLogin
+//            );
+//            CW.NetworkManager.getInstance().Send(CW.LoginProtocol.Prepare(user_id, password));
 //
 //            RR.RRConnectionManager cManager = RR.RRConnectionManager.getInstance();
 //            cManager.Send(RR_RequestLogin(user_id, password));
@@ -194,11 +198,11 @@ public class Login : MonoBehaviour
         {
             GameState.account = args.account;
 
-            NetworkManager.Send(
+            NetworkManager.getInstance().Send(
                 TopListProtocol.Prepare(),
                 ProcessTopList
             );
-            NetworkManager.Send(
+            NetworkManager.getInstance().Send(
                 PlayerSelectProtocol.Prepare(0),
                 ProcessPlayerSelect
             );

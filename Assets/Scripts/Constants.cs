@@ -14,6 +14,7 @@ public class Constants
     //public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
 
     public static readonly int REMOTE_PORT = 9255;
+    public static readonly int REMOTE_PORT_COS = 9257;
     //20041;
 
     public static readonly float HEARTBEAT_RATE = 1f;
