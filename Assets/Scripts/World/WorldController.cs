@@ -12,7 +12,7 @@ public class WorldController : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 		Game.StartEnterTransition ();
-
+		Debug.Log ("We are in the WORLD scene");
 		if (GameState.world != null) {
 			LoadComponents();
 		}
@@ -24,25 +24,36 @@ public class WorldController : MonoBehaviour {
 	}
 
 	void OnGUI() {
-		if (GUI.Button(new Rect(10, 10, 120, 30), "Ecosystem")) {
-			Camera.main.GetComponent<MapCamera>().Move(GameState.player.GetID());
-		}
-
-		if (GUI.Button (new Rect (140, 10, 130, 30), "Clash of Species")) {
-			gameObject.AddComponent <ClashOfSpeciesGUI>(); //Single Player
-		}
-
-		if (GUI.Button (new Rect (10, 50, 120, 30), "Don't Eat Me")) {
-			gameObject.AddComponent <DontEatMeGUI>(); // Single Player
-		}
-
-		if (GUI.Button (new Rect (140, 50, 130, 30), "Multiplayer Games")) {
-			gameObject.AddComponent <MultiplayerGames>();
-		}
-
-		if (GUI.Button (new Rect (10, 90, 120, 30), "Converge")) {
-			gameObject.AddComponent <ConvergeGUI>(); //Single player
-		}
+//		MiniGamesConfig config = gameObject.GetComponent<MiniGamesConfig>();
+//		if (config.Ecosystem) {
+//			if (GUI.Button(new Rect(10, 10, 120, 30), "Ecosystem")) {
+//				Camera.main.GetComponent<MapCamera>().Move(GameState.player.GetID());
+//			}
+//		}
+//
+//		if (config.ClashOfSpecies) {
+//			if (GUI.Button (new Rect (140, 10, 130, 30), "Clash of Species")) {
+//				gameObject.AddComponent <ClashOfSpeciesGUI>(); //Single Player
+//			}
+//		}
+//
+//		if (config.DontEatMe) {
+//			if (GUI.Button (new Rect (10, 50, 120, 30), "Don't Eat Me")) {
+//				gameObject.AddComponent <DontEatMeGUI>(); // Single Player
+//			}
+//		}
+//
+//		if (config.Convergence) {
+//			if (GUI.Button (new Rect (10, 90, 120, 30), "Convergence")) {
+//				gameObject.AddComponent <ConvergeGUI>(); //Single player
+//			}
+//		}
+//
+//		if (config.MultiplayerGames) {
+//			if (GUI.Button (new Rect (140, 50, 130, 30), "Multiplayer Games")) {
+//				gameObject.AddComponent <MultiplayerGames>();
+//			}		
+//		}		
 	}
 	
 	public void ProcessWorld(NetworkResponse response) {

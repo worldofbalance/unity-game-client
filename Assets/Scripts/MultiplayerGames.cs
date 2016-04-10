@@ -7,7 +7,7 @@ public class MultiplayerGames : MonoBehaviour {
 	private GameObject mainObject;
 
 	// Window Properties
-	private float width = 600;
+	private float width = 500;
 	private float height = 300;
 
 	// Other
@@ -17,6 +17,7 @@ public class MultiplayerGames : MonoBehaviour {
 
 	private bool enableRRButton = true;
 	private bool enableCWButton = true;
+    private bool enableSDButton = true;
 
 	private bool quiting = false;
 	private bool waiting = false;
@@ -93,14 +94,19 @@ public class MultiplayerGames : MonoBehaviour {
 		GUILayout.Space(30);
 
 		GUI.enabled = enableRRButton;
-		if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Play Running Rhino")) {
+		if (GUI.Button(new Rect(10, windowRect.height - 80, 140, 30), "Play Running Rhino")) {
 			NetworkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_RUNNING_RHINO, -1));
 		}
 
 		GUI.enabled = enableCWButton;
-		if (GUI.Button(new Rect(160, windowRect.height - 40, 125, 30), "Play Cards of Wild")) {
+		if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Play Cards of Wild")) {
 			NetworkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_CARDS_OF_WILD, -1));
 		}
+
+        GUI.enabled = enableSDButton;
+        if (GUI.Button(new Rect(165, windowRect.height - 40, 125, 30), "Play Sea Divided")) {
+            NetworkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_SEA_DIVIDED, -1));
+        }
 
 		GUI.enabled = true;
 		if (GUI.Button(new Rect(windowRect.width - 110, windowRect.height - 40, 100, 30), "Quit")) {
@@ -116,7 +122,7 @@ public class MultiplayerGames : MonoBehaviour {
 	}
 
 	public void Quit() {
-		if (!this.enableRRButton || !this.enableCWButton) {
+        if (!this.enableRRButton || !this.enableCWButton || !this.enableSDButton) {
 			NetworkManager.Send (QuitRoomProtocol.Prepare ());
 			quiting = true;
 		} else {
@@ -127,6 +133,7 @@ public class MultiplayerGames : MonoBehaviour {
 	public void OnQuitRoomResult (NetworkResponse response) {
 		this.enableRRButton = true;
 		this.enableCWButton = true;
+        this.enableSDButton = true;
 		this.waiting = false;
 
 		RoomManager.getInstance().removePlayer(GameState.account.account_id);
@@ -145,6 +152,7 @@ public class MultiplayerGames : MonoBehaviour {
 
 			this.enableRRButton = true;
 			this.enableCWButton = true;
+            this.enableSDButton = true;
 
 			var room = RoomManager.getInstance().getRoom(args.id);
 			if (!room.containsPlayer(userID)) {
@@ -159,10 +167,14 @@ public class MultiplayerGames : MonoBehaviour {
 				Game.SwitchScene ("RRReadyScene");
 			} else if (args.gameID == Constants.MINIGAME_CARDS_OF_WILD) {
 				CW.GameManager.matchID = args.id;
-				CW.NetworkManager.Send (CW.MatchInitProtocol.Prepare 
+				NetworkManager.Send (CW.MatchInitProtocol.Prepare 
 				                        (GameState.player.GetID(), args.id), 
 				                        ProcessMatchInit);
-			}
+            } else if (args.gameID == Constants.MINIGAME_SEA_DIVIDED) {
+                SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
+                sManager.Send(SD_RequestPlayInit());
+                Game.SwitchScene ("SDReadyScene");
+            }
 		} else {
 			Debug.Log("New room allocated [room id=" + args.id + "]");
 			var room = RoomManager.getInstance().addRoom(args.id, args.gameID);
@@ -171,6 +183,7 @@ public class MultiplayerGames : MonoBehaviour {
 
 			this.enableRRButton = false;
 			this.enableCWButton = false;
+            this.enableSDButton = false;
 			this.waiting = true;
 		}
 	}
@@ -183,7 +196,7 @@ public class MultiplayerGames : MonoBehaviour {
 		StartCoroutine(RequestGetRooms(1f));
 	}
 
-	public void ProcessMatchInit(CW.NetworkResponse response) {
+	public void ProcessMatchInit(NetworkResponse response) {
 		CW.ResponseMatchInit args = response as CW.ResponseMatchInit;
 		
 		if (args.status == 0) {
@@ -198,4 +211,11 @@ public class MultiplayerGames : MonoBehaviour {
 		request.Send (RR.Constants.USER_ID, this.room_id);
 		return request;
 	}
+    public SD.RequestPlayInit SD_RequestPlayInit()
+    {
+        SD.RequestPlayInit request = new SD.RequestPlayInit();
+        request.Send(SD.Constants.USER_ID, this.room_id);
+        return request;
+    }
+   
 }

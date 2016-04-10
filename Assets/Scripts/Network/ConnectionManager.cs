@@ -8,23 +8,29 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 
-public class ConnectionManager {
-
+public class ConnectionManager
+{
 	// Status Codes
 	public static readonly short SUCCESS = 0;
 	public static readonly short FAILED = 1;
 	public static readonly short CONNECTED = 2;
+
 	// Variables
 	private TcpClient mySocket = new TcpClient();
+
 	public bool Connected { get { return mySocket.Connected; } }
-	private NetworkStream theStream;
-	private string hostname;
-	private int port;
-	
-	public short Connect(string hostname, int port) {
+
+	protected NetworkStream theStream;
+	protected string hostname;
+	protected int port;
+
+	public ConnectionManager(string hostname, int port)
+	{
 		this.hostname = hostname;
 		this.port = port;
-
+	}
+	
+	public short Connect() {
 		if (mySocket.Connected) {
 			Debug.Log("Already Connected");
 			return CONNECTED;
@@ -34,7 +40,7 @@ public class ConnectionManager {
 			mySocket = new TcpClient(hostname, port);
 			theStream = mySocket.GetStream();
 
-			Debug.Log("Connected");
+			Debug.Log("Connected to " + hostname + ":" + port);
 			return SUCCESS;
 		} catch (Exception e) {
 			Debug.Log("Connection Failed");
@@ -45,7 +51,7 @@ public class ConnectionManager {
 
 	public short Reconnect() {
 		Debug.Log("Reconnecting...");
-		return Connect(hostname, port);
+		return Connect();
 	}
 	
 	public void Close() {
@@ -56,10 +62,12 @@ public class ConnectionManager {
 		mySocket.Close();
 	}
 
-	public List<NetworkResponse> Read(int numPackets = 20) {
+	public List<NetworkResponse> Read(int numPackets = 20)
+	{
 		List<NetworkResponse> responses = new List<NetworkResponse>();
 
-		while (theStream.DataAvailable && responses.Count < numPackets) {
+		while (theStream.DataAvailable && responses.Count < numPackets)
+    {
 			byte[] buffer = new byte[2];
 			theStream.Read(buffer, 0, 2);
 			short bufferSize = BitConverter.ToInt16(buffer, 0);

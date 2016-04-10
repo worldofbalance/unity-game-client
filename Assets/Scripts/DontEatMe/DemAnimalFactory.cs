@@ -29,6 +29,7 @@ public class DemAnimalFactory
         //GameObject animal = PrefabUtility.CreateEmptyPrefab ("./" + name) as GameObject;
         GameObject animal = new GameObject(this.speciesName);
         BuildInfo info = animal.AddComponent<BuildInfo>();
+        info.SetParent(animal);
 
         SpriteRenderer renderer = animal.AddComponent<SpriteRenderer>();
         renderer.sprite = this.image[0]; //Sprite.Create(info.previewImage as Texture2D, new Rect(0f, 0f, 256, 256), new Vector2(0.5f, 0.1f));

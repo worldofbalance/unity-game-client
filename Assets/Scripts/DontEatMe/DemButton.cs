@@ -6,13 +6,13 @@ using System.Collections;
 public class DemButton : MonoBehaviour
 {
 
-    
+
     //Button prefab
     public GameObject buttonPrefab;
 
     //Canvas Object
     public GameObject canvasObject;
-    
+
 
     //width of button
     private float xSize;
@@ -80,7 +80,7 @@ public class DemButton : MonoBehaviour
 
         //Set text and its position on the button
         buttonText.AddComponent<Text>();
-        buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Chalkboard");           
+        buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Chalkboard");
         buttonText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
         buttonText.GetComponent<Text>().color = Color.black;
         buttonText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
@@ -93,7 +93,7 @@ public class DemButton : MonoBehaviour
     // Change the size of the button
     public void setSize(float newSizeX, float newSizeY)
     {
-        buttonPrefab.GetComponent<RectTransform>().sizeDelta = new Vector2 (newSizeX, newSizeY);
+        buttonPrefab.GetComponent<RectTransform>().sizeDelta = new Vector2(newSizeX, newSizeY);
         xSize = newSizeX;
         ySize = newSizeY;
     }

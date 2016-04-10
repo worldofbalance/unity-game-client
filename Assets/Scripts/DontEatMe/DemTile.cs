@@ -15,12 +15,18 @@ public class DemTile : MonoBehaviour
     private Vector3 center;
 
   	public GameObject resident; // Resident object (HerbivoreObject or PlantObject) placed on tile
-
-    
+    private BuildMenu buildMenu;
+    public  GameObject mainObject;
+    private DemMain main;
+    private DemTurnSystem turnSystem;
 
     // Use this for initialization
     void Start ()
     {
+        mainObject = GameObject.Find ("MainObject");
+        buildMenu = mainObject.GetComponent<BuildMenu> ();
+        main = mainObject.GetComponent<DemMain> ();
+        turnSystem = mainObject.GetComponent<DemTurnSystem> ();
         // Parse X and Y coords from name
         // Name format = "X,Y", so X is stored @ name[0] and Y @ name[2]
         // The char value for '0' starts at 0x30, subtract this to parse numeric value
@@ -49,7 +55,7 @@ public class DemTile : MonoBehaviour
         
         // Set highlight color
         // TODO: change highlight color based on a tile's legality
-        if (BuildMenu.currentAnimalFactory!= null) {
+        if (buildMenu.currentAnimalFactory!= null) {
          if (available)
 	            this.GetComponent<Renderer>().material.color = Color.cyan;
 	        else
@@ -82,7 +88,7 @@ public class DemTile : MonoBehaviour
 
         
             // If a creature is flagged for building...
-      if (BuildMenu.currentAnimalFactory != null) {
+      if (buildMenu.currentAnimalFactory != null) {
                 // Set the resident as the DemMain's current selection if clicked within the tile; center resident on tile
 
       // If tile is empty...
@@ -92,7 +98,7 @@ public class DemTile : MonoBehaviour
                 //resident = DemMain.currentSelection;
 
                 //resident.transform.position = center;
-                AddAnimal(DemMain.currentSelection);
+                AddAnimal(main.currentSelection);
                 // Subtract the appropriate resources for the build
                 //BuildMenu.currentResources -= BuildMenu.currentlyBuilding.price;
 
@@ -108,10 +114,10 @@ public class DemTile : MonoBehaviour
                     */
 
                 // Set BuildMenu.currentlyBuilding to null after successful placement
-                BuildMenu.currentAnimalFactory = null;
-                DemMain.currentSelection = null;
-                DemMain.boardController.ClearAvailableTiles();
-                DemTurnSystem.PredatorTurn();
+                buildMenu.currentAnimalFactory = null;
+                main.currentSelection = null;
+                main.boardController.ClearAvailableTiles();
+                turnSystem.PredatorTurn();
 
                 // DEBUG 
                 if (resident)
@@ -129,11 +135,19 @@ public class DemTile : MonoBehaviour
   public bool hasPlant(){
     
     if (this.resident) {
-      return this.resident.GetComponent<BuildInfo> ().isPlant;
+		return this.resident.GetComponent<BuildInfo> ().isPlant();
     } else {
       return false;
     }
 
+  }
+
+  public GameObject GetResident(){
+    return resident;
+  }
+
+  public void SetResident(GameObject newResident){
+    resident = newResident;
   }
 
 
@@ -150,7 +164,20 @@ public class DemTile : MonoBehaviour
   public void RemoveAnimal(){
     
     Destroy (resident);
+    this.resident = null;
   
+  }
+
+  public int GetIdX(){
+    return idX;
+  }
+
+  public int GetIdY(){
+    return idY;
+  }
+
+  public Vector3 GetCenter(){
+    return center;
   }
 
 
