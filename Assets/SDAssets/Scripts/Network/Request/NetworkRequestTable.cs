@@ -14,11 +14,10 @@ namespace SD
         public static void init()
         {
             requestTable = new Dictionary<short, Type>();
-
-
             add(Constants.CMSG_AUTH, "RequestLogin");
             add(Constants.CMSG_RACE_INIT, "RequestPlayInit");
-
+            add (Constants.CMSG_SDSTART_GAME, "RequestSDStartGame");
+            add (Constants.CMSG_SDEND_GAME, "RequestSDEndGame");
 
         }
 

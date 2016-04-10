@@ -33,6 +33,7 @@ namespace SD {
                 RequestSDStartGame request = new RequestSDStartGame ();
                 request.Send (Constants.USER_ID);
                 cManager.Send (request);
+                SceneManager.LoadScene ("SDGameMain"); // TODO: Remove once the server code is in place.
             } else {
                 Debug.LogWarning ("Starting game without server component.");
                 SceneManager.LoadScene ("SDGameMain");

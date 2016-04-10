@@ -32,6 +32,8 @@ public class GameController : MonoBehaviour {
     private Vector3 playerInitialPosition = new Vector3(0,0,0);
     private Quaternion playerInitialRotation = Quaternion.Euler(0,90,0);
 
+    private static SD.GameManager sdGameManager;
+
     // Initializes the player's score, and UI texts.
     // Also spawns numbers of prey at random positions.
     void Start () {
@@ -43,7 +45,9 @@ public class GameController : MonoBehaviour {
         UpdateUnscoredPoint ();
         for (int i = 0; i < numPrey; i++) {
             spawnPrey ();
-        }    
+        }
+
+        sdGameManager = SD.GameManager.getInstance ();
     }
 
     // Automatically revovers stamina, and refreshs staminaText UI every frame.
@@ -124,5 +128,9 @@ public class GameController : MonoBehaviour {
     public void Score(){
         this.score += this.unscoredPoint;
         UpdateScore ();
+    }
+
+    public void BtnSurrenderClick() {
+        sdGameManager.EndGame (false, score);
     }
 }

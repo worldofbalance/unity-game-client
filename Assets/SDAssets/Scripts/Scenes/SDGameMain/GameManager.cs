@@ -33,34 +33,27 @@ namespace SD {
         }
 
         // Ends the current game
-        public void EndGame(bool gameCompleted, string finalScore) {
+        public void EndGame(bool gameCompleted, int finalScore) {
             if (!gameCompleted) {
                 Debug.Log ("The player has surrendered - the game was unfinished. ");
             }
             if (cManager) {
                 RequestSDEndGame request = new RequestSDEndGame();
-                request.Send (gameCompleted, finalScore);
+                request.Send (gameCompleted, finalScore.ToString()); // TODO: This should be changed to int in the server.
                 cManager.Send (request);
             }
+            SceneManager.LoadScene ("SDReadyScene");  // TODO: Remove once the DB and Server work.
         }
+
         public void ResponseSDEndGame(ExtendedEventArgs eventArgs) {
             ResponseSDEndGameEventArgs args = eventArgs as ResponseSDEndGameEventArgs;
             resultText = " Your final score is " + args.finalScore + ".";
             if (args.isWinner) {
-                resultText += "Congratulations !";
+                resultText += "Congratulations ! You win !";
             } else {
                 resultText += "Sorry, you lost ! Better luck next time !";
             }
             Debug.Log(resultText);
-            //Rect windowRect = new Rect(Screen.width/2 - 50, Screen.height/2 - 30, 100, 60);
-            //GUI.ModalWindow(0, windowRect, ShowResultDialog, "Game Result");
         }
-
-        //public void ShowResultDialog(int windowId) {
-       //     if (GUI.Button (Screen.width / 2 - 50, Screen.height / 2 + 30, 20, 20)) {
-        //        
-        //    }
-       // }
-
     }
 }
