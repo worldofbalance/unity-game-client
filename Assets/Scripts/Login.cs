@@ -5,7 +5,7 @@ using System.Collections;
 
 public class Login : MonoBehaviour
 {
-	
+
     private int window_id = Constants.LOGIN_WIN;
     // Window Properties
     private float left;
@@ -27,49 +27,49 @@ public class Login : MonoBehaviour
     void Awake()
     {
         //DontDestroyOnLoad(gameObject);
-		
+
         left = (Screen.width - width) / 2;
         top = (Screen.height - height) / 2;
-		
+
         windowRect = new Rect(left, top, width, height);
-		
+
         bgTexture = Resources.Load<Texture2D>(Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
         font = Resources.Load<Font>("Fonts/" + "Chalkboard");
 
-//		RR.RRMessageQueue.getInstance().AddCallback (RR.Constants.SMSG_AUTH, RR_ResponseLogin);
+//        RR.RRMessageQueue.getInstance().AddCallback(RR.Constants.SMSG_AUTH, RR_ResponseLogin);
     }
-	
+
     // Use this for initialization
     void Start()
     {
         //StartCoroutine("AutoLogin");
 
     }
-	
+
     // Update is called once per frame
     void Update()
     {
-		
+
     }
 
     void OnDestroy()
     {
-		
+
     }
 
     void OnGUI()
     {
         // Background
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), background, ScaleMode.ScaleAndCrop);
-		
+
         // Client Version Label
         GUI.Label(new Rect(Screen.width - 75, Screen.height - 30, 65, 20), "v" + Constants.CLIENT_VERSION + " Beta");
-		
+
         // Login Interface
         if (isActive)
         {
             windowRect = GUI.Window(window_id, windowRect, MakeWindow, "Login", GUIStyle.none);
-			
+
             if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Return)
             {
                 Submit();
@@ -102,43 +102,43 @@ public class Login : MonoBehaviour
     void MakeWindow(int id)
     {
         Functions.DrawBackground(new Rect(0, 0, width, height), bgTexture);
-		
+
         GUIStyle style = new GUIStyle(GUI.skin.label);
         style.alignment = TextAnchor.UpperCenter;
         style.font = font;
         style.fontSize = 16;
-		
+
         GUI.Label(new Rect((windowRect.width - 100) / 2, 0, 100, 30), "Login", style);
-		
+
         GUI.BeginGroup(new Rect(10, 25, 300, 100));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
             GUI.Label(new Rect(0, 0, 300, 30), "User ID (Display Name or Email)", style);
             GUI.SetNextControlName("username_field");
-            user_id = GUI.TextField(new Rect(0, 25, windowRect.width - 20, 25), "dule", 25);
+            user_id = GUI.TextField(new Rect(0, 25, windowRect.width - 20, 25), user_id, 25);
         }
         GUI.EndGroup();
-		
+
         GUI.BeginGroup(new Rect(10, 80, 300, 100));
         style.alignment = TextAnchor.UpperLeft;
         style.fontSize = 14;
         GUI.Label(new Rect(0, 0, 100, 30), "Password", style);
         GUI.SetNextControlName("password_field");
-        password = GUI.PasswordField(new Rect(0, 25, windowRect.width - 20, 25), "qwerty", "*"[0], 25);
+        password = GUI.PasswordField(new Rect(0, 25, windowRect.width - 20, 25), password, "*"[0], 25);
         GUI.EndGroup();
-		
+
         if (isInitial)
         {  // && GUI.GetNameOfFocusedControl() == "") {
             GUI.FocusControl("username_field");
             isInitial = false;
         }
-		
+
         if (GUI.Button(new Rect(width / 2 - 110, 145, 100, 30), "Log In"))
         {
             Submit();
         }
-		
+
         if (GUI.Button(new Rect(width / 2 + 10, 145, 100, 30), "Register"))
         {
             SwitchToRegister();
@@ -149,15 +149,15 @@ public class Login : MonoBehaviour
     {
         user_id = user_id.Trim();
         password = password.Trim();
-		
+
         if (user_id.Length == 0)
         {
-            //			mainObject.GetComponent<Main>().CreateMessageBox("User ID Required");
+            //          mainObject.GetComponent<Main>().CreateMessageBox("User ID Required");
             GUI.FocusControl("username_field");
         }
         else if (password.Length == 0)
         {
-            //			mainObject.GetComponent<Main>().CreateMessageBox("Password Required");
+            //          mainObject.GetComponent<Main>().CreateMessageBox("Password Required");
             GUI.FocusControl("password_field");
         }
         else
@@ -167,14 +167,10 @@ public class Login : MonoBehaviour
                 ProcessLogin
             );
 
-//            NetworkManagerCOS.getInstance().Send(
-//                LoginProtocol.Prepare(user_id, password),
-//                ProcessLogin
-//            );
-//            CW.NetworkManager.getInstance().Send(CW.LoginProtocol.Prepare(user_id, password));
-//
-//            RR.RRConnectionManager cManager = RR.RRConnectionManager.getInstance();
-//            cManager.Send(RR_RequestLogin(user_id, password));
+            CW.NetworkManager.Send(CW.LoginProtocol.Prepare(user_id, password));
+
+            RR.RRConnectionManager cManager = RR.RRConnectionManager.getInstance();
+            cManager.Send(RR_RequestLogin(user_id, password));
         }
     }
 
@@ -185,7 +181,7 @@ public class Login : MonoBehaviour
             user_id = "1";
             password = "1";
             Submit();
-			
+
             yield return new WaitForSeconds(1.0f);
         }
     }
@@ -193,7 +189,7 @@ public class Login : MonoBehaviour
     public void ProcessLogin(NetworkResponse response)
     {
         ResponseLogin args = response as ResponseLogin;
-		
+
         if (args.status == 0)
         {
             GameState.account = args.account;
@@ -206,10 +202,10 @@ public class Login : MonoBehaviour
                 PlayerSelectProtocol.Prepare(0),
                 ProcessPlayerSelect
             );
-            CW.NetworkManager.Send(
-                CW.PlayerSelectProtocol.Prepare(0),
-                CW_ProcessPlayerSelect
-            );
+//            CW.NetworkManager.Send(
+//                CW.PlayerSelectProtocol.Prepare(0),
+//                CW_ProcessPlayerSelect
+//            );
         }
         else
         {
@@ -234,7 +230,7 @@ public class Login : MonoBehaviour
     public void ProcessPlayerSelect(NetworkResponse response)
     {
         ResponsePlayerSelect args = response as ResponsePlayerSelect;
-		
+
         if (args.status == 0)
         {
             isActive = false;
@@ -292,7 +288,7 @@ public class Login : MonoBehaviour
     public void RR_ResponseLogin(RR.ExtendedEventArgs eventArgs)
     {
         RR.ResponseLoginEventArgs args = eventArgs as RR.ResponseLoginEventArgs;
-		
+
         if (args.status == 0)
         {
             RR.Constants.USER_ID = args.user_id;

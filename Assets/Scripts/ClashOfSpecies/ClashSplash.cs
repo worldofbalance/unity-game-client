@@ -19,6 +19,7 @@ public class ClashSplash : MonoBehaviour
     void Awake()
     {
         manager = GameObject.Find("MainObject").AddComponent<ClashGameManager>();
+        GameObject.Find("MainObject").AddComponent<NetworkManagerCOS>();
     }
 	
     // Use this for initialization
@@ -53,7 +54,7 @@ public class ClashSplash : MonoBehaviour
                 }));
     }
 
-    IEnumerator Execute(NetworkRequest req, NetworkManager.Callback cb)
+    IEnumerator Execute(NetworkRequest req, NetworkManagerCOS.Callback cb)
     {
         bool done = false;
         NetworkManagerCOS.getInstance().Send(req, (res) =>

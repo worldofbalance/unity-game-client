@@ -33,7 +33,7 @@ public class NetworkManagerCOS : NetworkAbstractManager
         if (cManager.Connect(Config.REMOTE_HOST, Constants.REMOTE_PORT_COS) == ConnectionManager.SUCCESS)
         {
             Send(
-                ClientProtocol.Prepare(Constants.CLIENT_VERSION, Constants.SESSION_ID),
+                ClientProtocol.Prepare(Constants.CLIENT_VERSION, Constants.SESSION_ID_COS),
                 ProcessClient
             );
         }
@@ -43,5 +43,11 @@ public class NetworkManagerCOS : NetworkAbstractManager
     protected override String toString()
     {
         return "NetworkManagerCOS";
+    }
+
+    public override void ProcessClient(NetworkResponse response)
+    {
+        ResponseClient args = response as ResponseClient;
+        Constants.SESSION_ID_COS = args.session_id;
     }
 }

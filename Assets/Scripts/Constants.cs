@@ -77,6 +77,7 @@ public class Constants
     }
 
     public static string SESSION_ID = "";
+    public static string SESSION_ID_COS = "";
 	
     public static int MONTH_DURATION = 180;
 	

@@ -178,11 +178,8 @@ public abstract class NetworkAbstractManager : MonoBehaviour
         }
     }
 
-    public void ProcessClient(NetworkResponse response)
-    {
-        ResponseClient args = response as ResponseClient;
-        Constants.SESSION_ID = args.session_id;
-    }
+    public abstract void ProcessClient(NetworkResponse response);
+
 
     public void ProcessHeartbeat(NetworkResponse response)
     {

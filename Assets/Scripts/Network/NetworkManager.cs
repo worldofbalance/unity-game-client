@@ -44,5 +44,11 @@ public class NetworkManager : NetworkAbstractManager
         }
         StartCoroutine(Poll(Constants.HEARTBEAT_RATE));
     }
+
+    public override void ProcessClient(NetworkResponse response)
+    {
+        ResponseClient args = response as ResponseClient;
+        Constants.SESSION_ID = args.session_id;
+    }
 	
 }

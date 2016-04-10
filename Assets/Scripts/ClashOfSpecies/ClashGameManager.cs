@@ -87,7 +87,7 @@ public class ClashGameManager : MonoBehaviour
     void Awake()
     {
         DontDestroyOnLoad(this);
-        gameObject.AddComponent<NetworkManagerCOS>();
+
     }
 
     void Start()
