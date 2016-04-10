@@ -7,7 +7,7 @@ using UnityEngine;
 public class DemTurnSystem : MonoBehaviour {
   
   private  DemBoard board;
-  public  List<GameObject> activePredators = new List<GameObject>();
+  private Dictionary<int, GameObject> activePredators = new Dictionary<int, GameObject>();
   private  Stack<DemTween> tweenList = new Stack<DemTween>();
   private  DemTile nextTile;
   private  DemTile currentTile;
@@ -33,12 +33,10 @@ public class DemTurnSystem : MonoBehaviour {
   {
 
     turnLock = true;
-    for(int i = activePredators.Count - 1; i >=0 ; i--){
-      
-    //foreach (GameObject predator in activePredators) {
-      predator = activePredators[i];
+    foreach(KeyValuePair<int, GameObject> predator in activePredators)
+    {
 
-      BuildInfo animal = predator.GetComponent<BuildInfo> ();
+      BuildInfo animal = predator.Value.GetComponent<BuildInfo> ();
       int x = animal.GetTile ().GetIdX ();
       int y = animal.GetTile ().GetIdY ();
 	    
@@ -55,7 +53,7 @@ public class DemTurnSystem : MonoBehaviour {
 
 
       animal.SetNextTile (nextTile);
-      tweenList.Push(new DemTween (predator, nextTile.GetCenter (), 700));
+      tweenList.Push(new DemTween (predator.Value, nextTile.GetCenter (), 700));
 
     }
 
@@ -96,7 +94,7 @@ public class DemTurnSystem : MonoBehaviour {
     GameObject newPredator = main.predators [randomPredator].Create ();
     newPredator.GetComponent<BuildInfo> ().speciesType = 2;
 
-    activePredators.Add (newPredator);
+    activePredators.Add (newPredator.GetInstanceID() , newPredator);
 
 
     board.AddAnimal(0, random, newPredator );
