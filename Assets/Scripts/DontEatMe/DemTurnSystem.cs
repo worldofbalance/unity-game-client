@@ -6,28 +6,33 @@ using UnityEngine;
 
 public class DemTurnSystem : MonoBehaviour {
   
-	private static DemBoard board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
-  public static List<GameObject> activePredators = new List<GameObject>();
-  private static Stack<DemTween> tweenList = new Stack<DemTween>();
-  private static DemTile nextTile;
-  private static DemTile currentTile;
-  public static bool turnLock = false;
-  private static GameObject predator;
+  private  DemBoard board;
+  public  List<GameObject> activePredators = new List<GameObject>();
+  private  Stack<DemTween> tweenList = new Stack<DemTween>();
+  private  DemTile nextTile;
+  private  DemTile currentTile;
+  public  bool turnLock = false;
+  private  GameObject predator;
+  private DemMain main;
+  private GameObject mainObject;
+  private DemTweenManager tweenManager;
 
 
 
 
   DemTile tile;
 
-  void Start(){
+  void Awake(){
+    mainObject = GameObject.Find ("MainObject");
     board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
-
+    main = mainObject.GetComponent<DemMain> ();
+    tweenManager = mainObject.GetComponent<DemTweenManager> ();
 
 
   }
 	
 
-  public static void PredatorTurn(){
+  public  void PredatorTurn(){
 
     turnLock = true;
     for(int i = activePredators.Count - 1; i >=0 ; i--){
@@ -89,7 +94,7 @@ public class DemTurnSystem : MonoBehaviour {
     }
 
     if (tweenList.Count > 0) {
-      DemTweenManager.AddTween (tweenList.Pop ());
+      tweenManager.AddTween (tweenList.Pop ());
     } else {
       GenerateNewPredators ();
     }
@@ -101,16 +106,16 @@ public class DemTurnSystem : MonoBehaviour {
 
   }
 
-  public static bool IsTurnLocked(){
+  public  bool IsTurnLocked(){
     return !turnLock;
   }
 
 
-  public static void PredatorFinishedMove (GameObject finishedPredator){
+  public  void PredatorFinishedMove (GameObject finishedPredator){
     BuildInfo animal = finishedPredator.GetComponent<BuildInfo> ();
     animal.AdvanceTile ();
     if (tweenList.Count > 0) {
-      DemTweenManager.AddTween (tweenList.Pop ());
+      tweenManager.AddTween (tweenList.Pop ());
     } else {
       GenerateNewPredators ();
     }
@@ -118,14 +123,14 @@ public class DemTurnSystem : MonoBehaviour {
 
   }
 
-  public static void GenerateNewPredators(){
+  public  void GenerateNewPredators(){
 
     //For Testing
     int random = UnityEngine.Random.Range (0, 5);
 
-    int randomPredator = UnityEngine.Random.Range (0, DemMain.predators.Length);
+    int randomPredator = UnityEngine.Random.Range (0, main.predators.Length);
 
-    GameObject newPredator = DemMain.predators [randomPredator].Create ();
+    GameObject newPredator = main.predators [randomPredator].Create ();
     newPredator.GetComponent<BuildInfo> ().speciesType = 2;
 
     activePredators.Add (newPredator);

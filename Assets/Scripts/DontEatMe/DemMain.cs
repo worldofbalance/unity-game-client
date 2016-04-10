@@ -3,17 +3,23 @@ using System.Collections;
 
 public class DemMain : MonoBehaviour
 {
-  public static GameObject mainObject;
+  public  GameObject mainObject;
 
-	public static GameObject currentSelection;
+	public  GameObject currentSelection;
 
-  public static GameObject boardGroup;
+  private  GameObject gameBoard;
 
-  public static DemBoard boardController;
+  public  DemBoard boardController;
 
-	static Vector3 buildOrigin;
+	private Vector3 buildOrigin;
 
-  public static DemAnimalFactory[] predators;
+  public  DemAnimalFactory[] predators;
+
+  private DemTweenManager tweenManager;
+
+  private BuildMenu buildMenu;
+
+  private DemTurnSystem turnSystem;
 
 
 
@@ -23,7 +29,15 @@ public class DemMain : MonoBehaviour
     {
 
       mainObject = GameObject.Find ("MainObject");
-      mainObject.AddComponent<DemTweenManager>();
+      tweenManager = mainObject.GetComponent<DemTweenManager> ();
+      buildMenu = mainObject.GetComponent<BuildMenu> ();
+      // Setup Play board
+      //boardGroup = new GameObject("GameBoard");
+      gameBoard = GameObject.Find("GameBoard");
+      //Keep track of our tiles
+      boardController = gameBoard.GetComponent<DemBoard> ();
+
+      turnSystem = mainObject.GetComponent<DemTurnSystem> ();
 
 
       //Pick predators
@@ -34,20 +48,7 @@ public class DemMain : MonoBehaviour
       predators = new DemAnimalFactory[2];
       predators [0] = new DemAnimalFactory ("Aardvark"); 
       predators [1] =  new DemAnimalFactory ("African Marsh Owl"); 
-
-
-      
-
-
-
-
- 
-
-        // Setup Play board
-        boardGroup = new GameObject("GameBoard");
-
-        //Keep track of our tiles
-        boardController = boardGroup.AddComponent<DemBoard> ();
+        
 
  
 
@@ -112,9 +113,9 @@ public class DemMain : MonoBehaviour
     void Update()
     {
 
-    DemTweenManager.Update ();
+    tweenManager.Update ();
     	// If a species is currently selected for building, update its position to the cursor
-    if (BuildMenu.currentAnimalFactory != null) {
+    if (buildMenu.GetCurrentAnimalFactory() != null) {
     		if (currentSelection) {
           
     			Vector3 world_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
@@ -125,7 +126,9 @@ public class DemMain : MonoBehaviour
 
     		// Cancel currently selected species on Escape key press
     		if (Input.GetKeyDown(KeyCode.Escape)) {
-          BuildMenu.currentAnimalFactory = null;
+          //BuildMenu.currentAnimalFactory = null;
+          buildMenu.SetCurrentAnimalFactory (null);
+
     			//Destroy(currentSelection);
     			// DEBUG MESSAGE
     			//Debug.Log("currentlyBuilding reset to 'null', returning object to (" + buildOrigin.x + ", " + buildOrigin.y + ")");
@@ -147,7 +150,7 @@ public class DemMain : MonoBehaviour
     /**
     	Sets the current prey's origin, i.e. the corresponding button
     */
-    public static void setBuildOrigin (Vector3 origin) {
+    public  void setBuildOrigin (Vector3 origin) {
     	buildOrigin = origin;
     }
 

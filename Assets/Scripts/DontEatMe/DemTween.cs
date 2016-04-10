@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class DemTween {
+public class DemTween :Component{
   
   private GameObject tweenObject;
   private Vector3 oldPosition;
@@ -15,9 +15,18 @@ public class DemTween {
   private Vector3 journeyLength;
   private bool complete;
   public bool running;
-
+  private DemTurnSystem turnSystem;
+  private  GameObject mainObject;
+  private DemMain main;
+  private DemTweenManager tweenManager;
 
   public DemTween(GameObject _tweenObject , Vector3 _newPosition, int _tweenTime){
+
+    mainObject = GameObject.Find ("MainObject");
+    main = mainObject.GetComponent<DemMain> ();
+    tweenManager = mainObject.GetComponent<DemTweenManager> ();
+    turnSystem = mainObject.GetComponent<DemTurnSystem> ();
+
     running = false;
     complete = false;
     progress = 0;
@@ -33,6 +42,7 @@ public class DemTween {
     
     initialTime = Time.time;
     running = true;
+
 
   }
 
@@ -50,8 +60,8 @@ public class DemTween {
     if (progress >= 1) {
       //Mark for deletion
       complete = true;
-      DemTweenManager.RemoveTween (id);
-      DemTurnSystem.PredatorFinishedMove (tweenObject);
+      tweenManager.RemoveTween (id);
+      turnSystem.PredatorFinishedMove (tweenObject);
       return;
     }
 

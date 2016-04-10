@@ -4,15 +4,15 @@ using System.Collections.Generic;
 
 public class DemTweenManager : MonoBehaviour{
 
-  private static List<DemTween> tweens = new List<DemTween>();
+  private List<DemTween> tweens = new List<DemTween>();
 
 
-  public static void AddTween(DemTween tween){
+  public void AddTween(DemTween tween){
     tweens.Add (tween);
     tween.Start ();
   }
 
-  public static void Update(){
+  public void Update(){
     
 
     if (tweens.Count == 0) {
@@ -28,7 +28,7 @@ public class DemTweenManager : MonoBehaviour{
     
   }
 
-  public static void RemoveTween(int index){
+  public void RemoveTween(int index){
     tweens.RemoveAt (index);
   }
 

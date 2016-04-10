@@ -10,18 +10,18 @@ public class BuildMenu : MonoBehaviour
     public DemButton buttons;
 
     // Currently building...
-    public static BuildInfo currentlyBuilding;
+    public  BuildInfo currentlyBuilding;
 
-    public static DemAnimalFactory currentAnimalFactory;
+    public  DemAnimalFactory currentAnimalFactory;
 
     // Currently about to delete?
-    public static bool currentlyDeleting = false;
+    public  bool currentlyDeleting = false;
 
     // Player's current resource amount
-    public static int currentResources = 250;
+    public  int currentResources = 250;
 
     // Player's current score amount
-    public static int score = 0;
+    public  int score = 0;
 
     // Plant prefabs
     public DemAnimalFactory[] plants;
@@ -29,6 +29,11 @@ public class BuildMenu : MonoBehaviour
     // Prey prefabs
     public DemAnimalFactory[] prey;
 
+    private  GameObject mainObject;
+
+    private DemTurnSystem turnSystem;
+
+    private DemMain main;
 
     void OnGUI()
     {
@@ -49,7 +54,7 @@ public class BuildMenu : MonoBehaviour
 
         // Draw each plant's build info
 
-        GUI.enabled = DemTurnSystem.IsTurnLocked ();
+        GUI.enabled = turnSystem.IsTurnLocked ();
 
 
         foreach (DemAnimalFactory plant in plants)
@@ -64,15 +69,15 @@ public class BuildMenu : MonoBehaviour
                 DemAudioManager.audioClick.Play();
 
                 // If a selection is currently in progress...
-                if (DemMain.currentSelection)
+                if (main.currentSelection)
                 {
                     // Ignore button click if for the same species
                     if (currentAnimalFactory == plant)
                         return;
                     // Otherwise, destroy the current selection before continuing
                     else
-                        Destroy(DemMain.currentSelection);
-						DemMain.boardController.ClearAvailableTiles (); //fix bug
+                        Destroy(main.currentSelection);
+						            main.boardController.ClearAvailableTiles (); //fix bug
                 }
                 // Set / reset currentlyBuilding
 
@@ -88,15 +93,15 @@ public class BuildMenu : MonoBehaviour
                 init_pos.z = -1.5f;
 
                 // Instantiate the current prey
-                DemMain.currentSelection = plant.Create();
-				//DemMain.currentSelection.GetComponent<BuildInfo>().isPlant = true;
-				DemMain.currentSelection.GetComponent<BuildInfo>().speciesType = 0;
+                main.currentSelection = plant.Create();
+				        //DemMain.currentSelection.GetComponent<BuildInfo>().isPlant = true;
+				        main.currentSelection.GetComponent<BuildInfo>().speciesType = 0;
 
 
                 // Set DemMain's preyOrigin as the center of the button
-                DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                main.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
-                DemMain.boardController.SetAvailableTiles();
+                main.boardController.SetAvailableTiles();
 
                 // DEBUG MESSAGE
                 //Debug.Log("currentPlant set to " + currentPlant.name);
@@ -122,15 +127,15 @@ public class BuildMenu : MonoBehaviour
             {
                 DemAudioManager.audioClick.Play();
                 // If a selection is currently in progress...
-                if (DemMain.currentSelection)
+                if (main.currentSelection)
                 {
                     // Ignore button click if for the same species
                     if (currentAnimalFactory == singlePrey)
                         return;
                     // Otherwise, destroy the current selection before continuing
                     else
-                        Destroy(DemMain.currentSelection);
-						DemMain.boardController.ClearAvailableTiles ();		//fix the prey placement bug after change currentSelection from plant to prey
+                        Destroy(main.currentSelection);
+						            main.boardController.ClearAvailableTiles ();		//fix the prey placement bug after change currentSelection from plant to prey
                 }
                 // Set / reset currentlyBuilding
 
@@ -144,14 +149,14 @@ public class BuildMenu : MonoBehaviour
 
 
                 // Instantiate the current prey
-                DemMain.currentSelection = singlePrey.Create();
-				DemMain.currentSelection.GetComponent<BuildInfo>().speciesType = 1;
+                main.currentSelection = singlePrey.Create();
+                main.currentSelection.GetComponent<BuildInfo>().speciesType = 1;
 
 
                 // Set DemMain's preyOrigin as the center of the button
-                DemMain.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                main.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
-                DemMain.boardController.SetAvailableTiles();
+                main.boardController.SetAvailableTiles();
 
 
             }
@@ -173,13 +178,24 @@ public class BuildMenu : MonoBehaviour
     //Loading Resources
     void Awake()
     {
-        backgroundMaterial = Resources.Load<Material>("DontEatMe/Materials/DontEatMeBg");                                                                                      
+      
+      backgroundMaterial = Resources.Load<Material>("DontEatMe/Materials/DontEatMeBg");  
+
+      mainObject = GameObject.Find ("MainObject");
+
+      main = mainObject.GetComponent<DemMain> ();
+
+      turnSystem = mainObject.GetComponent<DemTurnSystem> ();
     }
 
 
     // Use this for initialization
     void Start()
     {
+        
+
+        currentAnimalFactory = null;
+        currentlyBuilding = null;
         // set resources to grow over time
         InvokeRepeating("increaseResources", 2, 3.0F);
         
@@ -265,4 +281,13 @@ public class BuildMenu : MonoBehaviour
     {
 
     }
+
+  public DemAnimalFactory GetCurrentAnimalFactory(){
+    return currentAnimalFactory;
+  }
+
+  public void SetCurrentAnimalFactory(DemAnimalFactory newAnimalFactory){
+    currentAnimalFactory = newAnimalFactory;
+  }
+
 }
