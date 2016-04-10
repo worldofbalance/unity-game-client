@@ -6,7 +6,7 @@ namespace SD
     {
         public RequestSDStartGame()
         {
-            packet = new GamePacket (Constants.USER_ID);
+            packet = new GamePacket (request_id = Constants.CMSG_SDSTART_GAME);
         }
 
         public void Send(int playerId)
@@ -15,4 +15,3 @@ namespace SD
         }
     }
 }
-
