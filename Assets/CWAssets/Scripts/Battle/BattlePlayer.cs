@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 namespace CW
 {
@@ -16,7 +17,7 @@ namespace CW
 		public int count = 0, currentMana, maxMana;
 		private int showTurn = -1;
 		private ProtocolManager protocols;
-		private GameObject manaObj, gameOver;
+		private GameObject manaObj, gameOver, manaBarr;
 		private DeckData deckData;
 		public int playerID;
 		public int matchID;
@@ -113,6 +114,13 @@ namespace CW
 				manaObj.transform.position = new Vector3 (TreePos.x - 800, TreePos.y, TreePos.z);//org(tree +200, y, z)
 			} else {
 				manaObj.transform.position = new Vector3 (TreePos.x + 800, TreePos.y, TreePos.z);//org(tree -200, y, z)
+			}
+			manaBarr = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/ManaBarr", typeof(GameObject)));
+			if (player1) {
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);//org(tree +200, y, z)
+			} else {
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);//org(tree -200, y, z)
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localRotation = new Quaternion(0,1,0,0);
 			}
 		}
 
@@ -372,6 +380,7 @@ namespace CW
 		}
 	
 		private float manaAnimate = 1.0f;
+		private float manaCount;
 		// Update is called once per frame
 		void Update ()
 		{
@@ -384,6 +393,15 @@ namespace CW
 			if (manaAnimate > 4.9) {
 				manaAnimate = 1.0f;
 			}
+			if (currentMana == 0)
+			{
+				manaCount = 0.0f;
+			}
+			else {
+				manaCount = (float)currentMana / 9f;
+			}
+			manaBarr.transform.Find("Image").GetComponent<Image>().fillAmount = manaCount;
+			//Debug.Log("Mana: " + manaCount);
 		}
 	
 	
