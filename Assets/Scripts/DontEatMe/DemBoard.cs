@@ -13,7 +13,7 @@ public class DemBoard : MonoBehaviour {
 
   private GameObject mainObject;
 
-  private GameObject gameBoard;
+  public GameObject gameBoard;
 
   private Color highlightColor;
 
@@ -29,6 +29,7 @@ public class DemBoard : MonoBehaviour {
     main = mainObject.GetComponent<DemMain> ();
 
     gameBoard = GameObject.Find("GameBoard");
+    Debug.Log (gameBoard.transform);
 
     // Calculate the right edge of the screen based on the aspect ratio 
     rightEdge = Camera.main.orthographicSize * Screen.width / Screen.height;
@@ -48,6 +49,7 @@ public class DemBoard : MonoBehaviour {
 
     Tiles[x, y] = GameObject.CreatePrimitive(PrimitiveType.Cube);
     //cube.tag = "Tile"; // Add a "Tile" tag to each cube
+    Debug.Log(gameBoard);
     Tiles[x, y].transform.parent = gameBoard.transform;
 
     Tiles[x, y].transform.position = new Vector3(rightEdge - 1 - x, bottomEdge + 1 + y, -1);

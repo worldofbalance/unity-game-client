@@ -8,7 +8,7 @@ public class DemTurnSystem : MonoBehaviour {
   
   private  DemBoard board;
   private Dictionary<int, GameObject> activePredators = new Dictionary<int, GameObject>();
-  private  Stack<DemTween> tweenList = new Stack<DemTween>();
+  private  Queue<DemTween> tweenList = new Queue<DemTween>();
   private  DemTile nextTile;
   private  DemTile currentTile;
   public  bool turnLock = false;
@@ -53,7 +53,7 @@ public class DemTurnSystem : MonoBehaviour {
 
 
       animal.SetNextTile (nextTile);
-      tweenList.Push(new DemTween (predator.Value, nextTile.GetCenter (), 700));
+      tweenList.Enqueue(new DemTween (predator.Value, nextTile.GetCenter (), 700));
 
     }
 
@@ -72,9 +72,16 @@ public class DemTurnSystem : MonoBehaviour {
   {
     
     BuildInfo animal = finishedPredator.GetComponent<BuildInfo> ();
+    Boolean markForDeletion = false;
 
     if( animal.GetNextTile().resident  != null){
       animal.GetNextTile ().RemoveAnimal();
+    }
+
+    if(markForDeletion){
+      
+      activePredators.Remove(animal.GetInstanceID());
+
     }
 
     animal.AdvanceTile ();
@@ -109,7 +116,7 @@ public class DemTurnSystem : MonoBehaviour {
   {
     
     if (tweenList.Count > 0) {
-      tweenManager.AddTween (tweenList.Pop ());
+      tweenManager.AddTween (tweenList.Dequeue ());
     } else {
       GenerateNewPredators ();
     }
