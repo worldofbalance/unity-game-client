@@ -12,7 +12,7 @@ public class DemTurnSystem : MonoBehaviour {
   private  DemTile nextTile;
   private  DemTile currentTile;
   public  bool turnLock = false;
-  private  GameObject predator;
+  //private  GameObject predator;
   private DemMain main;
   private GameObject mainObject;
   private DemTweenManager tweenManager;
@@ -71,20 +71,36 @@ public class DemTurnSystem : MonoBehaviour {
   public  void PredatorFinishedMove (GameObject finishedPredator)
   {
     
-    BuildInfo animal = finishedPredator.GetComponent<BuildInfo> ();
+    BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
     Boolean markForDeletion = false;
 
-    if( animal.GetNextTile().resident  != null){
-      animal.GetNextTile ().RemoveAnimal();
+    if( predator.GetNextTile().resident  != null){
+      
+      BuildInfo nextAnimal = predator.GetNextTile ().resident.GetComponent<BuildInfo> ();
+
+      if(nextAnimal.isPrey() || nextAnimal.isPlant()){
+        predator.GetNextTile ().RemoveAnimal();
+      }
+
+      if(nextAnimal.isPrey()){
+        markForDeletion = true;
+      }
+
     }
+
+
+
+    predator.AdvanceTile ();
 
     if(markForDeletion){
-      
-      activePredators.Remove(animal.GetInstanceID());
+
+      DemTile tempTile = predator.GetTile ();
+      activePredators.Remove(finishedPredator.GetInstanceID());
+      tempTile.RemoveAnimal ();
 
     }
 
-    animal.AdvanceTile ();
+
     ProcessTweens ();
 
 
