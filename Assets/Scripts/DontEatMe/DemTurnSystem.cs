@@ -1,36 +1,47 @@
-﻿using UnityEngine;
+﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class DemTurnSystem : MonoBehaviour {
   
-	private static DemBoard board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
-  public static List<GameObject> activePredators = new List<GameObject>();
-  private static DemTile nextTile;
-  private static DemTile currentTile;
-  public static bool turnLock = false;
-  private static GameObject predator;
-
-
+  private  DemBoard board;
+  private Dictionary<int, GameObject> activePredators = new Dictionary<int, GameObject>();
+  private  Queue<DemTween> tweenList = new Queue<DemTween>();
+  private  DemTile nextTile;
+  private  DemTile currentTile;
+  public  bool turnLock = false;
+  //private  GameObject predator;
+  private DemMain main;
+  private GameObject mainObject;
+  private DemTweenManager tweenManager;
   DemTile tile;
 
-  void Start(){
+  void Awake()
+  {
+    
+    mainObject = GameObject.Find ("MainObject");
     board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
+    main = mainObject.GetComponent<DemMain> ();
+    tweenManager = mainObject.GetComponent<DemTweenManager> ();
+
   }
 	
 
-  public static void PredatorTurn(){
+  public  void PredatorTurn()
+  {
 
     turnLock = true;
-    for(int i = activePredators.Count - 1; i >=0 ; i--){
-      
-    //foreach (GameObject predator in activePredators) {
-      predator = activePredators[i];
+    foreach(KeyValuePair<int, GameObject> predator in activePredators)
+    {
 
-      BuildInfo animal = predator.GetComponent<BuildInfo> ();
+      BuildInfo animal = predator.Value.GetComponent<BuildInfo> ();
       int x = animal.GetTile ().GetIdX ();
       int y = animal.GetTile ().GetIdY ();
-	
+	    
+      currentTile = board.Tiles [x, y].GetComponent<DemTile> ();
+
       if(x+1 == 9){
           //Do the bounds checking first instead of last
           currentTile.RemoveAnimal (); //remove predator
@@ -39,53 +50,96 @@ public class DemTurnSystem : MonoBehaviour {
       }
 
       nextTile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
-      currentTile = board.Tiles [x, y].GetComponent<DemTile> ();
-
-		  //Check if next location to left is open
-      if (nextTile.GetResident() == null) {
-
-				nextTile.AddAnimal (predator);
-        currentTile.SetResident (null);
-        animal.SetTile (nextTile);
 
 
-			}		//Check if next Location to left is plant, if it is , destroy it
-			else if (nextTile.resident.GetComponent<BuildInfo> ().isPlant ()) {
-				nextTile.RemoveAnimal ();	//remove plant from tile
-				nextTile.AddAnimal (predator);
-        currentTile.SetResident (null);
-        animal.SetTile (nextTile);
+      animal.SetNextTile (nextTile);
+      tweenList.Enqueue(new DemTween (predator.Value, nextTile.GetCenter (), 700));
 
-			}		//Check if next Location to left is prey, if it is , eat it
-			else if (nextTile.resident.GetComponent<BuildInfo> ().isPrey ()) {
-				nextTile.RemoveAnimal ();	//remove prey from tile
-				currentTile.RemoveAnimal ();	//remove predator from tile, predator distroyed, but predator reference is still in list
-        activePredators.RemoveAt(i);
+    }
+
+    ProcessTweens ();
+
+  }
+
+  public  bool IsTurnLocked(){
+    
+    return !turnLock;
+
+  }
 
 
-			} 
-		
-			
+  public  void PredatorFinishedMove (GameObject finishedPredator)
+  {
+    
+    BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
+    Boolean markForDeletion = false;
+
+    if( predator.GetNextTile().resident  != null){
+      
+      BuildInfo nextAnimal = predator.GetNextTile ().resident.GetComponent<BuildInfo> ();
+
+      if(nextAnimal.isPrey() || nextAnimal.isPlant()){
+        predator.GetNextTile ().RemoveAnimal();
+      }
+
+      if(nextAnimal.isPrey()){
+        markForDeletion = true;
+      }
+
     }
 
 
+
+    predator.AdvanceTile ();
+
+    if(markForDeletion){
+
+      DemTile tempTile = predator.GetTile ();
+      activePredators.Remove(finishedPredator.GetInstanceID());
+      tempTile.RemoveAnimal ();
+
+    }
+
+
+    ProcessTweens ();
+
+
+  }
+
+  public  void GenerateNewPredators()
+  {
+
     //For Testing
-    int random = Random.Range (0, 5);
+    int random = UnityEngine.Random.Range (0, 5);
 
-    int randomPredator = Random.Range (0, DemMain.predators.Length);
+    int randomPredator = UnityEngine.Random.Range (0, main.predators.Length);
 
-    GameObject newPredator = DemMain.predators [randomPredator].Create ();
-	  newPredator.GetComponent<BuildInfo> ().speciesType = 2;
+    GameObject newPredator = main.predators [randomPredator].Create ();
+    newPredator.GetComponent<BuildInfo> ().speciesType = 2;
 
-    activePredators.Add (newPredator);
+    activePredators.Add (newPredator.GetInstanceID() , newPredator);
 
 
     board.AddAnimal(0, random, newPredator );
 
+    tweenList.Clear ();
+
     turnLock = false;
 
+  }
+
+  void ProcessTweens()
+  {
+    
+    if (tweenList.Count > 0) {
+      tweenManager.AddTween (tweenList.Dequeue ());
+    } else {
+      GenerateNewPredators ();
+    }
 
   }
+
+
 
 
 
