@@ -96,7 +96,7 @@ public class BuildMenu : MonoBehaviour
 
             //GUI.enabled = currentResources >= info.price;
             // if button is clicked, then set currentlyBuilding to the info of the button you clicked
-            if (GUILayout.Button(new GUIContent("plant"), GUILayout.Width(40), GUILayout.Height(40)))
+            if (GUILayout.Button(new GUIContent(plant.GetImageForOnGUI()), GUILayout.Width(40), GUILayout.Height(40)))
             {
                 DemAudioManager.audioClick.Play();
 
@@ -153,7 +153,7 @@ public class BuildMenu : MonoBehaviour
 
             // if button is clicked, then set currentlyBuilding to the info of the button you clicked
 
-            if (GUILayout.Button(new GUIContent("prey"), GUILayout.Width(40), GUILayout.Height(40)))
+            if (GUILayout.Button(new GUIContent(singlePrey.GetImageForOnGUI()), GUILayout.Width(40), GUILayout.Height(40)))
             {
                 DemAudioManager.audioClick.Play();
                 // If a selection is currently in progress...
@@ -250,7 +250,7 @@ public class BuildMenu : MonoBehaviour
         // NEW BUTTON CREATION STARTS HERE
         // To use old buttons comment out the following lines (until line 287) and uncomment OnGUI()
         
-
+        
         // Building the buttons
         gameObject.AddComponent<DemButton>();
         demButton = gameObject.GetComponent<DemButton>();
