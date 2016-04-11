@@ -7,7 +7,7 @@ using UnityEngine;
 public class DemTurnSystem : MonoBehaviour {
   
   private  DemBoard board;
-  private Dictionary<int, GameObject> activePredators = new Dictionary<int, GameObject>();
+  private Dictionary<int, GameObject> activePredators;// = new Dictionary<int, GameObject>();
   private  Queue<DemTween> tweenList = new Queue<DemTween>();
   private  DemTile nextTile;
   private  DemTile currentTile;
@@ -33,6 +33,7 @@ public class DemTurnSystem : MonoBehaviour {
   {
 
     turnLock = true;
+    activePredators = board.GetPredators ();
     foreach(KeyValuePair<int, GameObject> predator in activePredators)
     {
 

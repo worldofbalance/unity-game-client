@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class DemBoard : MonoBehaviour {
   public GameObject[,] Tiles = new GameObject[9 , 5];
@@ -71,7 +72,7 @@ public class DemBoard : MonoBehaviour {
 
   public void SetAvailableTiles(){
       
-    for (int x = 0; x < 9; x++){
+    for (int x = 1; x < 9; x++){
       for (int y = 0; y < 5; y++){
 
 		if (main.currentSelection.GetComponent<BuildInfo>().isPlant()) {
@@ -131,6 +132,31 @@ public class DemBoard : MonoBehaviour {
 
     Tiles [x, y].GetComponent<DemTile> ().AddAnimal(animal);
 
+  }
+
+
+  public Dictionary<int, GameObject> GetPredators(){
+    
+    Dictionary<int, GameObject> activePredators = new Dictionary<int, GameObject> ();
+
+
+
+
+     for (int x = 8; x >= 0; x--){
+
+        for (int y = 0; y < 5; y++){
+        if (Tiles [x, y].GetComponent<DemTile> ().ResidentIsPredator() ) {
+          
+          activePredators.Add (Tiles [x, y].GetComponent<DemTile> ().resident.GetInstanceID (), Tiles [x, y].GetComponent<DemTile> ().resident);
+
+        }
+
+      }
+
+    }
+
+
+    return activePredators;
   }
 
 

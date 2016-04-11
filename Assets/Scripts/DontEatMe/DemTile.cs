@@ -146,6 +146,16 @@ public class DemTile : MonoBehaviour
     return resident;
   }
 
+  public bool ResidentIsPredator(){
+    
+    if (resident) {
+      return resident.GetComponent<BuildInfo> ().isPredator ();
+    } else {
+      return false;
+    }
+
+  }
+
   public void SetResident(GameObject newResident){
     resident = newResident;
   }
