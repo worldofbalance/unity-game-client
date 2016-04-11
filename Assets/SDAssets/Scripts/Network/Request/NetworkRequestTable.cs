@@ -18,6 +18,8 @@ namespace SD
             add(Constants.CMSG_RACE_INIT, "RequestPlayInit");
             add (Constants.CMSG_SDSTART_GAME, "RequestSDStartGame");
             add (Constants.CMSG_SDEND_GAME, "RequestSDEndGame");
+            add (Constants.CMSG_KEYBOARD, "RequestSDKeyboard");
+            add (Constants.CMSG_POSITION, "RequestSDPosition");
 
         }
 

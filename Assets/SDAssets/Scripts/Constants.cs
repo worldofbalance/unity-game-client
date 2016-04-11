@@ -22,6 +22,12 @@ namespace SD
         public static readonly short CMSG_SDEND_GAME = 503;
         public static readonly short SMSG_SDEND_GAME = 603;
 
+        public static readonly short CMSG_KEYBOARD = 108;
+        public static readonly short SMSG_KEYBOARD = 208;
+
+        public static readonly short CMSG_POSITION = 110;
+        public static readonly short SMSG_POSITION = 210;
+        
         public static int USER_ID = -1; // Dummy variable
     }
 }

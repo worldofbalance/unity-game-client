@@ -214,7 +214,7 @@ public class MultiplayerGames : MonoBehaviour {
     public SD.RequestPlayInit SD_RequestPlayInit()
     {
         SD.RequestPlayInit request = new SD.RequestPlayInit();
-        request.Send(SD.Constants.USER_ID, this.room_id);
+        request.Send(GameState.account.account_id, this.room_id);
         return request;
     }
    
