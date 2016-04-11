@@ -22,7 +22,8 @@ namespace SD {
             cManager = SDConnectionManager.getInstance ();
             mQueue = SDMessageQueue.getInstance ();
             if (cManager && mQueue) {
-                mQueue.AddCallback (Constants.SMSG_SDEND_GAME, ResponseSDEndGame);
+                if (!mQueue.callbackList.ContainsKey(Constants.SMSG_SDEND_GAME))
+                    mQueue.AddCallback (Constants.SMSG_SDEND_GAME, ResponseSDEndGame);
             } else {
                 Debug.LogWarning ("Could not establish a connection to Sea Divided Server. Falling back to offline mode.");
             }
