@@ -54,10 +54,11 @@ public class DemTurnSystem : MonoBehaviour {
 
 
       animal.SetNextTile (nextTile);
-      tweenList.Enqueue(new DemTween (predator.Value, nextTile.GetCenter (), 700));
+      tweenList.Enqueue(new DemTileTransitionTween (predator.Value, nextTile.GetCenter (), 700));
 
     }
 
+    GenerateNewPredators ();
     ProcessTweens ();
 
   }
@@ -100,8 +101,7 @@ public class DemTurnSystem : MonoBehaviour {
       tempTile.RemoveAnimal ();
 
     }
-
-
+      
     ProcessTweens ();
 
 
@@ -118,24 +118,27 @@ public class DemTurnSystem : MonoBehaviour {
     GameObject newPredator = main.predators [randomPredator].Create ();
     newPredator.GetComponent<BuildInfo> ().speciesType = 2;
 
-    activePredators.Add (newPredator.GetInstanceID() , newPredator);
+    //activePredators.Add (newPredator.GetInstanceID() , newPredator);
 
+    board.AddNewPredator(0, random, newPredator );
 
-    board.AddAnimal(0, random, newPredator );
+    tweenList.Enqueue(new DemPredatorEnterTween (newPredator, 700));
 
-    tweenList.Clear ();
+    //tweenList.Clear ();
 
-    turnLock = false;
+    //turnLock = false;
 
   }
 
-  void ProcessTweens()
+  public void ProcessTweens()
   {
     
     if (tweenList.Count > 0) {
       tweenManager.AddTween (tweenList.Dequeue ());
     } else {
-      GenerateNewPredators ();
+      //GenerateNewPredators ();
+      tweenList.Clear();
+      turnLock = false;
     }
 
   }

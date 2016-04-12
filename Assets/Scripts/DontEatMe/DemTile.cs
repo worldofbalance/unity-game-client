@@ -171,6 +171,22 @@ public class DemTile : MonoBehaviour
 
   }
 
+
+  public void AddNewPredator(GameObject animal){
+
+    this.resident = animal;
+
+    this.resident.GetComponent<BuildInfo> ().tile = this;
+
+    Vector3 newPosition = new Vector3();
+    newPosition.x = this.center.x+2;
+    newPosition.y = this.center.y;
+    newPosition.z = this.center.z;
+
+    this.resident.transform.position = newPosition;
+
+  }
+
   public void RemoveAnimal(){
     
     Destroy (resident);
