@@ -63,6 +63,7 @@ public class ConvergeGame : MonoBehaviour
 	private bool isResetSliderInitialized = false;
 	private int resetSliderValue = 0;
 	private int maxResetSliderValue = 0;
+	private int showSelect = 0;
 
 	void Awake ()
 	{
@@ -180,13 +181,26 @@ public class ConvergeGame : MonoBehaviour
 
 		//make select ecosystem top left
 		int new_idx = 0;
-		GUI.Button (new Rect (0, 0, 100, 30), "Select Ecosystem:", button);
+		
+		string select = "Select Ecosystem";
+		if( GUI.Button (new Rect (0, 0, 100, 30), "Select Ecosystem:", button) ){
+			if(showSelect == 0){
+				showSelect = 1;
+			} else {
+				showSelect = 0;
+			}
+			
+		}
+
+
+		if(showSelect == 1){
 			GUI.SetNextControlName ("ecosystem_idx_field");
 			GUILayout.BeginArea(new Rect(0,30,100,200));
 			GUILayout.BeginVertical("box");
 			new_idx = GUILayout.SelectionGrid (ecosystem_idx, ecosysDescripts, 1);
 			GUILayout.EndVertical();
 			GUILayout.EndArea();
+		}
 		
 
 		if (!isProcessing && new_idx != ecosystem_idx) {
