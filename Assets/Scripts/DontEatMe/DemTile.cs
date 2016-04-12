@@ -146,6 +146,16 @@ public class DemTile : MonoBehaviour
     return resident;
   }
 
+  public bool ResidentIsPredator(){
+    
+    if (resident) {
+      return resident.GetComponent<BuildInfo> ().isPredator ();
+    } else {
+      return false;
+    }
+
+  }
+
   public void SetResident(GameObject newResident){
     resident = newResident;
   }
@@ -158,6 +168,22 @@ public class DemTile : MonoBehaviour
     this.resident.GetComponent<BuildInfo> ().tile = this;
 
     this.resident.transform.position = this.center;
+
+  }
+
+
+  public void AddNewPredator(GameObject animal){
+
+    this.resident = animal;
+
+    this.resident.GetComponent<BuildInfo> ().tile = this;
+
+    Vector3 newPosition = new Vector3();
+    newPosition.x = this.center.x+2;
+    newPosition.y = this.center.y;
+    newPosition.z = this.center.z;
+
+    this.resident.transform.position = newPosition;
 
   }
 
