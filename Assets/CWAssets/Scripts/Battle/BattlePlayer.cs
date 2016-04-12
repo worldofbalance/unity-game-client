@@ -17,7 +17,7 @@ namespace CW
 		public int count = 0, currentMana, maxMana;
 		private int showTurn = -1;
 		private ProtocolManager protocols;
-		private GameObject manaObj, gameOver, manaBarr;
+		private GameObject manaObj, gameOver, manaBarr, manaFaded;
 		private DeckData deckData;
 		public int playerID;
 		public int matchID;
@@ -110,18 +110,29 @@ namespace CW
 		
 			//Instantiates the Graphic for the Mana and sets it's position
 			manaObj = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/Mana"));
-			if (player1) {
-				manaObj.transform.position = new Vector3 (TreePos.x - 800, TreePos.y, TreePos.z);//org(tree +200, y, z)
-			} else {
-				manaObj.transform.position = new Vector3 (TreePos.x + 800, TreePos.y, TreePos.z);//org(tree -200, y, z)
-			}
+			manaFaded = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/ManaFaded", typeof(GameObject)));
 			manaBarr = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/ManaBarr", typeof(GameObject)));
 			if (player1) {
-				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);//org(tree +200, y, z)
+				manaObj.transform.position = new Vector3 (TreePos.x - 800, TreePos.y, TreePos.z);//org(tree +200, y, z)
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
 			} else {
-				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);//org(tree -200, y, z)
+				manaObj.transform.position = new Vector3 (TreePos.x + 800, TreePos.y, TreePos.z);//org(tree -200, y, z)
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
 				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localRotation = new Quaternion(0,1,0,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localRotation = new Quaternion(0,1,0,0);
 			}
+			/*
+			if (player1) {
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-720,0);
+			} else {
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localRotation = new Quaternion(0,1,0,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localRotation = new Quaternion(0,1,0,0);
+			}*/
 		}
 
 
@@ -401,6 +412,7 @@ namespace CW
 				manaCount = (float)currentMana / 9f;
 			}
 			manaBarr.transform.Find("Image").GetComponent<Image>().fillAmount = manaCount;
+			manaFaded.transform.Find ("Image").GetComponent<Image> ().fillAmount = (float)maxMana / 9f;
 			//Debug.Log("Mana: " + manaCount);
 		}
 	
