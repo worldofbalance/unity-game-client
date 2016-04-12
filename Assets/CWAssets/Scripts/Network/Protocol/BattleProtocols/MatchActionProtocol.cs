@@ -18,7 +18,7 @@ namespace CW{
 			response.actionID =  DataReader.ReadShort(dataStream);
 			response.intCount = DataReader.ReadInt (dataStream);
 			response.stringCount = DataReader.ReadInt (dataStream);
-			Debug.Log("Action Protocol: length of ints " + response.intCount + " stringCount :" + response.stringCount);
+			//Debug.Log("Action Protocol: length of ints " + response.intCount + " stringCount :" + response.stringCount);
 			for (int i = 0; i < response.intCount; i++){
 				response.intList.Add(DataReader.ReadInt(dataStream));
 			}

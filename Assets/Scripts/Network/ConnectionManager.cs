@@ -67,7 +67,7 @@ public class ConnectionManager
 		List<NetworkResponse> responses = new List<NetworkResponse>();
 
 		while (theStream.DataAvailable && responses.Count < numPackets)
-    {
+        {
 			byte[] buffer = new byte[2];
 			theStream.Read(buffer, 0, 2);
 			short bufferSize = BitConverter.ToInt16(buffer, 0);

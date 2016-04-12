@@ -167,9 +167,20 @@ public class MultiplayerGames : MonoBehaviour {
 				Game.SwitchScene ("RRReadyScene");
 			} else if (args.gameID == Constants.MINIGAME_CARDS_OF_WILD) {
 				CW.GameManager.matchID = args.id;
-				NetworkManager.Send (CW.MatchInitProtocol.Prepare 
-				                        (GameState.player.GetID(), args.id), 
-				                        ProcessMatchInit);
+                
+                /*CW.NetworkManager.Send (CW.MatchInitProtocol.Prepare 
+                                        (GameState.player.GetID(), args.id), 
+                                        ProcessMatchInit);*/
+                //gameObject.AddComponent<CW.CWNetworkManager>();
+
+
+                CW.CWNetworkManager.Send (CW.MatchInitProtocol.Prepare 
+                                        (GameState.player.GetID(), args.id), 
+                                        ProcessMatchInit);
+                //Game.SwitchScene ("CWGame");                    
+
+                //Game.SwitchScene ("CWGame");                        
+                                    
             } else if (args.gameID == Constants.MINIGAME_SEA_DIVIDED) {
                 SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
                 sManager.Send(SD_RequestPlayInit());
@@ -196,7 +207,9 @@ public class MultiplayerGames : MonoBehaviour {
 		StartCoroutine(RequestGetRooms(1f));
 	}
 
-	public void ProcessMatchInit(NetworkResponse response) {
+	public void ProcessMatchInit(NetworkResponse response) 
+    {
+        Debug.Log("In ProcessMatchInit callback");
 		CW.ResponseMatchInit args = response as CW.ResponseMatchInit;
 		
 		if (args.status == 0) {

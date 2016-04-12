@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+
 public class CWGame : MonoBehaviour {
 
 	public string scene;
@@ -12,15 +13,16 @@ public class CWGame : MonoBehaviour {
 	private NetworkManager networkManager;
 
 	void Awake() {
-		networkManager = new NetworkManager(
+		/*networkManager = new NetworkManager(
 			this,
 			new ConnectionManager(Config.REMOTE_HOST, CW.Constants.REMOTE_PORT)
-		);
-
+		);*/
+        Debug.Log("In awake of CWGame");
+        gameObject.AddComponent<CW.CWNetworkManager>();
 		DontDestroyOnLoad(gameObject);
 
 		//SpeciesTable.Initialize();
-		texture = Functions.CreateTexture2D(Color.black);
+		//texture = Functions.CreateTexture2D(Color.black);
 	}
 	
 	// Use this for initialization
@@ -30,23 +32,23 @@ public class CWGame : MonoBehaviour {
 //			ProcessSpeciesList
 //		);
 
-		if (scene != "") {
+		/*if (scene != "") {
 	//		Application.LoadLevel(scene);
 			Game.SwitchScene(scene);
 		} else {
 			Debug.Log("Missing Scene");
-		}
+		}*/
 	}
 	
 	// Update is called once per frame
-	void Update() {
+	/*void Update() {
 		networkManager.Update();
 		if (isFading != 0) {
 			PerformTransition();
 		}
-	}
+	}*/
 
-	void OnGUI() {
+	/*void OnGUI() {
 		GUI.color = new Color(0, 0, 0, alphaFadeValue);
 		GUI.depth = 0;
 		GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), texture);
@@ -131,5 +133,5 @@ public class CWGame : MonoBehaviour {
 		messageBox.GetComponent<MessageBox>().setMessage(message);
 		
 		return messageBox;
-	}
+	}*/
 }

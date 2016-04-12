@@ -105,6 +105,7 @@ namespace CW
 				//Debug.Log ("Loading destroyed");
 				Destroy (popup);
 			}
+            //CWNetworkManager.getInstance().UpdateNW();
 		}
 
 		// TEMP: activated when EndTurnAction is received.
@@ -183,7 +184,7 @@ namespace CW
 	*/
 		public void returnToLobby ()
 		{
-			Debug.Log ("Returning to Lobby");
+			//Debug.Log ("Returning to Lobby");
 			//protocols.sendReturnToLobby();
 		}
 
