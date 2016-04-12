@@ -65,6 +65,7 @@ namespace RR
 			}
 		
 			if (theStream.DataAvailable) {
+                Debug.Log ("if stream available");
 				byte[] buffer = new byte[2];
 				theStream.Read (buffer, 0, 2);
 				short bufferSize = BitConverter.ToInt16 (buffer, 0);
@@ -112,9 +113,9 @@ namespace RR
 			byte[] bytes = packet.getBytes ();
 			theStream.Write (bytes, 0, bytes.Length);
 
-			//if (request.request_id != Constants.CMSG_HEARTBEAT) {
+			if (request.request_id != Constants.CMSG_HEARTBEAT) {
 			Debug.Log ("Sent Request No. " + request.request_id + " [" + request.ToString () + "]");
-			//}
+			}
 		}
 
 		// Update is called once per frame
