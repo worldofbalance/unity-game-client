@@ -84,8 +84,11 @@ public class BuildInfo : MonoBehaviour {
 	}
 
 	public bool isPredator(){
-		if (speciesType == 2)
-			return true;
+    
+    if (speciesType == 2) {
+      return true;
+    }
+			
 		return false;
 	}
 
