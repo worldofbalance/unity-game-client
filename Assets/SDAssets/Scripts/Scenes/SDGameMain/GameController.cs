@@ -20,10 +20,12 @@ public class GameController : MonoBehaviour {
     public Text scoreText;
     public Text UnscoredPointText; 
     public Text staminaText;
+    public Text healthText;
 
     private int score;          // Player's score
     private int unscoredPoint;
     public float stamina;       // Player's stamina
+    public int health;
     private const float MaxStamina = 100;
     private float staminaRecoveryRate = 0.02f;
 
@@ -43,6 +45,7 @@ public class GameController : MonoBehaviour {
         UpdateScore ();
         UpdateStamina ();
         UpdateUnscoredPoint ();
+        UpdateHealth ();
         for (int i = 0; i < numPrey; i++) {
             spawnPrey ();
         }
@@ -55,6 +58,7 @@ public class GameController : MonoBehaviour {
         RecoverStamina ();
         UpdateStamina ();
         UpdateUnscoredPoint ();
+        UpdateHealth ();
     }
 
     // Spawns prey at a random position within the boundary
@@ -88,6 +92,14 @@ public class GameController : MonoBehaviour {
         UnscoredPointText.text = "Unscored Point: " + unscoredPoint;
     }
 
+    public int GetUnscored(){
+        return this.unscoredPoint;
+    }
+
+    public void ResetUnscored(){
+        this.unscoredPoint = 0;
+    }
+
     // Updates staminaText UI with no decimal place.
     void UpdateStamina() {
         staminaText.text = "Stamina: " + stamina.ToString("F0");
@@ -115,19 +127,22 @@ public class GameController : MonoBehaviour {
         this.score = newScore;
     }
 
-
-    public int GetUnscored(){
-        return this.unscoredPoint;
-    }
-
-    public void ResetUnscored(){
-        this.unscoredPoint = 0;
-    }
-
     // Adds unscored points to player's actual score
     public void Score(){
         this.score += this.unscoredPoint;
         UpdateScore ();
+    }
+
+    public int GetHealth(){
+        return this.health;
+    }
+
+    public void SetHealth(int newHealth){
+        this.health = newHealth;
+    }
+
+    void UpdateHealth(){
+        healthText.text = "Health: " + health;
     }
 
     public void BtnSurrenderClick() {
