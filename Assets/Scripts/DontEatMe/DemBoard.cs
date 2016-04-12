@@ -135,6 +135,12 @@ public class DemBoard : MonoBehaviour {
   }
 
 
+  public void AddNewPredator(int x , int y, GameObject animal){
+
+    Tiles [x, y].GetComponent<DemTile> ().AddNewPredator(animal);
+
+  }
+
   public Dictionary<int, GameObject> GetPredators(){
     
     Dictionary<int, GameObject> activePredators = new Dictionary<int, GameObject> ();

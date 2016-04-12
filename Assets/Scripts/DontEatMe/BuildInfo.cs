@@ -51,14 +51,24 @@ public class BuildInfo : MonoBehaviour {
     nextTile = newNextTile;
   }
 
-  public void AdvanceTile(){
-    Debug.Log (parent +" : "+ nextTile);
+  public void AdvanceTile()
+  {
 
-    DemTile oldTile = tile;
-    nextTile.AddAnimal (parent);
-    oldTile.SetResident (null);
-    tile = nextTile;
-    nextTile = null;
+    if (tile) {
+    
+      DemTile oldTile = tile;
+      nextTile.AddAnimal (parent);
+      oldTile.SetResident (null);
+      tile = nextTile;
+      nextTile = null;
+    
+    } else {
+      nextTile.AddAnimal (parent);
+      tile = nextTile;
+      nextTile = null;  
+    }
+      
+
   }
 
 	public bool isPlant(){
