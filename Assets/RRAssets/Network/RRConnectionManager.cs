@@ -65,6 +65,7 @@ namespace RR
 			}
 		
 			if (theStream.DataAvailable) {
+                Debug.Log ("if stream available");
 				byte[] buffer = new byte[2];
 				theStream.Read (buffer, 0, 2);
 				short bufferSize = BitConverter.ToInt16 (buffer, 0);
@@ -112,10 +113,16 @@ namespace RR
 			byte[] bytes = packet.getBytes ();
 			theStream.Write (bytes, 0, bytes.Length);
 
+<<<<<<< HEAD
+			if (request.request_id != Constants.CMSG_HEARTBEAT) {
+			Debug.Log ("Sent Request No. " + request.request_id + " [" + request.ToString () + "]");
+			}
+=======
 			//if (request.request_id != Constants.CMSG_HEARTBEAT) {
 			    //commented by Rujoota
                 //Debug.Log ("Sent Request No. " + request.request_id + " [" + request.ToString () + "]");
 			//}
+>>>>>>> 98f6f70c9a2d6f9519a3185abeecdb6839a04249
 		}
 
 		// Update is called once per frame
