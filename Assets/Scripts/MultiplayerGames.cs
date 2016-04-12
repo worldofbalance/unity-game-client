@@ -7,7 +7,7 @@ public class MultiplayerGames : MonoBehaviour {
 	private GameObject mainObject;
 
 	// Window Properties
-	private float width = 600;
+	private float width = 500;
 	private float height = 300;
 
 	// Other
@@ -94,17 +94,17 @@ public class MultiplayerGames : MonoBehaviour {
 		GUILayout.Space(30);
 
 		GUI.enabled = enableRRButton;
-		if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Play Running Rhino")) {
+		if (GUI.Button(new Rect(10, windowRect.height - 80, 140, 30), "Play Running Rhino")) {
 			NetworkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_RUNNING_RHINO, -1));
 		}
 
 		GUI.enabled = enableCWButton;
-		if (GUI.Button(new Rect(160, windowRect.height - 40, 125, 30), "Play Cards of Wild")) {
+		if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Play Cards of Wild")) {
 			NetworkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_CARDS_OF_WILD, -1));
 		}
 
         GUI.enabled = enableSDButton;
-        if (GUI.Button(new Rect(295, windowRect.height - 40, 125, 30), "Play Sea Divided")) {
+        if (GUI.Button(new Rect(165, windowRect.height - 40, 125, 30), "Play Sea Divided")) {
             NetworkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_SEA_DIVIDED, -1));
         }
 
@@ -171,6 +171,8 @@ public class MultiplayerGames : MonoBehaviour {
 				                        (GameState.player.GetID(), args.id), 
 				                        ProcessMatchInit);
             } else if (args.gameID == Constants.MINIGAME_SEA_DIVIDED) {
+                SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
+                sManager.Send(SD_RequestPlayInit());
                 Game.SwitchScene ("SDReadyScene");
             }
 		} else {
@@ -209,4 +211,11 @@ public class MultiplayerGames : MonoBehaviour {
 		request.Send (RR.Constants.USER_ID, this.room_id);
 		return request;
 	}
+    public SD.RequestPlayInit SD_RequestPlayInit()
+    {
+        SD.RequestPlayInit request = new SD.RequestPlayInit();
+        request.Send(SD.Constants.USER_ID, this.room_id);
+        return request;
+    }
+   
 }

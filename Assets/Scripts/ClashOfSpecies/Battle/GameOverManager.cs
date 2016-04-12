@@ -4,7 +4,7 @@ using System.Collections;
 public class GameOverManager : MonoBehaviour {
 
 	
-	public Health playerHealth;       // Reference to the player's health.
+//	public Health playerHealth;       // Reference to the player's health.
 	public float restartDelay = 5f;         // Time to wait before restarting the level
 	
 	
