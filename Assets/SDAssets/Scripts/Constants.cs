@@ -28,7 +28,9 @@ namespace SD
         public static readonly short CMSG_POSITION = 110;
         public static readonly short SMSG_POSITION = 210;
         
-        public static int USER_ID = -1; // Dummy variable
+        public static int USER_ID = -1; // Overwritten by the response. (Player_id)
+        public static readonly int TEMP_ROOM_ID = 101;
+
     }
 }
 
