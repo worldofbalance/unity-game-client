@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour {
 
     private float movementHorizontal;
     private float movementVertical;
+  
 
     public Boundary boundary;
     private Vector3 scale;
@@ -43,7 +44,7 @@ public class PlayerController : MonoBehaviour {
     void Start () {
         rb = GetComponent<Rigidbody> ();
         scale = rb.transform.localScale;
-        turn = new Vector3 (0f, turnSpeed, 0f);
+        turn = new Vector3 (turnSpeed,0f , 0f);
         goUpDown = new Vector3 (turnSpeed/2, 0f, 0f);
 
 
@@ -67,27 +68,32 @@ public class PlayerController : MonoBehaviour {
 
         // Assigns the player's movement speed, and move the player object
         rb.velocity = movement * speed;
-        rb.position = new Vector3 (
+        /*rb.position = new Vector3 (
             Mathf.Clamp (rb.position.x, boundary.xMin, boundary.xMax),
             Mathf.Clamp (rb.position.y, boundary.yMin, boundary.yMax),
             0.0f
-        );
-            
+        );*/
+
         // Flips the player object left or right
         // depending on the direction the player is moving
         // Moving to Right
+      var mouse = Input.mousePosition;
+             var screenPoint = Camera.main.WorldToScreenPoint(transform.localPosition);
+             var offset = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
+             var angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+             transform.rotation = Quaternion.Euler(angle-180 ,- 90, 0 );
         if (rb.velocity.x > 0) {
-            if (rb.transform.rotation.eulerAngles.y > 90) {
+            
             //turnSpeed = turnSpeed * -1;
             rb.transform.Rotate (-turn);
-            }
+            
         } 
         // Moving to Left
         if (rb.velocity.x < 0) {
-            if (rb.transform.rotation.eulerAngles.y < 270) {
+            
             rb.transform.Rotate (turn);
 
-            }
+            
         }
         //rb.rotation = Quaternion.Euler (0.0f, rb.velocity.z * -tilt,  0.0f);
 	}
@@ -110,6 +116,13 @@ public class PlayerController : MonoBehaviour {
 
         if (Input.GetKeyUp (KeyCode.Space)) {
             speed = speed / speedUpFactor;
+        }
+        if (Input.GetMouseButton(0))
+            var pos = Input.mousePosition;
+        {
+            pos.z = transform.position.z - Camera.main.transform.position.z;
+            pos = Camera.main.ScreenToWorldPoint(pos);
+            transform.position = Vector3.MoveTowards(transform.position, pos, speed * Time.deltaTime);
         }
     }
 
