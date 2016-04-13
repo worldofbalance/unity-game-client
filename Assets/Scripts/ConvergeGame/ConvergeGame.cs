@@ -500,7 +500,7 @@ public class ConvergeGame : MonoBehaviour
 
 	public void Submit ()
 	{
-		NetworkManager.Send (
+		Game.networkManager.Send (
 			ConvergeNewAttemptProtocol.Prepare (
 			player_id, 
 			ecosystem_id, 
@@ -522,7 +522,7 @@ public class ConvergeGame : MonoBehaviour
 		attemptList = new List<ConvergeAttempt> ();
 		attemptCount = 0;
 
-		NetworkManager.Send (
+		Game.networkManager.Send (
 			ConvergePriorAttemptCountProtocol.Prepare (player_id, new_ecosystem_id),
 			ProcessConvergePriorAttemptCount
 		);
@@ -560,7 +560,7 @@ public class ConvergeGame : MonoBehaviour
 			//calculate score and send back to server.
 			CSVObject target = ecosystemList[ecosystem_idx].csv_target_object;
 			int score = currAttempt.csv_object.CalculateScore (target);
-			NetworkManager.Send (
+			Game.networkManager.Send (
 				ConvergeNewAttemptScoreProtocol.Prepare (
 				player_id, 
 				ecosystem_id, 
@@ -610,7 +610,7 @@ public class ConvergeGame : MonoBehaviour
 
 		//once count of attempts has been received, send requests for individual attempt's data
 		for (int attemptOffset = 0; attemptOffset < attemptCount; attemptOffset++) {
-			NetworkManager.Send (
+			Game.networkManager.Send (
 				ConvergePriorAttemptProtocol.Prepare (player_id, new_ecosystem_id, attemptOffset),
 				ProcessConvergePriorAttempt
 			);
@@ -963,7 +963,7 @@ public class ConvergeGame : MonoBehaviour
 	{
 		hintCount = 0;
 		
-		NetworkManager.Send (
+		Game.networkManager.Send (
 			ConvergeHintCountProtocol.Prepare (),
 			ProcessConvergeHintCount
 			);
@@ -977,7 +977,7 @@ public class ConvergeGame : MonoBehaviour
 		
 		//once count of hints has been received, send requests for individual hint's data
 		for (int hintOffset = 0; hintOffset < hintCount; hintOffset++) {
-			NetworkManager.Send (
+			Game.networkManager.Send (
 				ConvergeHintProtocol.Prepare (hintOffset),
 				ProcessConvergeHint
 				);

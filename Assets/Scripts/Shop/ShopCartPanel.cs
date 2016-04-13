@@ -104,7 +104,7 @@ public class ShopCartPanel : MonoBehaviour {
 				style.normal.textColor = Color.white;
 				
 				if (GUI.Button(new Rect(700, 550, 70, 30), "Finish", style)) {
-					NetworkManager.Send(
+					Game.networkManager.Send(
 						ShopActionProtocol.Prepare(0, cartList),
 						ResponseShopAction
 						);

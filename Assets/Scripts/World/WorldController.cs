@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class WorldController : MonoBehaviour {
 
 	void Awake() {
-		NetworkManager.Send(WorldProtocol.Prepare(), ProcessWorld);
+		Game.networkManager.Send(WorldProtocol.Prepare(), ProcessWorld);
 	}
 	
 	// Use this for initialization

@@ -111,7 +111,7 @@ public class ClashDefenseSetup : MonoBehaviour {
 
 		var request = ClashDefenseSetupProtocol.Prepare(pending.terrain, mappedLayout);
 
-        NetworkManager.Send(request, (res) => {
+        Game.networkManager.Send(request, (res) => {
             var response = res as ResponseClashDefenseSetup;
             if (response.valid) {
                 manager.defenseConfig = manager.pendingDefenseConfig;

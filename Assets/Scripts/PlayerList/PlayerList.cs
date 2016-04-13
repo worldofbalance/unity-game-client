@@ -20,7 +20,7 @@ public class PlayerList : MonoBehaviour {
 		mainObject = GameObject.Find("MainObject");
 		isHidden = true;
 
-		NetworkManager.Send(
+		Game.networkManager.Send(
 			PlayersProtocol.Prepare()
 		);
 	}
