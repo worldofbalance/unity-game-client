@@ -117,9 +117,8 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKeyUp (KeyCode.Space)) {
             speed = speed / speedUpFactor;
         }
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0)) {
             var pos = Input.mousePosition;
-        {
             pos.z = transform.position.z - Camera.main.transform.position.z;
             pos = Camera.main.ScreenToWorldPoint(pos);
             transform.position = Vector3.MoveTowards(transform.position, pos, speed * Time.deltaTime);

@@ -35,6 +35,8 @@ public class Login : MonoBehaviour {
 		font = Resources.Load<Font>("Fonts/" + "Chalkboard");
 
 		RR.RRMessageQueue.getInstance().AddCallback (RR.Constants.SMSG_AUTH, RR_ResponseLogin);
+
+        SD.SDMessageQueue.getInstance().AddCallback (SD.Constants.SMSG_AUTH, SD_ResponseLogin);
 	}
 	
 	// Use this for initialization
