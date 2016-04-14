@@ -9,6 +9,7 @@ using UnityEngine;
 using System.Collections;
 
 
+namespace SD {
 // Takes care of the size of boundary of the entire screen
 [System.Serializable]
 public class Boundary
@@ -38,7 +39,7 @@ public class PlayerController : MonoBehaviour {
     private float currentStamina;
     private const float MinimunStamina = 10;
 
-
+    private static SD.GameManager sdGameManager;
 
 	// Detects the player object, and reads the 'GameController' Object
     void Start () {
@@ -55,6 +56,8 @@ public class PlayerController : MonoBehaviour {
         } else {
             Debug.Log ("Game Controller not found");
         }
+
+        sdGameManager = SD.GameManager.getInstance ();
 	}
 	
 
@@ -65,9 +68,19 @@ public class PlayerController : MonoBehaviour {
         movementVertical = Input.GetAxis ("Vertical");
 
         Vector3 movement = new Vector3 (movementHorizontal, movementVertical, 0.0f);
-
+        
+        // Send the horizontal and vertical movement factors to the opponent
+        sdGameManager.SetPlayerPositions(movementHorizontal, movementVertical);
         // Assigns the player's movement speed, and move the player object
         rb.velocity = movement * speed;
+
+         // Update the velocity of the opponent.
+            Vector3 opponentMovement = new Vector3 (
+                                           gameController.getOpponentPlayer ().movementHorizontal,
+                                           gameController.getOpponentPlayer ().movementVertical,
+                                           0.0f);
+            gameController.getOpponent ().GetComponent<Rigidbody> ().velocity = opponentMovement * gameController.getOpponentPlayer ().speed;
+
         /*rb.position = new Vector3 (
             Mathf.Clamp (rb.position.x, boundary.xMin, boundary.xMax),
             Mathf.Clamp (rb.position.y, boundary.yMin, boundary.yMax),
@@ -107,6 +120,7 @@ public class PlayerController : MonoBehaviour {
         
         if (Input.GetKeyDown (KeyCode.Space)) {
             speed = speed * speedUpFactor;
+            sdGameManager.SetKeyboardActions ((int)KeyCode.Space, 0); // Simple space down
         }
 
         if(Input.GetKey (KeyCode.Space) && isMoving() && currentStamina >=0) {
@@ -116,6 +130,7 @@ public class PlayerController : MonoBehaviour {
 
         if (Input.GetKeyUp (KeyCode.Space)) {
             speed = speed / speedUpFactor;
+                sdGameManager.SetKeyboardActions ((int)KeyCode.Space, 1); // Space up
         }
         if (Input.GetMouseButton(0)) {
             var pos = Input.mousePosition;
@@ -134,4 +149,5 @@ public class PlayerController : MonoBehaviour {
             return false;
         }
     }
+}
 }

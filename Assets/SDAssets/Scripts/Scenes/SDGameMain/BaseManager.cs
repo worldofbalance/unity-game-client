@@ -11,6 +11,7 @@
 using UnityEngine;
 using System.Collections;
 
+namespace SD {
 public class BaseManager : MonoBehaviour {
 
     public GameController gameController;
@@ -55,4 +56,5 @@ public class BaseManager : MonoBehaviour {
 
         }
     }
+}
 }

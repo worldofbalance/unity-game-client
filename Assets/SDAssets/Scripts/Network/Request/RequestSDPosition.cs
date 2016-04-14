@@ -9,10 +9,10 @@ namespace SD {
             request_id = Constants.CMSG_POSITION;
         }
 
-        public void send(float x, float y) {
+        public void Send(string x, string y) {
             packet = new GamePacket (request_id);
-            packet.addFloat32 (x);
-            packet.addFloat32 (y);
+            packet.addString (x);
+            packet.addString (y);
         }
     }
 }

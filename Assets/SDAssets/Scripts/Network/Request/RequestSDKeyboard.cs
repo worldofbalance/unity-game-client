@@ -9,7 +9,7 @@ namespace SD {
             request_id = Constants.CMSG_KEYBOARD;
         }
 
-        public void send(int keyCode, int keyCombination) {
+        public void Send(int keyCode, int keyCombination) {
             packet = new GamePacket (request_id);
             packet.addInt32 (keyCode);
             packet.addInt32 (keyCombination);

@@ -67,7 +67,6 @@ public class SDLogin : MonoBehaviour {
         style.font = font;
         style.fontSize = 16;
 
-        GUI.Label(new Rect((windowRect.width - 100) / 2, 0, 100, 30), "Login", style);
 
         GUI.BeginGroup(new Rect(10, 25, 300, 100));
         {

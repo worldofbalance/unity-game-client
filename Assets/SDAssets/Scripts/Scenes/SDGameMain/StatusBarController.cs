@@ -8,6 +8,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
+namespace SD {
 public class StatusBarController : MonoBehaviour {
 
     public GameController gameController;
@@ -64,4 +65,5 @@ public class StatusBarController : MonoBehaviour {
         staminaBarTransform.sizeDelta = new Vector2 (currentStamina, maxY);
         healthBarTransform.sizeDelta = new Vector2 (currentHealth, maxY);
     }
+}
 }

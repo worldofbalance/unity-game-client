@@ -8,6 +8,7 @@
 using UnityEngine;
 using System.Collections;
 
+namespace SD {
 public class MainCameraController : MonoBehaviour {
 
     private GameObject player;
@@ -28,4 +29,5 @@ public class MainCameraController : MonoBehaviour {
         cameraPosition = new Vector3 (mainCamera.transform.position.x, mainCamera.transform.position.y, -25f);
         mainCamera.transform.position = cameraPosition;
     }
+}
 }

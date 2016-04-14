@@ -6,6 +6,7 @@
 using UnityEngine;
 using System.Collections;
 
+namespace SD {
 public class DestroyByContact : MonoBehaviour {
 
     public GameController gameController;
@@ -34,4 +35,5 @@ public class DestroyByContact : MonoBehaviour {
             gameController.AddUnscoredPoint (newScoreValue);
         }
     }
+}
 }

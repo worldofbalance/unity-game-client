@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
+namespace SD {
 public class TimerScore : MonoBehaviour {
 
     public Text timeGUI;
@@ -21,5 +22,5 @@ public class TimerScore : MonoBehaviour {
         time -= 1f * Time.deltaTime;
         timeGUI.text = "Time: " +((int)time).ToString ();
     }
-
+}
 }
