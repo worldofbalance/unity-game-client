@@ -1,0 +1,84 @@
+fileFormatVersion: 2
+guid: 6df3ad7a018a5fb49bce0f0251594d87
+timeCreated: 1460051950
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Baobab_0
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: Baobab_0
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 5
+        width: 234
+        height: 246
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 117, y: 45}
+        - {x: 117, y: 102}
+        - {x: 66, y: 123}
+        - {x: -62, y: 123}
+        - {x: -117, y: 76}
+        - {x: -117, y: 30}
+        - {x: -115, y: 28}
+        - {x: -67, y: -61}
+        - {x: -106, y: -88}
+        - {x: -105, y: -112}
+        - {x: -89, y: -123}
+        - {x: 88, y: -123}
+        - {x: 117, y: -85}
+        - {x: 117, y: -18}
+        - {x: 61, y: -6}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

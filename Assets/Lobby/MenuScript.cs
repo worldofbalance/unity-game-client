@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 public class MenuScript : MonoBehaviour {
 
@@ -11,6 +12,8 @@ public class MenuScript : MonoBehaviour {
 		if (menuOpen) 
 			CloseAllMenus ();
 			Debug.Log ("You Pressed WHOS ONLINE?");
+		//EventSystemManager sets this item to take priority over bckground objects (mouseEvents)
+			EventSystem.current.SetSelectedGameObject(whosOnlineMenu);
 			whosOnlineMenu.SetActive (true);
 			menuOpen = true;
 
@@ -52,8 +55,8 @@ public class MenuScript : MonoBehaviour {
 		CloseAllMenus ();
 	}
 		
-	public void OpenRunningRhino(){
-		Debug.Log("You Pressed RunningRhino");
+	public void OpenMultiplayerGames(){
+		Debug.Log("You Pressed Open Multiplayer Games");
 		gameObject.AddComponent <MultiplayerGames>();
 		menuOpen=true;
 	}

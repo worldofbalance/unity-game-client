@@ -24,7 +24,7 @@ public class GetDeckProtocol {
 			int health = DataReader.ReadInt (dataStream);
 			int attack = DataReader.ReadInt (dataStream);
 			int level = DataReader.ReadInt (dataStream);
-			int dietType = DataReader.ReadInt(dataStream);
+			String dietType = DataReader.ReadString(dataStream);
 			string speciesName = DataReader.ReadString(dataStream);
 			string description = DataReader.ReadString (dataStream);
 			response.deck.pushCard(new CardData(cardID, health, attack, level, 
