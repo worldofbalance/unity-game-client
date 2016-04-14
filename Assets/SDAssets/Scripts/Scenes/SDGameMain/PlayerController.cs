@@ -70,15 +70,15 @@ public class PlayerController : MonoBehaviour {
         Vector3 movement = new Vector3 (movementHorizontal, movementVertical, 0.0f);
         
         // Send the horizontal and vertical movement factors to the opponent
-        sdGameManager.SetPlayerPositions(movementHorizontal, movementVertical);
+        sdGameManager.SetPlayerPositions(rb.position.x, rb.position.y);
         // Assigns the player's movement speed, and move the player object
         rb.velocity = movement * speed;
 
-        /*rb.position = new Vector3 (
+        rb.position = new Vector3 (
             Mathf.Clamp (rb.position.x, boundary.xMin, boundary.xMax),
             Mathf.Clamp (rb.position.y, boundary.yMin, boundary.yMax),
             0.0f
-        );*/
+        );
 
         // Flips the player object left or right
         // depending on the direction the player is moving

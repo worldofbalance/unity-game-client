@@ -57,6 +57,7 @@ namespace SD {
             sdGameManager = SD.GameManager.getInstance ();
             if (sdGameManager.getConnectionManager ()) {  // We might be playing multiplayer TODO: Check position response from opponent.
                 rbOpponent = (Rigidbody)Instantiate (opponent, playerInitialPosition, playerInitialRotation);
+                rbOpponent.gameObject.SetActive (true);
                 opponentPlayer = new PlayTimePlayer ();
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
             }
@@ -160,7 +161,7 @@ namespace SD {
         }
 
         public Rigidbody getOpponent() {
-                return opponent;
+                return rbOpponent;
         }
         
         public PlayTimePlayer getOpponentPlayer() {

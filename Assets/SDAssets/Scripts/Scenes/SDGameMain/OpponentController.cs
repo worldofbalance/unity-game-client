@@ -6,6 +6,7 @@ namespace SD {
 
         private GameManager sdGameManager;
         private GameController sdGameController;
+        private Rigidbody rbOpponent;
 
         // Use this for initialization
         void Start () {
@@ -15,17 +16,16 @@ namespace SD {
             } else {
                 Debug.Log ("Game Controller not found");
             }
+            sdGameManager = GameManager.getInstance ();
+            rbOpponent = sdGameController.getOpponent ().GetComponent<Rigidbody> ();
         }
 
         void FixedUpdate() {
             // Update the velocity of the opponent.
             if (sdGameManager.getIsMultiplayer ()) {
-                Vector3 opponentMovement = new Vector3 (
-                    sdGameController.getOpponentPlayer ().movementHorizontal,
-                    sdGameController.getOpponentPlayer ().movementVertical,
-                    0.0f);
-                sdGameController.getOpponent ().GetComponent<Rigidbody> ().velocity = opponentMovement * sdGameController.getOpponentPlayer ().speed;
-                Debug.Log ("Opponents velocity is " + sdGameController.getOpponent ().GetComponent<Rigidbody> ().velocity);
+                rbOpponent.MovePosition (new Vector3(sdGameController.getOpponentPlayer().xPosition,
+                    sdGameController.getOpponentPlayer().yPosition, 0));
+                //rbOpponent.velocity = temp * sdGameController.getOpponentPlayer ().speed * sdGameController.getOpponentPlayer ().movementHorizontal;
             }
         }
 

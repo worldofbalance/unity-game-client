@@ -11,6 +11,8 @@ namespace SD
         public float health { get; set; }
         public float movementHorizontal { get; set; }
         public float movementVertical { get; set; }
+        public float xPosition { get; set; }
+        public float yPosition { get; set; }
 
         public PlayTimePlayer ()
         {
@@ -19,6 +21,8 @@ namespace SD
             health = 100;
             movementHorizontal = 0.0f;
             movementVertical = 0.0f;
+            xPosition = 0.0f;
+            yPosition = 0.0f;
         }
     }
 }

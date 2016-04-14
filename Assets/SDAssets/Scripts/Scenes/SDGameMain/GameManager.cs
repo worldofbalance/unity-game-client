@@ -74,11 +74,9 @@ namespace SD {
         // Sends the player's current position to the server.
         public void SetPlayerPositions(float x, float y) {
             if (cManager) {
-                //if (x != 0.0 && y != 0.0) { 
                     RequestSDPosition request = new RequestSDPosition ();
                     request.Send (x.ToString (), y.ToString ());
                     cManager.Send (request);
-               // }
             } else {
                 Debug.LogWarning ("Could not send the player's position to the server.");
             }
@@ -87,8 +85,8 @@ namespace SD {
         public void ResponseSDPosition(ExtendedEventArgs eventArgs) {
             ResponseSDPositionEventArgs args = eventArgs as ResponseSDPositionEventArgs;
             Debug.Log ("The position of the other player is ("+args.xPosition + "," + args.yPosition + ")");
-            gameController.getOpponentPlayer().movementHorizontal = args.xPosition;
-            gameController.getOpponentPlayer ().movementVertical = args.yPosition;
+            gameController.getOpponentPlayer().xPosition = args.xPosition;
+            gameController.getOpponentPlayer ().yPosition = args.yPosition;
         }
 
         // Sends the keyboard inputs to the server.
