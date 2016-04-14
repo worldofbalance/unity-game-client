@@ -75,11 +75,14 @@ public class PlayerController : MonoBehaviour {
         rb.velocity = movement * speed;
 
          // Update the velocity of the opponent.
-            Vector3 opponentMovement = new Vector3 (
+            if (gameController.getIsMultiplayer ()) {
+                Vector3 opponentMovement = new Vector3 (
                                            gameController.getOpponentPlayer ().movementHorizontal,
                                            gameController.getOpponentPlayer ().movementVertical,
                                            0.0f);
-            gameController.getOpponent ().GetComponent<Rigidbody> ().velocity = opponentMovement * gameController.getOpponentPlayer ().speed;
+                gameController.getOpponent ().GetComponent<Rigidbody> ().velocity = opponentMovement * gameController.getOpponentPlayer ().speed;
+                Debug.Log ("Opponents velocity is " + gameController.getOpponent ().GetComponent<Rigidbody> ().velocity);
+            }
 
         /*rb.position = new Vector3 (
             Mathf.Clamp (rb.position.x, boundary.xMin, boundary.xMax),

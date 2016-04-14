@@ -38,6 +38,8 @@ namespace SD {
 
         private static SD.GameManager sdGameManager;
         private PlayTimePlayer opponentPlayer;
+        private bool isMultiplayer = false;
+
         // Initializes the player's score, and UI texts.
         // Also spawns numbers of prey at random positions.
         void Start () {
@@ -59,6 +61,8 @@ namespace SD {
                 opponentPlayer = new PlayTimePlayer ();
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
                 opponent.name = "Opponent";
+                opponent.gameObject.tag = "Opponent";
+                isMultiplayer = true;
             }
 
         }
@@ -167,5 +171,8 @@ namespace SD {
             return opponentPlayer;
         }
 
+        public bool getIsMultiplayer() {
+            return isMultiplayer;
+        }
     }
 }
