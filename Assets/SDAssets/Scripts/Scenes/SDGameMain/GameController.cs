@@ -58,6 +58,7 @@ namespace SD {
                 opponent.gameObject.GetComponent<PlayerController> ().enabled = false;
                 opponentPlayer = new PlayTimePlayer ();
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
+                opponent.name = "Opponent";
             }
 
         }

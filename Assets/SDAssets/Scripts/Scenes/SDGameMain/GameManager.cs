@@ -68,9 +68,11 @@ namespace SD {
         // Sends the player's current position to the server.
         public void SetPlayerPositions(float x, float y) {
             if (cManager) {
-                RequestSDPosition request = new RequestSDPosition ();
-                request.Send (x.ToString(), y.ToString());
-                cManager.Send (request);
+                if (x != 0.0 && y != 0.0) {
+                    RequestSDPosition request = new RequestSDPosition ();
+                    request.Send (x.ToString (), y.ToString ());
+                    cManager.Send (request);
+                }
             } else {
                 Debug.LogWarning ("Could not send the player's position to the server.");
             }

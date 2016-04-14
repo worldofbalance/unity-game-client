@@ -13,7 +13,7 @@ namespace SD
         public float movementVertical;
         public PlayTimePlayer ()
         {
-            speed = 0;
+            speed = 20.0f;
             stamina = 100;
             health = 100;
             movementHorizontal = 0.0f;
