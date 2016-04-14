@@ -14,6 +14,7 @@ namespace SD {
         private static GameManager gameManager;
         private string resultText;
         private static GameController gameController;
+        private bool isMultiplayer = false;
 
         public GameManager() {
         }
@@ -30,6 +31,7 @@ namespace SD {
                     mQueue.AddCallback (Constants.SMSG_POSITION, ResponseSDPosition);
                 if (!mQueue.callbackList.ContainsKey (Constants.SMSG_KEYBOARD))
                     mQueue.AddCallback (Constants.SMSG_KEYBOARD, ResponseSDKeyboard);
+                isMultiplayer = true;
             } else {
                 Debug.LogWarning ("Could not establish a connection to Sea Divided Server. Falling back to offline mode.");
             }
@@ -41,6 +43,10 @@ namespace SD {
 
         public SDConnectionManager getConnectionManager() {
             return cManager;
+        }
+
+        public bool getIsMultiplayer() {
+            return isMultiplayer;
         }
         // Ends the current game
         public void EndGame(bool gameCompleted, int finalScore) {

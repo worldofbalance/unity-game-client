@@ -31,14 +31,14 @@ namespace SD {
 
         public Boundary boundary;
         public Rigidbody player;
-        private Rigidbody opponent;
+        public Rigidbody opponent;
 
         private Vector3 playerInitialPosition = new Vector3(0,0,0);
         private Quaternion playerInitialRotation = Quaternion.Euler(0,90,0);
 
         private static SD.GameManager sdGameManager;
         private PlayTimePlayer opponentPlayer;
-        private bool isMultiplayer = false;
+        private Rigidbody rbOpponent;
 
         // Initializes the player's score, and UI texts.
         // Also spawns numbers of prey at random positions.
@@ -56,13 +56,9 @@ namespace SD {
 
             sdGameManager = SD.GameManager.getInstance ();
             if (sdGameManager.getConnectionManager ()) {  // We might be playing multiplayer TODO: Check position response from opponent.
-                opponent = (Rigidbody)Instantiate (player, playerInitialPosition, playerInitialRotation);
-                opponent.gameObject.GetComponent<PlayerController> ().enabled = false;
+                rbOpponent = (Rigidbody)Instantiate (opponent, playerInitialPosition, playerInitialRotation);
                 opponentPlayer = new PlayTimePlayer ();
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
-                opponent.name = "Opponent";
-                opponent.gameObject.tag = "Opponent";
-                isMultiplayer = true;
             }
 
         }
@@ -169,10 +165,6 @@ namespace SD {
         
         public PlayTimePlayer getOpponentPlayer() {
             return opponentPlayer;
-        }
-
-        public bool getIsMultiplayer() {
-            return isMultiplayer;
         }
     }
 }

@@ -4,13 +4,14 @@ namespace SD
 {
     public class PlayTimePlayer
     {
-        public float velocity;
-        public float speed;
-        public float speedUpFactor;
-        public float stamina;
-        public float health;
-        public float movementHorizontal;
-        public float movementVertical;
+        public float velocity { get; set; }
+        public float speed { get; set; }
+        public float speedUpFactor { get; set; }
+        public float stamina {get; set; }
+        public float health { get; set; }
+        public float movementHorizontal { get; set; }
+        public float movementVertical { get; set; }
+
         public PlayTimePlayer ()
         {
             speed = 20.0f;
@@ -19,10 +20,6 @@ namespace SD
             movementHorizontal = 0.0f;
             movementVertical = 0.0f;
         }
-
-
     }
-
-
 }
 
