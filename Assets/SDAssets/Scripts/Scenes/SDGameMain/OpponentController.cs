@@ -7,6 +7,8 @@ namespace SD {
         private GameManager sdGameManager;
         private GameController sdGameController;
         private Rigidbody rbOpponent;
+        float xPosition;
+        float yPosition;
 
         // Use this for initialization
         void Start () {
@@ -18,22 +20,20 @@ namespace SD {
             }
             sdGameManager = GameManager.getInstance ();
             rbOpponent = sdGameController.getOpponent ().GetComponent<Rigidbody> ();
+            xPosition = yPosition = 0.0f;
         }
 
         void FixedUpdate() {
-            // Update the velocity of the opponent.
             if (sdGameManager.getIsMultiplayer ()) {
-                float xPosition = sdGameController.getOpponentPlayer ().xPosition;
-                float yPosition = sdGameController.getOpponentPlayer ().yPosition;
-                Debug.Log ("xPosition is " + xPosition + " Y position is " + yPosition);
-                    rbOpponent.MovePosition (new Vector3(xPosition, yPosition, 0));
-                //rbOpponent.velocity = temp * sdGameController.getOpponentPlayer ().speed * sdGameController.getOpponentPlayer ().movementHorizontal;
+                xPosition = sdGameController.getOpponentPlayer ().xPosition;
+                yPosition = sdGameController.getOpponentPlayer ().yPosition;
+                rbOpponent.MovePosition (new Vector3(xPosition, yPosition, 0));
             }
         }
 
         // Update is called once per frame
         void Update () {
-        
+            // Update the velocity of the opponent.      
         }
     }
 }

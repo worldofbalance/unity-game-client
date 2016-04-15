@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour {
     private const float MinimunStamina = 10;
 
     private static SD.GameManager sdGameManager;
+    private float oldXPosition, oldYPosition;
 
 	// Detects the player object, and reads the 'GameController' Object
     void Start () {
@@ -47,7 +48,7 @@ public class PlayerController : MonoBehaviour {
         scale = rb.transform.localScale;
         turn = new Vector3 (turnSpeed,0f , 0f);
         goUpDown = new Vector3 (turnSpeed/2, 0f, 0f);
-
+        oldXPosition = oldYPosition = 0.0f;
 
 
         GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
@@ -69,8 +70,13 @@ public class PlayerController : MonoBehaviour {
 
         Vector3 movement = new Vector3 (movementHorizontal, movementVertical, 0.0f);
         
-        // Send the horizontal and vertical movement factors to the opponent
-        sdGameManager.SetPlayerPositions(rb.position.x, rb.position.y);
+        // Send x and y position to the opponent if they have changed.
+        if (rb.position.x != oldXPosition || rb.position.y != oldYPosition) {
+            sdGameManager.SetPlayerPositions (rb.position.x, rb.position.y);
+        }
+        oldXPosition = rb.position.x;
+        oldYPosition = rb.position.y;
+
         // Assigns the player's movement speed, and move the player object
         rb.velocity = movement * speed;
 
