@@ -11,8 +11,8 @@ public class GetRoomsProtocol {
 	
 	public static NetworkResponse Parse(MemoryStream dataStream) {
 		short numRooms = DataReader.ReadShort(dataStream);
-
-		Debug.Log ("Getting room infomations...");
+        // commented by Rujoota
+		//Debug.Log ("Getting room infomations...");
 
 		RoomManager.getInstance ().clear ();
 		for (short i = 0; i < numRooms; ++i) {
