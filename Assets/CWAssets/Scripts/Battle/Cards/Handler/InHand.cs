@@ -38,7 +38,7 @@ public class InHand : AbstractCardHandler
 
 			card.calculateDirection(destination, false);
 
-		GameManager.player1.getProtocolManager().sendSummon (player.playerID, card.cardID,  card.dietNum, 
+		GameManager.player1.getProtocolManager().sendSummon (player.playerID, card.cardID,  card.dietChar, 
 			                                        card.level, card.dmg,  card.maxHP, 
 			                                        card.name,  card.type, 
 			                                        card.description);
