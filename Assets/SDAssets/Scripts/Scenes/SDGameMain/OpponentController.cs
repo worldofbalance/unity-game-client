@@ -23,8 +23,10 @@ namespace SD {
         void FixedUpdate() {
             // Update the velocity of the opponent.
             if (sdGameManager.getIsMultiplayer ()) {
-                rbOpponent.MovePosition (new Vector3(sdGameController.getOpponentPlayer().xPosition,
-                    sdGameController.getOpponentPlayer().yPosition, 0));
+                float xPosition = sdGameController.getOpponentPlayer ().xPosition;
+                float yPosition = sdGameController.getOpponentPlayer ().yPosition;
+                Debug.Log ("xPosition is " + xPosition + " Y position is " + yPosition);
+                    rbOpponent.MovePosition (new Vector3(xPosition, yPosition, 0));
                 //rbOpponent.velocity = temp * sdGameController.getOpponentPlayer ().speed * sdGameController.getOpponentPlayer ().movementHorizontal;
             }
         }

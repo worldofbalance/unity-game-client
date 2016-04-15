@@ -30,6 +30,7 @@ namespace SD {
             ResponseSDPositionEventArgs args = new ResponseSDPositionEventArgs ();
             args.xPosition = xPosition;
             args.yPosition = yPosition;
+            Debug.Log ("The values are " + args.xPosition + " and " + args.yPosition);
             return args;
         }
     }
