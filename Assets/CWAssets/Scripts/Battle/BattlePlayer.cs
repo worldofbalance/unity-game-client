@@ -63,8 +63,8 @@ namespace CW
 		
 			//PLAYER 1 COORDINATES OF INTEREST
 			if (player1) {
-				DeckPos = new Vector3 (825, 10, -400);
-				handPos = new Vector3 (150, 10, -375);
+				DeckPos = new Vector3 (900, 10, -150);//orig(825, 10, -400)
+				handPos = new Vector3 (550, 10, -375);//orig(150, 10, -375)
 				FieldPos = new Vector3 (-450, 10, -150);
 				TreePos = new Vector3 (0, 10, -375);//org(-800,10, -300)
 			
@@ -79,7 +79,7 @@ namespace CW
 				Debug.Log ("Set PLayer Num Working");
 				handPos = new Vector3 (150, 10, 400);
 				FieldPos = new Vector3 (-450, 10, 150);
-				DeckPos = new Vector3 (-825, 10, 400);
+				DeckPos = new Vector3 (-900, 10, 200);//orig(-825, 10, 400)
 				TreePos = new Vector3 (0, 10, 375);//org(800, 10, 300)
 			
 				//Mana and sets p2's inactive to false
@@ -191,7 +191,8 @@ namespace CW
 		
 			//Makes the deck 
 			GameObject DeckTop = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/CardBack"));
-			DeckTop.transform.position = new Vector3 (DeckPos.x, DeckPos.y, DeckPos.z);
+			//positioned so is not visible but left intact in case
+			DeckTop.transform.position = new Vector3 (DeckPos.x + 2000, DeckPos.y, DeckPos.z);
 		
 		
 		}
@@ -215,7 +216,8 @@ namespace CW
 				script.handler = new InHand (script, this);
 			
 				//Position the newly dealt card
-				p1card.transform.position = new Vector3 ((handPos.x + 280) - 185 * hand.Count, 10, handPos.z);
+				p1card.transform.position = new Vector3 ((handPos.x + 280) - 165 * hand.Count, 10, handPos.z);
+				//orig(handPos.x + 280) - 185 * hand.Count, 10, handPos.z)
 			
 				//Remove from  deck and add to hand
 				deck.Remove (p1card);
@@ -234,7 +236,7 @@ namespace CW
 			
 				//Reposition and arrange each card in hand
 				GameObject setCard = (GameObject)hand [i];
-				setCard.transform.position = new Vector3 ((handPos.x + 280) - 185 * i, 10, handPos.z);
+				setCard.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, 10, handPos.z);
 
 			}
 		}
@@ -251,7 +253,7 @@ namespace CW
 			
 				//Card taken from deck, and is given the logic from
 				GameObject p2card = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/CardBack"));
-				p2card.transform.position = new Vector3 ((handPos.x + 280) - 185 * hand.Count, 10, handPos.z);
+				p2card.transform.position = new Vector3 ((handPos.x + 280) - 165 * hand.Count, 10, handPos.z);
 				//Position the newly dealt card
 				//p2card.transform.position = new Vector3((handPos.x + 280) - 185 * hand.Count, 10, handPos.z);
 			
@@ -272,7 +274,7 @@ namespace CW
 			
 				//Reposition and arrange each card in hand
 				GameObject setCard = (GameObject)hand [i];
-				setCard.transform.position = new Vector3 ((handPos.x + 280) - 185 * i, 10, handPos.z);
+				setCard.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, 10, handPos.z);
 			
 			}
 		}
@@ -316,7 +318,7 @@ namespace CW
 			
 				//Retrieves the card from the array of cards in play
 				GameObject obj = (GameObject)hand [i];
-				obj.transform.position = new Vector3 ((handPos.x + 280) - 185 * i, 10, handPos.z);
+				obj.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, 10, handPos.z);
 			}
 
 			//Position each card in play correctly 
