@@ -7,7 +7,7 @@ public class SummonCardAction : TurnAction {
 	// TODO: add card variables for building card
 	///private int 
 	private int cardID {set ; get;}
-	private int diet{ set; get;}
+	private string diet{ set; get;}
 	private int level {set ; get ;}
 	private int attack { set ; get ;}
 	private int health {set; get;}
@@ -22,13 +22,13 @@ public class SummonCardAction : TurnAction {
 	public SummonCardAction(int intCount, int stringCount, List<int> intList, List<string> stringList):
 	base(intCount, stringCount, intList, stringList){ 
 		cardID =intList[0];
-		diet = intList[1];
-		level = intList[2];
-		attack = intList[3];
-		health = intList[4];
-		species_name = stringList[0];
-		type = stringList[1];
-		description = stringList[2];
+		diet = stringList[0];
+		level = intList[1];
+		attack = intList[2];
+		health = intList[3];
+		species_name = stringList[1];
+		type = stringList[2];
+		description = stringList[3];
 
 	}
 
