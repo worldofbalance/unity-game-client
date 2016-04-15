@@ -97,7 +97,7 @@ public class ProtocolManager : MonoBehaviour{
 	}
 
 	
-	public void sendSummon(int playerID, int cardID,  int diet, 
+	public void sendSummon(int playerID, int cardID,  string diet, 
 	                      int level, int attack, int health, 
 	                       string species_name,  string type, 
 	                      string description){
