@@ -18,6 +18,7 @@ namespace CW
         private Vector3 newPosition;
         private bool zoomed = false;
         private bool clicked = false, removeAfterDelay;
+        private float raised = 50f;
         //VELOCITY
         private Vector3 targetPosition, startPosition;
         private float velocity, terminalVelocity, angle, distance;
@@ -111,14 +112,15 @@ namespace CW
 			//else diet == 2
 		}
     
-        void OnMouseOver ()
+        //OnMouseDown also checks for touch events
+        void OnMouseDown ()
         {
             if (!EventSystem.current.IsPointerOverGameObject())
             {
                 if (inMotion)
                     return;
             
-                //
+                //keeping original position for Zoom
                 if (!zoomed) {
                     oriPosition = this.transform.position;
                     zoomed = true;  
@@ -127,35 +129,56 @@ namespace CW
             
                 newPosition = oriPosition;
             
-                this.transform.localScale = new Vector3 (21, 2, 29); //About 1.4x size
-
-				//By Pedro
-				//this.halo.enabled = true;
-
+                //this.transform.localScale = new Vector3 (21, 2, 29); //About 1.4x size
                 
             
-                //if left-button clicked
-                if (Input.GetMouseButtonDown (0)) {
+                //if left-button clicked, set centered boolean true and move handpos
+                if (Input.GetMouseButtonDown (0) && !player.handCentered) {
                     clicked = true;
-                    if (handler != null)
+                    player.handCentered = true;
+                    player.handPos = new Vector3 (50, 400, -125);
+                    player.reposition();
+                    
+                }//check if it is centered then do handler action
+                else if (Input.GetMouseButtonDown (0) && player.handCentered) {
+                    player.handCentered = false;
+                    player.handPos = new Vector3 (550, 10, -375);
+                    player.reposition();
+                    if (handler != null) {
                         handler.clicked ();
+                    }
+                    
                 }
                 
 
                 //if right-click is held down
                 if (Input.GetMouseButton (1)) { 
-                    if (player.player1) { //player 1
+                    /*if (player.player1) { //player 1
                         newPosition.z = oriPosition.z + 200; //Move up from bottom of screen
                     } else if (!player.player1) { //player 2
                         newPosition.z = oriPosition.z - 200; //Move down from top of screen
-                    }
-                    this.transform.position = newPosition;
+                    }*/
+                    //this.transform.position = newPosition;
                     this.transform.localScale = new Vector3 (45, 10, 63); //3x size
+                    this.transform.position = new Vector3 (newPosition.x, 50, newPosition.z + 200);
+                }
+
+                //if right-click is up
+                //echan
+                if (Input.GetMouseButtonUp (1)) { 
+                    /*if (player.player1) { //player 1
+                        newPosition.z = oriPosition.z + 200; //Move up from bottom of screen
+                    } else if (!player.player1) { //player 2
+                        newPosition.z = oriPosition.z - 200; //Move down from top of screen
+                    }*/
+                    //this.transform.position = newPosition;
+                    this.transform.localScale = new Vector3 (15, 1, 21); //3x size
+                    this.transform.position = newPosition;
                 }
             }
         
         }
-
+        //keeping for future use
         void OnMouseExit ()
         {
             //Normal scaling
@@ -165,9 +188,9 @@ namespace CW
 			//this.halo.enabled = false;
         
             //Moves back to normal position if not clicked
-            if (!clicked && !inMotion) {
+            /*if (!clicked && !inMotion) {
                 this.transform.position = oriPosition;
-            }
+            }*/
             zoomed = false;
             clicked = false;
         }

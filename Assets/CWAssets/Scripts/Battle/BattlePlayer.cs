@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 namespace CW
 {
@@ -16,11 +17,12 @@ namespace CW
 		public int count = 0, currentMana, maxMana;
 		private int showTurn = -1;
 		private ProtocolManager protocols;
-		private GameObject manaObj, gameOver;
+		private GameObject manaObj, gameOver, manaBarr, manaFaded;
 		private DeckData deckData;
 		public int playerID;
 		public int matchID;
 		public string playerName;
+		public bool handCentered = false;
 
 		public ProtocolManager getProtocolManager ()
 		{
@@ -62,8 +64,8 @@ namespace CW
 		
 			//PLAYER 1 COORDINATES OF INTEREST
 			if (player1) {
-				DeckPos = new Vector3 (825, 10, -400);
-				handPos = new Vector3 (150, 10, -375);
+				DeckPos = new Vector3 (900, 10, -150);//orig(825, 10, -400)
+				handPos = new Vector3 (550, 10, -375);//orig(150, 10, -375)
 				FieldPos = new Vector3 (-450, 10, -150);
 				TreePos = new Vector3 (0, 10, -375);//org(-800,10, -300)
 			
@@ -76,9 +78,9 @@ namespace CW
 			} else {
 
 				Debug.Log ("Set PLayer Num Working");
-				handPos = new Vector3 (150, 10, 400);
+				handPos = new Vector3 (-460, 10, 375);
 				FieldPos = new Vector3 (-450, 10, 150);
-				DeckPos = new Vector3 (-825, 10, 400);
+				DeckPos = new Vector3 (-825, 10, 400);//orig(-825, 10, 400)
 				TreePos = new Vector3 (0, 10, 375);//org(800, 10, 300)
 			
 				//Mana and sets p2's inactive to false
@@ -109,11 +111,29 @@ namespace CW
 		
 			//Instantiates the Graphic for the Mana and sets it's position
 			manaObj = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/Mana"));
+			manaFaded = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/ManaFaded", typeof(GameObject)));
+			manaBarr = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/ManaBarr", typeof(GameObject)));
 			if (player1) {
 				manaObj.transform.position = new Vector3 (TreePos.x - 800, TreePos.y, TreePos.z);//org(tree +200, y, z)
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
 			} else {
 				manaObj.transform.position = new Vector3 (TreePos.x + 800, TreePos.y, TreePos.z);//org(tree -200, y, z)
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localRotation = new Quaternion(0,1,0,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localRotation = new Quaternion(0,1,0,0);
 			}
+			/*
+			if (player1) {
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-720,0);
+			} else {
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
+				manaBarr.transform.Find("Image").GetComponent<RectTransform>().localRotation = new Quaternion(0,1,0,0);
+				manaFaded.transform.Find("Image").GetComponent<RectTransform>().localRotation = new Quaternion(0,1,0,0);
+			}*/
 		}
 
 
@@ -172,7 +192,8 @@ namespace CW
 		
 			//Makes the deck 
 			GameObject DeckTop = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/CardBack"));
-			DeckTop.transform.position = new Vector3 (DeckPos.x, DeckPos.y, DeckPos.z);
+			//positioned so is not visible but left intact in case
+			DeckTop.transform.position = new Vector3 (DeckPos.x + 2000, DeckPos.y, DeckPos.z);
 		
 		
 		}
@@ -196,7 +217,8 @@ namespace CW
 				script.handler = new InHand (script, this);
 			
 				//Position the newly dealt card
-				p1card.transform.position = new Vector3 ((handPos.x + 280) - 185 * hand.Count, 10, handPos.z);
+				p1card.transform.position = new Vector3 ((handPos.x + 280) - 165 * hand.Count, handPos.y, handPos.z);
+				//orig(handPos.x + 280) - 185 * hand.Count, 10, handPos.z)
 			
 				//Remove from  deck and add to hand
 				deck.Remove (p1card);
@@ -215,7 +237,7 @@ namespace CW
 			
 				//Reposition and arrange each card in hand
 				GameObject setCard = (GameObject)hand [i];
-				setCard.transform.position = new Vector3 ((handPos.x + 280) - 185 * i, 10, handPos.z);
+				setCard.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, handPos.y, handPos.z);
 
 			}
 		}
@@ -232,7 +254,7 @@ namespace CW
 			
 				//Card taken from deck, and is given the logic from
 				GameObject p2card = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/CardBack"));
-				p2card.transform.position = new Vector3 ((handPos.x + 280) - 185 * hand.Count, 10, handPos.z);
+				p2card.transform.position = new Vector3 ((handPos.x + 280) - 165 * hand.Count, handPos.y, handPos.z);
 				//Position the newly dealt card
 				//p2card.transform.position = new Vector3((handPos.x + 280) - 185 * hand.Count, 10, handPos.z);
 			
@@ -253,7 +275,7 @@ namespace CW
 			
 				//Reposition and arrange each card in hand
 				GameObject setCard = (GameObject)hand [i];
-				setCard.transform.position = new Vector3 ((handPos.x + 280) - 185 * i, 10, handPos.z);
+				setCard.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, handPos.y, handPos.z);
 			
 			}
 		}
@@ -297,7 +319,7 @@ namespace CW
 			
 				//Retrieves the card from the array of cards in play
 				GameObject obj = (GameObject)hand [i];
-				obj.transform.position = new Vector3 ((handPos.x + 280) - 185 * i, 10, handPos.z);
+				obj.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, handPos.y, handPos.z);
 			}
 
 			//Position each card in play correctly 
@@ -372,6 +394,7 @@ namespace CW
 		}
 	
 		private float manaAnimate = 1.0f;
+		private float manaCount;
 		// Update is called once per frame
 		void Update ()
 		{
@@ -384,6 +407,16 @@ namespace CW
 			if (manaAnimate > 4.9) {
 				manaAnimate = 1.0f;
 			}
+			if (currentMana == 0)
+			{
+				manaCount = 0.0f;
+			}
+			else {
+				manaCount = (float)currentMana / 9f;
+			}
+			manaBarr.transform.Find("Image").GetComponent<Image>().fillAmount = manaCount;
+			manaFaded.transform.Find ("Image").GetComponent<Image> ().fillAmount = (float)maxMana / 9f;
+			//Debug.Log("Mana: " + manaCount);
 		}
 	
 	
