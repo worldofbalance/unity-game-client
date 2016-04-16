@@ -22,6 +22,7 @@ namespace CW
 		public int playerID;
 		public int matchID;
 		public string playerName;
+		public bool handCentered = false;
 
 		public ProtocolManager getProtocolManager ()
 		{
@@ -216,7 +217,7 @@ namespace CW
 				script.handler = new InHand (script, this);
 			
 				//Position the newly dealt card
-				p1card.transform.position = new Vector3 ((handPos.x + 280) - 165 * hand.Count, 10, handPos.z);
+				p1card.transform.position = new Vector3 ((handPos.x + 280) - 165 * hand.Count, handPos.y, handPos.z);
 				//orig(handPos.x + 280) - 185 * hand.Count, 10, handPos.z)
 			
 				//Remove from  deck and add to hand
@@ -236,7 +237,7 @@ namespace CW
 			
 				//Reposition and arrange each card in hand
 				GameObject setCard = (GameObject)hand [i];
-				setCard.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, 10, handPos.z);
+				setCard.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, handPos.y, handPos.z);
 
 			}
 		}
@@ -253,7 +254,7 @@ namespace CW
 			
 				//Card taken from deck, and is given the logic from
 				GameObject p2card = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/CardBack"));
-				p2card.transform.position = new Vector3 ((handPos.x + 280) - 165 * hand.Count, 10, handPos.z);
+				p2card.transform.position = new Vector3 ((handPos.x + 280) - 165 * hand.Count, handPos.y, handPos.z);
 				//Position the newly dealt card
 				//p2card.transform.position = new Vector3((handPos.x + 280) - 185 * hand.Count, 10, handPos.z);
 			
@@ -274,7 +275,7 @@ namespace CW
 			
 				//Reposition and arrange each card in hand
 				GameObject setCard = (GameObject)hand [i];
-				setCard.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, 10, handPos.z);
+				setCard.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, handPos.y, handPos.z);
 			
 			}
 		}
@@ -318,7 +319,7 @@ namespace CW
 			
 				//Retrieves the card from the array of cards in play
 				GameObject obj = (GameObject)hand [i];
-				obj.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, 10, handPos.z);
+				obj.transform.position = new Vector3 ((handPos.x + 280) - 165 * i, handPos.y, handPos.z);
 			}
 
 			//Position each card in play correctly 
