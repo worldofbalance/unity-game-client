@@ -8,7 +8,7 @@ namespace CW
     {
         public int cardID, fieldIndex;
         public int maxHP, hp, dmg, naturalDmg, manaCost, level, dmgTimer = 0;
-		public string dietChar;
+        public string dietChar;
         private Font font;
         private BattlePlayer player;
         public string name, type = " ", description = " ";
@@ -24,17 +24,17 @@ namespace CW
         private float velocity, terminalVelocity, angle, distance;
         private float delayTimer, DELAY_CONSTANT = 1.5f;
         //Enum for Animal Type
-		public enum DIET
-		{
-			OMNIVORE,
-			CARNIVORE,
-			HERBIVORE,
-			WEATHER,
-			FOOD
-		}
+        public enum DIET
+        {
+            OMNIVORE,
+            CARNIVORE,
+            HERBIVORE,
+            WEATHER,
+            FOOD
+        }
         //byPedro
         private AudioSource audioSource;
-		private Behaviour halo;
+        private Behaviour halo;
     
         public AbstractCardHandler handler;
     
@@ -59,10 +59,10 @@ namespace CW
             //this.type = type; //hide temporarily
             //this.description = description; //hide temporarily
         
-			Debug.Log ("diet" + diet);
-			//o-omnivore, c-carnivore, h-herbivore, f-food, w-weather
-			Texture2D cardTexture = (Texture2D)Resources.Load ("Images/Battle/cardfront_" + this.dietChar, typeof(Texture2D));
-			Texture2D speciesTexture = (Texture2D)Resources.Load ("Images/" + this.name, typeof(Texture2D));
+            Debug.Log ("diet" + diet);
+            //o-omnivore, c-carnivore, h-herbivore, f-food, w-weather
+            Texture2D cardTexture = (Texture2D)Resources.Load ("Images/Battle/cardfront_" + this.dietChar, typeof(Texture2D));
+            Texture2D speciesTexture = (Texture2D)Resources.Load ("Images/" + this.name, typeof(Texture2D));
 
             //Changing cardfront texture
             GetComponent<Renderer>().material.mainTexture = cardTexture;
@@ -92,25 +92,25 @@ namespace CW
             //by Pedro
             audioSource = gameObject.AddComponent<AudioSource> ();
 
-			//halo = (Behaviour)gameObject.GetComponent("Halo");
-			//halo.enabled = false;
+            //halo = (Behaviour)gameObject.GetComponent("Halo");
+            //halo.enabled = false;
         }
     
         //Returns the enum for the animal's diet. Herbivore, Omnivore, Carnivore
-		DIET getDietType (string diet)
-		{
-			if (diet == "o") {
-				return DIET.OMNIVORE;    
-			} else if (diet == "c") {
-				return DIET.CARNIVORE;    
-			} else if (diet == "h") {
-				return DIET.HERBIVORE;
-			} else if (diet == "f") {
-				return DIET.FOOD;
-			} else 
-				return DIET.WEATHER;
-			//else diet == 2
-		}
+        DIET getDietType (string diet)
+        {
+            if (diet == "o") {
+                return DIET.OMNIVORE;    
+            } else if (diet == "c") {
+                return DIET.CARNIVORE;    
+            } else if (diet == "h") {
+                return DIET.HERBIVORE;
+            } else if (diet == "f") {
+                return DIET.FOOD;
+            } else 
+                return DIET.WEATHER;
+            //else diet == 2
+        }
     
         //OnMouseDown also checks for touch events
         void OnMouseDown ()
@@ -184,8 +184,8 @@ namespace CW
             //Normal scaling
             this.transform.localScale = new Vector3 (15, 1, 21);
 
-			//By Pedro
-			//this.halo.enabled = false;
+            //By Pedro
+            //this.halo.enabled = false;
         
             //Moves back to normal position if not clicked
             /*if (!clicked && !inMotion) {
