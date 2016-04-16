@@ -101,7 +101,7 @@ namespace CW
             return DIET.HERBIVORE;
         }
     
-        void OnMouseOver ()
+        void OnMouseDown ()
         {
             if (!EventSystem.current.IsPointerOverGameObject())
             {
@@ -126,7 +126,7 @@ namespace CW
                 if (Input.GetMouseButtonDown (0) && !player.handCentered) {
                     clicked = true;
                     player.handCentered = true;
-                    player.handPos = new Vector3 (50, 300, -150);
+                    player.handPos = new Vector3 (50, 400, -125);
                     player.reposition();
                     
                 }
