@@ -77,9 +77,9 @@ namespace CW
 			} else {
 
 				Debug.Log ("Set PLayer Num Working");
-				handPos = new Vector3 (150, 10, 400);
+				handPos = new Vector3 (-460, 10, 375);
 				FieldPos = new Vector3 (-450, 10, 150);
-				DeckPos = new Vector3 (-900, 10, 200);//orig(-825, 10, 400)
+				DeckPos = new Vector3 (-825, 10, 400);//orig(-825, 10, 400)
 				TreePos = new Vector3 (0, 10, 375);//org(800, 10, 300)
 			
 				//Mana and sets p2's inactive to false
