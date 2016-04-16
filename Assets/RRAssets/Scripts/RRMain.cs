@@ -32,7 +32,9 @@ namespace RR {
         void Start () {
             Application.LoadLevel("RRLogin");
 
-            RRConnectionManager cManager = gameObject.GetComponent<RRConnectionManager>();
+//            RRConnectionManager cManager = gameObject.GetComponent<RRConnectionManager>();
+            RRConnectionManager cManager = RRConnectionManager.getInstance();
+
             if (cManager) {
                 StartCoroutine(RequestHeartbeat(1f));
             }
@@ -52,7 +54,8 @@ namespace RR {
         public IEnumerator RequestHeartbeat(float time) {
             yield return new WaitForSeconds(time);
             
-            RRConnectionManager cManager = gameObject.GetComponent<RRConnectionManager>();
+//            RRConnectionManager cManager = gameObject.GetComponent<RRConnectionManager>();
+            RRConnectionManager cManager = RRConnectionManager.getInstance();
             
             if (cManager) {
                 RequestHeartbeat request = new RequestHeartbeat();

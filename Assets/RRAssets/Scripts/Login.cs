@@ -43,7 +43,7 @@ namespace RR
              */
             mainObject = GameObject.Find ("MainObject");
             mainObject.AddComponent<RRMessageQueue>();
-            mainObject.AddComponent<RRConnectionManager>();
+            //mainObject.AddComponent<RRConnectionManager>();
 
             /*
              * Message Queue callbacks 
@@ -59,7 +59,8 @@ namespace RR
         /// </summary>
         void Start ()
         {
-            RRConnectionManager cManager = mainObject.GetComponent<RRConnectionManager> ();
+//            RRConnectionManager cManager = mainObject.GetComponent<RRConnectionManager> ();
+            RRConnectionManager cManager = RRConnectionManager.getInstance();
             
             if (cManager) {
                 // TODO There is probably no reason to call this
@@ -161,7 +162,8 @@ namespace RR
             else {
 
                 //Everything is going well, lets send a login request to the server
-                RRConnectionManager rrcm = mainObject.GetComponent<RRConnectionManager> ();
+//                RRConnectionManager rrcm = mainObject.GetComponent<RRConnectionManager> ();
+                RRConnectionManager rrcm = RRConnectionManager.getInstance();
 
                 if (rrcm) {
                     rrcm.Send (RequestLogin (user_id, password));
@@ -174,7 +176,8 @@ namespace RR
         /// </summary>
         public void Join ()
         {
-            RRConnectionManager rrcm = mainObject.GetComponent<RRConnectionManager> ();
+//            RRConnectionManager rrcm = mainObject.GetComponent<RRConnectionManager> ();
+            RRConnectionManager rrcm = RRConnectionManager.getInstance();
     
             if (rrcm) {
                 rrcm.Send (RequestRaceInit ());
@@ -240,7 +243,10 @@ namespace RR
         public RequestRaceInit RequestRaceInit ()
         {
             RequestRaceInit request = new RequestRaceInit ();
-            request.Send (Constants.USER_ID, 0);
+
+            Debug.Log ("Sending request for game with player ID " + RR.Constants.USER_ID);
+
+            request.Send (RR.Constants.USER_ID, 0);
             return request;
         }
 
