@@ -1,5 +1,4 @@
 using UnityEngine;
-
 using System.Collections;
 
 public class Game : MonoBehaviour
@@ -10,9 +9,14 @@ public class Game : MonoBehaviour
     private static int isFading = 0;
     private static float alphaFadeValue;
     private static string nextScene;
+		private NetworkManager networkManager;
 
     void Awake ()
     {
+				networkManager = new NetworkManager(
+					this,
+					new ConnectionManager(Config.REMOTE_HOST, Constants.REMOTE_PORT)
+				);
         scene = "Login";
         DontDestroyOnLoad (gameObject);
 
@@ -27,7 +31,7 @@ public class Game : MonoBehaviour
         //     speciesListProtocol.Prepare(),
         //     ProcessSpeciesList
         // );
-
+        Debug.Log("started...");
         if (scene != "") {
             // Application.LoadLevel(scene);
             Game.SwitchScene (scene);
@@ -39,6 +43,7 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
+				networkManager.Update();
         if (isFading != 0) {
             PerformTransition ();
         }
@@ -137,6 +142,7 @@ public class Game : MonoBehaviour
 
     public void ProcessSpeciesList (NetworkResponse response)
     {
+    Debug.Log ("ProcessSpeciesList");
         ResponseSpeciesList args = response as ResponseSpeciesList;
         // SpeciesTable.Update(args.speciesList);
         // SpeciesTable.speciesList = args.speciesList;

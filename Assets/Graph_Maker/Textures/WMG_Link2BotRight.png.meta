@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ceb490f08dbc3c14b9f383ef6683630b
+guid: f210e09dab79e2746bb574f60988add2
 timeCreated: 1453251734
 licenseType: Store
 TextureImporter:
@@ -17,7 +17,7 @@ TextureImporter:
   bumpmap:
     convertToNormalMap: 0
     externalNormalMap: 0
-    heightScale: .25
+    heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
   grayScaleToAlpha: 0
@@ -37,11 +37,12 @@ TextureImporter:
   lightmap: 0
   rGBM: 0
   compressionQuality: 50
+  allowsAlphaSplitting: 0
   spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: .5, y: .5}
+  spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 2, z: 2, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
@@ -49,6 +50,7 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites: []
+    outline: []
   spritePackingTag: WMG_GM
   userData: 
   assetBundleName: 
