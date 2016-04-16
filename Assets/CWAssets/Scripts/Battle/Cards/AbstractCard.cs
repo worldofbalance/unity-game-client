@@ -101,6 +101,7 @@ namespace CW
             return DIET.HERBIVORE;
         }
     
+        //OnMouseDown also checks for touch events
         void OnMouseDown ()
         {
             if (!EventSystem.current.IsPointerOverGameObject())
@@ -108,7 +109,7 @@ namespace CW
                 if (inMotion)
                     return;
             
-                //
+                //keeping original position for Zoom
                 if (!zoomed) {
                     oriPosition = this.transform.position;
                     zoomed = true;  
@@ -122,14 +123,14 @@ namespace CW
 
                 
             
-                //if left-button clicked
+                //if left-button clicked, set centered boolean true and move handpos
                 if (Input.GetMouseButtonDown (0) && !player.handCentered) {
                     clicked = true;
                     player.handCentered = true;
                     player.handPos = new Vector3 (50, 400, -125);
                     player.reposition();
                     
-                }
+                }//check if it is centered then do handler action
                 else if (Input.GetMouseButtonDown (0) && player.handCentered) {
                     player.handCentered = false;
                     player.handPos = new Vector3 (550, 10, -375);
@@ -168,7 +169,7 @@ namespace CW
             }
         
         }
-
+        //keeping for future use
         void OnMouseExit ()
         {
             //Normal scaling
