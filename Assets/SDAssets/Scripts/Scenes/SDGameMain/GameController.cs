@@ -7,6 +7,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace SD {
     public class GameController : MonoBehaviour {
@@ -39,6 +40,8 @@ namespace SD {
         private static SD.GameManager sdGameManager;
         private PlayTimePlayer opponentPlayer;
         private Rigidbody rbOpponent;
+        private Dictionary <int, NPCFish> npcFishes = new Dictionary<int, NPCFish>();
+        private Dictionary <int, GameObject> npcFishObjects = new Dictionary<int, GameObject>();
 
         // Initializes the player's score, and UI texts.
         // Also spawns numbers of prey at random positions.
@@ -50,12 +53,19 @@ namespace SD {
             UpdateStamina ();
             UpdateUnscoredPoint ();
             UpdateHealth ();
-            for (int i = 0; i < numPrey; i++) {
-                spawnPrey ();
+            sdGameManager = SD.GameManager.getInstance ();
+
+            for (int i = 1; i <= numPrey; i++) {
+                NPCFish npcFish = new NPCFish (i);
+                npcFishes [i] = npcFish;
+                if (sdGameManager.getConnectionManager ()) {
+                    sdGameManager.FindNPCFishPosition (i); 
+                } else {
+                    spawnPrey (i);
+                }
             }
 
-            sdGameManager = SD.GameManager.getInstance ();
-            if (sdGameManager.getConnectionManager ()) {  // We might be playing multiplayer TODO: Check position response from opponent.
+            if (sdGameManager.getConnectionManager ()) {  // We might be playing multiplayer
                 rbOpponent = (Rigidbody)Instantiate (opponent, playerInitialPosition, playerInitialRotation);
                 rbOpponent.gameObject.SetActive (true);
                 opponentPlayer = new PlayTimePlayer ();
@@ -73,14 +83,24 @@ namespace SD {
         }
 
         // Spawns prey at a random position within the boundary
-        void spawnPrey(){
-            Vector3 spawnPosition = new Vector3 (Random.Range(boundary.xMin, boundary.xMax), 
-                Random.Range(boundary.yMin, boundary.yMax), 0);
+        public void spawnPrey(int i){
+            Vector3 spawnPosition;
+            if (npcFishes [i].xPosition != 0 && npcFishes [i].yPosition != 0) {
+                spawnPosition = new Vector3 (npcFishes [i].xPosition, npcFishes [i].yPosition, 0);
+                Debug.Log ("Spawning from request result");
+            } else {
+                spawnPosition = new Vector3 (Random.Range(boundary.xMin, boundary.xMax), Random.Range(boundary.yMin, boundary.yMax), 0);
+                Debug.Log ("Spawning from random numbers");
+            }
             Quaternion spawnRotation = Quaternion.identity;
-            Instantiate (Prey, spawnPosition, spawnRotation);
+            npcFishObjects [i] = Instantiate (Prey, spawnPosition, spawnRotation) as GameObject;
         }
 
-
+        public void destroyPrey(int i) {
+            if (npcFishObjects [i]) {
+                Destroy (npcFishObjects [i]);
+            }
+        }
         // Increases the current score value, and pass the info to scoreText
         // by calling UpdateScore().
         public void AddScore(int newScoreValue) {
@@ -167,5 +187,14 @@ namespace SD {
         public PlayTimePlayer getOpponentPlayer() {
             return opponentPlayer;
         }
+
+        public Dictionary<int, NPCFish> getNpcFishes() {
+            return npcFishes;
+        }
+
+        public Dictionary<int, GameObject> getNpcFishObjects() {
+            return npcFishObjects;
+        }
+
     }
 }

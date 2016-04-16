@@ -31,6 +31,8 @@ namespace SD {
                     mQueue.AddCallback (Constants.SMSG_POSITION, ResponseSDPosition);
                 if (!mQueue.callbackList.ContainsKey (Constants.SMSG_KEYBOARD))
                     mQueue.AddCallback (Constants.SMSG_KEYBOARD, ResponseSDKeyboard);
+                if (!mQueue.callbackList.ContainsKey (Constants.SMSG_PREY))
+                    mQueue.AddCallback (Constants.SMSG_PREY, ResponseSDPrey);
                 isMultiplayer = true;
             } else {
                 Debug.LogWarning ("Could not establish a connection to Sea Divided Server. Falling back to offline mode.");
@@ -74,11 +76,9 @@ namespace SD {
         // Sends the player's current position to the server.
         public void SetPlayerPositions(float x, float y) {
             if (cManager) {
-                    RequestSDPosition request = new RequestSDPosition ();
-                    request.Send (x.ToString (), y.ToString ());
-                    cManager.Send (request);
-            } else {
-                Debug.LogWarning ("Could not send the player's position to the server.");
+                RequestSDPosition request = new RequestSDPosition ();
+                request.Send (x.ToString (), y.ToString ());
+                cManager.Send (request);
             }
         }
 
@@ -96,8 +96,6 @@ namespace SD {
                 request.Send (keyCode, keyCombination);
                 cManager.Send (request);
                 Debug.Log ("Sent a request for " + keyCode);
-            } else {
-                Debug.LogWarning ("Could not send the player's keyboard input to the server.");
             }
         }
 
@@ -114,8 +112,33 @@ namespace SD {
                     gameController.getOpponentPlayer().speed = gameController.getOpponentPlayer().speed / gameController.getOpponentPlayer().speedUpFactor;
                 }
             }
-            Debug.Log ("The keyboard input of the other player is keycode=" + args.keyCode + ", keyCombination=" + args.keyCombination);
-            // TODO: update the keyboard input of the opponent.
+        }
+
+        // Get prey position to spawn by ID
+        public void FindNPCFishPosition(int id) {
+            if (cManager) {
+                RequestSDPrey request = new RequestSDPrey ();
+                request.Send (id);
+                cManager.Send (request);
+                Debug.Log ("Sent request to retrieve position of Prey: " + id);
+            }
+        }
+
+        public void ResponseSDPrey(ExtendedEventArgs eventArgs) {
+            ResponseSDPreyEventArgs args = eventArgs as ResponseSDPreyEventArgs;
+            NPCFish fish = gameController.getNpcFishes()[args.prey_id];
+            if (args.isAlive) {
+                // Set the position of the fish and spawn it.
+                fish.xPosition = args.xPosition;
+                fish.yPosition = args.yPosition;
+                fish.isAlive = args.isAlive;
+                fish.id = args.prey_id;
+                gameController.spawnPrey (fish.id);
+            } else {
+                // Destroy the NPC Fish at the specified position at the opponent's side.
+                fish.isAlive = false;
+                gameController.destroyPrey (args.prey_id);
+            }
         }
     }
 }
