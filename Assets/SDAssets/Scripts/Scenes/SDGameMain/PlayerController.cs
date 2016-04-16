@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour {
     private Vector3 scale;
     public int tilt;
 
-    public GameController gameController;
+    private GameController gameController;
 
     private float currentStamina;
     private const float MinimunStamina = 10;
@@ -50,15 +50,8 @@ public class PlayerController : MonoBehaviour {
         goUpDown = new Vector3 (turnSpeed/2, 0f, 0f);
         oldXPosition = oldYPosition = 0.0f;
 
-
-        GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
-        if (gameControllerObject != null) {
-            gameController = gameControllerObject.GetComponent<GameController> ();
-        } else {
-            Debug.Log ("Game Controller not found");
-        }
-
         sdGameManager = SD.GameManager.getInstance ();
+        gameController = GameController.getInstance ();
 	}
 	
 

@@ -9,18 +9,13 @@ using System.Collections;
 namespace SD {
 public class DestroyByContact : MonoBehaviour {
 
-    public GameController gameController;
+    private GameController gameController;
     private const int newScoreValue = 10; // Score to be recieved by eating prey
 
 
     // Use this for initialization
     void Start () {
-        GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
-        if (gameControllerObject != null) {
-            gameController = gameControllerObject.GetComponent<GameController> ();
-        } else {
-            Debug.Log ("Game controller not found");
-        }
+        gameController = GameController.getInstance ();
     }
     
     // Update is called once per frame

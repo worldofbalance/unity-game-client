@@ -19,8 +19,11 @@ namespace SD {
         public GameManager() {
         }
  
-        void Start() {
+        void Awake() {
             gameManager = this;
+        }
+
+        void Start() {
             gameController = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameController>();
             cManager = SDConnectionManager.getInstance ();
             mQueue = SDMessageQueue.getInstance ();
@@ -84,7 +87,6 @@ namespace SD {
 
         public void ResponseSDPosition(ExtendedEventArgs eventArgs) {
             ResponseSDPositionEventArgs args = eventArgs as ResponseSDPositionEventArgs;
-            Debug.Log ("The position of the other player is ("+args.xPosition + "," + args.yPosition + ")");
             gameController.getOpponentPlayer().xPosition = args.xPosition;
             gameController.getOpponentPlayer ().yPosition = args.yPosition;
         }
@@ -120,7 +122,6 @@ namespace SD {
                 RequestSDPrey request = new RequestSDPrey ();
                 request.Send (id);
                 cManager.Send (request);
-                Debug.Log ("Sent request to retrieve position of Prey: " + id);
             }
         }
 

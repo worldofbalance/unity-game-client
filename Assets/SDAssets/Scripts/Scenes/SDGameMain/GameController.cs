@@ -37,12 +37,16 @@ namespace SD {
         private Vector3 playerInitialPosition = new Vector3(0,0,0);
         private Quaternion playerInitialRotation = Quaternion.Euler(0,90,0);
 
-        private static SD.GameManager sdGameManager;
+        private static GameController gameController;
+        private static GameManager sdGameManager;
         private PlayTimePlayer opponentPlayer;
         private Rigidbody rbOpponent;
         private Dictionary <int, NPCFish> npcFishes = new Dictionary<int, NPCFish>();
         private Dictionary <int, GameObject> npcFishObjects = new Dictionary<int, GameObject>();
 
+        void Awake () {
+            gameController = this;
+        }
         // Initializes the player's score, and UI texts.
         // Also spawns numbers of prey at random positions.
         void Start () {
@@ -53,19 +57,20 @@ namespace SD {
             UpdateStamina ();
             UpdateUnscoredPoint ();
             UpdateHealth ();
+
             sdGameManager = SD.GameManager.getInstance ();
 
             for (int i = 1; i <= numPrey; i++) {
                 NPCFish npcFish = new NPCFish (i);
                 npcFishes [i] = npcFish;
                 if (sdGameManager.getConnectionManager ()) {
-                    sdGameManager.FindNPCFishPosition (i); 
+                    sdGameManager.FindNPCFishPosition (i); // Finds and spawns prey at the returned location.
                 } else {
                     spawnPrey (i);
                 }
             }
 
-            if (sdGameManager.getConnectionManager ()) {  // We might be playing multiplayer
+            if (sdGameManager.getConnectionManager ()) {  // We are playing multiplayer
                 rbOpponent = (Rigidbody)Instantiate (opponent, playerInitialPosition, playerInitialRotation);
                 rbOpponent.gameObject.SetActive (true);
                 opponentPlayer = new PlayTimePlayer ();
@@ -82,18 +87,23 @@ namespace SD {
             UpdateHealth ();
         }
 
+        public static GameController getInstance() {
+            return gameController;
+        }
+
         // Spawns prey at a random position within the boundary
         public void spawnPrey(int i){
             Vector3 spawnPosition;
             if (npcFishes [i].xPosition != 0 && npcFishes [i].yPosition != 0) {
                 spawnPosition = new Vector3 (npcFishes [i].xPosition, npcFishes [i].yPosition, 0);
-                Debug.Log ("Spawning from request result");
+                Debug.Log ("Spawning Prey " + i + " from request result");
             } else {
                 spawnPosition = new Vector3 (Random.Range(boundary.xMin, boundary.xMax), Random.Range(boundary.yMin, boundary.yMax), 0);
-                Debug.Log ("Spawning from random numbers");
+                Debug.Log ("Spawning Prey " + i + " from local random numbers");
             }
             Quaternion spawnRotation = Quaternion.identity;
             npcFishObjects [i] = Instantiate (Prey, spawnPosition, spawnRotation) as GameObject;
+            npcFishObjects [i].name = "Prey" + i;
         }
 
         public void destroyPrey(int i) {

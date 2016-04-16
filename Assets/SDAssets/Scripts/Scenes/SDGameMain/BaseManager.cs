@@ -12,49 +12,44 @@ using UnityEngine;
 using System.Collections;
 
 namespace SD {
-public class BaseManager : MonoBehaviour {
+    public class BaseManager : MonoBehaviour {
 
-    public GameController gameController;
-    private float time;
-    private float secondsToScore = 3f;
+        private GameController gameController;
+        private float time;
+        private float secondsToScore = 3f;
 
-    // Use this for initialization
-    void Start () {
-        GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
-        if (gameControllerObject != null) {
-            gameController = gameControllerObject.GetComponent<GameController> ();
-        } else {
-            Debug.Log ("Game controller not found");
+        // Use this for initialization
+        void Start () {
+            gameController = GameController.getInstance ();
         }
-    }
 
-    // Update is called once per frame
-    void Update () {
+        // Update is called once per frame
+        void Update () {
 
-    }
-
-    // Runs when the player collides the base
-    void OnTriggerEnter(Collider other) {
-        if (other.tag == "Player") {
-            time = secondsToScore;
-           
         }
-    }
 
-    // Runs while the player is staying in the base
-    void OnTriggerStay(Collider other) {
-        if (other.tag == "Player") {
-            gameController.stamina = 100;
-
-            // After couplse seconds that is defined by timeToScore, 
-            // add unscored points to the actual score
-            time -= 1f * Time.deltaTime;
-            if (time <= 0) {
-                gameController.Score ();
-                gameController.ResetUnscored ();
+        // Runs when the player collides the base
+        void OnTriggerEnter(Collider other) {
+            if (other.tag == "Player") {
+                time = secondsToScore;
+               
             }
+        }
 
+        // Runs while the player is staying in the base
+        void OnTriggerStay(Collider other) {
+            if (other.tag == "Player") {
+                gameController.stamina = 100;
+
+                // After couplse seconds that is defined by timeToScore, 
+                // add unscored points to the actual score
+                time -= 1f * Time.deltaTime;
+                if (time <= 0) {
+                    gameController.Score ();
+                    gameController.ResetUnscored ();
+                }
+
+            }
         }
     }
-}
 }
