@@ -20,7 +20,7 @@ namespace SD
             add (Constants.CMSG_SDEND_GAME, "RequestSDEndGame");
             add (Constants.CMSG_KEYBOARD, "RequestSDKeyboard");
             add (Constants.CMSG_POSITION, "RequestSDPosition");
-
+            add(Constants.CMSG_PREY, "RequestSDPrey");
         }
 
         public static void add(short request_id, string name)
