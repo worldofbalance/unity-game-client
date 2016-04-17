@@ -9,7 +9,7 @@ public class Game : MonoBehaviour
     private static int isFading = 0;
     private static float alphaFadeValue;
     private static string nextScene;
-		private NetworkManager networkManager;
+		public static NetworkManager networkManager;
 
     void Awake ()
     {
@@ -99,7 +99,7 @@ public class Game : MonoBehaviour
                 break;
                 case "World":
                 Debug.Log("The client is requesting for quiting...");
-                NetworkManager.Send (BackToLobbyProtocol.Prepare ());
+                networkManager.Send (BackToLobbyProtocol.Prepare ());
                 break;
                 case "Ecosystem":
                 break;

@@ -9,14 +9,14 @@ using System.Net.Sockets;
 public class NetworkManager {
 
 	public delegate void Callback(NetworkResponse response);
-	private static Dictionary<int, Queue<Callback>> callbackList = new Dictionary<int, Queue<Callback>>();
-	private static Dictionary<int, List<Callback>> listenList = new Dictionary<int, List<Callback>>();
+	private Dictionary<int, Queue<Callback>> callbackList;
+	private Dictionary<int, List<Callback>> listenList;
 	private MonoBehaviour owner;
 	// Connection
 	private ConnectionManager cManager;
-	private static Queue<NetworkRequest> requests = new Queue<NetworkRequest>();
-	private static int counter = 0;
-	private static int interval = 50;
+	private Queue<NetworkRequest> requests;
+	private int counter = 0;
+	private int interval = 50;
 
 	private static bool lostConnection = false;
 
@@ -24,13 +24,16 @@ public class NetworkManager {
 	public NetworkManager(MonoBehaviour owner, ConnectionManager cManager) {
 		this.owner = owner;
 		this.cManager = cManager;
+		this.requests = new Queue<NetworkRequest>();
+		this.callbackList = new Dictionary<int, Queue<Callback>>();
+		this.listenList = new Dictionary<int, List<Callback>>();
 		
 		NetworkProtocolTable.Init();
 
-		NetworkManager.Listen (NetworkCode.HEARTBEAT, ProcessHeartbeat);
+		Listen (NetworkCode.HEARTBEAT, ProcessHeartbeat);
 
 		if (cManager.Connect() == ConnectionManager.SUCCESS) {
-			NetworkManager.Send(
+			Send(
 				ClientProtocol.Prepare(Constants.CLIENT_VERSION, Constants.SESSION_ID),
 				ProcessClient
 			);
@@ -89,12 +92,12 @@ public class NetworkManager {
 		}
 	}
 
-	public static void Send(NetworkRequest packet) {
+	public void Send(NetworkRequest packet) {
 		requests.Enqueue(packet);
 	}
 	
-	public static void Send(NetworkRequest packet, Callback callback) {
-		NetworkManager.Send(packet);
+	public void Send(NetworkRequest packet, Callback callback) {
+		this.Send(packet);
 
 		int protocol_id = packet.GetID();
 		if (!callbackList.ContainsKey(protocol_id)) {
@@ -104,7 +107,7 @@ public class NetworkManager {
 		callbackList[protocol_id].Enqueue(callback);
 	}
 
-	public static void Listen(int protocol_id, Callback callback) {
+	public void Listen(int protocol_id, Callback callback) {
 		if (!listenList.ContainsKey(protocol_id)) {
 			listenList[protocol_id] = new List<Callback>();
 		}
@@ -112,7 +115,7 @@ public class NetworkManager {
 		listenList[protocol_id].Add(callback);
 	}
 
-	public static void Ignore(int protocol_id, Callback callback) {
+	public void Ignore(int protocol_id, Callback callback) {
 		if (listenList.ContainsKey(protocol_id) && listenList[protocol_id].Contains(callback)) {
 			while (listenList[protocol_id].Contains(callback)) {
 				listenList[protocol_id].Remove(callback);
@@ -122,7 +125,7 @@ public class NetworkManager {
 		}
 	}
 
-	public static void Clear() {
+	public void Clear() {
 		callbackList.Clear();
 		listenList.Clear();
 		requests.Clear();
