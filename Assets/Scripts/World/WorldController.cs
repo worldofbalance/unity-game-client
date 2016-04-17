@@ -2,6 +2,7 @@ using UnityEngine;
 
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 public class WorldController : MonoBehaviour {
 
@@ -12,7 +13,7 @@ public class WorldController : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 		Game.StartEnterTransition ();
-		Debug.Log ("We are in the WORLD scene");
+		Debug.Log ("We are in the WORLD CONTROLLER scene");
 		if (GameState.world != null) {
 			LoadComponents();
 		}
