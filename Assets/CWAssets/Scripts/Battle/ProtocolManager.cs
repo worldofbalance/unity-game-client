@@ -18,14 +18,14 @@ public class ProtocolManager : MonoBehaviour{
 
 
 	public void init() {
-		Debug.Log("init Protocol Manager");
+		
 		//StartCoroutine(PollAction(Constants.UPDATE_RATE));
 	}
 
 	private IEnumerator PollAction(float time) {
 		
 		while (true) {
-			Debug.Log ("PollAction ");
+			
 			CWGame.networkManager.Send(MatchActionProtocol.Prepare(GameManager.player1.playerID), processMatchAction );
 			yield return new WaitForSeconds(time);
 		}
@@ -42,7 +42,7 @@ public class ProtocolManager : MonoBehaviour{
 			TurnAction action = args.action;
 			action.execute();
 		}
-		Debug.Log ("Match Action code:= " + args.actionID);
+
 	}
 
 
@@ -112,7 +112,7 @@ public class ProtocolManager : MonoBehaviour{
 	public void ProcessSummonCard(NetworkResponse response) {
 		ResponseSummonCard args = response as ResponseSummonCard;
 		
-		Debug.Log("Summon Response MatchID:  " );
+
 	}
 
 	
@@ -211,7 +211,7 @@ public class ProtocolManager : MonoBehaviour{
 
 	public void ProcessFoodBuff(NetworkResponse response){
 				ResponseFoodBuff args = response as ResponseFoodBuff;
-				Debug.Log ("Food Buff MatchID: " + args.status);
+
 		}
 	// Sent when attacking opponents cards
 	public void sendCardAttack(int playerID, int attackersPosition, int attackedPosition){
@@ -223,7 +223,7 @@ public class ProtocolManager : MonoBehaviour{
 	public void ProcessCardAttack(NetworkResponse response) {
 		ResponseCardAttack args = response as ResponseCardAttack;
 		
-		Debug.Log("CardAttack MatchID:  " + args.status);
+
 		
 	}
 
@@ -237,7 +237,7 @@ public class ProtocolManager : MonoBehaviour{
 	public void ProcessQuitMatch(NetworkResponse response){
 		ResponseQuitMatch args = response as ResponseQuitMatch;
 		bool opponentReadyResponse = false;
-		Debug.Log ("Quit Match Response");
+
 	}
 
 	// Sent if player wins game
@@ -264,7 +264,16 @@ public class ProtocolManager : MonoBehaviour{
 		ResponseReturnLobby args = response as ResponseReturnLobby;
 		Debug.Log ("Return To Lobby processed" + args.status );
 	}
+    public void sendWeatherCard(int playerID, int card_id){
+            CWGame.networkManager.Send (
+                ApplyWeatherProtocol.Prepare (playerID, card_id),
+                ProcessWeatherCard);
+        }
 
+    public void ProcessWeatherCard(NetworkResponse response){
+            ResponseWeatherCard args = response as ResponseWeatherCard;
+            Debug.Log ("Weather Card: " + args.status);
+        }
 
 }
 }

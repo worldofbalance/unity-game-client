@@ -89,9 +89,59 @@ namespace CW
 			}
 		}
 		
+        public void applyWeather(int card_id){
+            switch (card_id) {
+                
+                //fire
+            case 89:
+                for(int i = 0; i < cardsInPlay.Count; i++){
+                    AbstractCard card = ((GameObject)cardsInPlay [i]).GetComponent<AbstractCard> ();
+                    card.Remove();
+                }
+                break;
+                
+                //freeze
+            case 90:
+                for(int i = 0; i < cardsInPlay.Count; i++){
+                    AbstractCard card = ((GameObject)cardsInPlay [i]).GetComponent<AbstractCard> ();
+                    card.freeze();
+                }
+                break;
+                
+                //rain
+            case 91:
+                givePlayerFoodCard(2);
+                break;
+            }
+        }
 		
-		
-		
+        public void givePlayerFoodCard(int num){
+            for (int i = 0; i < num; i++) {
+                GameObject obj = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/Card"));
+                
+                //Card back for deck
+                //GameObject cardBacks = (GameObject) Instantiate(Resources.Load("Prefabs/Battle/card_old"));
+                
+                //Card front for hand
+                //obj.AddComponent("AbstractCard");
+                AbstractCard script = obj.GetComponent<AbstractCard> ();
+
+                //public void init(BattlePlayer player, int cardID, int diet, int level, int attack,
+                //int health,string species_name, string type, string description
+                script.init (this, 92, "w", 1, 0, 
+                             0, "Trees and Shrubs", "Plant", "Special");
+
+                hand.Add(obj);
+            }
+
+            if (this != GameManager.player1) {
+                dealDummyCard(num);
+            }
+
+            positionNewCard ();
+
+
+        }
 		//Instantiates the Tree with Tree script
 		public void createTree ()
 		{
@@ -212,17 +262,20 @@ namespace CW
 					
 				}
 			}
-			
-			//For every object in hand arraylist
-			for (int i = 0; i < hand.Count; i++) {
-				
-				//Reposition and arrange each card in hand
-				GameObject setCard = (GameObject)hand [i];
-				setCard.transform.position = new Vector3 ((handPos.x + 280) - 185 * i, 10, handPos.z);
-				
-			}
+            positionNewCard();
+
 		}
-		
+		void positionNewCard()
+        {
+            //For every object in hand arraylist
+            for (int i = 0; i < hand.Count; i++) {
+                
+                //Reposition and arrange each card in hand
+                GameObject setCard = (GameObject)hand [i];
+                setCard.transform.position = new Vector3 ((handPos.x + 280) - 185 * i, 10, handPos.z);
+                
+            }
+        }
 		public void dealDummyCard (int numToDeal)
 		{
 			// TODO

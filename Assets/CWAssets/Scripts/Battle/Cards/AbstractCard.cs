@@ -6,7 +6,7 @@ namespace CW
 	public class AbstractCard : MonoBehaviour
 	{
 		public int cardID, fieldIndex;
-		public int maxHP, hp, dmg, naturalDmg, manaCost, level, dmgTimer = 0;
+        public int maxHP, hp, dmg, naturalDmg, manaCost, level, dmgTimer = 0, frozenTurns = 0;
 		private Font font;
 		private BattlePlayer player;
 		public string name, type = " ", description = " ", dietChar= " ";
@@ -15,7 +15,7 @@ namespace CW
 		private Vector3 oriPosition;
 		private Vector3 newPosition;
 		private bool zoomed = false;
-		private bool clicked = false, removeAfterDelay;
+        private bool clicked = false, removeAfterDelay,frozen = false;
 		//VELOCITY
 		private Vector3 targetPosition, startPosition;
 		private float velocity, terminalVelocity, angle, distance;
@@ -33,30 +33,45 @@ namespace CW
 		public AbstractCardHandler handler;
 	
 		//Initialization for a card and sets it's position to (1000, 1000, 1000)
-		public void init (BattlePlayer player, int cardID, string diet, int level, int attack, int health, string species_name, string type, string description)
-		{
-			this.player = player;
-			this.cardID = cardID;
-			this.manaCost = level;
-			this.transform.position = new Vector3 (player.DeckPos.x, player.DeckPos.y, player.DeckPos.z);
-			canAttackNow = true;
-			velocity = 0;
-			terminalVelocity = 6000;
-			distance = 0;
-			delayTimer = 0;
-			name = species_name;
-			this.diet = getDietType (diet);
-			this.dietChar = diet;
-			this.level = level;
-			maxHP = hp = health;
-			naturalDmg = dmg = attack;
-			//this.type = type; //hide temporarily
-			//this.description = description; //hide temporarily
+		public void init(BattlePlayer player, int cardID, string diet, int level, int attack, int health, string species_name, string type, string description)
+        {
+            this.player = player;
+            this.cardID = cardID;
+            this.manaCost = level;
+            this.transform.position = new Vector3(player.DeckPos.x, player.DeckPos.y, player.DeckPos.z);
+            canAttackNow = true;
+            velocity = 0;
+            terminalVelocity = 6000;
+            distance = 0;
+            delayTimer = 0;
+            name = species_name;
+            this.diet = getDietType(diet);
+            this.dietChar = diet;
+            this.level = level;
+            maxHP = hp = health;
+            naturalDmg = dmg = attack;
+            //this.type = type; //hide temporarily
+            //this.description = description; //hide temporarily
 		
-			Debug.Log ("diet" + diet);
-			//o-omnivore, c-carnivore, h-herbivore, f-food, w-weather
-			Texture2D cardTexture = (Texture2D)Resources.Load ("Images/Battle/cardfront_" + this.dietChar, typeof(Texture2D));
-			Texture2D speciesTexture = (Texture2D)Resources.Load ("Images/" + this.name, typeof(Texture2D));
+			
+            Texture2D cardTexture;
+            Texture2D speciesTexture;
+            //o-omnivore, c-carnivore, h-herbivore, f-food, w-weather
+            if (!this.dietChar.Equals("w"))
+            {
+                cardTexture = (Texture2D)Resources.Load("Images/Battle/cardfront_" + this.dietChar, typeof(Texture2D));
+                speciesTexture = (Texture2D)Resources.Load("Images/" + this.name, typeof(Texture2D));
+            }
+            else // for weather, its blue similar to food card
+            {
+                cardTexture = (Texture2D)Resources.Load("Images/Battle/cardfront_f", typeof(Texture2D));
+                if(this.name.Equals("Acacia"))
+                    speciesTexture = (Texture2D)Resources.Load("Images/Battle/fire", typeof(Texture2D));
+                else if(this.name.Equals("Big Tree"))
+                    speciesTexture = (Texture2D)Resources.Load("Images/Battle/freez", typeof(Texture2D));
+                else
+                    speciesTexture = (Texture2D)Resources.Load("Images/Battle/rain", typeof(Texture2D));
+            }
 
 			//Changing cardfront texture
 			GetComponent<Renderer>().material.mainTexture = cardTexture;
@@ -168,9 +183,12 @@ namespace CW
 
 		public void setCanAttack (bool canAttackNow)
 		{
-			this.canAttackNow = canAttackNow;	
+            this.canAttackNow = canAttackNow && !frozen;	
 		}
-	
+        public void freeze(){
+            frozen = true;
+            frozenTurns = 1;
+        }
 		public bool canAttack ()
 		{
 			return canAttackNow;	
@@ -216,9 +234,21 @@ namespace CW
 		//Set the card so it can attack again
 		public void endTurn ()
 		{
-			canAttackNow = true;
+            /*P1 freezes, P2 animals frozenTurns = 1
+             * P1 ends turn and animals unfrozen, P2 animals check frozenTurns, still frozen
+             * P2 animals frozenTurns--, frozenTurns = 0
+             * P2 animals still frozen, end turn, frozen = false
+             */
+            canAttackNow = true;
+            if (player == GameManager.player1) {
+                frozen = false;
+            } else {
+
+            }
 		}
-	
+        public void Remove(){
+            removeAfterDelay = true;
+        }
 		public void receiveAttack (int dmg)
 		{
 			dmgTimer = 120;
@@ -327,11 +357,13 @@ namespace CW
 			} else if (dmg == naturalDmg) {
 				transform.Find ("AttackText").GetComponent<MeshRenderer> ().material.color = Color.white;
 			}
-			if (canAttackNow) {
-				transform.Find ("DoneText").GetComponent<TextMesh> ().text = "";
-			} else if (!canAttackNow) {
-				transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Done";
-			}
+            if (canAttack()) {
+                transform.Find ("DoneText").GetComponent<TextMesh> ().text = "";
+            } else if (!canAttackNow) {
+                transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Done";
+            } else if (frozen) {
+                transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Frozen";
+            }
 			//If damaged
 			if (dmgTimer > 0) {
 				dmgTimer--;

@@ -168,9 +168,11 @@ public class MultiplayerGames : MonoBehaviour {
 			} else if (args.gameID == Constants.MINIGAME_CARDS_OF_WILD) {
 				CW.GameManager.matchID = args.id;
                 gameObject.AddComponent <CWGame>();
+                Quit();
                 CWGame.networkManager.Send (CW.MatchInitProtocol.Prepare 
 				                        (GameState.player.GetID(), args.id), 
 				                        ProcessMatchInit);
+                
             } else if (args.gameID == Constants.MINIGAME_SEA_DIVIDED) {
                 SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
                 sManager.Send(SD_RequestPlayInit());

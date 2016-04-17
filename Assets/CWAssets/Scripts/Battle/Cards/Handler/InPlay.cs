@@ -35,8 +35,6 @@ namespace CW
 					GameObject.Destroy(currentPlayer.clickedCard.gameObject);
 					currentPlayer.clickedCard = null;
 					currentPlayer.targetCard = null;
-				} else if (currentPlayer.clickedCard.diet == AbstractCard.DIET.WEATHER) {
-					
 				} else if (currentPlayer != player && currentPlayer.clickedCard.diet != AbstractCard.DIET.HERBIVORE) {
 					currentPlayer.targetCard = card;	
 					bool attackback = false;

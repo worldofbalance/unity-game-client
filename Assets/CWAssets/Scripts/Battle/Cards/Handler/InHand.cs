@@ -41,11 +41,14 @@ namespace CW
 			                                        card.level, card.dmg, card.maxHP, 
 			                                        card.name, card.type, 
 			                                        card.description);
-				}else if(card.diet == AbstractCard.DIET.WEATHER){
-					player.hand.Remove (removeCard);
-					player.currentMana -= card.getManaCost ();
-
-				}else if(card.diet == AbstractCard.DIET.FOOD){
+                }else if(card.diet == AbstractCard.DIET.WEATHER){
+                    player.hand.Remove (removeCard);
+                    GameObject.Destroy(removeCard);
+                    player.currentMana -= card.getManaCost ();
+                    player.applyWeather(card.cardID);
+                    GameManager.player2.applyWeather(card.cardID);
+                    player.getProtocolManager().sendWeatherCard(player.playerID, card.cardID);
+                }else if(card.diet == AbstractCard.DIET.FOOD){
 					player.hand.Remove (removeCard);
 					player.currentMana -= card.getManaCost ();
 					startFoodCard();
@@ -63,7 +66,8 @@ namespace CW
 					Debug.Log("Player 1 food card prep");
 				} else {
 					Debug.Log("Player 2 food card prep");
-				}		
+				}	
+                	
 				
 			}else if(currentPlayer.clickedCard != null){
 				/*currentPlayer.targetCard = card;

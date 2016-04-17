@@ -59,7 +59,10 @@ namespace CW{
 			} else if (response.actionID == NetworkCode.APPLY_FOOD) {
 				response.action = new FoodCardAction(response.intCount, response.stringCount,
 				                                     response.intList, response.stringList);
-			}
+            }else if (response.actionID == NetworkCode.APPLY_WEATHER) {
+                response.action = new WeatherCardAction (response.intCount, response.stringCount,
+                                                     response.intList, response.stringList);
+            }
 			return response;
 		}
 		
