@@ -167,7 +167,8 @@ public class MultiplayerGames : MonoBehaviour {
 				Game.SwitchScene ("RRReadyScene");
 			} else if (args.gameID == Constants.MINIGAME_CARDS_OF_WILD) {
 				CW.GameManager.matchID = args.id;
-				Game.networkManager.Send (CW.MatchInitProtocol.Prepare 
+                gameObject.AddComponent <CWGame>();
+                CWGame.networkManager.Send (CW.MatchInitProtocol.Prepare 
 				                        (GameState.player.GetID(), args.id), 
 				                        ProcessMatchInit);
             } else if (args.gameID == Constants.MINIGAME_SEA_DIVIDED) {
