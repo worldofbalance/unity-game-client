@@ -19,6 +19,8 @@ namespace CW
         private bool zoomed = false;
         private bool clicked = false, removeAfterDelay;
         private float raised = 50f;
+        public bool isInHand = true;
+        public bool isInPlay = false;
         //VELOCITY
         private Vector3 targetPosition, startPosition;
         private float velocity, terminalVelocity, angle, distance;
@@ -133,14 +135,14 @@ namespace CW
                 
             
                 //if left-button clicked, set centered boolean true and move handpos
-                if (Input.GetMouseButtonDown (0) && !player.handCentered) {
+                if (Input.GetMouseButtonDown (0) && !player.handCentered && player == player.player1 && isInHand) {
                     clicked = true;
                     player.handCentered = true;
                     player.handPos = new Vector3 (50, 400, -125);
                     player.reposition();
                     
                 }//check if it is centered then do handler action
-                else if (Input.GetMouseButtonDown (0) && player.handCentered) {
+                else if (Input.GetMouseButtonDown (0) && player.handCentered && player == player.player1 && isInHand) {
                     player.handCentered = false;
                     player.handPos = new Vector3 (550, 10, -375);
                     player.reposition();
@@ -148,6 +150,12 @@ namespace CW
                         handler.clicked ();
                     }
                     
+                }
+                else if (isInPlay)
+                {
+                    if (handler != null) {
+                        handler.clicked ();
+                    }
                 }
                 
 

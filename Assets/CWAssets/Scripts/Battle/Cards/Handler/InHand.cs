@@ -21,11 +21,11 @@ public class InHand : AbstractCardHandler
 		int temp = 0, temp2 = 0, count = 0;
 		string cardName, cardName2, newCardName, newCardName2;
 		
-	
+		card.isInHand = false;
 		player.hand.Remove (removeCard);
 		player.currentMana -= card.getManaCost();
 
-
+		card.isInPlay = true;
 		player.cardsInPlay.Add (removeCard.gameObject);
 
 	
