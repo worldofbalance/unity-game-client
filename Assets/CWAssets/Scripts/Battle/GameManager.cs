@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using UnityEngine.UI;
 namespace CW
 {
 	public class GameManager : MonoBehaviour
@@ -186,32 +186,39 @@ namespace CW
 			Debug.Log ("Returning to Lobby");
 			//protocols.sendReturnToLobby();
 		}
-
+        //new back to lobby function for button in case old one is used elsewhere
+        public void backToLobby ()
+        {
+            Debug.Log ("Returning to Lobby");
+            Game.SwitchScene("World");
+        }
 
 		//Called many times a second listening for button clicks
-		void OnGUI ()
-		{
-		
-			//End turn button, on left side of screen
-			//TODO maybe make a new graphic for the button
-			/*
-			 * Removing old end turn button
-			 * using one from canvas
-			if (GUI.Button (new Rect (0, //left
-		                       (Screen.height / 2.0f), //height
-		                       (Screen.width / 12.8f) / 100 * 150, 
-		                       (Screen.width / 12.8f) / 100 * 40), 
-		              			"End Turn")) {
-				endTurn ();
-			}
-			*/
-			if (GUI.Button (new Rect (0, //left
-			                          (Screen.height / 2.0f - 80), //height
-			                          (Screen.width / 12.8f) / 100 * 150, 
-			                          (Screen.width / 12.8f) / 100 * 40), 
-			                "Back to Lobby")) {
-				Game.SwitchScene("World");
-			}
-		}
+        //Called many times a second listening for button clicks
+        void OnGUI ()
+        {
+        
+            //End turn button, on left side of screen
+            //TODO maybe make a new graphic for the button
+            /*
+             * Removing old end turn button
+             * using one from canvas
+            if (GUI.Button (new Rect (0, //left
+                               (Screen.height / 2.0f), //height
+                               (Screen.width / 12.8f) / 100 * 150, 
+                               (Screen.width / 12.8f) / 100 * 40), 
+                                "End Turn")) {
+                endTurn ();
+            }
+            
+            if (GUI.Button (new Rect (0, //left
+                                      (Screen.height / 2.0f - 80), //height
+                                      (Screen.width / 12.8f) / 100 * 150, 
+                                      (Screen.width / 12.8f) / 100 * 40), 
+                            "Back to Lobby")) {
+                Game.SwitchScene("World");
+            }
+            */
+        }
 	}
 }

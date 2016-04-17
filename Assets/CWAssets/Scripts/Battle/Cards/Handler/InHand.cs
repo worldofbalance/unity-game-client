@@ -22,9 +22,11 @@ namespace CW
 		
 				int temp = 0, temp2 = 0, count = 0;
 				string cardName, cardName2, newCardName, newCardName2;
-		
+                
 
 				if (player.cardsInPlay.Count < 6 && IsAnimal(card)) {
+                    card.isInHand = false;
+                card.isInPlay = true;
 					player.hand.Remove (removeCard);
 					player.currentMana -= card.getManaCost ();
 					player.cardsInPlay.Add (removeCard.gameObject);
