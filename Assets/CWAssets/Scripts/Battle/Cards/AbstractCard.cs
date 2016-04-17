@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using UnityEngine.EventSystems;
 namespace CW
 {
 	public class AbstractCard : MonoBehaviour
@@ -29,7 +29,8 @@ namespace CW
 			WEATHER,
 			FOOD
 		}
-	
+        //byPedro
+        private AudioSource audioSource;
 		public AbstractCardHandler handler;
 	
 		//Initialization for a card and sets it's position to (1000, 1000, 1000)
@@ -98,7 +99,8 @@ namespace CW
 				transform.rotation = new Quaternion (180, 0, 0, 0); 
 			}
 
-
+            //by Pedro
+            audioSource = gameObject.AddComponent<AudioSource> ();
 		}
 	
 		//Returns the enum for the animal's diet. Herbivore, Omnivore, Carnivore
@@ -200,7 +202,10 @@ namespace CW
 
 			//NetworkManager.Send (CardAttackProtocol.Prepare (GameManager.matchID, attack, fieldPosition), ProcessSummonCard);		
 			target.receiveAttack (dmg);
-
+            //by Pedro
+            audioSource.clip = Resources.Load ("Sounds/attack") as AudioClip;
+            //audioSource.PlayDelayed (1);
+            audioSource.Play ();
 			if (damageback) {
 
 				clicked.receiveAttack (target.dmg);
@@ -224,6 +229,10 @@ namespace CW
 		public void attackTree (Trees tree)
 		{
 			tree.receiveAttack (dmg);
+            //by Pedro
+            audioSource.clip = Resources.Load ("Sounds/attack") as AudioClip;
+            //audioSource.PlayDelayed (1);
+            audioSource.Play ();
 			setCanAttack (false);
 			player.clickedCard = null;
 			calculateDirection (tree.transform.position, true);
