@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class MenuScript : MonoBehaviour {
 
@@ -11,15 +12,36 @@ public class MenuScript : MonoBehaviour {
 	public void OpenWhosOnline(){
 		if (menuOpen) 
 			CloseAllMenus ();
-			Debug.Log ("You Pressed WHOS ONLINE?");
-		//EventSystemManager sets this item to take priority over bckground objects (mouseEvents)
-			EventSystem.current.SetSelectedGameObject(whosOnlineMenu);
-			whosOnlineMenu.SetActive (true);
-			menuOpen = true;
+
+        //Call method to request players 
+        CurrentlyOnline online = this.GetComponent<CurrentlyOnline>();
+        Debug.Log("Currently Online instantiated");
+        online.requestOnlinePlayers(handleOnlinePlayers);
+        
+
+
+        Debug.Log ("You Pressed WHOS ONLINE?");
+	//EventSystemManager sets this item to take priority over bckground objects (mouseEvents)
+		EventSystem.current.SetSelectedGameObject(whosOnlineMenu);
+		whosOnlineMenu.SetActive (true);
+		menuOpen = true;
 
 	}
 
-	public void OpenStatus(){
+    private void handleOnlinePlayers(Dictionary<int, Player> playerList)
+    {
+        //Display the onlinePlayer Response
+
+        foreach (KeyValuePair<int, Player> entry in playerList)
+        {
+            Debug.Log(entry.ToString());
+            Debug.Log(entry.Value.name);
+        }
+
+
+    }
+
+    public void OpenStatus(){
 		if (menuOpen) 
 			CloseAllMenus ();
 			Debug.Log ("You Pressed STATUS");
