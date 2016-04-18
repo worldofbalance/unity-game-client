@@ -19,9 +19,9 @@ public class Boundary
 
 public class PlayerController : MonoBehaviour {
     Rigidbody rb;
-    private int speed = 20;
-    public int speedUpFactor;
-    private const int MaxSpeed = 30;
+    private float speed = 40;
+    public float speedUpFactor = 1.5f;
+    private const int MaxSpeed = 60;
     private float turnSpeed = 10f;
     private Vector3 turn;
     private Vector3 goUpDown;
@@ -110,14 +110,12 @@ public class PlayerController : MonoBehaviour {
     void Update(){
         currentStamina = gameController.GetStamina();
         
-        if (Input.GetKeyDown (KeyCode.Space)) {
-            speed = speed * speedUpFactor;
-            sdGameManager.SetKeyboardActions ((int)KeyCode.Space, 0); // Simple space down
-        }
 
-        if(Input.GetKey (KeyCode.Space) && isMoving() && currentStamina >=0) {
-            currentStamina = currentStamina - 0.2f;
-            gameController.SetStamina (currentStamina);
+        if(Input.GetKey (KeyCode.Space) && isMoving() && currentStamina >=0)
+            {
+                 speed = speed * speedUpFactor;
+                if (speed > MaxSpeed) { speed = MaxSpeed; }
+                gameController.SetStamina (currentStamina-.25f);
         } 
 
         if (Input.GetKeyUp (KeyCode.Space)) {
@@ -135,7 +133,7 @@ public class PlayerController : MonoBehaviour {
     // Returns true if the player is moving.
     // Otherwise returns false.
     bool isMoving(){
-        if (movementVertical != 0 || movementHorizontal != 0) {
+        if (speed>0) {
             return true;
         } else {
             return false;
