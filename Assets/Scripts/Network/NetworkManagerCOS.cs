@@ -49,5 +49,25 @@ public class NetworkManagerCOS : NetworkAbstractManager
     {
         ResponseClient args = response as ResponseClient;
         Constants.SESSION_ID_COS = args.session_id;
+
+        Send(
+            LoginProtocol.Prepare(GameState.account.username, GameState.account.password),
+            ProcessLogin
+        );
+    }
+
+    public void ProcessLogin(NetworkResponse response)
+    {
+        ResponseLogin args = response as ResponseLogin;
+
+        if (args.status == 0)
+        {
+            Debug.Log("Succesfully logged to COS server" + args.status);
+        }
+        else
+        {
+            Debug.Log("login to cos server failed, server message = " + args.status);
+            //mainObject.GetComponent<Main>().CreateMessageBox("Login Failed");
+        }
     }
 }
