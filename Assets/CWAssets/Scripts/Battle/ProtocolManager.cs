@@ -63,7 +63,7 @@ public class ProtocolManager : MonoBehaviour{
 	
 	// Let server know that you are logged into the game
 	public void setMatchStatus() {
-		Debug.Log("Setting match for playerID: " + GameManager.player1.playerID);
+		//Debug.Log("Setting match for playerID: " + GameManager.player1.playerID);
 		//Informs the Server we are ready for take off
 		CWGame.networkManager.Send (
 			MatchStatusProtocol.Prepare (GameManager.player1.playerID, GameManager.player1.playerName), 
@@ -107,6 +107,7 @@ public class ProtocolManager : MonoBehaviour{
 		                            species_name,  type, 
 		                            description), 
 				ProcessSummonCard);
+
 	}
 	
 	public void ProcessSummonCard(NetworkResponse response) {
@@ -183,7 +184,7 @@ public class ProtocolManager : MonoBehaviour{
 	public void ProcessEndTurn(NetworkResponse response){
 		ResponseEndTurn args = response as ResponseEndTurn;
 
-		Debug.Log ("End Turn Response: isActive :" + args.status);
+		//Debug.Log ("End Turn Response: isActive :" + args.status);
 	}
 
 

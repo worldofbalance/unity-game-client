@@ -122,15 +122,20 @@ namespace CW
 		}
 	
         //OnMouseDown also checks for touch events
-        void OnMouseDown ()
+        void OnMouseDown()
         {
+            
             if (!EventSystem.current.IsPointerOverGameObject())
             {
                 if (inMotion)
+                {
+
+                    
                     return;
-            
+                }    
                 //keeping original position for Zoom
-                if (!zoomed) {
+                if (!zoomed)
+                {
                     oriPosition = this.transform.position;
                     zoomed = true;  
 
@@ -139,59 +144,67 @@ namespace CW
                 newPosition = oriPosition;
             
                 //this.transform.localScale = new Vector3 (21, 2, 29); //About 1.4x size
-                
+
             
                 //if left-button clicked, set centered boolean true and move handpos
-                if (Input.GetMouseButtonDown (0) && !player.handCentered && player == player.player1 && isInHand) {
+                if (Input.GetMouseButtonDown(0) && !player.handCentered && player == player.player1 && isInHand)
+                {
                     clicked = true;
                     player.handCentered = true;
-                    player.handPos = new Vector3 (50, 400, -125);
+                    player.handPos = new Vector3(50, 400, -125);
                     player.reposition();
                     
                 }//check if it is centered then do handler action
-                else if (Input.GetMouseButtonDown (0) && player.handCentered && player == player.player1 && isInHand) {
+                else if (Input.GetMouseButtonDown(0) && player.handCentered && player == player.player1 && isInHand)
+                {
                     player.handCentered = false;
-                    player.handPos = new Vector3 (550, 10, -375);
+                    player.handPos = new Vector3(550, 10, -375);
                     player.reposition();
-                    if (handler != null) {
-                        handler.clicked ();
+                    if (handler != null)
+                    {
+                        handler.clicked();
                     }
                     
                 }
-                else if (isInPlay)
+
+                if (!isInHand)
                 {
-                    if (handler != null) {
-                        handler.clicked ();
+                    
+                    if (handler != null)
+                    {
+                        handler.clicked();
                     }
                 }
                 
 
                 //if right-click is held down
-                if (Input.GetMouseButton (1)) { 
+                if (Input.GetMouseButton(1))
+                { 
                     /*if (player.player1) { //player 1
                         newPosition.z = oriPosition.z + 200; //Move up from bottom of screen
                     } else if (!player.player1) { //player 2
                         newPosition.z = oriPosition.z - 200; //Move down from top of screen
                     }*/
                     //this.transform.position = newPosition;
-                    this.transform.localScale = new Vector3 (45, 10, 63); //3x size
-                    this.transform.position = new Vector3 (newPosition.x, 50, newPosition.z + 200);
+                    this.transform.localScale = new Vector3(45, 10, 63); //3x size
+                    this.transform.position = new Vector3(newPosition.x, 50, newPosition.z + 200);
                 }
 
                 //if right-click is up
                 //echan
-                if (Input.GetMouseButtonUp (1)) { 
+                if (Input.GetMouseButtonUp(1))
+                { 
                     /*if (player.player1) { //player 1
                         newPosition.z = oriPosition.z + 200; //Move up from bottom of screen
                     } else if (!player.player1) { //player 2
                         newPosition.z = oriPosition.z - 200; //Move down from top of screen
                     }*/
                     //this.transform.position = newPosition;
-                    this.transform.localScale = new Vector3 (15, 1, 21); //3x size
+                    this.transform.localScale = new Vector3(15, 1, 21); //3x size
                     this.transform.position = newPosition;
                 }
+            
             }
-        
         }
 
 		void OnMouseExit ()
@@ -219,7 +232,7 @@ namespace CW
 
 		public void setCanAttack (bool canAttackNow)
 		{
-            this.canAttackNow = canAttackNow && !frozen;	
+            this.canAttackNow = canAttackNow;	
 		}
         public void freeze(){
             frozen = true;
@@ -227,11 +240,12 @@ namespace CW
         }
 		public bool canAttack ()
 		{
-			return canAttackNow;	
+			return canAttackNow && !frozen;	
 		}
 	
-		public void attack (AbstractCard clicked, AbstractCard target, bool damageback)
+		public void attack(AbstractCard clicked, AbstractCard target, bool damageback)
 		{
+            Debug.Log("in abstract card attack");
 			calculateDirection (target.transform.position, true);
 
 			//NetworkManager.Send (CardAttackProtocol.Prepare (GameManager.matchID, attack, fieldPosition), ProcessSummonCard);		

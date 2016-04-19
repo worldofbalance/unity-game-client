@@ -89,7 +89,7 @@ namespace CW
             }
         }
 		
-        public void applyWeather(int card_id){
+        public void applyWeather(int card_id, bool currentPlayer){
             switch (card_id) {
                 
                 //fire
@@ -110,37 +110,37 @@ namespace CW
                 
                 //rain
             case 91:
-                givePlayerFoodCard(2);
+                if(currentPlayer)
+                    givePlayerFoodCard(2);
+                else
+                    dealDummyCard(2);
                 break;
             }
         }
 		
-        public void givePlayerFoodCard(int num){
-            for (int i = 0; i < num; i++) {
-                GameObject obj = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/Card"));
-                
+        public void givePlayerFoodCard(int num)
+        {
+            
+            for (int i = 0; i < num; i++)
+            {
+                GameObject obj = (GameObject)Instantiate(Resources.Load("Prefabs/Battle/Card"));
+        
                 //Card back for deck
                 //GameObject cardBacks = (GameObject) Instantiate(Resources.Load("Prefabs/Battle/card_old"));
-                
+        
                 //Card front for hand
                 //obj.AddComponent("AbstractCard");
-                AbstractCard script = obj.GetComponent<AbstractCard> ();
+                AbstractCard script = obj.GetComponent<AbstractCard>();
 
                 //public void init(BattlePlayer player, int cardID, int diet, int level, int attack,
                 //int health,string species_name, string type, string description
-                script.init (this, 92, "w", 1, 0, 
-                             0, "Trees and Shrubs", "Plant", "Special");
-
-                hand.Add(obj);
+                script.init(this, 92, "f", 1, 0, 
+                    0, "Trees and Shrubs", "Plant", "Special");
+                if(hand.Count<7)
+                    hand.Add(obj);
             }
-
-            if (this != GameManager.player1) {
-                dealDummyCard(num);
-            }
-
+            
             positionNewCard ();
-
-
         }
 		//Instantiates the Tree with Tree script
 		public void createTree ()

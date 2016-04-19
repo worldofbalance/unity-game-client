@@ -87,8 +87,8 @@ public class NetworkManager {
 				}
 			}
 
-			Debug.Log((status ? "Processed" : "Ignored") + " Response No. " + 
-			          args.GetID() + " [" + NetworkProtocolTable.Get(args.GetID()).ToString() + "]");
+			/*Debug.Log((status ? "Processed" : "Ignored") + " Response No. " + 
+			          args.GetID() + " [" + NetworkProtocolTable.Get(args.GetID()).ToString() + "]");*/
 		}
 	}
 
