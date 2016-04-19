@@ -17,6 +17,7 @@ namespace SD {
         private GameController gameController;
         private float time;
         private float secondsToScore = 3f;
+        private float staminaRevoverRate = 0.1f;
 
         // Use this for initialization
         void Start () {
@@ -39,7 +40,7 @@ namespace SD {
         // Runs while the player is staying in the base
         void OnTriggerStay(Collider other) {
             if (other.tag == "Player") {
-                gameController.stamina = 100;
+                gameController.stamina += staminaRevoverRate;
 
                 // After couplse seconds that is defined by timeToScore, 
                 // add unscored points to the actual score
@@ -48,7 +49,6 @@ namespace SD {
                     gameController.Score ();
                     gameController.ResetUnscored ();
                 }
-
             }
         }
     }

@@ -110,9 +110,7 @@ public class PlayerController : MonoBehaviour {
     void Update(){
         currentStamina = gameController.GetStamina();
         
-
-        if(Input.GetKey (KeyCode.Space) && isMoving() && currentStamina >=0)
-            {
+        if(Input.GetKey (KeyCode.Space) && isMoving() && currentStamina >=0){
                  speed = speed * speedUpFactor;
                 if (speed > MaxSpeed) { speed = MaxSpeed; }
                 gameController.SetStamina (currentStamina-.25f);
@@ -133,11 +131,11 @@ public class PlayerController : MonoBehaviour {
     // Returns true if the player is moving.
     // Otherwise returns false.
     bool isMoving(){
-        if (speed>0) {
-            return true;
-        } else {
+            if (rb.velocity.x != 0 || rb.velocity.y != 0) {
+                return true;
+            }
             return false;
-        }
+
     }
 }
 }
