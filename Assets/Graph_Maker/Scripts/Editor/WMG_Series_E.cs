@@ -60,9 +60,10 @@ public class WMG_Series_E : WMG_E_Util
 		ExposeProperty(fields["usePointColors"]);
 		ArrayGUIoc<Color> (series.pointColors, "Point Colors", "_pointColors");
 		ExposeProperty(fields["lineColor"]);
-		ExposeProperty(fields["UseXDistBetweenToSpace"]);
-		ExposeProperty(fields["AutoUpdateXDistBetween"]);
-		ExposeProperty(fields["xDistBetweenPoints"]);
+		if (ExposeAndReturnBool(fields["UseXDistBetweenToSpace"])) {
+			ExposeProperty(fields["ManuallySetXDistBetween"]);
+			ExposeProperty(fields["xDistBetweenPoints"]);
+		}
 		ExposeProperty(fields["extraXSpace"]);
 		ExposeProperty(fields["hidePoints"]);
 		ExposeProperty(fields["hideLines"]);

@@ -76,9 +76,14 @@ public class WMG_Pie_Graph_E : WMG_E_Util
 		ExposeProperty(fields["swapColorsDuringSort"]);
 		ExposeProperty(fields["sliceLabelType"]);
 		ExposeProperty(fields["explodeLength"]);
-		ExposeProperty(fields["explodeSymmetrical"]);
-		ExposeProperty(fields["doughnutPercentage"]);
+		ExposeProperty(fields["explodeSymmetrical"], "Doesn't work with interactivity");
+		if (ExposeAndReturnBool(fields["useDoughnut"])) {
+			ExposeProperty(fields["doughnutPercentage"]);
+		}
 		ExposeProperty(fields["hideZeroValueLegendEntry"]);
+		if (ExposeAndReturnBool(fields["interactivityEnabled"], "Replaces raycaster with custom raycaster. Doesn't work with Explode Symmetrical")) {
+			graph.explodeSymmetrical = false;
+		}
 	}
 
 	void DrawOtherSlice() {

@@ -2,12 +2,31 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class MenuScript : MonoBehaviour {
 
 	public bool menuOpen = false;
 	public GameObject whosOnlineMenu;
 	public GameObject statusContainer;
+	public Text[] playerArray;
+	public bool statusOpen;
+	public Text player1box;
+	private string name;
+	private string score;
+
+	public ShopPopUP shopPopUp;
+
+
+	void awake(){
+		statusOpen = false;
+		playerArray = new Text[18];
+		//shopPopUp.UpdateTextFields ();
+	}
+
+	void update(){
+		Debug.Log ("IN MENU SCRIPT");
+	}
 
 	public void OpenWhosOnline(){
 		if (menuOpen) 
@@ -31,13 +50,14 @@ public class MenuScript : MonoBehaviour {
     private void handleOnlinePlayers(Dictionary<int, Player> playerList)
     {
         //Display the onlinePlayer Response
-
+		int i =0;
         foreach (KeyValuePair<int, Player> entry in playerList)
         {
-            Debug.Log(entry.ToString());
-            Debug.Log(entry.Value.name);
+			score = entry.Value.xp.ToString();
+            name = entry.Value.name;
+			playerArray [i].text = name + "            " +score;
+			i++;
         }
-
 
     }
 
@@ -48,7 +68,7 @@ public class MenuScript : MonoBehaviour {
 			//Camera.main.GetComponent<MapCamera>().Move(GameState.player.GetID());
 			statusContainer.SetActive (true);
 			menuOpen = true;
-
+			statusOpen = true;
 	}
 
 	public void OpenMiniGames(){
@@ -96,6 +116,12 @@ public class MenuScript : MonoBehaviour {
 		menuOpen = false;
 		whosOnlineMenu.SetActive (false);
 		statusContainer.SetActive(false);
+		statusOpen = false;
+	}
+
+	public bool checkIfOpen(){
+		Debug.Log ("STATUS WINDOW OPEN: "+statusOpen);
+		return statusOpen;
 	}
 
 }
