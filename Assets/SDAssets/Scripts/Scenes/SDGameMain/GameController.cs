@@ -33,9 +33,14 @@ namespace SD {
         public Boundary boundary;
         public Rigidbody player;
         public Rigidbody opponent;
-
+        public Rigidbody playerBase;
+        public Rigidbody opponentBase;
         private Vector3 playerInitialPosition = new Vector3(0,0,0);
         private Quaternion playerInitialRotation = Quaternion.Euler(0,90,0);
+        private Vector3 playerBaseInitialPosition = new Vector3(-125,0,0);
+        private Quaternion playerBaseInitialRotation = Quaternion.Euler(0,0,0);
+        private Vector3 opponentBaseInitialPosition = new Vector3(125,0,0);
+        private Quaternion opponentBaseInitialRotation = Quaternion.Euler(0,0,0);
 
         private static GameController gameController;
         private static GameManager sdGameManager;
@@ -51,6 +56,8 @@ namespace SD {
         // Also spawns numbers of prey at random positions.
         void Start () {
             Rigidbody playerClone = (Rigidbody)Instantiate (player, playerInitialPosition, playerInitialRotation);
+            Rigidbody playerBaseClone = (Rigidbody)Instantiate (playerBase, playerBaseInitialPosition, playerBaseInitialRotation);
+            Rigidbody opponentBaseClone = (Rigidbody)Instantiate (opponentBase, opponentBaseInitialPosition, opponentBaseInitialRotation);
             score = 0;
             unscoredPoint = 0; 
             UpdateScore ();
