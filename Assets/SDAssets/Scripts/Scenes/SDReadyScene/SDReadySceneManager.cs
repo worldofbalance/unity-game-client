@@ -21,9 +21,15 @@ namespace SD {
             sceneManager = this;
             cManager = SDConnectionManager.getInstance ();
             mQueue = SDMessageQueue.getInstance ();
+            SDReadySceneUI.getInstance ().getWaitingText ().text = "";
+
             if (cManager && mQueue) {
                 if (!mQueue.callbackList.ContainsKey(Constants.SMSG_SDSTART_GAME))
                     mQueue.AddCallback (Constants.SMSG_SDSTART_GAME, ResponseSDStartGame);
+                if (mQueue.callbackList.ContainsKey(Constants.SMSG_POSITION))  // Remove when we create a new protocol.
+                    mQueue.RemoveCallback (Constants.SMSG_POSITION);
+                if (!mQueue.callbackList.ContainsKey (Constants.SMSG_POSITION))
+                    mQueue.AddCallback (Constants.SMSG_POSITION, ResponseSDStartSync);
             } else {
                 Debug.LogWarning ("Could not obtain a connection to Sea Divided Server. Falling back to offline mode.");
             }
@@ -46,11 +52,21 @@ namespace SD {
             ResponseSDStartGameEventArgs args = eventArgs as ResponseSDStartGameEventArgs;
 
             if (args.status == 0) {
-                SceneManager.LoadScene ("SDGameMain");
+                // Send a request to the opponent indicating that this client is ready to play.
+                RequestSDPosition request = new RequestSDPosition();
+                request.Send (0.ToString (), 0.ToString ());
+                cManager.Send (request);
+                SDReadySceneUI.getInstance ().getWaitingText ().text = "Waiting for opponent to respond...";
+                Debug.Log ("Waiting for opponent to respond..");
             } else {
                 Debug.Log ("Encountered an error in starting the game.");
             }
         }
 
+        public void ResponseSDStartSync(ExtendedEventArgs eventArgs) {
+            Debug.Log ("The opponent is ready to play, loading the game scene.");
+            SDReadySceneUI.getInstance ().getWaitingText ().text = "Starting game...";
+            SceneManager.LoadScene ("SDGameMain");
+        }
     }
 }
