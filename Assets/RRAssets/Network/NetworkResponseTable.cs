@@ -50,5 +50,4 @@ public class NetworkResponseTable {
 		
 		return response;
 	}
-}
-}
+}}
