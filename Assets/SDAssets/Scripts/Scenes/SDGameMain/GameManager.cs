@@ -30,6 +30,8 @@ namespace SD {
             if (cManager && mQueue) {
                 if (!mQueue.callbackList.ContainsKey(Constants.SMSG_SDEND_GAME))
                     mQueue.AddCallback (Constants.SMSG_SDEND_GAME, ResponseSDEndGame);
+                if (mQueue.callbackList.ContainsKey (Constants.SMSG_POSITION))
+                    mQueue.RemoveCallback (Constants.SMSG_POSITION);
                 if (!mQueue.callbackList.ContainsKey (Constants.SMSG_POSITION))
                     mQueue.AddCallback (Constants.SMSG_POSITION, ResponseSDPosition);
                 if (!mQueue.callbackList.ContainsKey (Constants.SMSG_KEYBOARD))

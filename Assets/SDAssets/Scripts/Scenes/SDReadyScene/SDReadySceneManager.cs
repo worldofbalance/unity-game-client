@@ -8,8 +8,30 @@ namespace SD {
         private SDConnectionManager cManager;
         private SDMessageQueue mQueue;
         private static SDReadySceneManager sceneManager;
-
-        public void SDReadySceneMananger() {
+        private bool _isPlayerReady, _isOpponentReady;
+        private bool isPlayerReady { 
+            get {
+                return this._isPlayerReady;
+            }
+            set {
+                this._isPlayerReady = value;
+                if (this._isPlayerReady && this.isOpponentReady) {
+                    Debug.Log ("Loading the Game Scene..");
+                    SceneManager.LoadScene ("SDGameMain");
+                }
+            }
+        }
+        private bool isOpponentReady {
+            get {
+                return this._isOpponentReady;
+            }
+            set {
+                this._isOpponentReady = value;
+                if (this._isPlayerReady && this._isOpponentReady) {
+                    Debug.Log ("Loading the Game Scene..");
+                    SceneManager.LoadScene ("SDGameMain");
+                }
+            }
         }
 
         public static SDReadySceneManager getInstance() {
@@ -21,11 +43,15 @@ namespace SD {
             sceneManager = this;
             cManager = SDConnectionManager.getInstance ();
             mQueue = SDMessageQueue.getInstance ();
+            isPlayerReady = false;
+            isOpponentReady = false;
 
             if (cManager && mQueue) {
                 if (!mQueue.callbackList.ContainsKey(Constants.SMSG_SDSTART_GAME))
                     mQueue.AddCallback (Constants.SMSG_SDSTART_GAME, ResponseSDStartGame);
                 if (mQueue.callbackList.ContainsKey(Constants.SMSG_POSITION))  // Remove when we create a new protocol.
+                    mQueue.RemoveCallback (Constants.SMSG_POSITION);
+                if (mQueue.callbackList.ContainsKey (Constants.SMSG_POSITION))
                     mQueue.RemoveCallback (Constants.SMSG_POSITION);
                 if (!mQueue.callbackList.ContainsKey (Constants.SMSG_POSITION))
                     mQueue.AddCallback (Constants.SMSG_POSITION, ResponseSDStartSync);
@@ -39,6 +65,7 @@ namespace SD {
                 RequestSDStartGame request = new RequestSDStartGame ();
                 request.Send (Constants.USER_ID);
                 cManager.Send (request);
+                isPlayerReady = true;
             } else {
                 Debug.LogWarning ("Starting game without server component.");
                 SceneManager.LoadScene ("SDGameMain");
@@ -63,6 +90,14 @@ namespace SD {
 
         public void ResponseSDStartSync(ExtendedEventArgs eventArgs) {
             Debug.Log ("The opponent is ready to play, loading the game scene.");
+            this.isOpponentReady = true;
+            //StartCoroutine (WaitToStartGame());
+        }
+
+        public IEnumerator WaitToStartGame() {
+            while (!(isPlayerReady && isOpponentReady)) {
+                yield return new WaitForSeconds (0.001f); 
+            }
             SceneManager.LoadScene ("SDGameMain");
         }
     }
