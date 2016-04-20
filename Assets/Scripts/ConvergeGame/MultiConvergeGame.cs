@@ -31,6 +31,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private int bufferBorder = 10;
 	private float leftGraph = 10;
 	private float topGraph = 45;    // DH change. Was 75
+    private int sliderBorder = 20;  // DH change. Gives extra for sliders
 	private float OppViewWidth;    // DH change. Width of opponent view area
 	private Rect windowRect;
     private Rect windowRectConfig;
@@ -169,6 +170,8 @@ public class MultiConvergeGame : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+        // string t1 = "abc";
+        // Debug.Log ("indexOf if value is not found: " + t1.IndexOf (","));
 		// DH change
 		// Get room that player is in
 		var room = RoomManager.getInstance().getRoom(matchID);
@@ -664,8 +667,18 @@ public class MultiConvergeGame : MonoBehaviour
 			int paramCnt = currAttempt.seriesParams.Count;
 			int row = 0;
 			int col = 0;
+            float highRange = 0f;
+            float lowRange = 0f;
+            int startRange = 0;
+            int spanRange = 0;
+
 			float entryHeight = height - heightGraph - 30 * 3 - bufferBorder * 2;
 			GUI.BeginGroup (new Rect (bufferBorder, topGraph + heightGraph + bufferBorder, width, entryHeight));
+
+            GUIStyle styleMR = new GUIStyle(GUI.skin.label);
+            styleMR.alignment = TextAnchor.UpperLeft;
+            styleMR.font = font;
+            styleMR.fontSize = 12;
 			//use seriesNodes to force order
 			foreach (int nodeId in manager.seriesNodes) {
 				//look for all possible parameter types for each node
@@ -696,7 +709,7 @@ public class MultiConvergeGame : MonoBehaviour
 				
 					Rect labelRect;
 					//draw name, paramId
-					labelRect = new Rect (col * (350 + bufferBorder), row * 35, 250, 30);
+					labelRect = new Rect (col * (350 + bufferBorder), row * 35 + sliderBorder, 250, 30);
 					if (labelRect.Contains (Event.current.mousePosition)) {
 						manager.mouseOverLabels.Add (param.name);
 						manager.selected = param.name;
@@ -709,10 +722,10 @@ public class MultiConvergeGame : MonoBehaviour
 					if (GUI.Button (labelRect, "", GUIStyle.none)) {
 						foodWeb.selected = SpeciesTable.GetSpeciesName (param.name);
 						foodWeb.SetActive (true, foodWeb.selected);
-					}
-				
+					}				
 					//draw slider with underlying colored bar showing original value
 					Rect sliderRect = new Rect (labelRect.x + 250 + bufferBorder, labelRect.y + 5, 100, 20);
+
 					if (sliderRect.Contains (Event.current.mousePosition)) {
 						manager.mouseOverLabels.Add (param.name);
 						manager.selected = param.name;
@@ -726,6 +739,27 @@ public class MultiConvergeGame : MonoBehaviour
 					GUI.DrawTexture (new Rect (sliderRect.x, sliderRect.y, origValWidth, 10), //sliderRect.height),
 					                 Functions.CreateTexture2D (slTexture));
 //					GUI.color = savedColor;
+
+                    // DH change
+                    // Add slider markers. First read slider range values
+                    highRange = param.highRange;
+                    lowRange = param.lowRange;
+                    if (param.markerEnabled && ((highRange != -1) || (lowRange != -1))) {
+                        if (lowRange == -1) {
+                            startRange = 0;
+                            lowRange = min;
+                        } else {
+                            startRange = (int) (100.0f * (lowRange - min) / (max - min));
+                        }
+                        if (highRange == -1) {
+                            spanRange = 100 - startRange;
+                        } else {
+                            spanRange = (int)(100.0f * (highRange - lowRange) / (max - min));
+                            spanRange = spanRange > 9 ? spanRange : 10;
+                        }                      
+                        GUI.Label (new Rect (labelRect.x + 250 + bufferBorder + startRange, row * 35 + sliderBorder - 20 + 5, spanRange, 20), 
+                            "******************", styleMR);
+                    }
 					
 					//draw slider for parameter value manipulation
 					GUI.backgroundColor = manager.seriesColors [param.name];
@@ -738,8 +772,8 @@ public class MultiConvergeGame : MonoBehaviour
 
 					//show normalized value for parameter
 					if (param.name.Equals (manager.selected)) {
-						string valLabel = String.Format (
-							"{0}", 
+                        string valLabel = String.Format (
+                            "{0}",
 							ConvergeParam.NormParam (param.value, min, max));
 						if (param.value != param.origVal) {
 							valLabel = valLabel + String.Format (
@@ -971,7 +1005,9 @@ public class MultiConvergeGame : MonoBehaviour
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
 			    attempt.config,
-			    null
+			    null,
+                ecosystemList[ecosystem_idx].sliderRanges,
+                ecosystemList[ecosystem_idx].markerEnabled
 			    //manager
 			);
 
@@ -1127,8 +1163,10 @@ public class MultiConvergeGame : MonoBehaviour
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
 			    ecosystemList [ecosystem_idx].config_default,
-			    ecosystemList [ecosystem_idx].csv_default_string
+			    ecosystemList [ecosystem_idx].csv_default_string,
 			    //manager
+                ecosystemList [ecosystem_idx].sliderRanges,
+                ecosystemList [ecosystem_idx].markerEnabled
 			);
 			//otherwise, base next attempt info on immediate prior attempt
 		} else {
@@ -1140,8 +1178,10 @@ public class MultiConvergeGame : MonoBehaviour
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
 			    attemptList [attemptCount - 1].config,
-			    attemptList [attemptCount - 1].csv_string
+			    attemptList [attemptCount - 1].csv_string,
 			    //manager
+                ecosystemList[ecosystem_idx].sliderRanges,
+                ecosystemList[ecosystem_idx].markerEnabled
 			);
 		}
 
@@ -1168,8 +1208,10 @@ public class MultiConvergeGame : MonoBehaviour
 		        allowHintsMaster,
 		        hint_id,
 		        ecosystemList [ecosystem_idx].config_default,
-			    ecosystemList [ecosystem_idx].csv_default_string
+			    ecosystemList [ecosystem_idx].csv_default_string,
 			    //manager
+                ecosystemList[ecosystem_idx].sliderRanges,
+                ecosystemList[ecosystem_idx].markerEnabled
 			);
 		} else {
 			currAttempt = new ConvergeAttempt (
@@ -1179,8 +1221,10 @@ public class MultiConvergeGame : MonoBehaviour
 		        allowHintsMaster,
 			    hint_id,
 			    attemptList [attemptIdx].config,
-			    attemptList [attemptIdx].csv_string
+			    attemptList [attemptIdx].csv_string,
 			    //manager
+                ecosystemList[ecosystem_idx].sliderRanges,
+                ecosystemList[ecosystem_idx].markerEnabled
 			);
 		}
 
@@ -1218,9 +1262,16 @@ public class MultiConvergeGame : MonoBehaviour
 		ResponseConvergeEcosystems response = new ResponseConvergeEcosystems ();
 		
 		string filename = "converge-ecosystems.txt";
+        string filenameR = "converge-ecosystems-sliders.txt";
 		ecosystemList = new List<ConvergeEcosystem> ();
 		
 		
+        if (!File.Exists (filenameR)) {
+            Debug.Log(filenameR + " not found.");
+        }
+
+        int ecosystemCnt;
+
 		if (!File.Exists (filename)) {
 			Debug.LogError (filename + " not found.");
 		} else {
@@ -1228,7 +1279,7 @@ public class MultiConvergeGame : MonoBehaviour
 				using (BinaryReader br = new BinaryReader(fs, Encoding.UTF8)) {
 					int size = br.ReadInt16 ();
 					int responseId = br.ReadInt16 ();
-					int ecosystemCnt = br.ReadInt16 ();
+					ecosystemCnt = br.ReadInt16 ();
 
 					for (int i = 0; i < ecosystemCnt; i++) {
 						int ecosystem_id = br.ReadInt32 ();
@@ -1245,6 +1296,8 @@ public class MultiConvergeGame : MonoBehaviour
 						ecosystem.csv_default_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
 						fldSize = br.ReadInt16 ();
 						ecosystem.csv_target_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                        ecosystem.sliderRanges = "";
+                        ecosystem.markerEnabled = false;
 						
 						ecosystemList.Add (ecosystem);
 					}
@@ -1258,6 +1311,28 @@ public class MultiConvergeGame : MonoBehaviour
 					
 				}
 			}
+            String line;
+            int rIndex = 0;
+
+            try {
+                using (StreamReader sr = new StreamReader(filenameR)) {
+                    for (rIndex = 0; rIndex < ecosystemCnt; rIndex++) {
+                        line = sr.ReadLine();
+                        Debug.Log("slider ranges, eco # " + rIndex + " is " + line);
+                        ecosystemList[rIndex].sliderRanges = line;
+                        if (line.Length > 0) {
+                            ecosystemList[rIndex].markerEnabled = true;
+                            Debug.Log("markerEnabled = true");
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Exception exit of reading slider range file: " + filenameR );
+                Debug.Log("ecosystemCnt/rIndex: " + ecosystemCnt + " " + rIndex);
+                Debug.Log(e.Message);
+            }
 		}
 	}
 
