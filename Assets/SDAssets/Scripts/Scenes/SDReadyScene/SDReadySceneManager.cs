@@ -21,7 +21,6 @@ namespace SD {
             sceneManager = this;
             cManager = SDConnectionManager.getInstance ();
             mQueue = SDMessageQueue.getInstance ();
-            SDReadySceneUI.getInstance ().getWaitingText ().text = "";
 
             if (cManager && mQueue) {
                 if (!mQueue.callbackList.ContainsKey(Constants.SMSG_SDSTART_GAME))
@@ -56,7 +55,6 @@ namespace SD {
                 RequestSDPosition request = new RequestSDPosition();
                 request.Send (0.ToString (), 0.ToString ());
                 cManager.Send (request);
-                SDReadySceneUI.getInstance ().getWaitingText ().text = "Waiting for opponent to respond...";
                 Debug.Log ("Waiting for opponent to respond..");
             } else {
                 Debug.Log ("Encountered an error in starting the game.");
@@ -65,7 +63,6 @@ namespace SD {
 
         public void ResponseSDStartSync(ExtendedEventArgs eventArgs) {
             Debug.Log ("The opponent is ready to play, loading the game scene.");
-            SDReadySceneUI.getInstance ().getWaitingText ().text = "Starting game...";
             SceneManager.LoadScene ("SDGameMain");
         }
     }
