@@ -1,7 +1,5 @@
 ﻿/**
-	Constants defining the scaling factor for MoveObjects within Don't Eat Me
-	NOTE:	This may be later modified once data may be parsed from the database via the server.
-			For now, this serves as a temporary solution.
+	Static constants and methods for defining and returning species attributes for the Don't Eat Me minigame.
 
 	@author: Jeremy Erickson
 */
