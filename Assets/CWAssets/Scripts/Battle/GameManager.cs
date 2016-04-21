@@ -26,7 +26,7 @@ namespace CW
 	
 		void Start ()
 		{
-            Debug.Log("GameManager CWAssets start");
+            //Debug.Log("GameManager CWAssets start");
 			// Needed to to fade into scene
 			Game.StartEnterTransition ();
 			showLoading = 300; //5 seconds
@@ -123,7 +123,7 @@ namespace CW
 	
 			// If two_player, only switch turns if player1 isActive
 			if (!Constants.SINGLE_PLAYER && player1.isActive) {
-				Debug.Log ("End Turn");
+				//Debug.Log ("End Turn");
 				protocols.sendEndTurn (player1.playerID);
 				//Player's endturn refreshes the player's minions so they can attack next turn.
 				player1.endTurn ();

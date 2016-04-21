@@ -133,7 +133,7 @@ public class Tests : MonoBehaviour {
 	public void ProcessEndTurn(NetworkResponse response){
 		ResponseEndTurn args = response as ResponseEndTurn;
 		bool activeResponse = false;
-		Debug.Log ("End Turn Response: isActive :" + activeResponse);
+		//Debug.Log ("End Turn Response: isActive :" + activeResponse);
 	}
 
 

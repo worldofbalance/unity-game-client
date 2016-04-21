@@ -13,7 +13,7 @@ namespace CW
 		override public void affect ()
 		{
 
-
+            //DebugConsole.Log("affect in hand, diet="+card.diet+card.dietChar);
 
 			//set Max card in field.
 			if (player.isActive && player.currentMana >= card.getManaCost () && player == GameManager.player1) {
@@ -26,7 +26,7 @@ namespace CW
 
 				if (player.cardsInPlay.Count < 6 && IsAnimal(card)) {
                     card.isInHand = false;
-                card.isInPlay = true;
+                    card.isInPlay = true;
 					player.hand.Remove (removeCard);
 					player.currentMana -= card.getManaCost ();
 					player.cardsInPlay.Add (removeCard.gameObject);
@@ -38,19 +38,23 @@ namespace CW
 					card.transform.position = position;
 
 					card.calculateDirection (destination, false);
-
+                    
 					GameManager.player1.getProtocolManager ().sendSummon (player.playerID, card.cardID, card.dietChar, 
 			                                        card.level, card.dmg, card.maxHP, 
 			                                        card.name, card.type, 
 			                                        card.description);
-                }else if(card.diet == AbstractCard.DIET.WEATHER){
+                }
+                else if(card.diet == AbstractCard.DIET.WEATHER)
+                {
                     player.hand.Remove (removeCard);
                     GameObject.Destroy(removeCard);
                     player.currentMana -= card.getManaCost ();
-                    player.applyWeather(card.cardID);
-                    GameManager.player2.applyWeather(card.cardID);
+                    player.applyWeather(card.cardID, true);
+                    GameManager.player2.applyWeather(card.cardID,true);
                     player.getProtocolManager().sendWeatherCard(player.playerID, card.cardID);
-                }else if(card.diet == AbstractCard.DIET.FOOD){
+                }
+                else if(card.diet == AbstractCard.DIET.FOOD){
+                    //DebugConsole.Log("food card in hand");
 					player.hand.Remove (removeCard);
 					player.currentMana -= card.getManaCost ();
 					startFoodCard();

@@ -41,6 +41,28 @@ public class NetworkManager {
 
 		owner.StartCoroutine(Poll(Constants.HEARTBEAT_RATE));
 	}
+
+    // The NetworkManager needs a MonoBehaviour instance to start co-routines on
+    public NetworkManager(MonoBehaviour owner, ConnectionManager cManager, bool isHeartbeatRequired) {
+        this.owner = owner;
+        this.cManager = cManager;
+        this.requests = new Queue<NetworkRequest>();
+        this.callbackList = new Dictionary<int, Queue<Callback>>();
+        this.listenList = new Dictionary<int, List<Callback>>();
+        
+        NetworkProtocolTable.Init();
+
+        Listen (NetworkCode.HEARTBEAT, ProcessHeartbeat);
+
+        if (cManager.Connect() == ConnectionManager.SUCCESS) {
+            Send(
+                ClientProtocol.Prepare(Constants.CLIENT_VERSION, Constants.SESSION_ID),
+                ProcessClient
+            );
+        }
+        if(isHeartbeatRequired)
+            owner.StartCoroutine(Poll(Constants.HEARTBEAT_RATE));
+    }
 	
 	// Update should be called within a Game's Update method
 	public void Update () {
@@ -87,8 +109,8 @@ public class NetworkManager {
 				}
 			}
 
-			Debug.Log((status ? "Processed" : "Ignored") + " Response No. " + 
-			          args.GetID() + " [" + NetworkProtocolTable.Get(args.GetID()).ToString() + "]");
+			/*Debug.Log((status ? "Processed" : "Ignored") + " Response No. " + 
+			          args.GetID() + " [" + NetworkProtocolTable.Get(args.GetID()).ToString() + "]");*/
 		}
 	}
 
