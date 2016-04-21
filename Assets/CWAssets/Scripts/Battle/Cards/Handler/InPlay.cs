@@ -28,9 +28,10 @@ namespace CW
 			} 
             else if (currentPlayer.clickedCard != null) 
             {
-                
+                //DebugConsole.Log("in affect of inplay, clicked card not null, diet="+currentPlayer.clickedCard.diet);
 				if (currentPlayer.clickedCard.diet == AbstractCard.DIET.FOOD) 
                 {
+                   
 					currentPlayer.targetCard = card;
 
 					player.applyFoodBuff(currentPlayer.targetCard, 1, 1);

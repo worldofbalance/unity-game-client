@@ -14,7 +14,7 @@ public class CWGame : MonoBehaviour {
 	void Awake() {
 		networkManager = new NetworkManager(
 			this,
-			new ConnectionManager(Config.REMOTE_HOST, CW.Constants.REMOTE_PORT)
+			new ConnectionManager(Config.REMOTE_HOST, CW.Constants.REMOTE_PORT),false
 		);
 
 		DontDestroyOnLoad(gameObject);

@@ -124,9 +124,9 @@ namespace CW
         //OnMouseDown also checks for touch events
         void OnMouseDown()
         {
-            
             if (!EventSystem.current.IsPointerOverGameObject())
             {
+                //DebugConsole.Log("on mouse down");
                 if (inMotion)
                 {
 
@@ -149,6 +149,7 @@ namespace CW
                 //if left-button clicked, set centered boolean true and move handpos
                 if (Input.GetMouseButtonDown(0) && !player.handCentered && player == player.player1 && isInHand)
                 {
+                    //DebugConsole.Log("1st");
                     clicked = true;
                     player.handCentered = true;
                     player.handPos = new Vector3(50, 400, -125);
@@ -157,6 +158,7 @@ namespace CW
                 }//check if it is centered then do handler action
                 else if (Input.GetMouseButtonDown(0) && player.handCentered && player == player.player1 && isInHand)
                 {
+                    //DebugConsole.Log("2nd");
                     player.handCentered = false;
                     player.handPos = new Vector3(550, 10, -375);
                     player.reposition();
@@ -164,12 +166,15 @@ namespace CW
                     {
                         handler.clicked();
                     }
-                    
+                    else
+                    {
+                        //DebugConsole.Log("handler is null");
+                    }
                 }
 
-                if (!isInHand)
+                else if (!isInHand)
                 {
-                    
+                    //DebugConsole.Log("last");
                     if (handler != null)
                     {
                         handler.clicked();
@@ -245,7 +250,7 @@ namespace CW
 	
 		public void attack(AbstractCard clicked, AbstractCard target, bool damageback)
 		{
-            Debug.Log("in abstract card attack");
+            
 			calculateDirection (target.transform.position, true);
 
 			//NetworkManager.Send (CardAttackProtocol.Prepare (GameManager.matchID, attack, fieldPosition), ProcessSummonCard);		
@@ -311,7 +316,7 @@ namespace CW
 			dmgTimer = 120;
 			transform.Find ("DamageText").GetComponent<TextMesh> ().text = "-" + dmg;
 			hp -= dmg;
-			Debug.Log ("Was dealt " + dmg + " damage and is now at " + hp + " hp");
+			//Debug.Log ("Was dealt " + dmg + " damage and is now at " + hp + " hp");
 		
 			if (hp <= 0) {
 				Debug.Log ("DEAD");	

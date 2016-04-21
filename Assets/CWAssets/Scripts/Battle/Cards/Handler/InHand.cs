@@ -13,7 +13,7 @@ namespace CW
 		override public void affect ()
 		{
 
-
+            //DebugConsole.Log("affect in hand, diet="+card.diet+card.dietChar);
 
 			//set Max card in field.
 			if (player.isActive && player.currentMana >= card.getManaCost () && player == GameManager.player1) {
@@ -54,6 +54,7 @@ namespace CW
                     player.getProtocolManager().sendWeatherCard(player.playerID, card.cardID);
                 }
                 else if(card.diet == AbstractCard.DIET.FOOD){
+                    //DebugConsole.Log("food card in hand");
 					player.hand.Remove (removeCard);
 					player.currentMana -= card.getManaCost ();
 					startFoodCard();

@@ -15,7 +15,7 @@ public class InvalidMatchAction : TurnAction {
 	}
 	
 	override public void execute(){
-		Debug.Log ("Executing EndTurnA");
+		Debug.Log ("Executing EndTurnA - invalid match action");
 		// This means the opponents turn as ended so start player1's turn
 		GameManager.manager.returnToLobby();
 	}

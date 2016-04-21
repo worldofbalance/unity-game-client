@@ -136,7 +136,8 @@ namespace CW
                 //int health,string species_name, string type, string description
                 script.init(this, 92, "f", 1, 0, 
                     0, "Trees and Shrubs", "Plant", "Special");
-                if(hand.Count<7)
+                script.handler = new InHand (script, this);
+                //if(hand.Count<7)
                     hand.Add(obj);
             }
             
@@ -185,6 +186,7 @@ namespace CW
         }
 		
 		public void applyFoodBuff(AbstractCard target, int deltaAttack, int deltaHealth){
+            //DebugConsole.Log("in applyfood buff");
 			target.applyFood (target, deltaAttack, deltaHealth);
 		}
 		
@@ -429,7 +431,7 @@ namespace CW
 		public void endTurn ()
 		{
 			showTurn = 120;
-			Debug.Log ("endTurn called");
+			//Debug.Log ("endTurn called");
 			for (int i = 0; i < cardsInPlay.Count; i++) {
 				//Gets the AbstractCard component
 				AbstractCard cardInPlay = ((GameObject)cardsInPlay [i]).GetComponent<AbstractCard> ();
