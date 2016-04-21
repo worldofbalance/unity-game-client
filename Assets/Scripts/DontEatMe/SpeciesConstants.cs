@@ -8,6 +8,23 @@ public class SpeciesConstants
 	/* PRIVATE CONSTANTS */
 	// Changes to these will populate the necessary changes in all public constants and methods
 
+    // Reference for all species ID values (consistent with database)
+    private enum SPECIES_ID
+    {        
+        AfricanWildDog      = 74,
+        BatEaredFox         = 4,
+        BlackMamba          = 6,
+        Buffalo             = 7,
+        BushHyrax           = 48,
+        CrestedPorcupine    = 72,
+        KoriBuskard         = 65,
+        Leopard             = 80,
+        Lion                = 86,
+        Oribi               = 73,
+        ServalCat           = 69,
+        TreeMouse           = 31
+    };
+
 	// Defines a prey
 	private struct Prey
 	{
@@ -15,11 +32,15 @@ public class SpeciesConstants
 		public int speciesID;
 		public int health;
 
-		public Prey (string n, int id, int h)
+        // public int[] preyIDLIst; // TODO: create prey list --> includes plants, but might include other prey (TBD)
+        public int[] predatorIDList;
+
+		public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList)
 		{
-			name = n;
-			speciesID = id;
-			health = h;
+			name = _name;
+			speciesID = _speciesID;
+			health = _health;
+            predatorIDList = _predatorIDList;
 		}
 	};
 
@@ -31,33 +52,167 @@ public class SpeciesConstants
 		public int hunger;
 		public int voracity;
 
-		public Predator (string n, int id, int h, int v)
+        public int[] preyIDList;
+        // public int[] predatorIDLIst; // TODO: create predator list --> includes larger predators (TBD)
+
+		public Predator (string _name, int _speciesID, int _hunger, int _voracity, int[] _preyIDList)
 		{
-			name = n;
-			speciesID = id;
-			hunger = h;
-			voracity = v;
+			name = _name;
+			speciesID = _speciesID;
+			hunger = _hunger;
+			voracity = _voracity;
+            preyIDList = _preyIDList;
 		}
 	};
 
 	// All available prey
 	private static Prey[] PREY = {
-		new Prey("Buffalo", 7, 100),
-		new Prey("TreeMouse", 31, 5),
-		new Prey("BushHyrax", 48, 15),
-		new Prey("KoriBuskard", 65, 20),
-		new Prey("CrestedPorcupine", 72, 25),
-		new Prey("Oribi", 73, 50)
+		new Prey
+        (
+            "Buffalo",                          // Name
+            (int)SPECIES_ID.Buffalo,            // Species ID
+            100,                                // Health
+            new int[]                           // Predators
+            {
+                (int)SPECIES_ID.Lion
+            }
+        ),
+		new Prey
+        (
+            "TreeMouse",                        // Name
+            (int)SPECIES_ID.TreeMouse,          // Species ID
+            5,                                  // Health
+            new int[]                           // Predators
+            {
+                (int)SPECIES_ID.BatEaredFox,
+                (int)SPECIES_ID.BlackMamba,
+                (int)SPECIES_ID.ServalCat,
+                (int)SPECIES_ID.AfricanWildDog,
+                (int)SPECIES_ID.Leopard
+            }
+        ),
+		new Prey
+        (
+            "BushHyrax",                        // Name
+            (int)SPECIES_ID.BushHyrax,          // Species ID
+            15,                                 // Health
+            new int[]                           // Predators
+            {
+                (int)SPECIES_ID.ServalCat,
+                (int)SPECIES_ID.Leopard
+            }
+        ),
+        new Prey
+        (
+            "KoriBuskard",                      // Name
+            (int)SPECIES_ID.KoriBuskard,        // Species ID
+            20,                                 // Health
+            new int[]                           // Predators
+            {
+                (int)SPECIES_ID.Leopard,
+                (int)SPECIES_ID.Lion
+            }
+        ),
+        new Prey
+        (
+            "CrestedPorcupine",                 // Name
+            (int)SPECIES_ID.CrestedPorcupine,   // Species ID
+            25,                                 // Health
+            new int[]                           // Predators
+            {
+                (int)SPECIES_ID.AfricanWildDog,
+                (int)SPECIES_ID.Leopard
+            }
+        ),
+        new Prey
+        (
+            "Oribi",                            // Name
+            (int)SPECIES_ID.Oribi,              // Species ID
+            50,                                 // Health
+            new int[]                           // Predators
+            {
+                (int)SPECIES_ID.AfricanWildDog,
+                (int)SPECIES_ID.Leopard,
+                (int)SPECIES_ID.Lion
+            }
+        )
 	}; 
 
 	// All available predators
 	private static Predator[] PREDATORS = {
-		new Predator("BatEaredFox", 4, 10, 10),
-		new Predator("BlackMamba", 6, 20, 5),
-		new Predator("ServalCat", 69, 15, 10),
-		new Predator("AfricanWildDog", 74, 55, 50),
-		new Predator("Leopard", 80, 40, 30),
-		new Predator("Lion", 86, 100, 40)
+        new Predator
+        (
+            "BatEaredFox",                      // Name
+            (int)SPECIES_ID.BatEaredFox,        // Species ID
+            10,                                 // Hunger
+            10,                                 // Voracity
+            new int[]                           // Prey
+            {
+                (int)SPECIES_ID.TreeMouse
+            }
+        ),
+        new Predator
+        (
+            "BlackMamba",                       // Name
+            (int)SPECIES_ID.BlackMamba,         // Species ID
+            20,                                 // Hunger
+            5,                                  // Voracity
+            new int[]                           // Prey
+            {
+                (int)SPECIES_ID.TreeMouse,
+                (int)SPECIES_ID.BushHyrax,
+                (int)SPECIES_ID.CrestedPorcupine
+            }
+        ),
+        new Predator
+        (
+            "ServalCat",                        // Name
+            (int)SPECIES_ID.ServalCat,          // Species ID
+            15,                                 // Hunger
+            10,                                 // Voracity
+            new int[]                           // Prey
+            {
+                (int)SPECIES_ID.TreeMouse,
+                (int)SPECIES_ID.BushHyrax
+            }
+        ),
+        new Predator
+        (
+            "AfricanWildDog",                   // Name
+            (int)SPECIES_ID.AfricanWildDog,     // Species ID
+            55,                                 // Hunger
+            50,                                 // Voracity
+            new int[]                           // Prey
+            {
+                (int)SPECIES_ID.TreeMouse,
+                (int)SPECIES_ID.Oribi,
+                (int)SPECIES_ID.CrestedPorcupine
+            }
+        ),new Predator
+        (
+            "Leopard",                          // Name
+            (int)SPECIES_ID.Leopard,            // Species ID
+            40,                                 // Hunger
+            30,                                 // Voracity
+            new int[]                           // Prey
+            {
+                (int)SPECIES_ID.TreeMouse,
+                (int)SPECIES_ID.BushHyrax
+            }
+        ),
+        new Predator
+        (
+            "Lion",                             // Name
+            (int)SPECIES_ID.Lion,               // Species ID
+            100,                                // Hunger
+            40,                                 // Voracity
+            new int[]                           // Prey
+            {
+                (int)SPECIES_ID.Oribi,
+                (int)SPECIES_ID.KoriBuskard,
+                (int)SPECIES_ID.Buffalo
+            }
+        )
 	};
 
 	// Type constants
@@ -246,4 +401,68 @@ public class SpeciesConstants
 		// Otherwise return defaul
 		return DEFAULT_TYPE;
 	}
+
+    /**
+        Returns a predator list for a species as species ID values.
+        Search by species name.
+    */
+    public static int[] PredatorIDList (string name)
+    {
+        // Search prey only for now
+        foreach (Prey prey in PREY)
+        {
+            if (prey.name == name)
+                return prey.predatorIDList;
+        }
+        // Otherwise return empty array
+        return new int[]{};
+    }
+
+    /**
+        Returns a predator list for a species as species ID values.
+        Search by species ID.
+    */
+    public static int[] PredatorIDList (int id)
+    {
+        // Search prey only for now
+        foreach (Prey prey in PREY)
+        {
+            if (prey.speciesID == id)
+                return prey.predatorIDList;
+        }
+        // Otherwise return empty array
+        return new int[]{};
+    }
+
+    /**
+        Returns a prey list for a species as species ID values.
+        Search by species name.
+    */
+    public static int[] PreyIDList (string name)
+    {
+        // Search predators only for now
+        foreach (Predator predator in PREDATORS)
+        {
+            if (predator.name == name)
+                return predator.preyIDList;
+        }
+        // Otherwise return emtpy array
+        return new int[]{};
+    }
+
+    /**
+        Returns a prey list for a species as species ID values.
+        Search by species ID.
+    */
+    public static int[] PreyIDList (int id)
+    {
+        // Search predators only for now
+        foreach (Predator predator in PREDATORS)
+        {
+            if (predator.speciesID == id)
+                return predator.preyIDList;
+        }
+        // Otherwise return emtpy array
+        return new int[]{};
+    }
 }
