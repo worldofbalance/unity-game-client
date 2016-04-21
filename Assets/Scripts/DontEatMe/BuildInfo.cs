@@ -51,32 +51,38 @@ public class BuildInfo : MonoBehaviour {
     nextTile = newNextTile;
   }
 
-  public void AdvanceTile(){
-    Debug.Log (parent +" : "+ nextTile);
+  public void AdvanceTile()
+  {
 
-    DemTile oldTile = tile;
-    nextTile.AddAnimal (parent);
-    oldTile.SetResident (null);
-    tile = nextTile;
-    nextTile = null;
+    if (tile) {
+    
+      DemTile oldTile = tile;
+      nextTile.AddAnimal (parent);
+      oldTile.SetResident (null);
+      tile = nextTile;
+      nextTile = null;
+    
+    } else {
+      nextTile.AddAnimal (parent);
+      tile = nextTile;
+      nextTile = null;  
+    }
+      
+
   }
 
 	public bool isPlant(){
-		if (speciesType == 0)
-			return true;
-		return false;
+		return speciesType == 0;
 	}
 
 	public bool isPrey(){
-		if (speciesType == 1)
-			return true;
-		return false;
+		return speciesType == 1;
 	}
 
 	public bool isPredator(){
-		if (speciesType == 2)
-			return true;
-		return false;
+
+		return speciesType == 2;
+
 	}
 
   public void SetParent(GameObject _parent){

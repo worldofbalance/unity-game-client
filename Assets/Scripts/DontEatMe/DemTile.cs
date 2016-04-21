@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using System.Collections;
 
 /**
@@ -15,15 +17,19 @@ public class DemTile : MonoBehaviour
     private Vector3 center;
 
   	public GameObject resident; // Resident object (HerbivoreObject or PlantObject) placed on tile
+    private GameObject nextPredator;
     private BuildMenu buildMenu;
     public  GameObject mainObject;
+    public GameObject panelObject;
     private DemMain main;
     private DemTurnSystem turnSystem;
+    
 
     // Use this for initialization
     void Start ()
     {
         mainObject = GameObject.Find ("MainObject");
+        panelObject = GameObject.Find("Canvas/Panel");
         buildMenu = mainObject.GetComponent<BuildMenu> ();
         main = mainObject.GetComponent<DemMain> ();
         turnSystem = mainObject.GetComponent<DemTurnSystem> ();
@@ -63,7 +69,16 @@ public class DemTile : MonoBehaviour
         }
         else {
         	this.GetComponent<Renderer>().material.color = Color.gray;
+            if (resident)
+            {
+                Debug.Log(resident.name + " is here");
+                panelObject.transform.GetChild(0).GetComponent<Image>().sprite = resident.GetComponent<SpriteRenderer>().sprite;
+                panelObject.transform.GetChild(1).GetComponent<Text>().text = resident.name;
+                panelObject.transform.GetChild(0).gameObject.SetActive(true);
+                panelObject.transform.GetChild(1).gameObject.SetActive(true);
+            }
         }
+
     }
 
     /**
@@ -73,6 +88,8 @@ public class DemTile : MonoBehaviour
     {
         // Reset highlight color
       this.GetComponent<Renderer>().material.color = currentColor;
+        panelObject.transform.GetChild(0).gameObject.SetActive(false);
+        panelObject.transform.GetChild(1).gameObject.SetActive(false);
     }
 
     /**
@@ -146,6 +163,20 @@ public class DemTile : MonoBehaviour
     return resident;
   }
 
+  public bool ResidentIsPredator(){
+    
+    if (resident) {
+      return resident.GetComponent<BuildInfo> ().isPredator ();
+    } else if(nextPredator){
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+
+  }
+
   public void SetResident(GameObject newResident){
     resident = newResident;
   }
@@ -159,6 +190,27 @@ public class DemTile : MonoBehaviour
 
     this.resident.transform.position = this.center;
 
+  }
+
+
+  public void AddNewPredator(GameObject animal){
+
+    this.nextPredator = animal;
+
+    this.nextPredator.GetComponent<BuildInfo> ().tile = this;
+
+    Vector3 newPosition = new Vector3();
+    newPosition.x = this.center.x+2;
+    newPosition.y = this.center.y;
+    newPosition.z = this.center.z;
+
+    this.nextPredator.transform.position = newPosition;
+
+  }
+
+  public void UpdateNewPredator(){
+    resident = nextPredator;
+    nextPredator = null;
   }
 
   public void RemoveAnimal(){
@@ -179,6 +231,5 @@ public class DemTile : MonoBehaviour
   public Vector3 GetCenter(){
     return center;
   }
-
 
 }

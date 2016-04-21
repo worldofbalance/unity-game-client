@@ -7,12 +7,12 @@ using UnityEngine;
 public class DemTurnSystem : MonoBehaviour {
   
   private  DemBoard board;
-  private Dictionary<int, GameObject> activePredators = new Dictionary<int, GameObject>();
-  private  Stack<DemTween> tweenList = new Stack<DemTween>();
+  private Dictionary<int, GameObject> activePredators;// = new Dictionary<int, GameObject>();
+  private  Queue<DemTween> tweenList = new Queue<DemTween>();
   private  DemTile nextTile;
   private  DemTile currentTile;
   public  bool turnLock = false;
-  private  GameObject predator;
+  //private  GameObject predator;
   private DemMain main;
   private GameObject mainObject;
   private DemTweenManager tweenManager;
@@ -33,6 +33,8 @@ public class DemTurnSystem : MonoBehaviour {
   {
 
     turnLock = true;
+    activePredators = board.GetPredators ();
+    Debug.Log ("Total predators :" + activePredators.Count);
     foreach(KeyValuePair<int, GameObject> predator in activePredators)
     {
 
@@ -53,10 +55,11 @@ public class DemTurnSystem : MonoBehaviour {
 
 
       animal.SetNextTile (nextTile);
-      tweenList.Push(new DemTween (predator.Value, nextTile.GetCenter (), 700));
+      tweenList.Enqueue(new DemTileTransitionTween (predator.Value, nextTile.GetCenter (), 700));
 
     }
 
+    GenerateNewPredators ();
     ProcessTweens ();
 
   }
@@ -71,13 +74,35 @@ public class DemTurnSystem : MonoBehaviour {
   public  void PredatorFinishedMove (GameObject finishedPredator)
   {
     
-    BuildInfo animal = finishedPredator.GetComponent<BuildInfo> ();
+    BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
+    Boolean markForDeletion = false;
 
-    if( animal.GetNextTile().resident  != null){
-      animal.GetNextTile ().RemoveAnimal();
+    if( predator.GetNextTile().resident  != null){
+      
+      BuildInfo nextAnimal = predator.GetNextTile ().resident.GetComponent<BuildInfo> ();
+
+      if(nextAnimal.isPrey() || nextAnimal.isPlant()){
+        predator.GetNextTile ().RemoveAnimal();
+      }
+
+      if(nextAnimal.isPrey()){
+        markForDeletion = true;
+      }
+
     }
 
-    animal.AdvanceTile ();
+
+
+    predator.AdvanceTile ();
+
+    if(markForDeletion){
+
+      DemTile tempTile = predator.GetTile ();
+      activePredators.Remove(finishedPredator.GetInstanceID());
+      tempTile.RemoveAnimal ();
+
+    }
+      
     ProcessTweens ();
 
 
@@ -94,24 +119,27 @@ public class DemTurnSystem : MonoBehaviour {
     GameObject newPredator = main.predators [randomPredator].Create ();
     newPredator.GetComponent<BuildInfo> ().speciesType = 2;
 
-    activePredators.Add (newPredator.GetInstanceID() , newPredator);
+    //activePredators.Add (newPredator.GetInstanceID() , newPredator);
 
+    board.AddNewPredator(0, random, newPredator );
 
-    board.AddAnimal(0, random, newPredator );
+    tweenList.Enqueue(new DemPredatorEnterTween (newPredator, 700));
 
-    tweenList.Clear ();
+    //tweenList.Clear ();
 
-    turnLock = false;
+    //turnLock = false;
 
   }
 
-  void ProcessTweens()
+  public void ProcessTweens()
   {
     
     if (tweenList.Count > 0) {
-      tweenManager.AddTween (tweenList.Pop ());
+      tweenManager.AddTween (tweenList.Dequeue ());
     } else {
-      GenerateNewPredators ();
+      //GenerateNewPredators ();
+      tweenList.Clear();
+      turnLock = false;
     }
 
   }

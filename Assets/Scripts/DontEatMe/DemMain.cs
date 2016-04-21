@@ -52,16 +52,7 @@ public class DemMain : MonoBehaviour
 
  
 
-        for (int x = 0; x < 9; x++)
-        {
 
-            for (int y = 0; y < 5; y++)
-            {
-                boardController.Add (x, y );
-
-            }
-
-        }
         
         
 
@@ -69,6 +60,21 @@ public class DemMain : MonoBehaviour
 
 
     }
+
+
+  void Start()
+  {
+    for (int x = 0; x < 9; x++)
+    {
+
+      for (int y = 0; y < 5; y++)
+      {
+        boardController.Add (x, y );
+
+      }
+
+    }
+  }
 
     // Update is called once per frame
     void Update()

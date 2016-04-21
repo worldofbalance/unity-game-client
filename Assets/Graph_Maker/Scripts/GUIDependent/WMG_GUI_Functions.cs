@@ -248,6 +248,26 @@ public class WMG_GUI_Functions : WMG_Text_Functions {
 	public void changeSpriteParent(GameObject child, GameObject parent) {
 		child.transform.SetParent(parent.transform, false);
 	}
+
+	public void getFirstCanvasOnSelfOrParent(Transform trans, ref Canvas canv) {
+		canv = trans.GetComponent<Canvas>();
+		if (canv != null) return;
+		if (trans.parent == null) return;
+		getFirstCanvasOnSelfOrParent(trans.parent, ref canv);
+	}
+
+	public void addRaycaster(GameObject obj) {
+		obj.AddComponent<GraphicRaycaster>();
+	}
+
+	public void setAsNotInteractible(GameObject obj) {
+		CanvasGroup cg = obj.GetComponent<CanvasGroup>();
+		if (cg == null) {
+			cg = obj.AddComponent<CanvasGroup>();
+		}
+		cg.interactable = false;
+		cg.blocksRaycasts = false;
+	}
 	
 	public void bringSpriteToFront(GameObject obj) {
 		obj.transform.SetAsLastSibling();
