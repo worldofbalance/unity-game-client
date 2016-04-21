@@ -18,8 +18,10 @@ namespace CW{
         
         override public void execute(){
             readData ();
-            GameManager.player1.applyWeather (card_id);
-            GameManager.player2.applyWeather (card_id);
+
+                GameManager.player1.applyWeather (card_id,GameManager.curPlayer==GameManager.player1);
+            
+            GameManager.player2.applyWeather (card_id,GameManager.curPlayer==GameManager.player2);
 
             //removes card from opponents hand
             GameObject cardUsed = (GameObject)GameManager.player2.hand [0];
