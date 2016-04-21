@@ -97,6 +97,12 @@ public class PlayerController : MonoBehaviour {
 
             
         }
+
+            if (rb.rotation.y >= -0.5 && rb.rotation.y <= 0.5) {
+                rb.transform.localScale = new Vector3 (1, -1, 1);
+            } else {
+                rb.transform.localScale = new Vector3 (1, 1, 1);
+            }
         //rb.rotation = Quaternion.Euler (0.0f, rb.velocity.z * -tilt,  0.0f);
 	}
         
@@ -123,7 +129,7 @@ public class PlayerController : MonoBehaviour {
                 }
                 transform.position = Vector3.MoveTowards(transform.position, mouse, speed * Time.deltaTime);
             }
-			else if (Input.GetKey(KeyCode.Space) && currentStamina >0){
+		 if (Input.GetKey(KeyCode.Space) && currentStamina >0){
                  speed = speed * speedUpFactor;
                 if (speed > MaxSpeed) { speed = MaxSpeed; }
                 gameController.SetStamina (currentStamina-.25f);
@@ -144,7 +150,8 @@ public class PlayerController : MonoBehaviour {
                 return true;
             }
             return false;
-
     }
+
+
 }
 }

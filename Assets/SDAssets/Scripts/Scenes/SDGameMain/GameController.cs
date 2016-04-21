@@ -22,9 +22,11 @@ namespace SD {
         public Text UnscoredPointText; 
         public Text staminaText;
         public Text healthText;
+        public Text opponentScoreText;
 
         private int score;          // Player's score
         private int unscoredPoint;
+        private int opponentScore;
         public float stamina;       // Player's stamina
         public int health;
         private const float MaxStamina = 100;
@@ -49,6 +51,10 @@ namespace SD {
         private Dictionary <int, NPCFish> npcFishes = new Dictionary<int, NPCFish>();
         private Dictionary <int, GameObject> npcFishObjects = new Dictionary<int, GameObject>();
 
+        public GameObject surrenderPanelCanvas;
+
+
+
         void Awake () {
             gameController = this;
         }
@@ -59,8 +65,10 @@ namespace SD {
             Rigidbody playerBaseClone = (Rigidbody)Instantiate (playerBase, playerBaseInitialPosition, playerBaseInitialRotation);
             Rigidbody opponentBaseClone = (Rigidbody)Instantiate (opponentBase, opponentBaseInitialPosition, opponentBaseInitialRotation);
             score = 0;
+            opponentScore = 0;
             unscoredPoint = 0; 
             UpdateScore ();
+            UpdateOpponentScore ();
             UpdateStamina ();
             UpdateUnscoredPoint ();
             UpdateHealth ();
@@ -91,6 +99,7 @@ namespace SD {
             RecoverStamina ();
             UpdateStamina ();
             UpdateUnscoredPoint ();
+            UpdateOpponentScore ();
             UpdateHealth ();
         }
 
@@ -138,6 +147,10 @@ namespace SD {
         // Updates scoreText UI.
         void UpdateUnscoredPoint() {
             UnscoredPointText.text = "Unscored Point: " + unscoredPoint;
+        }
+
+        void UpdateOpponentScore() {
+            opponentScoreText.text = "Opponent: " + opponentScore;
         }
 
         public int GetUnscored(){
@@ -213,5 +226,9 @@ namespace SD {
             return npcFishObjects;
         }
 
-    }
+        public void hideSurrenderPanel(){
+            surrenderPanelCanvas.SetActive(false);
+        }
+    } 
+
 }
