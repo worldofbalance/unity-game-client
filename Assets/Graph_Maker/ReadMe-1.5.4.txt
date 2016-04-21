@@ -29,6 +29,11 @@ delete the Graph Maker folder in your project, and import the Graph_Maker_NGUI p
 -----------------
  Version History
 -----------------
+1.5.4
+- NEW: Click / Hover events added for Pie / Doughnut Graphs! New example scene added to demonstrate.
+- FIX: Performance improvement for Pie Graphs not using "Doughnut" feature.
+- CHANGE: Series parameter "AutoUpdateXDistBetween" is obsolete, refer to compiler warning if your code uses it.
+
 1.5.3
 - NEW: New example scene that animate plots data overtime, scene code also shows how to override all labeling functions.
 - NEW: Options added for axes for label skipping (e.g. only label every other label on y-axis).
