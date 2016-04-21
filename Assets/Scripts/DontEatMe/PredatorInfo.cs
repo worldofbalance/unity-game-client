@@ -37,12 +37,12 @@ public class PredatorInfo : BuildInfo {
 	}
 
 	/**
-		Reduces current hunger and returns hungry status.
+		Reduces current hunger and returns satisfied status.
 	*/
 	public bool Consume (int nutrition)
 	{
 		this.currentHunger -= nutrition;
-		return this.Hungry();
+		return this.Satisfied();
 	}
 
 	/**
