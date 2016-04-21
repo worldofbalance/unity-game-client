@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class WMG_Legend : WMG_GUI_Functions {
-	
+
 	public enum legendTypes {Bottom, Right};
 
 	// public properties
@@ -212,8 +212,7 @@ public class WMG_Legend : WMG_GUI_Functions {
 	
 	public int NumEntries {
 		get {
-			//int numEntries = legendEntries.Count;
-			int numEntries = 0;
+			int numEntries = legendEntries.Count;
 			for (int j = 0; j < legendEntries.Count; j++) {
 				if (!activeInHierarchy(legendEntries[j].gameObject)) numEntries--;
 			}

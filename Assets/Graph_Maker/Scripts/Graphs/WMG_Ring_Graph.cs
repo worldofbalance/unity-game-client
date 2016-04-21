@@ -13,6 +13,8 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 	public WMG_List<string> labels = new WMG_List<string>();
 	[SerializeField] private List<string> _ringIDs;
 	public WMG_List<string> ringIDs = new WMG_List<string>();
+	[SerializeField] private List<bool> _hideRings;
+	public WMG_List<bool> hideRings = new WMG_List<bool>();
 
 	// public properties
 	public bool bandMode { get {return _bandMode;} 
@@ -20,6 +22,7 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 			if (_bandMode != value) {
 				_bandMode = value;
 				textureC.Changed();
+				hideRingsC.Changed ();
 			}
 		}
 	}
@@ -210,9 +213,14 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 	private WMG_Change_Obj ringColorC = new WMG_Change_Obj();
 	private WMG_Change_Obj labelsC = new WMG_Change_Obj();
 	private WMG_Change_Obj degreesC = new WMG_Change_Obj();
+	private WMG_Change_Obj aRingValC = new WMG_Change_Obj();
 	private WMG_Change_Obj radiusC = new WMG_Change_Obj();
 	private WMG_Change_Obj textureC = new WMG_Change_Obj();
+	private WMG_Change_Obj hideRingsC = new WMG_Change_Obj();
 
+	private List<int> aRingValChangeIndices = new List<int>();
+	private List<int> beforeValCount = new List<int> ();
+	private List<int> afterValCount = new List<int> ();
 	private bool hasInit;
 
 	void Start() {
@@ -228,10 +236,12 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 		changeObjs.Add(numberRingsC);
 		changeObjs.Add(textureC);
 		changeObjs.Add(degreesC);
+		changeObjs.Add(aRingValC);
 		changeObjs.Add(ringColorC);
 		changeObjs.Add(bandColorC);
 		changeObjs.Add(radiusC);
 		changeObjs.Add(labelsC);
+		changeObjs.Add(hideRingsC);
 		
 		extraRingSprite = WMG_Util.createSprite(getTexture(extraRing));
 		ringTexSize = extraRingSprite.texture.width;
@@ -248,6 +258,9 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 		
 		labels.SetList (_labels);
 		labels.Changed += labelsChanged;
+
+		hideRings.SetList (_hideRings);
+		hideRings.Changed += hideRingsChanged;
 		
 		ringIDs.SetList (_ringIDs);
 		ringIDs.Changed += ringIDsChanged;
@@ -257,8 +270,10 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 		ringColorC.OnChange += RingColorChanged;
 		labelsC.OnChange += LabelsChanged;
 		degreesC.OnChange += DegreesChanged;
+		aRingValC.OnChange += DegreesChangedAring;
 		radiusC.OnChange += RadiusChanged;
 		textureC.OnChange += TextureChanged;
+		hideRingsC.OnChange += HideRingsChanged;
 		
 		PauseCallbacks();
 	}
@@ -320,7 +335,23 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 	}
 
 	void DegreesChanged() {
-		updateDegrees();
+		if (beforeValCount.Count == 1) {
+			updateDegreesAllRings(false);
+		} else { // count changed more than once in a frame, just update all
+			updateDegreesAllRings(true);
+		}
+		
+		beforeValCount.Clear ();
+		afterValCount.Clear ();
+	}
+	
+	void DegreesChangedAring() {
+		if (aRingValChangeIndices.Count > 1) { // more than 1 ring val changed in a frame
+			updateDegreesAllRings(true);
+		} else {
+			updateDegreesAring (aRingValChangeIndices[0]);
+		}
+		aRingValChangeIndices.Clear ();
 	}
 
 	void RingColorChanged() {
@@ -339,6 +370,10 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 		updateLabelsText();
 	}
 
+	void HideRingsChanged() {
+		updateRingsActive ();
+	}
+
 	void AllChanged() {
 		numberRingsC.Changed();
 		textureC.Changed();
@@ -347,6 +382,7 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 		bandColorC.Changed();
 		radiusC.Changed();
 		labelsC.Changed();
+		hideRingsC.Changed ();
 	}
 
 	public void bandColorsChanged(bool editorChange, bool countChanged, bool oneValChanged, int index) {
@@ -355,17 +391,36 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 	}
 
 	public void valuesChanged(bool editorChange, bool countChanged, bool oneValChanged, int index) {
+		if (countChanged) {
+			if (editorChange) {
+				beforeValCount.Add (values.Count);
+				afterValCount.Add (_values.Count);
+			} else {
+				beforeValCount.Add (_values.Count);
+				afterValCount.Add (values.Count);
+			}
+		}
 		WMG_Util.listChanged (editorChange, ref values, ref _values, oneValChanged, index);
 		if (countChanged) {
 			AllChanged ();
 		} else {
-			degreesC.Changed();
+			if (oneValChanged) {
+				aRingValChangeIndices.Add (index);
+				aRingValC.Changed ();
+			} else {
+				degreesC.Changed ();
+			}
 		}
 	}
 
 	public void labelsChanged(bool editorChange, bool countChanged, bool oneValChanged, int index) {
 		WMG_Util.listChanged (editorChange, ref labels, ref _labels, oneValChanged, index);
 		labelsC.Changed();
+	}
+
+	public void hideRingsChanged(bool editorChange, bool countChanged, bool oneValChanged, int index) {
+		WMG_Util.listChanged (editorChange, ref hideRings, ref _hideRings, oneValChanged, index);
+		hideRingsC.Changed();
 	}
 
 	public void ringIDsChanged(bool editorChange, bool countChanged, bool oneValChanged, int index) {
@@ -376,6 +431,7 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 		// Create rings based on values data
 		for (int i = 0; i < values.Count; i++) {
 			if (labels.Count <= i) labels.AddNoCb("Ring " + (i + 1), ref _labels);
+			if (hideRings.Count <= i) hideRings.AddNoCb(false, ref _hideRings);
 			if (bandColors.Count <= i) bandColors.AddNoCb(bandColor, ref _bandColors);
 			if (rings.Count <= i) {
 				GameObject obj = GameObject.Instantiate(ringPrefab) as GameObject;
@@ -423,17 +479,26 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 		}
 	}
 
+	void updateRingsActive() {
+		SetActive (extraRing, bandMode);
+		for (int i = 0; i < rings.Count; i++) {
+			WMG_Ring ring = rings[i];
+			bool shouldNotHide = !hideRings [i];
+			if (bandMode) {
+				SetActive (ring.band, shouldNotHide);
+			}
+			SetActive (ring.ring, shouldNotHide);
+			SetActive (ring.label, shouldNotHide);
+		}
+	}
+
 	void updateRingsAndBands() {
 		// extra ring
 		if (bandMode) {
-			SetActive(extraRing, true);
 			float ringRadius = getRingRadius(rings.Count);
 			WMG_Util.updateBandColors(ref extraRingColors, outerRadius*2, ringRadius - ringWidth, ringRadius, antiAliasing, antiAliasingStrength);
 			extraRingSprite.texture.SetPixels(extraRingColors);
 			extraRingSprite.texture.Apply();
-		}
-		else {
-			SetActive(extraRing, false);
 		}
 		// rings and bands
 		for (int i = 0; i < rings.Count; i++) {
@@ -449,94 +514,125 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 		return innerRadiusPercentage * outerRadius + index * ringInterval;
 	}
 
-	void updateDegrees() {
+	void updateDegreesAllRings(bool updateAll) {
+		if (updateAll) {
+			for (int i = 0; i < rings.Count; i++) {
+				updateDegreesAring (i);
+			}
+		} else {
+			for (int i = afterValCount [0] < beforeValCount [0] ? 0 : beforeValCount [0]; i < rings.Count; i++) {
+				updateDegreesAring (i);
+			}
+		}
+	}
+
+	void updateDegreesAring(int i) {
 		Vector3 baseRotation = new Vector3 (0, 0, -degrees/2);
 		float newFill = (360 - degrees) / 360f;
 		// extra ring
 		changeRadialSpriteRotation(extraRing, baseRotation);
 		changeSpriteFill(extraRing, newFill);
-		bool wasAzero = false;
-		// rings and bands
-		for (int i = 0; i < rings.Count; i++) {
-			WMG_Ring ring = rings[i];
-			// rings
-			changeRadialSpriteRotation(rings[i].ring, baseRotation);
-			changeSpriteFill(rings[i].ring, newFill);
-			// bands
-			float valPercent = values[i] / (maxValue - minValue);
-			changeRadialSpriteRotation(rings[i].band, baseRotation);
-			changeSpriteFill(rings[i].band, 0);
-			if (animateData) {
-				WMG_Anim.animFill(rings[i].band, animDuration, animEaseType, newFill * valPercent);
-			}
-			else {
-				changeSpriteFill(rings[i].band, newFill * valPercent);
-			}
-			if (valPercent == 0) {
-				wasAzero = true;
-			}
-			// labels
-			int numOverlapping = 0;
-			for (int j = i-1; j >= 0; j--) {
-				float valPercentPrev = values[j] / (maxValue - minValue);
-				if ( Mathf.Abs(valPercent - valPercentPrev) < 0.01f) { // within 1%
-					numOverlapping++;
-					valPercent = valPercentPrev;
-				}
-			}
-			changeSpriteWidth (ring.textLine, 2 + 20 * numOverlapping);
-			bool labelsOverlap = numOverlapping > 0;
-			if (!labelsOverlap) {
-				SetActiveImage (ring.line, true);
-				changeSpritePivot (ring.textLine, WMGpivotTypes.Bottom);
-				setTexture (ring.textLine, labelLineSprite);
-				setAnchor (ring.labelBackground, new Vector2 (0, 1), new Vector2 (1, 0), Vector2.zero);
-			} else {
-				SetActiveImage (ring.line, false);
-			}
-			Vector3 labelRotation = new Vector3(0, 0, -valPercent * (360 - degrees));
-			if (animateData) {
-				if (DOTween.IsTweening(rings[i].label.transform)) { // if already animating, then don't animate relative to current rotation
-					labelRotationUpdated(ring, 0, labelsOverlap);
-					float degOffset = 90;
-					if (ring.label.transform.localEulerAngles.z < 180) {
-						degOffset *= -1;
-					}
-					WMG_Anim.animRotation(rings[i].label, animDuration, animEaseType, labelRotation + new Vector3(0,0,360) + baseRotation, false);
-					WMG_Anim.animRotationCallbackU(rings[i].textLine, animDuration, animEaseType, -labelRotation - baseRotation + new Vector3(0,0, degOffset), false, ()=> labelRotationUpdated(ring, degOffset, labelsOverlap));
-				}
-				else {
-					rings[i].label.transform.localEulerAngles = baseRotation;
-					rings[i].textLine.transform.localEulerAngles = -baseRotation + new Vector3(0,0,90);
-					WMG_Anim.animRotation(rings[i].label, animDuration, animEaseType, labelRotation, true);
-					WMG_Anim.animRotationCallbackU(rings[i].textLine, animDuration, animEaseType, -labelRotation, true, ()=> labelRotationUpdated(ring, 0, labelsOverlap));
-				}
-			}
-			else {
-				rings[i].label.transform.localEulerAngles = labelRotation + baseRotation;
-				rings[i].textLine.transform.localEulerAngles = -labelRotation -baseRotation + new Vector3(0,0,90);
-				labelRotationUpdated(ring, 0, labelsOverlap);
+		
+		
+		bool ringIsZero = false;
+		
+		WMG_Ring ring = rings[i];
+		// rings
+		changeRadialSpriteRotation(rings[i].ring, baseRotation);
+		changeSpriteFill(rings[i].ring, newFill);
+		// bands
+		float valPercent = values[i] / (maxValue - minValue);
+		changeRadialSpriteRotation(rings[i].band, baseRotation);
+		changeSpriteFill(rings[i].band, 0);
+		if (animateData) {
+			WMG_Anim.animFill(rings[i].band, animDuration, animEaseType, newFill * valPercent);
+		}
+		else {
+			changeSpriteFill(rings[i].band, newFill * valPercent);
+		}
+		if (valPercent == 0) {
+			ringIsZero = true;
+		}
+		// labels
+		int numOverlapping = 0;
+		for (int j = i-1; j >= 0; j--) {
+			float valPercentPrev = values[j] / (maxValue - minValue);
+			if ( Mathf.Abs(valPercent - valPercentPrev) < 0.01f) { // within 1%
+				numOverlapping++;
+				valPercent = valPercentPrev;
 			}
 		}
+		
+		Vector3 labelRotation = new Vector3(0, 0, -valPercent * (360 - degrees));
+		if (animateData) {
+			if (DOTween.IsTweening(rings[i].label.transform)) { // if already animating, then don't animate relative to current rotation
+				updateLabelRotationAndPosition (ring, 0, numOverlapping, false);
+				float degOffset = 90;
+				if (ring.label.transform.localEulerAngles.z < 180) {
+					degOffset *= -1;
+				}
+				WMG_Anim.animRotation(rings[i].label, animDuration, animEaseType, labelRotation + new Vector3(0,0,360) + baseRotation, false);
+				WMG_Anim.animRotationCallbacks(rings[i].textLine, animDuration, animEaseType, -labelRotation - baseRotation + new Vector3(0,0, degOffset), false, ()=> labelRotationUpdated(ring, degOffset, numOverlapping), ()=> labelRotationComplete(ring, degOffset, numOverlapping));
+			}
+			else {
+				rings[i].label.transform.localEulerAngles = baseRotation;
+				rings[i].textLine.transform.localEulerAngles = -baseRotation + new Vector3(0,0,90);
+				WMG_Anim.animRotation(rings[i].label, animDuration, animEaseType, labelRotation, true);
+				WMG_Anim.animRotationCallbacks(rings[i].textLine, animDuration, animEaseType, -labelRotation, true, ()=> labelRotationUpdated(ring, 0, numOverlapping), ()=> labelRotationComplete(ring, 0, numOverlapping));
+			}
+		}
+		else {
+			updateLabelLineBasedOnOverlap (ring, numOverlapping);
+			rings[i].label.transform.localEulerAngles = labelRotation + baseRotation;
+			rings[i].textLine.transform.localEulerAngles = -labelRotation -baseRotation + new Vector3(0,0,90);
+			updateLabelRotationAndPosition (ring, 0, numOverlapping, false);
+		}
+		
 		// zero line
 		zeroLine.transform.localEulerAngles = baseRotation;
 		zeroLineText.transform.localEulerAngles = -baseRotation;
-		SetActive (zeroLine, !wasAzero);
+		if (i == 0) {
+			SetActive (zeroLine, !ringIsZero);
+		} else {
+			if (zeroLine.activeSelf) { // previously not 0
+				SetActive (zeroLine, !ringIsZero);
+			} else { // there was a zero at one point in the past, always hide
+				SetActive (zeroLine, false);
+			}
+		}
 	}
 	
-	void labelRotationUpdated(WMG_Ring ring, float degOffset, bool labelsOverlap) {
+	void updateLabelLineBasedOnOverlap(WMG_Ring ring, int numOverlapping) {
+		changeSpriteWidth (ring.textLine, 2 + 20 * numOverlapping);
+		bool labelsOverlap = numOverlapping > 0;
+		if (!labelsOverlap) {
+			SetActiveImage (ring.line, true);
+			changeSpritePivot (ring.textLine, WMGpivotTypes.Bottom);
+			setTexture (ring.textLine, labelLineSprite);
+			setAnchor (ring.labelBackground, new Vector2 (0, 1), new Vector2 (1, 0), Vector2.zero);
+		} else {
+			SetActiveImage (ring.line, false);
+		}
+		
+	}
+	
+	void updateLabelRotationAndPosition(WMG_Ring ring, float degOffset, int numOverlapping, bool onComplete) {
+		bool labelsOverlap = numOverlapping > 0;
 		if (ring.label.transform.localEulerAngles.z < 180) {
 			if (labelsOverlap) {
 				changeSpritePivot (ring.textLine, WMGpivotTypes.BottomLeft);
 				setTexture (ring.textLine, botRightCorners);
 				setAnchor (ring.labelBackground, Vector2.one, new Vector2 (1, 0), Vector2.zero);
 			}
-			if (degOffset == 0 || degOffset == 90) {
-				ring.textLine.transform.localEulerAngles = new Vector3 (ring.textLine.transform.localEulerAngles.x, 
-				                                                        ring.textLine.transform.localEulerAngles.y, 
-				                                                        ring.textLine.transform.localEulerAngles.z - 180);
+			if (!onComplete) {
+				if (degOffset == 0 || degOffset == 90) {
+					ring.textLine.transform.localEulerAngles = new Vector3 (ring.textLine.transform.localEulerAngles.x, 
+					                                                        ring.textLine.transform.localEulerAngles.y, 
+					                                                        ring.textLine.transform.localEulerAngles.z - 180);
+				}
+				ring.labelBackground.transform.localEulerAngles = new Vector3 (0, 0, 90);
+				
 			}
-			ring.labelBackground.transform.localEulerAngles = new Vector3 (0, 0, 90);
 			changeSpritePivot (ring.labelBackground, WMGpivotTypes.BottomRight);
 		} 
 		else {
@@ -545,14 +641,30 @@ public class WMG_Ring_Graph : WMG_Graph_Manager {
 				setTexture (ring.textLine, botLeftCorners);
 				setAnchor (ring.labelBackground, new Vector2 (0, 1), new Vector2 (1, 0), Vector2.zero);
 			}
-			if (degOffset == -90) {
-				ring.textLine.transform.localEulerAngles = new Vector3 (ring.textLine.transform.localEulerAngles.x, 
-				                                                        ring.textLine.transform.localEulerAngles.y, 
-				                                                        ring.textLine.transform.localEulerAngles.z + 180);
+			if (!onComplete) {
+				if (degOffset == -90) {
+					ring.textLine.transform.localEulerAngles = new Vector3 (ring.textLine.transform.localEulerAngles.x, 
+					                                                        ring.textLine.transform.localEulerAngles.y, 
+					                                                        ring.textLine.transform.localEulerAngles.z + 180);
+				}
+				ring.labelBackground.transform.localEulerAngles = new Vector3 (0, 0, -90);
+				
 			}
-			ring.labelBackground.transform.localEulerAngles = new Vector3 (0, 0, -90);
 			changeSpritePivot (ring.labelBackground, WMGpivotTypes.BottomLeft);
 		}
+	}
+	
+	void labelRotationComplete(WMG_Ring ring, float degOffset, int numOverlapping) {
+		bool labelsOverlap = numOverlapping > 0;
+		if (labelsOverlap) { // if label is overlapping only update at the end
+			updateLabelLineBasedOnOverlap (ring, numOverlapping);
+			updateLabelRotationAndPosition (ring, degOffset, numOverlapping, true);
+		}
+	}
+	
+	void labelRotationUpdated(WMG_Ring ring, float degOffset, int numOverlapping) {
+		updateLabelLineBasedOnOverlap (ring, 0);
+		updateLabelRotationAndPosition (ring, degOffset, 0, false);
 	}
 
 	public List<int> getRingsSortedByValue() {

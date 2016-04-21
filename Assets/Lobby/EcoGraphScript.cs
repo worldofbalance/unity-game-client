@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class GraphScript : MonoBehaviour {
+public class EcoGraphScript : MonoBehaviour {
 	public GameObject ecoGraph;
 	public WMG_Axis_Graph graph;
 	public WMG_Series player1;
@@ -12,10 +12,21 @@ public class GraphScript : MonoBehaviour {
 	public List<Vector2> player3Data;
 	public WMG_Series you;
 	public List<Vector2> youData;
+	public MenuScript statusPanel;
+	private bool isAlive = false;
+	private GameObject graphGO;
 
 	void Start () {
 
-		GameObject graphGO = GameObject.Instantiate (ecoGraph);
+	}
+
+	void update(){
+
+	}
+
+	public void createGraph(){
+		
+		graphGO = GameObject.Instantiate (ecoGraph);
 		graphGO.transform.SetParent (this.transform, false);
 		graph = graphGO.GetComponent<WMG_Axis_Graph> ();
 
@@ -38,7 +49,9 @@ public class GraphScript : MonoBehaviour {
 		you.pointValues.SetList (youData);
 		you.lineColor = Color.white;
 		you.lineScale = 2;
-
 	}
 
+	public void destroyGraph(){
+		GameObject.Destroy (graphGO);
+	}
 }
