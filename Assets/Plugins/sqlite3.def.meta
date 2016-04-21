@@ -1,11 +1,11 @@
 fileFormatVersion: 2
 <<<<<<< HEAD
-guid: c465bbd59a0a3284d92c28b7e0f5565b
-timeCreated: 1457975186
+guid: 674d4941d9b424d91acd8daaa339d16e
+timeCreated: 1458708334
 =======
 guid: fda397ff54964494b861b3498636c3b7
 timeCreated: 1458717787
->>>>>>> 03fb049098343f897921f9f592bcf24bbf99036f
+>>>>>>> 49fd84d19b5adfcd03ee0eb3ba2b473a62bea23b
 licenseType: Free
 PluginImporter:
   serializedVersion: 1
@@ -23,7 +23,7 @@ PluginImporter:
       settings:
         DefaultValueInitialized: true
     Xbox360:
->>>>>>> 03fb049098343f897921f9f592bcf24bbf99036f
+>>>>>>> 49fd84d19b5adfcd03ee0eb3ba2b473a62bea23b
       enabled: 1
       settings: {}
   userData: 

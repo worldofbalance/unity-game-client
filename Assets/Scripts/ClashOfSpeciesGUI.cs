@@ -6,8 +6,8 @@ public class ClashOfSpeciesGUI : MonoBehaviour {
 	
 	private GameObject mainObject;
 	// Window Properties
-	private float width = 400;
-	private float height = 500;
+	private float width = 300;
+	private float height = 300;
 	// Other
 	private int window_id;
 	private string message = "Single Player Game. Click start to play.";
@@ -50,12 +50,12 @@ public class ClashOfSpeciesGUI : MonoBehaviour {
 		
 		GUILayout.Space(30);
 		
-		if (GUI.Button(new Rect(windowRect.width / 2 + 80, windowRect.height - 40, 100, 30), "Quit")) {
+		if (GUI.Button(new Rect(windowRect.width / 2 + 20, windowRect.height - 40, 100, 30), "Quit")) {
 			Submit();
 		}
 		
 		
-		if (GUI.Button(new Rect(windowRect.width / 2 - 30, windowRect.height - 40, 100, 30), "Start Game")) {
+		if (GUI.Button(new Rect(windowRect.width / 2 - 110, windowRect.height - 40, 100, 30), "Start Game")) {
 			StartGame();
 		}
 		
@@ -72,7 +72,7 @@ public class ClashOfSpeciesGUI : MonoBehaviour {
 	}
 	
 	public void StartGame() {
-		NetworkManager.Send(
+		Game.networkManager.Send(
 			PlayGameProtocol.Prepare(2),
 			ProcessPlayGame
 			);

@@ -44,7 +44,9 @@ public class Room {
 		} else if (type == Constants.MINIGAME_MULTI_CONVERGENCE) {
 			// DH change
 			return "Multiplayer Convergence";
-		} else {
+        } else if (type == Constants.MINIGAME_SEA_DIVIDED) {
+            return "Sea Divided";
+        } else {
 			return "Unknown Game";
 		}
 	}

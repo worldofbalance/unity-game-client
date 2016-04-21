@@ -3,7 +3,7 @@ namespace RR {
 		
 		// Constants
 		public static readonly string CLIENT_VERSION = "1.00";
-		// public static readonly string REMOTE_HOST = "localhost";
+		//public static readonly string REMOTE_HOST = "localhost";
 		public static readonly int REMOTE_PORT = 9256;//20039;
 		
 		// Request (1xx) + Response (2xx)
@@ -29,16 +29,11 @@ namespace RR {
 		public static readonly short SMSG_KEYBOARD = 208;
 	
 		public static readonly short CMSG_RRPOSITION = 110;
-		public static readonly short SMSG_RRPOSITION = 210;
-	//<<<<<<< HEAD
-	//<<<<<<< HEAD
-	//=======
-	
+		public static readonly short SMSG_RRPOSITION = 210;	
 	
 	//	public static readonly short CMSG_RRSPECIES = 111;
 	//	public static readonly short SMSG_RRSPECIES = 211;
-	////>>>>>>> Dong
-	//=======
+	//>>>>>>> Dong
 	
 		public static readonly short CMSG_RRSPECIES= 111;
 		public static readonly short SMSG_RRSPECIES = 211;

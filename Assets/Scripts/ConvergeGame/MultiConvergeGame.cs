@@ -85,7 +85,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private bool host;    // Is this player the host?
 	private int timeRemain = 0;   // How many seconds left in round. Could be negative
     private int timeDisplayed = 0;   // Value displayed for time remaining
-    private int timeCheck = -15;   // timeRemain value to check for no response
+    private int timeCheck = -30;   // timeRemain value to check for no response
     private int checkCount = 0;   // count of number of CheckPlayers msgs sent
     private int playerDrop = 0;   // Count of frames to display player dropped msg 
 	private string remainLabel;
@@ -260,7 +260,7 @@ public class MultiConvergeGame : MonoBehaviour
 			closedResponseSent = true;
 			ObtainScores();
 
-			NetworkManager.Send (
+			Game.networkManager.Send (
 				ConvergeBetUpdateProtocol.Prepare (
 					betEntered, 
 					improveValue,
@@ -582,7 +582,7 @@ public class MultiConvergeGame : MonoBehaviour
         } else if ((ecoNumber < 0) || (ecoNumber > ecoCount)) {
             GUI.FocusControl ("ecosystem_number");
         } else {
-            NetworkManager.Send (
+            Game.networkManager.Send (
                 ConvergeHostConfigProtocol.Prepare (numRounds, timeWindow, betAmount, ecoNumber), 
                 ProcessConvergeHostConfig);
             Debug.Log("Sent ConvergeHostConfig");
@@ -631,7 +631,7 @@ public class MultiConvergeGame : MonoBehaviour
         GUI.Label(new Rect((windowRectConfig.width - ftr1P) / 2, windowRectConfig.height * 0.80f, ftr1P, 30), ftr1, style);
 
         if (!prot187Sent) {
-            NetworkManager.Send (
+            Game.networkManager.Send (
                 ConvergeNonHostConfigProtocol.Prepare (), ProcessConvergeNonHostConfig);
             Debug.Log ("Sent ConvergeNonHostConfig");
             prot187Sent = true;
@@ -908,7 +908,7 @@ public class MultiConvergeGame : MonoBehaviour
 	public void Submit ()
 	{
 		simRunning = true;
-		NetworkManager.Send (
+        Game.networkManager.Send (
 			ConvergeNewAttemptProtocol.Prepare (
 			player_id, 
 			ecosystem_id, 
@@ -938,7 +938,7 @@ public class MultiConvergeGame : MonoBehaviour
 		attemptList = new List<ConvergeAttempt> ();
 		attemptCount = 0;
 
-		NetworkManager.Send (
+        Game.networkManager.Send (
 			ConvergePriorAttemptCountProtocol.Prepare (player_id, new_ecosystem_id),
 			ProcessConvergePriorAttemptCount
 		);
@@ -977,7 +977,7 @@ public class MultiConvergeGame : MonoBehaviour
 			//calculate score and send back to server.
 			CSVObject target = ecosystemList[ecosystem_idx].csv_target_object;
 			int score = currAttempt.csv_object.CalculateScore (target);
-			NetworkManager.Send (
+            Game.networkManager.Send (
 				ConvergeNewAttemptScoreProtocol.Prepare (
 				player_id, 
 				ecosystem_id, 
@@ -1025,7 +1025,7 @@ public class MultiConvergeGame : MonoBehaviour
 			short betEntered = 1;	
 			ObtainScores ();
 
-			NetworkManager.Send (
+            Game.networkManager.Send (
 				ConvergeBetUpdateProtocol.Prepare (
 					betEntered, 
 					improveValue,
@@ -1083,7 +1083,7 @@ public class MultiConvergeGame : MonoBehaviour
 
 		//once count of attempts has been received, send requests for individual attempt's data
 		for (int attemptOffset = 0; attemptOffset < attemptCount; attemptOffset++) {
-			NetworkManager.Send (
+            Game.networkManager.Send (
 				ConvergePriorAttemptProtocol.Prepare (player_id, new_ecosystem_id, attemptOffset),
 				ProcessConvergePriorAttempt
 			);
@@ -1489,7 +1489,7 @@ public class MultiConvergeGame : MonoBehaviour
 	{
 		hintCount = 0;
 		
-		NetworkManager.Send (
+        Game.networkManager.Send (
 			ConvergeHintCountProtocol.Prepare (),
 			ProcessConvergeHintCount
 			);
@@ -1503,7 +1503,7 @@ public class MultiConvergeGame : MonoBehaviour
 		
 		//once count of hints has been received, send requests for individual hint's data
 		for (int hintOffset = 0; hintOffset < hintCount; hintOffset++) {
-			NetworkManager.Send (
+            Game.networkManager.Send (
 				ConvergeHintProtocol.Prepare (hintOffset),
 				ProcessConvergeHint
 				);
@@ -1552,7 +1552,7 @@ public class MultiConvergeGame : MonoBehaviour
 	public void GetTime ()
 	{
 		Debug.Log ("Get time request sent");
-		NetworkManager.Send (
+        Game.networkManager.Send (
 			ConvergeGetTimeProtocol.Prepare (),
 			ProcessGetTime
 		);
@@ -1592,7 +1592,7 @@ public class MultiConvergeGame : MonoBehaviour
 
     public void CheckPlayers() {
         Debug.Log ("Check Players request sent");
-        NetworkManager.Send (
+        Game.networkManager.Send (
             ConvergeCheckPlayersProtocol.Prepare (),
             ProcessCheckPlayers
         );
@@ -1609,7 +1609,7 @@ public class MultiConvergeGame : MonoBehaviour
 
 	public void GetNames() {
 		Debug.Log ("Get names request sent");
-		NetworkManager.Send (
+        Game.networkManager.Send (
 			ConvergeGetNamesProtocol.Prepare (),
 			ProcessGetNames
 		);
@@ -1668,7 +1668,7 @@ public class MultiConvergeGame : MonoBehaviour
 	// Displays score of other player in id_otherPlayer
 	private void displayOtherGraph() {
         Debug.Log ("MC: DisplayOtherGraph");
-		NetworkManager.Send (
+        Game.networkManager.Send (
 			ConvergeGetOtherScoreProtocol.Prepare (id_otherPlayer),
 			ProcessConvergeGetOtherScore
 		);

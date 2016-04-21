@@ -6,39 +6,66 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 
-public class NetworkManager : MonoBehaviour {
+public class NetworkManager {
 
 	public delegate void Callback(NetworkResponse response);
-	private static Dictionary<int, Queue<Callback>> callbackList = new Dictionary<int, Queue<Callback>>();
-	private static Dictionary<int, List<Callback>> listenList = new Dictionary<int, List<Callback>>();
-
+	private Dictionary<int, Queue<Callback>> callbackList;
+	private Dictionary<int, List<Callback>> listenList;
+	private MonoBehaviour owner;
 	// Connection
-	private ConnectionManager cManager = new ConnectionManager();
-	private static Queue<NetworkRequest> requests = new Queue<NetworkRequest>();
-	private static int counter = 0;
-	private static int interval = 50;
+	private ConnectionManager cManager;
+	private Queue<NetworkRequest> requests;
+	private int counter = 0;
+	private int interval = 50;
 
 	private static bool lostConnection = false;
 
-	void Awake() {
+	// The NetworkManager needs a MonoBehaviour instance to start co-routines on
+	public NetworkManager(MonoBehaviour owner, ConnectionManager cManager) {
+		this.owner = owner;
+		this.cManager = cManager;
+		this.requests = new Queue<NetworkRequest>();
+		this.callbackList = new Dictionary<int, Queue<Callback>>();
+		this.listenList = new Dictionary<int, List<Callback>>();
+		
 		NetworkProtocolTable.Init();
 
-		NetworkManager.Listen (NetworkCode.HEARTBEAT, ProcessHeartbeat);
-	}
-	
-	// Use this for initialization
-	void Start() {
-		if (cManager.Connect(Config.REMOTE_HOST, Constants.REMOTE_PORT) == ConnectionManager.SUCCESS) {
-			NetworkManager.Send(
+		Listen (NetworkCode.HEARTBEAT, ProcessHeartbeat);
+
+		if (cManager.Connect() == ConnectionManager.SUCCESS) {
+			Send(
 				ClientProtocol.Prepare(Constants.CLIENT_VERSION, Constants.SESSION_ID),
 				ProcessClient
 			);
 		}
-		StartCoroutine(Poll(Constants.HEARTBEAT_RATE));
+
+		owner.StartCoroutine(Poll(Constants.HEARTBEAT_RATE));
 	}
+
+    // The NetworkManager needs a MonoBehaviour instance to start co-routines on
+    public NetworkManager(MonoBehaviour owner, ConnectionManager cManager, bool isHeartbeatRequired) {
+        this.owner = owner;
+        this.cManager = cManager;
+        this.requests = new Queue<NetworkRequest>();
+        this.callbackList = new Dictionary<int, Queue<Callback>>();
+        this.listenList = new Dictionary<int, List<Callback>>();
+        
+        NetworkProtocolTable.Init();
+
+        Listen (NetworkCode.HEARTBEAT, ProcessHeartbeat);
+
+        if (cManager.Connect() == ConnectionManager.SUCCESS) {
+            Send(
+                ClientProtocol.Prepare(Constants.CLIENT_VERSION, Constants.SESSION_ID),
+                ProcessClient
+            );
+        }
+        if(isHeartbeatRequired)
+            owner.StartCoroutine(Poll(Constants.HEARTBEAT_RATE));
+    }
 	
-	// Update is called once per frame
-	void Update () {
+	// Update should be called within a Game's Update method
+	public void Update () {
 		if (!cManager.Connected) {
 			return;
 		}
@@ -48,9 +75,8 @@ public class NetworkManager : MonoBehaviour {
 
 			if (cManager.Send(packet.GetBytes())) {
 				requests.Dequeue();
-
-				Debug.Log("Sent Request No. " + packet.GetID() + " [" +  
-				          NetworkProtocolTable.Get(packet.GetID()).ToString() + "]");
+                // commented by Rujoota
+				//Debug.Log("Sent Request No. " + packet.GetID() + " [" +  NetworkProtocolTable.Get(packet.GetID()).ToString() + "]");
 			}
 		}
 
@@ -83,17 +109,17 @@ public class NetworkManager : MonoBehaviour {
 				}
 			}
 
-			Debug.Log((status ? "Processed" : "Ignored") + " Response No. " + 
-			          args.GetID() + " [" + NetworkProtocolTable.Get(args.GetID()).ToString() + "]");
+			/*Debug.Log((status ? "Processed" : "Ignored") + " Response No. " + 
+			          args.GetID() + " [" + NetworkProtocolTable.Get(args.GetID()).ToString() + "]");*/
 		}
 	}
 
-	public static void Send(NetworkRequest packet) {
+	public void Send(NetworkRequest packet) {
 		requests.Enqueue(packet);
 	}
 	
-	public static void Send(NetworkRequest packet, Callback callback) {
-		NetworkManager.Send(packet);
+	public void Send(NetworkRequest packet, Callback callback) {
+		this.Send(packet);
 
 		int protocol_id = packet.GetID();
 		if (!callbackList.ContainsKey(protocol_id)) {
@@ -103,7 +129,7 @@ public class NetworkManager : MonoBehaviour {
 		callbackList[protocol_id].Enqueue(callback);
 	}
 
-	public static void Listen(int protocol_id, Callback callback) {
+	public void Listen(int protocol_id, Callback callback) {
 		if (!listenList.ContainsKey(protocol_id)) {
 			listenList[protocol_id] = new List<Callback>();
 		}
@@ -111,7 +137,7 @@ public class NetworkManager : MonoBehaviour {
 		listenList[protocol_id].Add(callback);
 	}
 
-	public static void Ignore(int protocol_id, Callback callback) {
+	public void Ignore(int protocol_id, Callback callback) {
 		if (listenList.ContainsKey(protocol_id) && listenList[protocol_id].Contains(callback)) {
 			while (listenList[protocol_id].Contains(callback)) {
 				listenList[protocol_id].Remove(callback);
@@ -121,7 +147,7 @@ public class NetworkManager : MonoBehaviour {
 		}
 	}
 
-	public static void Clear() {
+	public void Clear() {
 		callbackList.Clear();
 		listenList.Clear();
 		requests.Clear();
@@ -148,7 +174,7 @@ public class NetworkManager : MonoBehaviour {
 		if (!lostConnection) {
 			Debug.LogWarning ("Lost connection!");
 
-			gameObject.AddComponent <ConnectionLostGUI>();
+			owner.gameObject.AddComponent <ConnectionLostGUI>();
 
 			lostConnection = true;
 		}
