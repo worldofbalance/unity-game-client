@@ -121,6 +121,14 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 			}
 		}
 	}
+	public bool useDoughnut { get {return _useDoughnut;} 
+		set {
+			if (_useDoughnut != value) {
+				_useDoughnut = value;
+				doughnutC.Changed();
+			}
+		}
+	}
 	public float doughnutPercentage { get {return _doughnutPercentage;} 
 		set {
 			if (_doughnutPercentage != value) {
@@ -225,6 +233,14 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 			}
 		}
 	}
+	public bool interactivityEnabled { get {return _interactivityEnabled;} 
+		set {
+			if (_interactivityEnabled != value) {
+				_interactivityEnabled = value;
+				interactivityC.Changed();
+			}
+		}
+	}
 
 	// Public variables without change tracking
 	public WMG_Data_Source sliceValuesDataSource;
@@ -250,6 +266,7 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 	[SerializeField] private WMG_Enums.labelTypes _sliceLabelType;
 	[SerializeField] private float _explodeLength;
 	[SerializeField] private bool _explodeSymmetrical;
+	[SerializeField] private bool _useDoughnut;
 	[SerializeField] private float _doughnutPercentage;
 	[SerializeField] private bool _limitNumberSlices;
 	[SerializeField] private bool _includeOthers;
@@ -263,6 +280,8 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 	[SerializeField] private int _numberDecimalsInPercents;
 	[SerializeField] private Color _sliceLabelColor;
 	[SerializeField] private bool _hideZeroValueLegendEntry;
+	[SerializeField] private bool _interactivityEnabled;
+
 
 	// Useful property getters / data structures
 	public float pieSize { 
@@ -300,9 +319,11 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 	public WMG_Change_Obj graphC = new WMG_Change_Obj();
 	private WMG_Change_Obj resizeC = new WMG_Change_Obj();
 	private WMG_Change_Obj doughnutC = new WMG_Change_Obj();
+	private WMG_Change_Obj interactivityC = new WMG_Change_Obj();
 
 	private bool hasInit;
 	private bool setOrig;
+	private bool doughnutHasInit;
 
 	void Start () {
 		Init ();
@@ -319,10 +340,13 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 		changeObjs.Add(graphC);
 		changeObjs.Add(resizeC);
 		changeObjs.Add(doughnutC);
+		changeObjs.Add(interactivityC);
 		
 		if (animationDuration > 0) UpdateVisuals(true);
-		
-		createTextureData();
+
+		if (useDoughnut) {
+			initDoughnut();
+		}
 		cachedContainerWidth = getSpriteWidth(this.gameObject);
 		cachedContainerHeight = getSpriteHeight(this.gameObject);
 		
@@ -338,9 +362,26 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 		graphC.OnChange += GraphChanged;
 		resizeC.OnChange += ResizeChanged;
 		doughnutC.OnChange += DoughtnutChanged;
+		interactivityC.OnChange += InteractivityChanged;
 		
 //		setOriginalPropertyValues();
 		PauseCallbacks();
+	}
+
+	void initDoughnut() {
+		if (doughnutHasInit) return;
+		doughnutHasInit = true;
+		GameObject temp = GameObject.Instantiate(nodePrefab) as GameObject;
+		Texture2D origTex = getTexture(temp.GetComponent<WMG_Pie_Graph_Slice>().objectToColor);
+		colors = origTex.GetPixels();
+		origColors = origTex.GetPixels();
+		pieSprite = WMG_Util.createSprite(origTex);
+		Destroy(temp);
+		for (int i = 0; i < slices.Count; i++) {
+			WMG_Pie_Graph_Slice pieSlice = slices[i].GetComponent<WMG_Pie_Graph_Slice>();
+			setTexture(pieSlice.objectToColor, pieSprite);
+			setTexture(pieSlice.objectToMask, pieSprite);
+		}
 	}
 
 	void Update () {
@@ -401,7 +442,51 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 	}
 
 	void DoughtnutChanged() {
-		UpdateDoughnut();
+		if (useDoughnut) {
+			initDoughnut();
+			UpdateDoughnut();
+		}
+	}
+
+	void InteractivityChanged() {
+		if (interactivityEnabled) {
+			explodeSymmetrical = false;
+		}
+		for (int i = 0; i < slices.Count; i++) {
+			WMG_Pie_Graph_Slice pieSlice = slices[i].GetComponent<WMG_Pie_Graph_Slice>();
+			WMG_Raycatcher pieSliceRaycatcher = pieSlice.objectToColor.GetComponent<WMG_Raycatcher>();
+			if (pieSliceRaycatcher != null && !interactivityEnabled) {
+				Destroy(pieSliceRaycatcher);
+			}
+			if (pieSliceRaycatcher == null && interactivityEnabled) {
+				pieSlice.objectToColor.AddComponent<WMG_Raycatcher>();
+			}
+			if (interactivityEnabled) {
+				setAsNotInteractible(pieSlice.objectToLabel);
+			}
+		}
+
+		Canvas canvas = null;
+		getFirstCanvasOnSelfOrParent(this.transform, ref canvas);
+		if (!canvas) {
+			Debug.LogError("No Canvas found for Pie Graph");
+			return;
+		}
+
+		WMG_Raycaster canvasRaycaster = canvas.GetComponent<WMG_Raycaster>();
+		if (canvasRaycaster == null) {
+			if (interactivityEnabled) {
+				canvas.gameObject.AddComponent<WMG_Raycaster>();
+			}
+		}
+		else {
+			if (!interactivityEnabled) {
+				DestroyImmediate(canvasRaycaster);
+				addRaycaster(canvas.gameObject);
+			}
+		}
+
+
 	}
 
 	void GraphChanged() {
@@ -409,7 +494,11 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 	}
 
 	void AllChanged() {
-		UpdateDoughnut();
+		if (useDoughnut) {
+			initDoughnut();
+			UpdateDoughnut();
+		}
+		InteractivityChanged();
 		if (!isAnimating) UpdateVisuals(false);
 	}
 
@@ -532,8 +621,18 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 				GameObject curObj = CreateNode(nodePrefab, slicesParent);
 				slices.Add(curObj);
 				WMG_Pie_Graph_Slice pieSlice = curObj.GetComponent<WMG_Pie_Graph_Slice>();
-				setTexture(pieSlice.objectToColor, pieSprite);
-				setTexture(pieSlice.objectToMask, pieSprite);
+				pieSlice.pieRef = this;
+				pieSlice.sliceIndex = i;
+				if (useDoughnut) {
+					setTexture(pieSlice.objectToColor, pieSprite);
+					setTexture(pieSlice.objectToMask, pieSprite);
+				}
+				if (interactivityEnabled) {
+					pieSlice.objectToColor.AddComponent<WMG_Raycatcher>();
+					setAsNotInteractible(pieSlice.objectToLabel);
+				}
+				addPieSliceMouseEnterEvent(pieSlice.objectToColor);
+				addPieSliceClickEvent(pieSlice.objectToColor);
 			}
 			if (legend.legendEntries.Count <= i) {
 				legend.createLegendEntry(legendEntryPrefab);
@@ -810,8 +909,11 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 					sliceLabels.SetValNoCb(j+1, tempL, ref _sliceLabels);
 					// Swap Slices
 					tempGo = slices[j];
+					slices[j].GetComponent<WMG_Pie_Graph_Slice>().sliceIndex = j+1;
 					slices[j] = slices[j+1];
+					slices[j+1].GetComponent<WMG_Pie_Graph_Slice>().sliceIndex = j;
 					slices[j+1] = tempGo;
+
 					// Swap Colors
 					if (swapColorsDuringSort) {
 						Color tempC = sliceColors[j];
@@ -832,30 +934,16 @@ public class WMG_Pie_Graph : WMG_Graph_Manager {
 		pieSprite.texture.Apply();
 	}
 
-	void createTextureData() {
-		GameObject temp = GameObject.Instantiate(nodePrefab) as GameObject;
-		Texture2D origTex = getTexture(temp.GetComponent<WMG_Pie_Graph_Slice>().objectToColor);
-		colors = origTex.GetPixels();
-		origColors = origTex.GetPixels();
-		pieSprite = WMG_Util.createSprite(origTex);
-		Destroy(temp);
-	}
 
-	/// <summary>
-	/// If you want to callout a slice, you can use this to get what its position should be. 
-	/// Then you can animate or set the position of the slice to this position. Use the LabelToSliceMap dictionary to get the slice.
-	/// </summary>
-	/// <returns>The callout slice position.</returns>
-	/// <param name="label">The slice label which is used as a key to lookup the slice object.</param>
-	/// <param name="amt">The radius in pixels to move the slice</param>
 	public Vector3 getCalloutSlicePosition(string label, float amt) {
 		if (LabelToSliceMap.ContainsKey (label)) {
-			float angle = Mathf.Deg2Rad * (-LabelToSliceMap [label].slicePercentPosition + 90);
-			return new Vector3(amt * Mathf.Cos(angle), amt * Mathf.Sin(angle), 0);
-//			Vector3 newPos = new Vector3(amt * Mathf.Cos(angle), amt * Mathf.Sin(angle), 0);
-//			WMG_Anim.animPosition(LabelToSliceMap [label].gameObject, 2, Ease.Linear, newPos);
-//			LabelToSliceMap [label].transform.localPosition = new Vector3(newPos);
+			return getPositionFromExplode(LabelToSliceMap[label], amt);
 		}
 		return Vector3.zero;
+	}
+
+	public Vector3 getPositionFromExplode(WMG_Pie_Graph_Slice slice, float amt) {
+		float angle = Mathf.Deg2Rad * (-slice.slicePercentPosition + 90);
+		return new Vector3(amt * Mathf.Cos(angle), amt * Mathf.Sin(angle), 0);
 	}
 }
