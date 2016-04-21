@@ -28,13 +28,13 @@ public class MultiplayerGames : MonoBehaviour {
 		mainObject = GameObject.Find("MainObject");
 		window_id = Constants.GetUniqueID();
 
-		NetworkManager.Listen (NetworkCode.PAIR, OnPairResult);
-		NetworkManager.Listen (NetworkCode.QUIT_ROOM, OnQuitRoomResult);
+		Game.networkManager.Listen (NetworkCode.PAIR, OnPairResult);
+		Game.networkManager.Listen (NetworkCode.QUIT_ROOM, OnQuitRoomResult);
 	}
 
 	void OnDestroy () {
-		NetworkManager.Ignore (NetworkCode.PAIR, OnPairResult);
-		NetworkManager.Ignore (NetworkCode.QUIT_ROOM, OnQuitRoomResult);
+		Game.networkManager.Ignore (NetworkCode.PAIR, OnPairResult);
+		Game.networkManager.Ignore (NetworkCode.QUIT_ROOM, OnQuitRoomResult);
 	}
 
 	// Use this for initialization
@@ -79,12 +79,12 @@ public class MultiplayerGames : MonoBehaviour {
 
 			if (item.Value.containsPlayer(GameState.account.account_id)) {
 				if(GUILayout.Button(new GUIContent("Quit"), GUILayout.Width(100))) {
-					NetworkManager.Send (QuitRoomProtocol.Prepare ());
+					Game.networkManager.Send (QuitRoomProtocol.Prepare ());
 				}
 			} else {
 				GUI.enabled = !this.waiting;
 				if(GUILayout.Button(new GUIContent("Join"), GUILayout.Width(100))) {
-					NetworkManager.Send (PairProtocol.Prepare (item.Value.game_id, item.Value.id));
+					Game.networkManager.Send (PairProtocol.Prepare (item.Value.game_id, item.Value.id));
 				}
 				GUI.enabled = true;
 			}
@@ -95,17 +95,17 @@ public class MultiplayerGames : MonoBehaviour {
 
 		GUI.enabled = enableRRButton;
 		if (GUI.Button(new Rect(10, windowRect.height - 80, 140, 30), "Play Running Rhino")) {
-			NetworkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_RUNNING_RHINO, -1));
+			Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_RUNNING_RHINO, -1));
 		}
 
 		GUI.enabled = enableCWButton;
 		if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Play Cards of Wild")) {
-			NetworkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_CARDS_OF_WILD, -1));
+			Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_CARDS_OF_WILD, -1));
 		}
 
         GUI.enabled = enableSDButton;
         if (GUI.Button(new Rect(165, windowRect.height - 40, 125, 30), "Play Sea Divided")) {
-            NetworkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_SEA_DIVIDED, -1));
+            Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_SEA_DIVIDED, -1));
         }
 
 		GUI.enabled = true;
@@ -123,7 +123,7 @@ public class MultiplayerGames : MonoBehaviour {
 
 	public void Quit() {
         if (!this.enableRRButton || !this.enableCWButton || !this.enableSDButton) {
-			NetworkManager.Send (QuitRoomProtocol.Prepare ());
+			Game.networkManager.Send (QuitRoomProtocol.Prepare ());
 			quiting = true;
 		} else {
 			Destroy (this);
@@ -167,9 +167,12 @@ public class MultiplayerGames : MonoBehaviour {
 				Game.SwitchScene ("RRReadyScene");
 			} else if (args.gameID == Constants.MINIGAME_CARDS_OF_WILD) {
 				CW.GameManager.matchID = args.id;
-				NetworkManager.Send (CW.MatchInitProtocol.Prepare 
+                gameObject.AddComponent <CWGame>();
+                Quit();
+                CWGame.networkManager.Send (CW.MatchInitProtocol.Prepare 
 				                        (GameState.player.GetID(), args.id), 
 				                        ProcessMatchInit);
+                
             } else if (args.gameID == Constants.MINIGAME_SEA_DIVIDED) {
                 SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
                 sManager.Send(SD_RequestPlayInit());
@@ -191,7 +194,7 @@ public class MultiplayerGames : MonoBehaviour {
 	public IEnumerator RequestGetRooms(float time) {
 		yield return new WaitForSeconds(time);
 		
-		NetworkManager.Send (GetRoomsProtocol.Prepare ());
+		Game.networkManager.Send (GetRoomsProtocol.Prepare ());
 		
 		StartCoroutine(RequestGetRooms(1f));
 	}

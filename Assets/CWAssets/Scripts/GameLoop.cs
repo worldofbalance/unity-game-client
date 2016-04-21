@@ -10,7 +10,7 @@ public class GameLoop : MonoBehaviour {
 	private int currentDay;
 	
 	void Awake() {
-		NetworkManager.Listen(
+		CWGame.networkManager.Listen(
 			NetworkCode.PREDICTION,
 			ProcessPrediction
 		);
@@ -28,7 +28,7 @@ public class GameLoop : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		NetworkManager.Ignore(
+		CWGame.networkManager.Ignore(
 			NetworkCode.PREDICTION,
 			ProcessPrediction
 		);
@@ -38,7 +38,7 @@ public class GameLoop : MonoBehaviour {
 		if (currentMonth != args.month) {
 			currentMonth = args.month;
 			
-			NetworkManager.Send(
+			CWGame.networkManager.Send(
 				PredictionProtocol.Prepare(),
 				ProcessPrediction
 			);

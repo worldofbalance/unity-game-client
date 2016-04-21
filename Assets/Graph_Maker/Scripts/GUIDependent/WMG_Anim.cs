@@ -32,6 +32,11 @@ public static class WMG_Anim {
 			.OnUpdate(onUpd);
 	}
 
+	public static void animRotationCallbacks(GameObject obj, float duration, Ease easeType, Vector3 animTo, bool relative, TweenCallback onUpd, TweenCallback onComp) {
+		obj.transform.DOLocalRotate(animTo, duration, RotateMode.FastBeyond360).SetEase(easeType).SetUpdate(false).SetRelative(relative)
+			.OnUpdate(onUpd).OnComplete(onComp);
+	}
+
 	public static void animPositionCallbackC(GameObject obj, float duration, Ease easeType, Vector3 animTo, TweenCallback onComp) { 
 		DOTween.To(()=> obj.transform.localPosition, x=> obj.transform.localPosition = x, animTo, duration).SetEase(easeType).SetUpdate(false)
 			.OnComplete(onComp);

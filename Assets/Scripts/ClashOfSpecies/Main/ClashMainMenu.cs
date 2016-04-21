@@ -28,7 +28,7 @@ public class ClashMainMenu : MonoBehaviour {
 
 		contentPanel.Find("Credit").GetComponent<Text>().text = "You have " + manager.currentPlayer.credits + " credits.";
 
-        NetworkManager.Send(ClashPlayerListProtocol.Prepare(), (res) => {
+        Game.networkManager.Send(ClashPlayerListProtocol.Prepare(), (res) => {
             var response = res as ResponseClashPlayerList;
 
             foreach (var pair in response.players) {
@@ -49,7 +49,7 @@ public class ClashMainMenu : MonoBehaviour {
                     if (val) {
                         selectedPlayer = player;
                         manager.currentTarget = new ClashDefenseConfig();
-                        NetworkManager.Send(ClashPlayerViewProtocol.Prepare(player.GetID()), (resView) => {
+                        Game.networkManager.Send(ClashPlayerViewProtocol.Prepare(player.GetID()), (resView) => {
                             var responseView = resView as ResponseClashPlayerView;
 //                            Debug.Log(responseView.terrain);
                             contentPanel.GetComponent<RawImage>().texture = Resources.Load("Images/ClashOfSpecies/" + responseView.terrain) as Texture;

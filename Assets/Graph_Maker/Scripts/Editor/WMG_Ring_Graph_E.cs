@@ -50,6 +50,7 @@ public class WMG_Ring_Graph_E : WMG_E_Util
 	void DrawCore() {
 		ArrayGUIoc<float> (graph.values, "Values", "_values");
 		ArrayGUIoc<string> (graph.labels, "Labels", "_labels");
+		ArrayGUIoc<bool> (graph.hideRings, "HideRings", "_hideRings");
 		ExposeProperty (fields ["bandMode"]);
 		ExposeProperty (fields ["innerRadiusPercentage"]);
 		ExposeProperty (fields ["degrees"]);

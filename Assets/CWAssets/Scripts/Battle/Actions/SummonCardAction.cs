@@ -37,9 +37,9 @@ public class SummonCardAction : TurnAction {
 	}
 
 	override public void execute(){
-		Debug.Log("TODO: summonCard() in BattlePlayer, all info:" + 
-		          cardID + diet+ level+ attack+ health +species_name + type);
-		Debug.Log ("Executing Summon Card");
+		/*Debug.Log("TODO: summonCard() in BattlePlayer, all info:" + 
+		          cardID + diet+ level+ attack+ health +species_name + type);*/
+		//Debug.Log ("Executing Summon Card");
 
 		//GameObject instantiated for Card
 		GameObject obj = GameManager.player2.instantiateCard();
@@ -58,7 +58,8 @@ public class SummonCardAction : TurnAction {
 
 		GameManager.player2.cardsInPlay.Add(obj);
 		script.handler = new InPlay(script, GameManager.player2);
-
+        script.isInHand=false;
+        script.isInPlay=true;
 		GameObject.Destroy((GameObject)GameManager.player2.hand[0]);
 		GameManager.player2.hand.RemoveAt(0);
 
@@ -67,9 +68,9 @@ public class SummonCardAction : TurnAction {
 		//script.transform.rotation =  Quaternion.Euler(script.transform.rotation.x, script.transform.rotation.y, 0); 
 		script.transform.rotation =  Quaternion.Euler(script.transform.rotation.x, 180, 0); 
 
-	
-		Debug.Log(GameManager.player2.cardsInPlay.Count + " Count");
-		Debug.Log(script.name + " " + obj.transform.position);
+	    
+		//Debug.Log(GameManager.player2.cardsInPlay.Count + " Count");
+		//Debug.Log(script.name + " " + obj.transform.position);
 
 	}
 }

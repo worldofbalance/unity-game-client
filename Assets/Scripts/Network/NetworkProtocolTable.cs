@@ -72,7 +72,7 @@ public class NetworkProtocolTable {
 		Add(NetworkCode.MATCH_START, "CW.MatchStart");
 		Add(NetworkCode.RETURN_LOBBY, "CW.ReturnLobby");
 		Add(NetworkCode.APPLY_FOOD, "CW.ApplyFoodBuff");
-
+        Add(NetworkCode.APPLY_WEATHER, "CW.ApplyWeather");
 	}
 	
 	public static void Add(short protocol_id, string name) {

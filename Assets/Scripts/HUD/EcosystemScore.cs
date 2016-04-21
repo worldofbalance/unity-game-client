@@ -9,7 +9,7 @@ public class EcosystemScore : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
-		NetworkManager.Listen(
+		Game.networkManager.Listen(
 			NetworkCode.UPDATE_ENV_SCORE,
 			ProcessUpdateEcoScore
 		);
@@ -23,7 +23,7 @@ public class EcosystemScore : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		NetworkManager.Ignore(
+		Game.networkManager.Ignore(
 			NetworkCode.UPDATE_ENV_SCORE,
 			ProcessUpdateEcoScore
 		);

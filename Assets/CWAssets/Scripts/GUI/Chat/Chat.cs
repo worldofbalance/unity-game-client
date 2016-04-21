@@ -25,7 +25,7 @@ public class Chat : MonoBehaviour {
 		bgTexture = Resources.Load<Texture2D>(Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
 		font = Resources.Load<Font>("Fonts/" + "Chalkboard");
 
-		NetworkManager.Listen(
+		CWGame.networkManager.Listen(
 			NetworkCode.MESSAGE,
 			ProcessMessage
 		);
@@ -45,7 +45,7 @@ public class Chat : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		NetworkManager.Ignore(
+		CWGame.networkManager.Ignore(
 			NetworkCode.MESSAGE,
 			ProcessMessage
 		);
@@ -114,7 +114,7 @@ public class Chat : MonoBehaviour {
 		if (message == "") {
 //			GUI.FocusControl("");
 		} else {
-			NetworkManager.Send(
+			CWGame.networkManager.Send(
 				MessageProtocol.Prepare(0, message)
 			);
 
