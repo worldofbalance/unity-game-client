@@ -120,7 +120,7 @@ namespace RR
         {
             float tempEnd = -35f;
             mapLength = 20;
-            mapLength = 5;
+            //mapLength = 5;
 
             if (mapSeed != null)
             {
