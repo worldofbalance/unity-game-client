@@ -26,13 +26,13 @@ public class ResponseRRStartGame : NetworkResponse {
 		Debug.Log("ResponseRRStartGame has been parsed.");
 		//		Battle.stopSendRequest();
 		if (status == 0) {
-			//Debug.Log("Battle Preparation Started");
+			Debug.Log("Battle Preparation Started");
 			//change to battle scene
 			//when the battle is ended, change stopSendRequest to true;
-//			Application.LoadLevel("CountdownScene");
+			Application.LoadLevel("RRCountdownScene");
 		}
 		else if (status ==1) {
-//			Debug.Log("request received by server, wait for a race");
+			Debug.Log("request received by server, wait for a race");
 		}
 	}
 	
