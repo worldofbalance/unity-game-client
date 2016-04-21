@@ -19,6 +19,7 @@ public class Boundary
 
 public class PlayerController : MonoBehaviour {
     Rigidbody rb;
+    private const int MindSpeed = 35;
     private float speed = 40;
     public float speedUpFactor = 1.5f;
     private const int MaxSpeed = 60;
@@ -82,11 +83,7 @@ public class PlayerController : MonoBehaviour {
         // Flips the player object left or right
         // depending on the direction the player is moving
         // Moving to Right
-      var mouse = Input.mousePosition;
-             var screenPoint = Camera.main.WorldToScreenPoint(transform.localPosition);
-             var offset = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
-             var angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
-             transform.rotation = Quaternion.Euler(angle-180 ,- 90, 0 );
+    
         if (rb.velocity.x > 0) {
             
             //turnSpeed = turnSpeed * -1;
@@ -109,23 +106,35 @@ public class PlayerController : MonoBehaviour {
     //              as long as the player keeps on presing a space bar
     void Update(){
         currentStamina = gameController.GetStamina();
-        
-        if(Input.GetKey (KeyCode.Space) && isMoving() && currentStamina >=0){
+            if (Input.GetMouseButton(0))
+            {
+                var mouse = Input.mousePosition;
+                var screenPoint = Camera.main.WorldToScreenPoint(transform.localPosition);
+                var offset = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
+                var angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Euler(angle - 180, -90, 0);
+
+                mouse.z = transform.position.z - Camera.main.transform.position.z;
+                mouse = Camera.main.ScreenToWorldPoint(mouse);
+                if (Input.GetKey(KeyCode.Space) && currentStamina > 0) {
+                    speed = speed * speedUpFactor;
+                    if (speed > MaxSpeed) { speed = MaxSpeed; }
+                    gameController.SetStamina(currentStamina - .25f);
+                }
+                transform.position = Vector3.MoveTowards(transform.position, mouse, speed * Time.deltaTime);
+            }
+			else if (Input.GetKey(KeyCode.Space) && currentStamina >0){
                  speed = speed * speedUpFactor;
                 if (speed > MaxSpeed) { speed = MaxSpeed; }
                 gameController.SetStamina (currentStamina-.25f);
-        } 
+        }
+            if (isMoving()==false) {
+                speed = MindSpeed;
+                currentStamina++;
+            }
 
-        if (Input.GetKeyUp (KeyCode.Space)) {
-            speed = speed / speedUpFactor;
-                sdGameManager.SetKeyboardActions ((int)KeyCode.Space, 1); // Space up
-        }
-        if (Input.GetMouseButton(0)) {
-            var pos = Input.mousePosition;
-            pos.z = transform.position.z - Camera.main.transform.position.z;
-            pos = Camera.main.ScreenToWorldPoint(pos);
-            transform.position = Vector3.MoveTowards(transform.position, pos, speed * Time.deltaTime);
-        }
+      
+        
     }
 
     // Returns true if the player is moving.
