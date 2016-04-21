@@ -115,7 +115,9 @@ namespace CW
 
 			//Deal player 1 a card and set as current player
 			GameManager.curPlayer = player1;
-			player1.startTurn ();
+            player1.cardsInPlayGlow();
+            player1.startTurn ();
+            
 		}
 	
 		public static void endTurn ()

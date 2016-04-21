@@ -348,7 +348,6 @@ namespace CW
 				attackerCard.receiveAttack (attackedCard.dmg);
 			}
 			attackerCard.attack (attackerCard, attackedCard, damageBack);
-			
 		}
 		
 		public void attackTree (int attackerIndex)
@@ -360,8 +359,7 @@ namespace CW
 			Trees tree = attackedObj.GetComponent<Trees> ();
 			
 			attackerCard.attackTree (tree);
-			
-		}
+        }
 		
 		//Called by GameManager when a card is removed from play
 		//to keep all the cards neatly arranged preventing
@@ -424,6 +422,7 @@ namespace CW
 			
 			//Restore full mana
 			currentMana = maxMana;
+            checkHandGlow();
 		}
 		
 		
@@ -456,7 +455,7 @@ namespace CW
 		// Update is called once per frame
 		void Update ()
 		{
-			showTurn--;
+            showTurn--;
 			Texture2D manaTexture = (Texture2D)Resources.Load ("Images/Battle/mana" + (int)manaAnimate, typeof(Texture2D));
 			//Constantly sets the text for mana
 			manaObj.transform.Find ("ManaText").GetComponent<TextMesh> ().text = currentMana + " / " + maxMana;
@@ -504,5 +503,37 @@ namespace CW
 				}
 			}
 		}
+
+        public void checkHandGlow()
+        {
+            if (hand.Count > 0)
+            {
+                GameObject currentCard;
+                for (int i = 0; i < hand.Count; i++)
+                {
+                    currentCard = ((GameObject)hand[i]);
+                    if(currentCard.GetComponent<AbstractCard>().manaCost <= currentMana)
+                    {
+                        ((Behaviour)currentCard.GetComponent("Halo")).enabled = true;
+                    } else
+                    {
+                        ((Behaviour)currentCard.GetComponent("Halo")).enabled = false;
+                    }
+                }
+            }
+        }
+
+        public void cardsInPlayGlow()
+        {
+            if (cardsInPlay.Count > 0)
+            {
+                GameObject currentCard;
+                for (int i = 0; i < cardsInPlay.Count; i++)
+                {
+                    currentCard = ((GameObject)cardsInPlay[i]);
+                    ((Behaviour)currentCard.GetComponent("Halo")).enabled = true;
+                }
+            }
+        }
 	}
 }
