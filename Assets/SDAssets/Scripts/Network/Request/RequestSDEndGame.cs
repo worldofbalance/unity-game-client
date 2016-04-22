@@ -7,9 +7,9 @@ namespace SD {
             packet = new GamePacket (request_id = Constants.CMSG_SDEND_GAME);
         }
 
-        public void Send(bool gameCompleted, string score) {
+        public void Send(bool gameCompleted, float score) {
             packet.addBool (gameCompleted);
-            packet.addString (score);
+            packet.addFloat32 (score);
         }
     }
 }

@@ -62,10 +62,10 @@ namespace SD {
             }
             if (cManager) {
                 RequestSDEndGame request = new RequestSDEndGame();
-                request.Send (gameCompleted, finalScore.ToString()); // TODO: This should be changed to int in the server.
+                request.Send (gameCompleted, (float) finalScore);
                 cManager.Send (request);
             }
-            SceneManager.LoadScene ("SDReadyScene");  // TODO: Remove once the DB and Server work.
+            SceneManager.LoadScene ("SDReadyScene"); 
         }
 
         public void ResponseSDEndGame(ExtendedEventArgs eventArgs) {
