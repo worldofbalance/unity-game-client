@@ -15,7 +15,7 @@ public class Game : MonoBehaviour
     {
 				networkManager = new NetworkManager(
 					this,
-					new ConnectionManager(Config.REMOTE_HOST, Constants.REMOTE_PORT)
+					new ConnectionManager(Config.GetHost(), Constants.REMOTE_PORT)
 				);
         scene = "Login";
         DontDestroyOnLoad (gameObject);
