@@ -50,6 +50,7 @@ namespace SD {
         private Rigidbody rbOpponent;
         private Dictionary <int, NPCFish> npcFishes = new Dictionary<int, NPCFish>();
         private Dictionary <int, GameObject> npcFishObjects = new Dictionary<int, GameObject>();
+        private bool hasSurrendered;
 
         public GameObject surrenderPanelCanvas;
 
@@ -65,6 +66,7 @@ namespace SD {
             Rigidbody playerBaseClone = (Rigidbody)Instantiate (playerBase, playerBaseInitialPosition, playerBaseInitialRotation);
             Rigidbody opponentBaseClone = (Rigidbody)Instantiate (opponentBase, opponentBaseInitialPosition, opponentBaseInitialRotation);
             score = 0;
+            hasSurrendered = false;
             opponentScore = 0;
             unscoredPoint = 0; 
             UpdateScore ();
@@ -207,7 +209,8 @@ namespace SD {
         }
 
         public void BtnSurrenderClick() {
-            sdGameManager.EndGame (false, score);
+            hasSurrendered = true;
+            sdGameManager.EndGame (hasSurrendered, score);
         }
 
         public Rigidbody getOpponent() {
@@ -228,6 +231,14 @@ namespace SD {
 
         public void hideSurrenderPanel(){
             surrenderPanelCanvas.SetActive(false);
+        }
+
+        public int getPlayerScore() {
+            return score;
+        }
+
+        public bool getHasSurrendered() {
+            return hasSurrendered;
         }
     } 
 

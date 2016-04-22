@@ -12,9 +12,10 @@ namespace SD {
         private SDConnectionManager cManager;
         private SDMessageQueue mQueue;
         private static GameManager gameManager;
-        private string resultText;
         private static GameController gameController;
+        private static SDPersistentData persistentObject;
         private bool isMultiplayer = false;
+        private string resultText;
 
         public GameManager() {
         }
@@ -27,6 +28,8 @@ namespace SD {
             gameController = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameController>();
             cManager = SDConnectionManager.getInstance ();
             mQueue = SDMessageQueue.getInstance ();
+            persistentObject = SDPersistentData.getInstance ();
+
             if (cManager && mQueue) {
                 if (!mQueue.callbackList.ContainsKey(Constants.SMSG_SDEND_GAME))
                     mQueue.AddCallback (Constants.SMSG_SDEND_GAME, ResponseSDEndGame);
@@ -60,16 +63,21 @@ namespace SD {
             if (!gameCompleted) {
                 Debug.Log ("The player has surrendered - the game was unfinished. ");
             }
-            if (cManager) {
-                RequestSDEndGame request = new RequestSDEndGame();
-                request.Send (gameCompleted, (float) finalScore);
-                cManager.Send (request);
+            if (persistentObject) {
+                persistentObject.setPlayerFinalScore (finalScore);
             }
-            SceneManager.LoadScene ("SDReadyScene"); 
+            if (cManager) {
+                RequestSDEndGame request = new RequestSDEndGame ();
+                request.Send (gameCompleted, (float)finalScore);
+                cManager.Send (request);
+            } else {
+                SceneManager.LoadScene ("SDGameEnd");
+            }
         }
 
         public void ResponseSDEndGame(ExtendedEventArgs eventArgs) {
             ResponseSDEndGameEventArgs args = eventArgs as ResponseSDEndGameEventArgs;
+            //SceneManager.LoadScene ("SDGameEnd");
             resultText = " Your final score is " + args.finalScore + ".";
             if (args.isWinner) {
                 resultText += "Congratulations ! You win !";
@@ -77,6 +85,8 @@ namespace SD {
                 resultText += "Sorry, you lost ! Better luck next time !";
             }
             Debug.Log(resultText);
+            Debug.Log ("The winner is " + args.winningPlayerId);
+            Debug.Log ("IsWin is " + args.isWinner);
         }
         // Sends the player's current position to the server.
         public void SetPlayerPositions(float x, float y) {
