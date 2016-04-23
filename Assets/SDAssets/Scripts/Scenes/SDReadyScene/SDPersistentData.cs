@@ -76,7 +76,7 @@ namespace SD {
             gameResult = status;
         }
 
-        public int setGameResult() {
+        public int getGameResult() {
             return gameResult;
         }
     }
