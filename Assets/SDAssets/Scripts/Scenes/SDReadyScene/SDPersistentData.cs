@@ -5,17 +5,22 @@ namespace SD {
     public class SDPersistentData : MonoBehaviour {
 
         private int playerFinalScore;
-        private int opponentFinalScore;
         private int roundsCompleted;
         private bool isGameCompleted;
+        private int winningScore;
+        private int gameResult;
         private static SDPersistentData sdPersistentData;
 
         void Awake() {
-            sdPersistentData = this;
+            if (sdPersistentData) {
+                DestroyImmediate (gameObject);
+            } else {
+                DontDestroyOnLoad (gameObject);
+                sdPersistentData = this;
+            }
         }
 
-        void Start () {
-            DontDestroyOnLoad (this);
+        void Start() {
             initializeData ();
         }
 
@@ -23,11 +28,12 @@ namespace SD {
 
         }
 
-        void initializeData() {
+        public void initializeData() {
             setPlayerFinalScore (0);
-            setOpponentFinalScore (0);
             setRoundsCompleted (0);
             setIsGameCompleted (false);  // is the current game completed.
+            setWinningScore(0);
+            setGameResult (0);
         }
 
         public static SDPersistentData getInstance() {
@@ -38,16 +44,8 @@ namespace SD {
             playerFinalScore = score;
         }
 
-        public int getPlayerFinalSCore() {
+        public int getPlayerFinalScore() {
             return playerFinalScore;
-        }
-
-        public void setOpponentFinalScore(int score) {
-            opponentFinalScore = score;
-        }
-
-        public int getOpponentFinalScore() {
-            return opponentFinalScore;
         }
 
         public void setRoundsCompleted(int rounds) {
@@ -64,6 +62,22 @@ namespace SD {
 
         public bool getIsGameCompleted() {
             return isGameCompleted;
+        }
+
+        public void setWinningScore(int score) {
+            winningScore = score;
+        }
+
+        public int getWinningScore() {
+            return winningScore;
+        }
+
+        public void setGameResult(int status) {
+            gameResult = status;
+        }
+
+        public int setGameResult() {
+            return gameResult;
         }
     }
 }

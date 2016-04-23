@@ -30,6 +30,7 @@ namespace SD {
                 if (time <= -3) {
                     sdGameManager.EndGame (true, sdGameController.getPlayerScore());
                     Debug.Log ("The player's final score is " + sdGameController.getPlayerScore ());
+                    Destroy (this);
                 }
             }
         }

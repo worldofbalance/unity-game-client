@@ -49,6 +49,11 @@ namespace SD
             add(Encoding.UTF8.GetBytes(val));
         }
 
+        public void add(float val)
+        {
+            add(BitConverter.GetBytes(val));
+        }
+ 
         public byte[] toByteArray()
         {
             byte[] bytes = stream.ToArray();

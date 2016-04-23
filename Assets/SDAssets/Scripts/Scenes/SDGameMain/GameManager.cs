@@ -77,17 +77,18 @@ namespace SD {
 
         public void ResponseSDEndGame(ExtendedEventArgs eventArgs) {
             ResponseSDEndGameEventArgs args = eventArgs as ResponseSDEndGameEventArgs;
-            //SceneManager.LoadScene ("SDGameEnd");
-            resultText = " Your final score is " + args.finalScore + ".";
+            persistentObject.setWinningScore ((int)args.winningScore);
+
             if (args.isWinner) {
-                resultText += "Congratulations ! You win !";
+                persistentObject.setGameResult (Constants.PLAYER_WIN);
+            } else if (!args.isWinner && args.winningPlayerId == "0") {
+                persistentObject.setGameResult (Constants.PLAYER_DRAW);
             } else {
-                resultText += "Sorry, you lost ! Better luck next time !";
+                persistentObject.setGameResult (Constants.PLAYER_LOSE);
             }
-            Debug.Log(resultText);
-            Debug.Log ("The winner is " + args.winningPlayerId);
-            Debug.Log ("IsWin is " + args.isWinner);
+            SceneManager.LoadScene ("SDGameEnd");
         }
+
         // Sends the player's current position to the server.
         public void SetPlayerPositions(float x, float y) {
             if (cManager) {
