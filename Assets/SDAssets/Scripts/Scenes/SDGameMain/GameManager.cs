@@ -41,6 +41,8 @@ namespace SD {
                     mQueue.AddCallback (Constants.SMSG_KEYBOARD, ResponseSDKeyboard);
                 if (!mQueue.callbackList.ContainsKey (Constants.SMSG_PREY))
                     mQueue.AddCallback (Constants.SMSG_PREY, ResponseSDPrey);
+                if (!mQueue.callbackList.ContainsKey (Constants.SMSG_EAT_PREY))
+                    mQueue.AddCallback (Constants.SMSG_EAT_PREY, ResponseSDDestroyPrey);
                 isMultiplayer = true;
             } else {
                 Debug.LogWarning ("Could not establish a connection to Sea Divided Server. Falling back to offline mode.");
@@ -149,7 +151,28 @@ namespace SD {
                 fish.id = args.prey_id;
                 gameController.spawnPrey (fish.id);
             } else {
-                // Destroy the NPC Fish at the specified position at the opponent's side.
+                // Destroy the NPC Fish at the specified position if fish is not alive.
+                fish.isAlive = false;
+                gameController.destroyPrey (args.prey_id);
+            }
+        }
+
+        public void DestroyNPCFish(int id) {
+            if (cManager) {
+                RequestSDDestroyPrey request = new RequestSDDestroyPrey ();
+                request.Send (id);
+                cManager.Send (request);
+            } else {
+                NPCFish fish = gameController.getNpcFishes()[id];
+                fish.isAlive = false;
+            }
+        }
+
+        public void ResponseSDDestroyPrey(ExtendedEventArgs eventArgs) {
+            ResponseSDDestroyPreyEventArgs args = eventArgs as ResponseSDDestroyPreyEventArgs;
+            NPCFish fish = gameController.getNpcFishes()[args.prey_id];
+            if (fish.isAlive) {
+                // The NPC Fish destroyed on the server is still alive in the client, so destroy it.
                 fish.isAlive = false;
                 gameController.destroyPrey (args.prey_id);
             }

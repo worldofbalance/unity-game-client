@@ -122,10 +122,13 @@ namespace SD {
             Quaternion spawnRotation = Quaternion.identity;
             npcFishObjects [i] = Instantiate (Prey, spawnPosition, spawnRotation) as GameObject;
             npcFishObjects [i].name = "Prey" + i;
+            npcFishObjects [i].SetActive (true);
+            // Associate the metadata of the prey with the gameobject.
+            npcFishObjects[i].GetComponent<NPCFishData>().setNPCFishData(npcFishes[i]);
         }
 
         public void destroyPrey(int i) {
-            if (npcFishObjects [i]) {
+            if (npcFishObjects [i] != null) {
                 Destroy (npcFishObjects [i]);
             }
         }

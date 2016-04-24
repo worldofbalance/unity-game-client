@@ -21,6 +21,7 @@ namespace SD
             add (Constants.CMSG_KEYBOARD, "RequestSDKeyboard");
             add (Constants.CMSG_POSITION, "RequestSDPosition");
             add(Constants.CMSG_PREY, "RequestSDPrey");
+            add (Constants.CMSG_EAT_PREY, "RequestSDDestroyPrey");
         }
 
         public static void add(short request_id, string name)
