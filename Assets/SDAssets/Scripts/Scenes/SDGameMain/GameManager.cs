@@ -173,6 +173,7 @@ namespace SD {
             NPCFish fish = gameController.getNpcFishes()[args.prey_id];
             if (fish.isAlive) {
                 // The NPC Fish destroyed on the server is still alive in the client, so destroy it.
+                Debug.Log("Opponent consumed prey with ID: " + args.prey_id);
                 fish.isAlive = false;
                 gameController.destroyPrey (args.prey_id);
             }
