@@ -8,9 +8,10 @@ public class Constants {
 	public static readonly string CLIENT_VERSION = "1.00";
 
 	public static readonly string REMOTE_HOST = "localhost";
-	//public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
+	// public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
+    // IP address may be 130.212.3.51
 
-	public static readonly int REMOTE_PORT = 9255;//20041;
+	public static readonly int REMOTE_PORT = 9255;    //20041;
 
 	public static readonly float HEARTBEAT_RATE = 1f;
 	
@@ -61,6 +62,8 @@ public class Constants {
 	public static readonly int VIEW_WIN = 11;
 	public static readonly int CONVERGE_WIN = 12;
 	public static readonly int CONVERGE_POPUP_WIN = 13;
+    	public static readonly int CONVERGE_HOST_CONFIG = 14;
+    	public static readonly int CONVERGE_NONHOST_CONFIG = 15;
 
 	public static readonly float ECO_HEX_SCALE = 3;
 
@@ -77,9 +80,10 @@ public class Constants {
 	public static Dictionary<int, SpeciesData> shopList = new Dictionary<int, SpeciesData>();
 
 	// Mini games
-	public static readonly int MINIGAME_RUNNING_RHINO    = 1;
-	public static readonly int MINIGAME_CARDS_OF_WILD    = 2;
-	public static readonly int MINIGAME_DONT_EAT_ME      = 3;
-	public static readonly int MINIGAME_CLASH_OF_SPECIES = 4;
-    public static readonly int MINIGAME_SEA_DIVIDED      = 5;
+	public static readonly int MINIGAME_RUNNING_RHINO     = 1;
+	public static readonly int MINIGAME_CARDS_OF_WILD     = 2;
+	public static readonly int MINIGAME_DONT_EAT_ME       = 3;
+	public static readonly int MINIGAME_CLASH_OF_SPECIES  = 4;
+    	public static readonly int MINIGAME_SEA_DIVIDED       = 5;
+    	public static readonly int MINIGAME_MULTI_CONVERGENCE = 6;
 }
