@@ -29,9 +29,8 @@ namespace SD {
                 Debug.Log ("Consumed prey with ID: " + npcFishId);
                 if (GameManager.getInstance().getConnectionManager()) {
                     GameManager.getInstance ().DestroyNPCFish (npcFishId);
-                } else {
-                    gameController.destroyPrey (npcFishId);
                 }
+                gameController.destroyPrey (npcFishId);
                 gameController.AddUnscoredPoint (newScoreValue);
             }
         }
