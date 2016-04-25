@@ -72,7 +72,7 @@ public class ClashOfSpeciesGUI : MonoBehaviour {
 	}
 	
 	public void StartGame() {
-		NetworkManager.Send(
+		Game.networkManager.Send(
 			PlayGameProtocol.Prepare(2),
 			ProcessPlayGame
 			);

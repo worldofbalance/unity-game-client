@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 public class BuildMenu : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class BuildMenu : MonoBehaviour
     public DemAnimalFactory[] prey;
 
     // Menu buttons
-    public GameObject[] menuButtons ;
+    public GameObject[] menuButtons;
 
     private  GameObject mainObject;
 
@@ -43,7 +44,7 @@ public class BuildMenu : MonoBehaviour
 
     private DemMain main;
 
-
+    public GameObject panelObject;
 
     // this method increases score every 2s
     void increaseResources()
@@ -64,6 +65,7 @@ public class BuildMenu : MonoBehaviour
 
       turnSystem = mainObject.GetComponent<DemTurnSystem> ();
 
+      panelObject = GameObject.Find("Canvas/Panel");
     }
 
     /**
@@ -257,28 +259,29 @@ public class BuildMenu : MonoBehaviour
 
         
         // Toggle button to switch between plant and prey menu
-        demButton.setSize(120, 30);
-        GameObject toggleButton = demButton.CreateButton(59, -15, "Toggle");
+        demButton.setSize(Screen.width * 0.1f, Screen.height/14);
+        GameObject toggleButton = demButton.CreateButton(0, 0, "Toggle");
         demButton.SetButtonText(toggleButton, "Plants");
 
 
         // Creates a buttons for plant/prey menu
-        demButton.setSize(120, 80);
+        demButton.setSize(Screen.width * 0.1f, Screen.height/7);
         menuButtons = new GameObject[6];
         for (int i = 0; i < 6; i++)
         {
 
-            GameObject button = demButton.CreateButton(59, 0 - (80 + i * (demButton.getYSize() - 2)), i.ToString());
+            GameObject button = demButton.CreateButton(0, 0 - ((Screen.height / 14) + 10 + i * (demButton.getYSize() - 2)), i.ToString());
 
             // Set the button images
             demButton.SetButtonImage(plants[i], button);
             demButton.SetButtonImage(prey[i], button);
             
             // Set the images of the untoggled menu to inactive
-            button.transform.Find("buttonImg - " + prey[i].GetName()).gameObject.SetActive(false);
+            button.transform.Find(prey[i].GetName()).gameObject.SetActive(false);
 
             // Add an onClick listener to detect button clicks
             button.GetComponent<Button>().onClick.AddListener(() => { selectSpecies(button); });
+            button.AddComponent<DemButton>();
 
             menuButtons[i] = button;
         }
@@ -301,8 +304,8 @@ public class BuildMenu : MonoBehaviour
             tButton.GetComponentInChildren<Text>().text = "Plants";
             for (int i = 0; i < 6; i++)
             {
-                menuButtons[i].transform.Find("buttonImg - " + prey[i].GetName()).gameObject.SetActive(false);
-                menuButtons[i].transform.Find("buttonImg - " + plants[i].GetName()).gameObject.SetActive(true);
+                menuButtons[i].transform.Find(prey[i].GetName()).gameObject.SetActive(false);
+                menuButtons[i].transform.Find(plants[i].GetName()).gameObject.SetActive(true);
             }
         }
 
@@ -311,8 +314,8 @@ public class BuildMenu : MonoBehaviour
             tButton.GetComponentInChildren<Text>().text = "Prey";
             for (int i = 0; i < 6; i++)
             {
-                menuButtons[i].transform.Find("buttonImg - " + plants[i].GetName()).gameObject.SetActive(false);
-                menuButtons[i].transform.Find("buttonImg - " + prey[i].GetName()).gameObject.SetActive(true);
+                menuButtons[i].transform.Find(plants[i].GetName()).gameObject.SetActive(false);
+                menuButtons[i].transform.Find(prey[i].GetName()).gameObject.SetActive(true);
             }
         }
     }

@@ -61,7 +61,6 @@ namespace SD
 
             Debug.Log("Connected");
 
-
         }
         catch (Exception e)
         {

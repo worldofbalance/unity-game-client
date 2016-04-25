@@ -2,17 +2,18 @@ using UnityEngine;
 
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 public class WorldController : MonoBehaviour {
 
 	void Awake() {
-		NetworkManager.Send(WorldProtocol.Prepare(), ProcessWorld);
+		Game.networkManager.Send(WorldProtocol.Prepare(), ProcessWorld);
 	}
 	
 	// Use this for initialization
 	void Start() {
 		Game.StartEnterTransition ();
-		Debug.Log ("We are in the WORLD scene");
+		Debug.Log ("We are in the WORLD CONTROLLER scene");
 		if (GameState.world != null) {
 			LoadComponents();
 		}

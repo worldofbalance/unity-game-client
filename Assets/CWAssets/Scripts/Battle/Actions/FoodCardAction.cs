@@ -17,6 +17,7 @@ namespace CW{
 		
 		override public void execute(){
 			readData ();
+            //DebugConsole.Log("in execute of foodcard action");
 			GameObject obj = (GameObject)GameManager.player2.cardsInPlay[attackersPosition];
 			AbstractCard target = obj.GetComponent<AbstractCard> ();
 			GameManager.player2.applyFoodBuff(target, 1, 1);

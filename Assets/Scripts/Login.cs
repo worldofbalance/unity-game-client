@@ -145,7 +145,7 @@ public class Login : MonoBehaviour {
 			GUI.FocusControl("password_field");
 		} else {
 			
-			NetworkManager.Send(
+			Game.networkManager.Send(
 				LoginProtocol.Prepare(user_id, password), ProcessLogin
 			);
 
@@ -173,17 +173,17 @@ public class Login : MonoBehaviour {
 		if (args.status == 0) {
 			GameState.account = args.account;
       
-			NetworkManager.Send(
+			Game.networkManager.Send(
 				TopListProtocol.Prepare(),
 				ProcessTopList
 			);
-			NetworkManager.Send(
+			Game.networkManager.Send(
 				PlayerSelectProtocol.Prepare(0),
 				ProcessPlayerSelect
 			);
 
 // commented by Rujoota
-//			NetworkManager.Send(
+//			Game.networkManager.Send(
 //				CW.PlayerSelectProtocol.Prepare(0),
 //				CW_ProcessPlayerSelect
 //			);

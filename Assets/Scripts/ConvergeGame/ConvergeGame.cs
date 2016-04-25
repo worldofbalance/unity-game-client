@@ -301,7 +301,7 @@ public class ConvergeGame : MonoBehaviour
 			int row = 0;
 			int col = 0;
 			float entryHeight = height - heightGraph - 30 * 3 - bufferBorder * 2;
-			GUI.BeginGroup (new Rect (bufferBorder, topGraph + heightGraph + bufferBorder, width, entryHeight));
+			GUI.BeginGroup (new Rect (Screen.width - 450, topGraph + heightGraph + bufferBorder, width, entryHeight));
 			//use seriesNodes to force order
 			foreach (int nodeId in manager.seriesNodes) {
 				//look for all possible parameter types for each node
@@ -373,7 +373,9 @@ public class ConvergeGame : MonoBehaviour
 					);
 
 					//show normalized value for parameter
+                    Color inverse = GUI.color;
 					if (param.name.Equals (manager.selected)) {
+                        GUI.color = new Color (1.0f - inverse.r, 1.0f - inverse.g, 1.0f - inverse.b);
 						string valLabel = String.Format (
 							"{0}", 
 							ConvergeParam.NormParam (param.value, min, max));
@@ -386,9 +388,8 @@ public class ConvergeGame : MonoBehaviour
 						float xPosn = 
 							sliderRect.x + 
 							(param.value / (max - min)) * 
-								sliderRect.width +
-								bufferBorder;
-						Rect valRect = new Rect(xPosn, labelRect.y, 70, labelRect.height - 5);
+								sliderRect.width;
+						Rect valRect = new Rect(xPosn - 80, labelRect.y, 70, labelRect.height - 5);
 
 						GUI.Box (valRect, valLabel);
 						style.alignment = TextAnchor.UpperRight;
@@ -500,7 +501,7 @@ public class ConvergeGame : MonoBehaviour
 
 	public void Submit ()
 	{
-		NetworkManager.Send (
+		Game.networkManager.Send (
 			ConvergeNewAttemptProtocol.Prepare (
 			player_id, 
 			ecosystem_id, 
@@ -522,7 +523,7 @@ public class ConvergeGame : MonoBehaviour
 		attemptList = new List<ConvergeAttempt> ();
 		attemptCount = 0;
 
-		NetworkManager.Send (
+		Game.networkManager.Send (
 			ConvergePriorAttemptCountProtocol.Prepare (player_id, new_ecosystem_id),
 			ProcessConvergePriorAttemptCount
 		);
@@ -560,7 +561,7 @@ public class ConvergeGame : MonoBehaviour
 			//calculate score and send back to server.
 			CSVObject target = ecosystemList[ecosystem_idx].csv_target_object;
 			int score = currAttempt.csv_object.CalculateScore (target);
-			NetworkManager.Send (
+			Game.networkManager.Send (
 				ConvergeNewAttemptScoreProtocol.Prepare (
 				player_id, 
 				ecosystem_id, 
@@ -610,7 +611,7 @@ public class ConvergeGame : MonoBehaviour
 
 		//once count of attempts has been received, send requests for individual attempt's data
 		for (int attemptOffset = 0; attemptOffset < attemptCount; attemptOffset++) {
-			NetworkManager.Send (
+			Game.networkManager.Send (
 				ConvergePriorAttemptProtocol.Prepare (player_id, new_ecosystem_id, attemptOffset),
 				ProcessConvergePriorAttempt
 			);
@@ -963,7 +964,7 @@ public class ConvergeGame : MonoBehaviour
 	{
 		hintCount = 0;
 		
-		NetworkManager.Send (
+		Game.networkManager.Send (
 			ConvergeHintCountProtocol.Prepare (),
 			ProcessConvergeHintCount
 			);
@@ -977,7 +978,7 @@ public class ConvergeGame : MonoBehaviour
 		
 		//once count of hints has been received, send requests for individual hint's data
 		for (int hintOffset = 0; hintOffset < hintCount; hintOffset++) {
-			NetworkManager.Send (
+			Game.networkManager.Send (
 				ConvergeHintProtocol.Prepare (hintOffset),
 				ProcessConvergeHint
 				);

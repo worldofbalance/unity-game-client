@@ -141,8 +141,9 @@ namespace CW
 		public void  InitMatch ()
 		{
 			int playerID1 = GameState.player.GetID ();
-			NetworkManager.Send (
-			MatchInitProtocol.Prepare (GameState.player.GetID (), playerID2), ProcessMatchInit);
+			CWGame.networkManager.Send (
+					MatchInitProtocol.Prepare (GameState.player.GetID (), playerID2), ProcessMatchInit
+			);
 			Debug.Log ("Init for player: " + playerID1);
 		}
 	
@@ -168,7 +169,7 @@ namespace CW
 				//			mainObject.GetComponent<Main>().CreateMessageBox("Password Required");
 				GUI.FocusControl ("password_field");
 			} else {
-				NetworkManager.Send (
+				CWGame.networkManager.Send (
 				LoginProtocol.Prepare (user_id, password),
 				ProcessLogin
 				);
@@ -194,7 +195,7 @@ namespace CW
 			if (args.status == 0) {
 				GameState.account = args.account;
 			
-				NetworkManager.Send (
+				CWGame.networkManager.Send (
 				PlayerSelectProtocol.Prepare (0),
 				ProcessPlayerSelect
 				);
