@@ -6,13 +6,10 @@ namespace SD {
 
         private GameController gameController;
         private GameObject player;
-        private GameObject opponentBaseL, opponentBaseLR;
         // Use this for initialization
         void Start () {
             gameController = GameController.getInstance ();
             player = GameObject.FindGameObjectWithTag ("Player");
-            opponentBaseL = GameObject.Find ("OpponentBaseL");
-            opponentBaseL = GameObject.Find ("OpponentBaseR");
             player.GetComponent<Rigidbody> ();
         }
 
@@ -24,18 +21,30 @@ namespace SD {
         }
 
         // Runs when the player collides the base
+        // Pushes back the player if they colliede to the opponent base
         void OnTriggerEnter(Collider other) {
-            bool fromLeft;
-            bool fromTop;
             if (other.tag == "Player") {
-                if (player.transform.position.x < -50) {                
-                    fromLeft = true;
-                } 
-                if (player.transform.position.y > 10) {
-                    fromTop = true;
+                int xDirection;
+                int yDirection;
+
+                if (player.transform.position.x > 10) {
+                    xDirection = -1;
+                } else {
+                    xDirection = 1;
                 }
+
+                if (player.transform.position.y > 10) {
+                    yDirection = 1;
+                } else {
+                    yDirection = -1;
+                }
+
+                player.transform.position = new Vector3 (player.transform.position.x + (1 * xDirection),
+                    player.transform.position.y + (1 * yDirection),
+                    player.transform.position.z);
+
+               // Debug.Log (xDirection + "" + yDirection);
             }
-            
         }
 
         void OnTriggerExit(Collider other) {
