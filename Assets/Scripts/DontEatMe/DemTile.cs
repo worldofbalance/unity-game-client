@@ -29,7 +29,8 @@ public class DemTile : MonoBehaviour
     void Start ()
     {
         mainObject = GameObject.Find ("MainObject");
-        panelObject = GameObject.Find("Canvas/Panel");
+        //panelObject = GameObject.Find("Canvas/Panel");
+		panelObject = GameObject.Find("Canvas/mainUI/Panel");
         buildMenu = mainObject.GetComponent<BuildMenu> ();
         main = mainObject.GetComponent<DemMain> ();
         turnSystem = mainObject.GetComponent<DemTurnSystem> ();
