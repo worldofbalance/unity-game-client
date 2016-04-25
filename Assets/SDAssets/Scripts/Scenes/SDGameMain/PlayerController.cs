@@ -122,6 +122,7 @@ public class PlayerController : MonoBehaviour {
 
                 mouse.z = transform.position.z - Camera.main.transform.position.z;
                 mouse = Camera.main.ScreenToWorldPoint(mouse);
+
                 if (Input.GetKey(KeyCode.Space) && currentStamina > 0) {
                     speed = speed * speedUpFactor;
                     if (speed > MaxSpeed) { speed = MaxSpeed; }
