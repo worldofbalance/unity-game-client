@@ -22,6 +22,9 @@ public class ConvergeGame : MonoBehaviour
 	private float leftGraph = 10;
 	private float topGraph = 75;
 	private Rect windowRect;
+	//for buttons
+	private float uiHeight = 25;
+	private Vector2 scrollPosition;
 	// Logic
 	private bool isActive = true;
 	private bool isInitial = true;
@@ -86,6 +89,9 @@ public class ConvergeGame : MonoBehaviour
 			windowRect = new Rect (0, emptySpace/2, width, height);
 		}
 		
+		if(windowRect.height/15 < uiHeight){
+			uiHeight = windowRect.height/15;
+		}
 		
 		widthGraph = windowRect.width - (bufferBorder * 2);
 
@@ -161,15 +167,18 @@ public class ConvergeGame : MonoBehaviour
 		GUIStyle style = new GUIStyle (GUI.skin.label);
 		style.font = font;
 		style.fontSize = 12;
+		style.alignment = TextAnchor.MiddleCenter;
 
 		GUIStyle button = new GUIStyle(GUI.skin.button);
 		button.fontSize = 12;
 
+		
+
 		//make Convergence game lable top center
-		GUI.Label (new Rect (windowRect.width/3, 0, windowRect.width/3, windowRect.height/10), "Convergence Game", style);
+		GUI.Label (new Rect (windowRect.width/3, 0, windowRect.width/3, uiHeight), "Convergence Game", style);
 
 		//make return to lobby button top right
-		if (GUI.Button (new Rect (2 * windowRect.width/3, 0, windowRect.width/3, windowRect.height/10), "Return to Lobby", button)) {
+		if (GUI.Button (new Rect (2 * windowRect.width/3, 0, windowRect.width/3, uiHeight), "Return to Lobby", button)) {
 			Destroy (this);
 			Destroy (foodWeb);
 			GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
@@ -180,7 +189,7 @@ public class ConvergeGame : MonoBehaviour
 
 		
 		if (graphs != null) {
-			GUILayout.BeginArea(new Rect(0, windowRect.height/10, windowRect.width/2, 8 * windowRect.height/10));
+			GUILayout.BeginArea(new Rect(0, windowRect.height/15, windowRect.width/2, 18 * windowRect.height/15));
 			graphs.DrawGraphs ();
 			GUILayout.EndArea();
 		}
@@ -199,7 +208,7 @@ public class ConvergeGame : MonoBehaviour
 
 		string buttonTitle = isProcessing ? "Processing" : "Submit";
 		if (!(isProcessing && !blinkOn)) {
-			if (GUI.Button (new Rect (bufferBorder, height - 30 - bufferBorder, 100, 30), buttonTitle) &&
+			if (GUI.Button (new Rect (0, height - uiHeight, windowRect.width/10, uiHeight), buttonTitle, button) &&
 				!isProcessing) {
 				//make sure new config is distinct from prior attempts and initial value
 				currAttempt.UpdateConfig ();  //update config based on user data entry changes
@@ -220,14 +229,14 @@ public class ConvergeGame : MonoBehaviour
 			}
 		}
 
-		if (GUI.Button (new Rect (bufferBorder + 110, height - 30 - bufferBorder, 110, 30), "Progress Report")) {
+		if (GUI.Button (new Rect (windowRect.width/10, height - uiHeight, windowRect.width/10, uiHeight), "Progress", button)) {
 			GenerateBarGraph ();
 		}
 
 		int screenOffset = 0;
 		if (currAttempt != null && currAttempt.allow_hints) {
 			screenOffset += bufferBorder + 110;
-			if (GUI.Button (new Rect (bufferBorder * 2 + 110 * 2, height - 30 - bufferBorder, 110, 30), "Get Hint")) {
+			if (GUI.Button (new Rect (2 * windowRect.width/10, height - uiHeight, windowRect.width/10, uiHeight), "Hint", button)) {
 				//only give new hint if one hasn't been provided during this session.
 				if (currAttempt.hint_id == Constants.ID_NOT_SET) {
 					int hintId = GetRandomHint (true);
@@ -256,11 +265,15 @@ public class ConvergeGame : MonoBehaviour
 			}
 		}
 
+		GUILayout.BeginArea(new Rect(3 * windowRect.width/10, height - uiHeight*2, 7 * windowRect.width/10, uiHeight*2));
+		DrawResetButtons (screenOffset, style);
+		GUILayout.EndArea();
+
 		//make select ecosystem top left
 		int new_idx = 0;
 		
 		string select = "Select Ecosystem";
-		if( GUI.Button (new Rect (0, 0, windowRect.width/3, windowRect.height/10), "Select Ecosystem:", button) ){
+		if( GUI.Button (new Rect (0, 0, windowRect.width/3, uiHeight), "Select Ecosystem:", button) ){
 			if(showSelect == 0){
 				showSelect = 1;
 			} else {
@@ -271,10 +284,12 @@ public class ConvergeGame : MonoBehaviour
 		//the dropdown for the ecosystem selection
 		if(showSelect == 1){
 			GUI.SetNextControlName ("ecosystem_idx_field");
-			GUILayout.BeginArea(new Rect(0, windowRect.height/10, windowRect.width/3, 5 * windowRect.height/10));
+			GUILayout.BeginArea(new Rect(0, uiHeight, windowRect.width/3, 5*windowRect.height/15));
+			scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 			GUILayout.BeginVertical("box");
 			new_idx = GUILayout.SelectionGrid (ecosystem_idx, ecosysDescripts, 1);
 			GUILayout.EndVertical();
+			GUILayout.EndScrollView();
 			GUILayout.EndArea();
 		}
 		
@@ -287,7 +302,7 @@ public class ConvergeGame : MonoBehaviour
 			GetPriorAttempts ();
 		}
 
-		DrawResetButtons (screenOffset, style);
+		
 	}
 
 	private void DrawParameterFields (GUIStyle style)
@@ -303,7 +318,7 @@ public class ConvergeGame : MonoBehaviour
 			int row = 0;
 			int col = 0;
 			float entryHeight = height - heightGraph - 30 * 3 - bufferBorder * 2;
-			GUI.BeginGroup (new Rect (windowRect.width/2, windowRect.height/10, windowRect.width/2, 8 * windowRect.height/10));
+			GUILayout.BeginArea (new Rect (windowRect.width/2, windowRect.height/10, windowRect.width/2, 8 * windowRect.height/10));
 			//use seriesNodes to force order
 			foreach (int nodeId in manager.seriesNodes) {
 				//look for all possible parameter types for each node
@@ -403,44 +418,45 @@ public class ConvergeGame : MonoBehaviour
 
 				}
 			}
-			GUI.EndGroup ();
+			GUILayout.EndArea();
 		}
-		style.alignment = TextAnchor.UpperLeft;
+		style.alignment = TextAnchor.MiddleCenter;
 		style.font = font;
 		style.fontSize = 12;
 	}
 
 	void DrawResetButtons (int screenOffset, GUIStyle style)
 	{
-		GUI.Label (new Rect (bufferBorder + 260 + screenOffset, height - 30 - bufferBorder, 110, 30), "Reset to:", style);
-		Rect initial = new Rect (bufferBorder * 2 + 330 + screenOffset, height - 30 - bufferBorder, 50, 30);
+		GUI.Label (new Rect (0, uiHeight, windowRect.width/10, uiHeight), "Reset to:", style);
+		Rect initial = new Rect (windowRect.width/10, uiHeight, windowRect.width/10, uiHeight);
 		if (GUI.Button (initial, "Initial") && !isProcessing) {
 			ResetCurrAttempt (Constants.ID_NOT_SET);
 		}
 		//use slider to accommodate more reset attempt buttons that fit on the screen
+
 		int widthPer = 45;
 		int sliderWidth = 100;
 		if (!isResetSliderInitialized) {
 			InitializeResetSlider (width - (initial.x + initial.width + sliderWidth + bufferBorder), widthPer);
 			isResetSliderInitialized = !isProcessing;
 		}
-		int maxVal = attemptList.Count - maxResetSliderValue + resetSliderValue;
+
+				
+		GUILayout.BeginArea(new Rect(2 * windowRect.width/10, uiHeight, 5 * windowRect.width/10, uiHeight));
+		int maxVal = attemptList.Count;
 		for (int i = resetSliderValue; i < maxVal; i++) {
-			int slideNo = i - resetSliderValue;
 			if (GUI.Button (
-				new Rect (bufferBorder * 2 + 390 + (slideNo * widthPer) + screenOffset, height - 30 - bufferBorder, 
-			          widthPer - 5, 
-			          30
-			          ), 
-			    String.Format ("#{0}", i + 1)
-				)
+				new Rect ((i-resetSliderValue) * windowRect.width/20, 0, windowRect.width/20, uiHeight),
+				String.Format ("#{0}", i + 1))
 			    && !isProcessing) {
 				ResetCurrAttempt (i);
 			}
 		}
+		GUILayout.EndArea();
+		
 
 		if (maxResetSliderValue > 0) {
-			Rect sliderRect = new Rect (width - sliderWidth - bufferBorder, initial.y, sliderWidth, 30); 
+			Rect sliderRect = new Rect (2 * windowRect.width/10, 0, 5 * windowRect.width/10, uiHeight); 
 			resetSliderValue = Mathf.RoundToInt (GUI.HorizontalSlider (
 				sliderRect, 
 				resetSliderValue, 
@@ -448,6 +464,7 @@ public class ConvergeGame : MonoBehaviour
 				maxResetSliderValue
 			));
 		}
+
 
 	}
 
