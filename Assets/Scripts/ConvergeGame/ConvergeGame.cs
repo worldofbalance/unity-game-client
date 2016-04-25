@@ -166,10 +166,10 @@ public class ConvergeGame : MonoBehaviour
 		button.fontSize = 12;
 
 		//make Convergence game lable top center
-		GUI.Label (new Rect ((windowRect.width - 100) / 2, 0, 100, 30), "Convergence Game", style);
+		GUI.Label (new Rect (windowRect.width/3, 0, windowRect.width/3, windowRect.height/10), "Convergence Game", style);
 
 		//make return to lobby button top right
-		if (GUI.Button (new Rect (windowRect.width - 100 - bufferBorder, 0, 100, 30), "Return to Lobby", button)) {
+		if (GUI.Button (new Rect (2 * windowRect.width/3, 0, windowRect.width/3, windowRect.height/10), "Return to Lobby", button)) {
 			Destroy (this);
 			Destroy (foodWeb);
 			GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
@@ -178,40 +178,11 @@ public class ConvergeGame : MonoBehaviour
 			Game.SwitchScene("World");
 		}
 
-
-		//make select ecosystem top left
-		int new_idx = 0;
 		
-		string select = "Select Ecosystem";
-		if( GUI.Button (new Rect (0, 0, 100, 30), "Select Ecosystem:", button) ){
-			if(showSelect == 0){
-				showSelect = 1;
-			} else {
-				showSelect = 0;
-			}
-			
-		}
-
-
-		if(showSelect == 1){
-			GUI.SetNextControlName ("ecosystem_idx_field");
-			GUILayout.BeginArea(new Rect(0,30,100,200));
-			GUILayout.BeginVertical("box");
-			new_idx = GUILayout.SelectionGrid (ecosystem_idx, ecosysDescripts, 1);
-			GUILayout.EndVertical();
-			GUILayout.EndArea();
-		}
-		
-
-		if (!isProcessing && new_idx != ecosystem_idx) {
-			//Debug.Log ("Updating selected ecosystem.");
-			SetIsProcessing (true);
-			new_ecosystem_idx = new_idx;
-			new_ecosystem_id = GetEcosystemId (new_ecosystem_idx);
-			GetPriorAttempts ();
-		}
 		if (graphs != null) {
+			GUILayout.BeginArea(new Rect(0, windowRect.height/10, windowRect.width/2, 8 * windowRect.height/10));
 			graphs.DrawGraphs ();
+			GUILayout.EndArea();
 		}
 
 
@@ -285,6 +256,37 @@ public class ConvergeGame : MonoBehaviour
 			}
 		}
 
+		//make select ecosystem top left
+		int new_idx = 0;
+		
+		string select = "Select Ecosystem";
+		if( GUI.Button (new Rect (0, 0, windowRect.width/3, windowRect.height/10), "Select Ecosystem:", button) ){
+			if(showSelect == 0){
+				showSelect = 1;
+			} else {
+				showSelect = 0;
+			}
+			
+		}
+		//the dropdown for the ecosystem selection
+		if(showSelect == 1){
+			GUI.SetNextControlName ("ecosystem_idx_field");
+			GUILayout.BeginArea(new Rect(0, windowRect.height/10, windowRect.width/3, 5 * windowRect.height/10));
+			GUILayout.BeginVertical("box");
+			new_idx = GUILayout.SelectionGrid (ecosystem_idx, ecosysDescripts, 1);
+			GUILayout.EndVertical();
+			GUILayout.EndArea();
+		}
+		
+
+		if (!isProcessing && new_idx != ecosystem_idx) {
+			//Debug.Log ("Updating selected ecosystem.");
+			SetIsProcessing (true);
+			new_ecosystem_idx = new_idx;
+			new_ecosystem_id = GetEcosystemId (new_ecosystem_idx);
+			GetPriorAttempts ();
+		}
+
 		DrawResetButtons (screenOffset, style);
 	}
 
@@ -301,7 +303,7 @@ public class ConvergeGame : MonoBehaviour
 			int row = 0;
 			int col = 0;
 			float entryHeight = height - heightGraph - 30 * 3 - bufferBorder * 2;
-			GUI.BeginGroup (new Rect (Screen.width - 450, topGraph + heightGraph + bufferBorder, width, entryHeight));
+			GUI.BeginGroup (new Rect (windowRect.width/2, windowRect.height/10, windowRect.width/2, 8 * windowRect.height/10));
 			//use seriesNodes to force order
 			foreach (int nodeId in manager.seriesNodes) {
 				//look for all possible parameter types for each node
@@ -332,7 +334,7 @@ public class ConvergeGame : MonoBehaviour
 				
 					Rect labelRect;
 					//draw name, paramId
-					labelRect = new Rect (col * (350 + bufferBorder), row * 35, 250, 30);
+					labelRect = new Rect (0, row * 35, 250, 30);
 					if (labelRect.Contains (Event.current.mousePosition)) {
 						manager.mouseOverLabels.Add (param.name);
 						manager.selected = param.name;
@@ -348,7 +350,7 @@ public class ConvergeGame : MonoBehaviour
 					}
 				
 					//draw slider with underlying colored bar showing original value
-					Rect sliderRect = new Rect (labelRect.x + 250 + bufferBorder, labelRect.y + 5, 100, 20);
+					Rect sliderRect = new Rect (250 + bufferBorder, labelRect.y + 5, 100, 20);
 					if (sliderRect.Contains (Event.current.mousePosition)) {
 						manager.mouseOverLabels.Add (param.name);
 						manager.selected = param.name;
@@ -373,9 +375,7 @@ public class ConvergeGame : MonoBehaviour
 					);
 
 					//show normalized value for parameter
-                    Color inverse = GUI.color;
 					if (param.name.Equals (manager.selected)) {
-                        GUI.color = new Color (1.0f - inverse.r, 1.0f - inverse.g, 1.0f - inverse.b);
 						string valLabel = String.Format (
 							"{0}", 
 							ConvergeParam.NormParam (param.value, min, max));
@@ -388,19 +388,15 @@ public class ConvergeGame : MonoBehaviour
 						float xPosn = 
 							sliderRect.x + 
 							(param.value / (max - min)) * 
-								sliderRect.width;
-						Rect valRect = new Rect(xPosn - 80, labelRect.y, 70, labelRect.height - 5);
+								sliderRect.width +
+								bufferBorder;
+						Rect valRect = new Rect(xPosn, labelRect.y, 70, labelRect.height - 5);
 
 						GUI.Box (valRect, valLabel);
 						style.alignment = TextAnchor.UpperRight;
 					}
 
-					if ((row + 1) * 35 + 30 > entryHeight) {
-						col++;
-						row = 0;
-					} else {
-						row++;
-					}
+					row++;
 
 					GUI.color = savedColor;
 					GUI.backgroundColor = savedBkgdColor;
