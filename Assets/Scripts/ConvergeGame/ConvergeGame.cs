@@ -15,9 +15,10 @@ public class ConvergeGame : MonoBehaviour
 	private float top;
 	private float width = Screen.width;
 	private float height = Screen.height;
+	private float emptySpace;
 	private float widthGraph;
 	private float heightGraph;
-	private int bufferBorder = 10;
+	private int bufferBorder = 2; //////////////////////////////////
 	private float leftGraph = 10;
 	private float topGraph = 75;
 	private Rect windowRect;
@@ -62,20 +63,36 @@ public class ConvergeGame : MonoBehaviour
 	private bool isResetSliderInitialized = false;
 	private int resetSliderValue = 0;
 	private int maxResetSliderValue = 0;
+	private int showSelect = 0;
 
 	void Awake ()
 	{
 		DontDestroyOnLoad (gameObject.GetComponent ("Login"));
 		player_id = GameState.player.GetID ();
 
-		left = (Screen.width - width) / 2;
-		top = (Screen.height - height) / 2;
+		//Depending on the screen width and height will create game at 16:9 aspect ratio
+		//the larger of the number will be scaled down to complete the perfect box
+		if(width*0.5625 > height){
+			//this means width is wide beyond the 16:9 ratio
+			width = height*1.77777777777777777777777778f;
+			//variable will be used to center the scaled down playing window
+			emptySpace = Screen.width-width;
+			windowRect = new Rect (emptySpace/2, 0, width, height);
+		} else {
+			//this means height is high beyond the 16:9 ratio
+			height = width*0.5625f;
+			//variable will be used to center the scaled down playing window
+			emptySpace = Screen.height-height;
+			windowRect = new Rect (0, emptySpace/2, width, height);
+		}
 		
-		windowRect = new Rect (left, top, width, height);
+		
 		widthGraph = windowRect.width - (bufferBorder * 2);
+
 		heightGraph = windowRect.height / 2;
-		popupRect = new Rect ((Screen.width / 2) - 250, (Screen.height / 2) - 125,
-		                        500, 200);
+
+		popupRect = new Rect ((Screen.width/3), (Screen.height /3),
+		                        100, 100);
 
 		bgTexture = Resources.Load<Texture2D> (Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
 		font = Resources.Load<Font> ("Fonts/" + "Chalkboard");
@@ -140,13 +157,19 @@ public class ConvergeGame : MonoBehaviour
 	{
 		Functions.DrawBackground (new Rect (0, 0, width, height), bgTexture);
 		
+		//for text
 		GUIStyle style = new GUIStyle (GUI.skin.label);
-		style.alignment = TextAnchor.UpperCenter;
 		style.font = font;
-		style.fontSize = 16;
+		style.fontSize = 12;
 
+		GUIStyle button = new GUIStyle(GUI.skin.button);
+		button.fontSize = 12;
+
+		//make Convergence game lable top center
 		GUI.Label (new Rect ((windowRect.width - 100) / 2, 0, 100, 30), "Convergence Game", style);
-		if (GUI.Button (new Rect (windowRect.width - 100 - bufferBorder, 0, 100, 30), "Return to Lobby")) {
+
+		//make return to lobby button top right
+		if (GUI.Button (new Rect (windowRect.width - 100 - bufferBorder, 0, 100, 30), "Return to Lobby", button)) {
 			Destroy (this);
 			Destroy (foodWeb);
 			GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
@@ -155,15 +178,31 @@ public class ConvergeGame : MonoBehaviour
 			Game.SwitchScene("World");
 		}
 
-		GUI.BeginGroup (new Rect (bufferBorder, 0, windowRect.width, 100));
-		style.alignment = TextAnchor.LowerLeft;
-		style.fontSize = 14;
-		GUI.Label (new Rect (0, 0, 300, 30), "Select Ecosystem:", style);
-		GUI.SetNextControlName ("ecosystem_idx_field");
-		int new_idx;
-		new_idx = GUI.SelectionGrid (new Rect (0, 35, windowRect.width - 20, 30), ecosystem_idx, 
-                        ecosysDescripts, ecosysDescripts.Length);
-		GUI.EndGroup ();
+
+		//make select ecosystem top left
+		int new_idx = 0;
+		
+		string select = "Select Ecosystem";
+		if( GUI.Button (new Rect (0, 0, 100, 30), "Select Ecosystem:", button) ){
+			if(showSelect == 0){
+				showSelect = 1;
+			} else {
+				showSelect = 0;
+			}
+			
+		}
+
+
+		if(showSelect == 1){
+			GUI.SetNextControlName ("ecosystem_idx_field");
+			GUILayout.BeginArea(new Rect(0,30,100,200));
+			GUILayout.BeginVertical("box");
+			new_idx = GUILayout.SelectionGrid (ecosystem_idx, ecosysDescripts, 1);
+			GUILayout.EndVertical();
+			GUILayout.EndArea();
+		}
+		
+
 		if (!isProcessing && new_idx != ecosystem_idx) {
 			//Debug.Log ("Updating selected ecosystem.");
 			SetIsProcessing (true);
@@ -174,6 +213,7 @@ public class ConvergeGame : MonoBehaviour
 		if (graphs != null) {
 			graphs.DrawGraphs ();
 		}
+
 
 		GUIStyle styleEdit = new GUIStyle (GUI.skin.textArea);
 		styleEdit.wordWrap = true;
@@ -252,7 +292,7 @@ public class ConvergeGame : MonoBehaviour
 	{
 		style.alignment = TextAnchor.UpperRight;
 		style.font = font;
-		style.fontSize = 14;
+		style.fontSize = 12;
 		Color savedColor = GUI.color;
 		Color savedBkgdColor = GUI.backgroundColor;
 
@@ -370,7 +410,7 @@ public class ConvergeGame : MonoBehaviour
 		}
 		style.alignment = TextAnchor.UpperLeft;
 		style.font = font;
-		style.fontSize = 16;
+		style.fontSize = 12;
 	}
 
 	void DrawResetButtons (int screenOffset, GUIStyle style)
@@ -427,7 +467,7 @@ public class ConvergeGame : MonoBehaviour
 		GUIStyle style = new GUIStyle (GUI.skin.label);
 		style.alignment = TextAnchor.UpperCenter;
 		style.font = font;
-		style.fontSize = 16;
+		style.fontSize = 12;
 		
 		Functions.DrawBackground (new Rect (0, 0, popupRect.width, popupRect.height), bgTexture);
 		GUI.BringWindowToFront (windowID);
