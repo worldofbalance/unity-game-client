@@ -116,15 +116,7 @@ public class SDLogin : MonoBehaviour {
             sManager.Send(SD_RequestLogin(user_id, password));
         }
     }
-
-    public void ProcessLogin(NetworkResponse response) {
-        ResponseLogin args = response as ResponseLogin;
-        if (args.status == 0) {
-            GameState.account = args.account;
-        } else {
-            Debug.Log ("Login failed, server message = " + args.status);
-        }
-    }
+        
         
 
 
@@ -147,24 +139,7 @@ public class SDLogin : MonoBehaviour {
         //reset GUI focus if reactivating login.
         this.isInitial = this.isInitial || this.isActive;
     }
-
-    public RR.RequestLogin RR_RequestLogin (string username, string password)
-    {
-        RR.RequestLogin request = new RR.RequestLogin ();
-        request.send (username, password);
-        return request;
-    }
-
-    public void RR_ResponseLogin (RR.ExtendedEventArgs eventArgs)
-    {
-        RR.ResponseLoginEventArgs args = eventArgs as RR.ResponseLoginEventArgs;
-
-        if (args.status == 0) {
-            RR.Constants.USER_ID = args.user_id;
-        } else {
-            Debug.Log ("RR: Login Failed");
-        }
-    }
+        
 
     public SD.RequestLogin SD_RequestLogin(string username, string password)
     {
