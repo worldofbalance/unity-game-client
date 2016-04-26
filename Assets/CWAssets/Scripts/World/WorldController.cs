@@ -6,7 +6,7 @@ namespace CW{
 public class WorldController : MonoBehaviour {
 
 	void Awake() {
-		NetworkManager.Send(
+		CWGame.networkManager.Send(
 			WorldProtocol.Prepare(),
 			ProcessWorld
 		);

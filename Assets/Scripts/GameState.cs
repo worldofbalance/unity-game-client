@@ -26,17 +26,17 @@ public class GameState : MonoBehaviour
 		speciesList = new Dictionary<int, Species> ();
 
 //
-//		NetworkManager.Send(
+//		Game.networkManager.Send(
 //			NetworkCode.CHART,
 //			ProcessChart
 //		);
 
-		NetworkManager.Listen (
+		Game.networkManager.Listen (
 			NetworkCode.ECOSYSTEM,
 			ProcessEcosystem
 		);
 
-		NetworkManager.Listen (
+		Game.networkManager.Listen (
 			NetworkCode.SPECIES_CREATE,
 			ProcessSpeciesCreate
 		);
@@ -56,12 +56,12 @@ public class GameState : MonoBehaviour
 
 	void OnDestroy ()
 	{
-		NetworkManager.Ignore (
+		Game.networkManager.Ignore (
 			NetworkCode.ECOSYSTEM,
 			ProcessEcosystem
 		);
 
-		NetworkManager.Ignore (
+		Game.networkManager.Ignore (
 			NetworkCode.SPECIES_CREATE,
 			ProcessSpeciesCreate
 		);
@@ -123,7 +123,7 @@ public class GameState : MonoBehaviour
 		if (zoneList != null) {
 			GameObject.Find ("Global Object").GetComponent<EcosystemScore> ().Calculate ();
 		}
-//			NetworkManager.Send(
+//			Game.networkManager.Send(
 //				ShopActionProtocol.Prepare(),
 //			);
 //		}

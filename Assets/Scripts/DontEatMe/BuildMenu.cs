@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 public class BuildMenu : MonoBehaviour
 {
@@ -10,6 +11,12 @@ public class BuildMenu : MonoBehaviour
 
     // Access to DemButton script for button creation
     public DemButton demButton;
+
+	//Access to DemRectUI script for RectUI creation
+	public DemRectUI demRectUI;
+	private GameObject quitUI;	//instance of UI for after pressed quit button
+	private float qBX; //quit button width
+	private float qBY; //quit button height
 
     // Toggle counter
     int toggleCount = 0;
@@ -35,7 +42,7 @@ public class BuildMenu : MonoBehaviour
     public DemAnimalFactory[] prey;
 
     // Menu buttons
-    public GameObject[] menuButtons ;
+    public GameObject[] menuButtons;
 
     private  GameObject mainObject;
 
@@ -43,7 +50,11 @@ public class BuildMenu : MonoBehaviour
 
     private DemMain main;
 
+    public GameObject panelObject;
 
+	//mainUI
+	public GameObject mainUIObject;
+	public GameObject canvasObject;
 
     // this method increases score every 2s
     void increaseResources()
@@ -64,6 +75,16 @@ public class BuildMenu : MonoBehaviour
 
       turnSystem = mainObject.GetComponent<DemTurnSystem> ();
 
+	  //mainUI add here
+	  canvasObject = GameObject.Find ("Canvas");
+	  mainUIObject = GameObject.Find ("Canvas/mainUI");
+	  mainUIObject.transform.SetParent (canvasObject.transform);
+		mainUIObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+		
+      //panelObject = GameObject.Find("Canvas/Panel");
+	  panelObject = GameObject.Find("Canvas/mainUI/Panel");
+
+		quitUI = null;
     }
 
     /**
@@ -255,36 +276,49 @@ public class BuildMenu : MonoBehaviour
         gameObject.AddComponent<DemButton>();
         demButton = gameObject.GetComponent<DemButton>();
 
+		// building the RectUI
+		gameObject.AddComponent<DemRectUI>();
+		demRectUI = gameObject.GetComponent<DemRectUI> ();
+
         
         // Toggle button to switch between plant and prey menu
-        demButton.setSize(120, 30);
-        GameObject toggleButton = demButton.CreateButton(59, -15, "Toggle");
+        demButton.setSize(Screen.width * 0.1f, Screen.height/14);
+        GameObject toggleButton = demButton.CreateButton(0, 0, "Toggle");
         demButton.SetButtonText(toggleButton, "Plants");
 
 
         // Creates a buttons for plant/prey menu
-        demButton.setSize(120, 80);
+        demButton.setSize(Screen.width * 0.1f, Screen.height/7);
         menuButtons = new GameObject[6];
         for (int i = 0; i < 6; i++)
         {
 
-            GameObject button = demButton.CreateButton(59, 0 - (80 + i * (demButton.getYSize() - 2)), i.ToString());
+            GameObject button = demButton.CreateButton(0, 0 - ((Screen.height / 14) + 10 + i * (demButton.getYSize() - 2)), i.ToString());
 
             // Set the button images
             demButton.SetButtonImage(plants[i], button);
             demButton.SetButtonImage(prey[i], button);
             
             // Set the images of the untoggled menu to inactive
-            button.transform.Find("buttonImg - " + prey[i].GetName()).gameObject.SetActive(false);
+            button.transform.Find(prey[i].GetName()).gameObject.SetActive(false);
 
             // Add an onClick listener to detect button clicks
             button.GetComponent<Button>().onClick.AddListener(() => { selectSpecies(button); });
+            button.AddComponent<DemButton>();
 
             menuButtons[i] = button;
         }
 
         // Add an onClick listener to dectect button clicks
         toggleButton.GetComponent<Button>().onClick.AddListener(() => { selectMenu(toggleButton, menuButtons); });
+
+		//quit button 
+		float qBX = Screen.width / 10.0f;
+		float qBY = Screen.height / 10.0f;
+		demButton.setSize (qBX, qBY);
+		GameObject quitButton = demButton.CreateButton (Screen.width - qBX, 0, "Quit");
+		demButton.SetButtonText (quitButton, "Quit");
+		quitButton.GetComponent<Button> ().onClick.AddListener (() => {selectQuit();});
         
     }
 
@@ -301,8 +335,8 @@ public class BuildMenu : MonoBehaviour
             tButton.GetComponentInChildren<Text>().text = "Plants";
             for (int i = 0; i < 6; i++)
             {
-                menuButtons[i].transform.Find("buttonImg - " + prey[i].GetName()).gameObject.SetActive(false);
-                menuButtons[i].transform.Find("buttonImg - " + plants[i].GetName()).gameObject.SetActive(true);
+                menuButtons[i].transform.Find(prey[i].GetName()).gameObject.SetActive(false);
+                menuButtons[i].transform.Find(plants[i].GetName()).gameObject.SetActive(true);
             }
         }
 
@@ -311,8 +345,8 @@ public class BuildMenu : MonoBehaviour
             tButton.GetComponentInChildren<Text>().text = "Prey";
             for (int i = 0; i < 6; i++)
             {
-                menuButtons[i].transform.Find("buttonImg - " + plants[i].GetName()).gameObject.SetActive(false);
-                menuButtons[i].transform.Find("buttonImg - " + prey[i].GetName()).gameObject.SetActive(true);
+                menuButtons[i].transform.Find(plants[i].GetName()).gameObject.SetActive(false);
+                menuButtons[i].transform.Find(prey[i].GetName()).gameObject.SetActive(true);
             }
         }
     }
@@ -381,6 +415,50 @@ public class BuildMenu : MonoBehaviour
 
         main.boardController.SetAvailableTiles();
     }
+
+	//click on quit button
+	void selectQuit(){
+		DemAudioManager.audioClick.Play();
+		Debug.Log (Screen.width);
+
+		if (main.currentSelection) {
+			Destroy(main.currentSelection);
+			main.boardController.ClearAvailableTiles();
+		}
+
+		if (quitUI == null) {
+			quitUI = demRectUI.createRectUI ("quitUI", 0, 0, Screen.width / 2.0f, Screen.height / 2.0f);
+			demRectUI.setUIText (quitUI, "Are you sure you want to quit?");
+
+			//Quit Button on Quit UI
+			GameObject yesButton = demButton.CreateButton (0, 0, "Yes");
+			yesButton.transform.SetParent (quitUI.transform);
+			yesButton.GetComponent<RectTransform> ().anchoredPosition = 
+				new Vector2 (quitUI.GetComponent<RectTransform> ().sizeDelta.x/5.0f,
+							-quitUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f);
+			demButton.SetButtonText (yesButton, "Quit");
+			yesButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); Game.SwitchScene("World");});
+
+			//back button on Quit UI
+			GameObject noButton = demButton.CreateButton (0, 0, "No");
+			noButton.transform.SetParent (quitUI.transform);
+			noButton.GetComponent<RectTransform> ().anchoredPosition = 
+				new Vector2 (quitUI.GetComponent<RectTransform> ().sizeDelta.x/5.0f*3.0f,
+					-quitUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f);
+			demButton.SetButtonText (noButton, "Back");
+			//noButton.GetComponent<Button> ().onClick.AddListener (()=>{quitUI.SetActive(false);});
+			noButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); quitUI.SetActive(false); mainUIObject.SetActive(true);});
+
+			mainUIObject.SetActive (false);
+
+			return;
+		}
+
+		if (!quitUI.activeInHierarchy) {
+			quitUI.SetActive (true);
+			mainUIObject.SetActive (false);
+		}
+	}
 
 
 

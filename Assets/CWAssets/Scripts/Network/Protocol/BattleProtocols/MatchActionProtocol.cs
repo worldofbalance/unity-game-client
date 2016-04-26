@@ -18,13 +18,13 @@ namespace CW{
 			response.actionID =  DataReader.ReadShort(dataStream);
 			response.intCount = DataReader.ReadInt (dataStream);
 			response.stringCount = DataReader.ReadInt (dataStream);
-			Debug.Log("Action Protocol: length of ints " + response.intCount + " stringCount :" + response.stringCount);
+			//Debug.Log("Action Protocol: length of ints " + response.intCount + " stringCount :" + response.stringCount);
 			for (int i = 0; i < response.intCount; i++){
 				response.intList.Add(DataReader.ReadInt(dataStream));
 			}
 			for (int i = 0; i < response.stringCount; i++){
 				response.stringList.Add(DataReader.ReadString(dataStream));
-				Debug.Log("Action Protocol : read string " + response.stringList[i] + " actionID: " + response.actionID);
+				//Debug.Log("Action Protocol : read string " + response.stringList[i] + " actionID: " + response.actionID);
 			}
 			
 			// This could be done in a better way
@@ -59,7 +59,10 @@ namespace CW{
 			} else if (response.actionID == NetworkCode.APPLY_FOOD) {
 				response.action = new FoodCardAction(response.intCount, response.stringCount,
 				                                     response.intList, response.stringList);
-			}
+            }else if (response.actionID == NetworkCode.APPLY_WEATHER) {
+                response.action = new WeatherCardAction (response.intCount, response.stringCount,
+                                                     response.intList, response.stringList);
+            }
 			return response;
 		}
 		

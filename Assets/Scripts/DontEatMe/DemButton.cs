@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 
-public class DemButton : MonoBehaviour
+public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 
 
@@ -11,7 +11,11 @@ public class DemButton : MonoBehaviour
     public GameObject buttonPrefab;
 
     //Canvas Object
-    public GameObject canvasObject;
+    //public GameObject canvasObject;
+	public GameObject mainUIObject;
+
+    //Panel Object
+    public GameObject panelObject;
 
 
     //width of button
@@ -23,17 +27,26 @@ public class DemButton : MonoBehaviour
     //id of button
     private int buttonId;
 
+    private float height;
+    private float width;
+
 
     // Loading Resources and initialize button size
     void Awake()
     {
         buttonPrefab = Resources.Load<GameObject>("DontEatMe/Prefabs/Button");
-        canvasObject = GameObject.Find("Canvas");
+
+        //canvasObject = GameObject.Find("Canvas");
+		//panelObject = GameObject.Find("Canvas/Panel");
+		mainUIObject = GameObject.Find("Canvas/mainUI");
+        panelObject = GameObject.Find("Canvas/mainUI/Panel");
 
         xSize = buttonPrefab.GetComponent<RectTransform>().sizeDelta.x;
         ySize = buttonPrefab.GetComponent<RectTransform>().sizeDelta.y;
         buttonId = 0;
 
+        height = Screen.height;
+        width = Screen.width;
     }
 
 
@@ -44,10 +57,14 @@ public class DemButton : MonoBehaviour
         button.name = name;
         buttonId += 1;
 
-        button.transform.SetParent(canvasObject.transform);
+        //button.transform.SetParent(canvasObject.transform);
+		button.transform.SetParent(mainUIObject.transform);
 
         // Set the position of the button
+
+        button.GetComponent<RectTransform>().sizeDelta = new Vector2(xSize, ySize);
         button.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
+        button.GetComponent<RectTransform>().pivot = new Vector2(0, 1);
 
         return button;
     }
@@ -56,7 +73,7 @@ public class DemButton : MonoBehaviour
     // Create image for the button
     public void SetButtonImage(DemAnimalFactory species, GameObject button)
     {
-        GameObject buttonImage = new GameObject("buttonImg - " + species.GetName());
+        GameObject buttonImage = new GameObject(species.GetName());
         buttonImage.transform.SetParent(button.transform);
 
         // Set the layer to UI layer
@@ -81,6 +98,7 @@ public class DemButton : MonoBehaviour
         //Set text and its position on the button
         buttonText.AddComponent<Text>();
         buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Chalkboard");
+		buttonText.GetComponent<Text> ().fontSize = (int)(Screen.width/42);
         buttonText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
         buttonText.GetComponent<Text>().color = Color.black;
         buttonText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
@@ -93,7 +111,7 @@ public class DemButton : MonoBehaviour
     // Change the size of the button
     public void setSize(float newSizeX, float newSizeY)
     {
-        buttonPrefab.GetComponent<RectTransform>().sizeDelta = new Vector2(newSizeX, newSizeY);
+        //buttonPrefab.GetComponent<RectTransform>().sizeDelta = new Vector2(newSizeX, newSizeY);
         xSize = newSizeX;
         ySize = newSizeY;
     }
@@ -117,5 +135,35 @@ public class DemButton : MonoBehaviour
     }
 
 
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (eventData.pointerEnter == this.gameObject)
+        {
+            if (this.gameObject.transform.GetChild(0).gameObject.activeSelf)
+            {
+                panelObject.transform.GetChild(0).GetComponent<Image>().sprite = this.gameObject.transform.GetChild(0).GetComponent<Image>().sprite;
+                panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(0).gameObject.name;
+                //panelObject.transform.GetChild(2).GetComponent<Text>().text = ;
+            }
+
+            else
+            {
+                panelObject.transform.GetChild(0).GetComponent<Image>().sprite = this.gameObject.transform.GetChild(1).GetComponent<Image>().sprite;
+                panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(1).gameObject.name;
+            }
+
+                panelObject.transform.GetChild(0).gameObject.SetActive(true);
+                panelObject.transform.GetChild(1).gameObject.SetActive(true);
+        }
+       
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        panelObject.transform.GetChild(0).gameObject.SetActive(false);
+        panelObject.transform.GetChild(1).gameObject.SetActive(false);
+    }
+
+    
 }
 

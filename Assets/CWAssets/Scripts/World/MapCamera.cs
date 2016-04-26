@@ -1,6 +1,7 @@
 using UnityEngine;
-
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
+
 namespace CW{
 public class MapCamera : MonoBehaviour {
 
@@ -66,9 +67,9 @@ public class MapCamera : MonoBehaviour {
 		}
 		
 		if (Input.GetMouseButtonDown(0)) {
-			dragging = true;
-			mouseDownPos = Input.mousePosition;
-			oldCameraPos = transform.position;
+					dragging = true;
+					mouseDownPos = Input.mousePosition;
+					oldCameraPos = transform.position;
 		}
 		
 		if (Input.GetMouseButtonUp(0)) {

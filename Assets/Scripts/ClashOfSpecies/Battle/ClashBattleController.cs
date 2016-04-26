@@ -111,7 +111,7 @@ public class ClashBattleController : MonoBehaviour {
 			speciesIds.Add(species.id);
 		}
 		var request = ClashInitiateBattleProtocol.Prepare(manager.currentTarget.owner.GetID(), speciesIds);
-		NetworkManager.Send(request, (res) => {
+		Game.networkManager.Send(request, (res) => {
 			var response = res as ResponseClashInitiateBattle;
 			Debug.Log("Received ResponseClashInitiateBattle from server. valid = " + response.valid);
 		});
@@ -352,7 +352,7 @@ public class ClashBattleController : MonoBehaviour {
 			messageText.text = "You Lost!\n\nTry again next time!";
 		}
 		var request = ClashEndBattleProtocol.Prepare(outcome);
-		NetworkManager.Send(request, (res) => {
+		Game.networkManager.Send(request, (res) => {
 			var response = res as ResponseClashEndBattle;
 			int creditsEarned = response.credits - manager.currentPlayer.credits;
 			if (creditsEarned >= 0) {

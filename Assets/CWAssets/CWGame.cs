@@ -9,12 +9,12 @@ public class CWGame : MonoBehaviour {
 	private static int isFading = 0;
 	private static float alphaFadeValue;
 	private static string nextScene;
-	private NetworkManager networkManager;
+	public static NetworkManager networkManager;
 
 	void Awake() {
 		networkManager = new NetworkManager(
 			this,
-			new ConnectionManager(Config.REMOTE_HOST, CW.Constants.REMOTE_PORT)
+			new ConnectionManager(Config.REMOTE_HOST, CW.Constants.REMOTE_PORT),false
 		);
 
 		DontDestroyOnLoad(gameObject);

@@ -230,7 +230,6 @@ public class PrefabGenerators : MonoBehaviour {
 
 		WMG_Series series1 = graph.lineSeries[0].GetComponent<WMG_Series>();
 		if (series1 == null) return;
-		series1.AutoUpdateXDistBetween = false;
 		series1.UseXDistBetweenToSpace = false;
 		series1.hideLines = true;
 		series1.pointWidthHeight = 5;
@@ -267,7 +266,6 @@ public class PrefabGenerators : MonoBehaviour {
 
 		WMG_Series series2 = graph.lineSeries[1].GetComponent<WMG_Series>();
 		if (series2 == null) return;
-		series2.AutoUpdateXDistBetween = false;
 		series2.UseXDistBetweenToSpace = false;
 		series2.hidePoints = true;
 		series2.lineScale = 1;
