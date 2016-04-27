@@ -82,7 +82,7 @@ public class DemMain : MonoBehaviour
 
     tweenManager.Update ();
     	// If a species is currently selected for building, update its position to the cursor
-    if (buildMenu.GetCurrentAnimalFactory() != null) {
+        if (buildMenu.GetCurrentAnimalFactory() != null) {
     		if (currentSelection) {
           
     			Vector3 world_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
@@ -102,6 +102,7 @@ public class DemMain : MonoBehaviour
 
     			// Start easing animation
     			StartCoroutine(easeReturn(0.05f));
+                boardController.ClearAvailableTiles();
     		}
 		}
 
