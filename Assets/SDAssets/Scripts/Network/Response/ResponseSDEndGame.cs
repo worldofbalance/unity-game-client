@@ -4,7 +4,7 @@ using System.Collections;
 namespace SD {
 
     public class ResponseSDEndGameEventArgs : ExtendedEventArgs {
-        public bool isWinner { get; set;}
+        public int status { get; set; }
         public float winningScore { get; set; }
         public string winningPlayerId { get; set; }
 
@@ -14,7 +14,7 @@ namespace SD {
     }
     public class ResponseSDEndGame : NetworkResponse {
 
-        private bool isWinner;
+        private int status;
         private float winningScore;
         private string winningPlayerId;
 
@@ -22,14 +22,14 @@ namespace SD {
         }
 
         public override void parse() {
-            isWinner = DataReader.ReadBool (dataStream);
+            status = DataReader.ReadInt (dataStream);
             winningScore = DataReader.ReadFloat (dataStream);
             winningPlayerId = DataReader.ReadString (dataStream);
         }
 
         public override ExtendedEventArgs process() {
             ResponseSDEndGameEventArgs args = new ResponseSDEndGameEventArgs ();
-            args.isWinner = this.isWinner;
+            args.status = this.status;
             args.winningScore = this.winningScore;
             args.winningPlayerId = this.winningPlayerId;
             return args;

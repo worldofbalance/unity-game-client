@@ -213,7 +213,7 @@ namespace SD {
 
         public void BtnSurrenderClick() {
             hasSurrendered = true;
-            sdGameManager.EndGame (hasSurrendered, score);
+            sdGameManager.EndGame (false, score);
         }
 
         public Rigidbody getOpponent() {
