@@ -28,17 +28,22 @@ namespace SD {
                 winningScore = persistentObject.getWinningScore ();
                 gameResult = persistentObject.getGameResult ();
             } else {
-                finalScore = GameController.getInstance ().getPlayerScore ();
+                if (GameController.getInstance ()) {
+                    finalScore = GameController.getInstance ().getPlayerScore ();
+                }
             }
 
-            if (gameResult == Constants.PLAYER_WIN)
+            if (gameResult == Constants.PLAYER_WIN) {
                 result = "Congratulations ! You won this round !";
-            else if (gameResult == Constants.PLAYER_LOSE)
+            } else if (gameResult == Constants.PLAYER_LOSE) {
                 result = "Sorry ! You lost this round. ";
-            else if (gameResult == Constants.PLAYER_DRAW)
+                if (GameController.getInstance ().getHasSurrendered ())
+                    result = "You surrendered before time. " + result;
+            } else if (gameResult == Constants.PLAYER_DRAW) {
                 result = "A draw ! Your score is the same as your opponent's.";
-            else 
+            } else { 
                 result = "Game result undefined in single player mode. ";
+            }
 
             txtScore.text = "Your score: " + finalScore;
             txtResult.text = result;

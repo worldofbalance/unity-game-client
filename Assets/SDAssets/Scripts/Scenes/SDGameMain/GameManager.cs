@@ -81,12 +81,12 @@ namespace SD {
             ResponseSDEndGameEventArgs args = eventArgs as ResponseSDEndGameEventArgs;
             persistentObject.setWinningScore ((int)args.winningScore);
 
-            if (args.isWinner) {
+            if (args.status == 1) {
                 persistentObject.setGameResult (Constants.PLAYER_WIN);
-            } else if (!args.isWinner && args.winningPlayerId == "0") {
-                persistentObject.setGameResult (Constants.PLAYER_DRAW);
-            } else {
+            } else if (args.status == 2) {
                 persistentObject.setGameResult (Constants.PLAYER_LOSE);
+            } else {
+                persistentObject.setGameResult (Constants.PLAYER_DRAW);                
             }
             SceneManager.LoadScene ("SDGameEnd");
         }
