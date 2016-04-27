@@ -243,6 +243,10 @@ namespace SD {
         public bool getHasSurrendered() {
             return hasSurrendered;
         }
+
+        public void setOpponentScore(int opScore) {
+            opponentScore = opScore;
+        }
     } 
 
 }

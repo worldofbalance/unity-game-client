@@ -43,6 +43,8 @@ namespace SD {
                     mQueue.AddCallback (Constants.SMSG_PREY, ResponseSDPrey);
                 if (!mQueue.callbackList.ContainsKey (Constants.SMSG_EAT_PREY))
                     mQueue.AddCallback (Constants.SMSG_EAT_PREY, ResponseSDDestroyPrey);
+                if (!mQueue.callbackList.ContainsKey (Constants.SMSG_SCORE))
+                    mQueue.AddMessage (Constants.SMSG_SCORE, ResponseSDChangeScore);
                 isMultiplayer = true;
             } else {
                 Debug.LogWarning ("Could not establish a connection to Sea Divided Server. Falling back to offline mode.");
@@ -177,6 +179,11 @@ namespace SD {
                 fish.isAlive = false;
                 gameController.destroyPrey (args.prey_id);
             }
+        }
+
+        public void ResponseSDChangeScore(ExtendedEventArgs eventArgs) {
+            ResponseSDScoreEventArgs args = eventArgs as ResponseSDScoreEventArgs;
+            gameController.setOpponentScore ((int)args.score);
         }
     }
 }
