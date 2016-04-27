@@ -21,9 +21,10 @@ namespace SD
             add (Constants.SMSG_SDEND_GAME, "ResponseSDEndGame");
             add (Constants.SMSG_KEYBOARD, "ResponseSDKeyboard");
             add (Constants.SMSG_POSITION, "ResponseSDPosition");
-            add(Constants.SMSG_PREY, "ResponseSDPrey");
+            add (Constants.SMSG_PREY, "ResponseSDPrey");
             add (Constants.SMSG_EAT_PREY, "ResponseSDDestroyPrey");
             add (Constants.SMSG_DISCONNECT, "ResponseSDDisconnect");
+            add (Constants.SMSG_SCORE, "ResponseSDScore");
         }
 
         public static void add(short response_id, string name)

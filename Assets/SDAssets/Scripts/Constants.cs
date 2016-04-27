@@ -37,6 +37,9 @@ namespace SD
         public static readonly short CMSG_DISCONNECT = 506;
         public static readonly short SMSG_DISCONNECT = 606;
 
+        public static readonly short CMSG_SCORE = 507;
+        public static readonly short SMSG_SCORE = 607;
+
         public static int USER_ID = -1; // Overwritten by the response. (Player_id)
         public static readonly int TEMP_ROOM_ID = 101;
 
