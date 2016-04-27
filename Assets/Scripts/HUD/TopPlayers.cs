@@ -16,7 +16,7 @@ public class TopPlayers : MonoBehaviour
     {
         passedInFunc = callback;
 
-        NetworkManager.Send(
+        Game.networkManager.Send(
             TopListProtocol.Prepare(),
             ProcessTopList
        );

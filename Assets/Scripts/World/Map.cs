@@ -26,12 +26,12 @@ public class Map : MonoBehaviour {
 	void Awake() {
 		playerList = new Dictionary<int, Player>();
 
-		NetworkManager.Send(
+		Game.networkManager.Send(
 			ZoneListProtocol.Prepare(),
 			ProcessZoneList
 		);
 
-		NetworkManager.Listen(
+		Game.networkManager.Listen(
 			NetworkCode.ZONE_UPDATE,
 			ProcessZoneUpdate
 		);
@@ -48,7 +48,7 @@ public class Map : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		NetworkManager.Ignore(
+		Game.networkManager.Ignore(
 			NetworkCode.ZONE_UPDATE,
 			ProcessZoneUpdate
 		);

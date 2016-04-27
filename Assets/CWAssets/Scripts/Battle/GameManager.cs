@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using UnityEngine.UI;
 namespace CW
 {
 	public class GameManager : MonoBehaviour
@@ -26,6 +26,7 @@ namespace CW
 	
 		void Start ()
 		{
+            //Debug.Log("GameManager CWAssets start");
 			// Needed to to fade into scene
 			Game.StartEnterTransition ();
 			showLoading = 300; //5 seconds
@@ -100,7 +101,8 @@ namespace CW
 			} else {
 				//Hide popup
 				//popup.renderer.enabled = false;
-				Debug.Log ("Loading destroyed");
+                // commented by Rujoota
+				//Debug.Log ("Loading destroyed");
 				Destroy (popup);
 			}
 		}
@@ -113,7 +115,9 @@ namespace CW
 
 			//Deal player 1 a card and set as current player
 			GameManager.curPlayer = player1;
-			player1.startTurn ();
+            player1.cardsInPlayGlow();
+            player1.startTurn ();
+            
 		}
 	
 		public static void endTurn ()
@@ -121,6 +125,7 @@ namespace CW
 	
 			// If two_player, only switch turns if player1 isActive
 			if (!Constants.SINGLE_PLAYER && player1.isActive) {
+				//Debug.Log ("End Turn");
 				protocols.sendEndTurn (player1.playerID);
 				//Player's endturn refreshes the player's minions so they can attack next turn.
 				player1.endTurn ();
@@ -167,6 +172,12 @@ namespace CW
 		
 		}
 
+		//Wrapper for endturn function
+		public void endTurnWrapper ()
+		{
+			endTurn();
+		}
+
 		/*
 	 This is called when the game is over and the player 
 	 selects "ReturnToLobby button" or if the player fails
@@ -177,28 +188,39 @@ namespace CW
 			Debug.Log ("Returning to Lobby");
 			//protocols.sendReturnToLobby();
 		}
-
+        //new back to lobby function for button in case old one is used elsewhere
+        public void backToLobby ()
+        {
+            Debug.Log ("Returning to Lobby");
+            Game.SwitchScene("World");
+        }
 
 		//Called many times a second listening for button clicks
-		void OnGUI ()
-		{
-		
-			//End turn button, on left side of screen
-			//TODO maybe make a new graphic for the button
-			if (GUI.Button (new Rect (0, //left
-		                       (Screen.height / 2.0f), //height
-		                       (Screen.width / 12.8f) / 100 * 150, 
-		                       (Screen.width / 12.8f) / 100 * 40), 
-		              			"End Turn")) {
-				endTurn ();
-			}
-			if (GUI.Button (new Rect (0, //left
-			                          (Screen.height / 2.0f - 80), //height
-			                          (Screen.width / 12.8f) / 100 * 150, 
-			                          (Screen.width / 12.8f) / 100 * 40), 
-			                "Back to Lobby")) {
-				Game.SwitchScene("World");
-			}
-		}
+        //Called many times a second listening for button clicks
+        void OnGUI ()
+        {
+        
+            //End turn button, on left side of screen
+            //TODO maybe make a new graphic for the button
+            /*
+             * Removing old end turn button
+             * using one from canvas
+            if (GUI.Button (new Rect (0, //left
+                               (Screen.height / 2.0f), //height
+                               (Screen.width / 12.8f) / 100 * 150, 
+                               (Screen.width / 12.8f) / 100 * 40), 
+                                "End Turn")) {
+                endTurn ();
+            }
+            
+            if (GUI.Button (new Rect (0, //left
+                                      (Screen.height / 2.0f - 80), //height
+                                      (Screen.width / 12.8f) / 100 * 150, 
+                                      (Screen.width / 12.8f) / 100 * 40), 
+                            "Back to Lobby")) {
+                Game.SwitchScene("World");
+            }
+            */
+        }
 	}
 }

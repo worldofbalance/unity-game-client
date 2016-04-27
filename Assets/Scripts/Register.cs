@@ -120,7 +120,7 @@ public class Register : MonoBehaviour {
 //			mainObject.GetComponent<Main>().CreateMessageBox("Passwords do not match");
 			GUI.FocusControl("confirm_field");
 		} else {
-			NetworkManager.Send(
+			Game.networkManager.Send(
 				RegisterProtocol.Prepare(fname, lname, email, password, name, color),
 				ProcessRegister
 			);
@@ -172,7 +172,7 @@ public class Register : MonoBehaviour {
 				Debug.Log(species_id + " " + biomass);
 			}
 
-			NetworkManager.Send(
+			Game.networkManager.Send(
 				SpeciesActionProtocol.Prepare(1, speciesList),
 				ProcessSpeciesAction
 			);

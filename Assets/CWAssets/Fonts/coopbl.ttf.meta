@@ -9,6 +9,11 @@ TrueTypeFontImporter:
   includeFontData: 1
   use2xBehaviour: 0
   fontNames: []
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: ba3d0635825cc422abec597bd299e87d, type: 3}
+  - {fileID: 12800000, guid: cc6d5fb82e1354660a14d3ef428616a0, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 
