@@ -61,11 +61,11 @@ public class PlayerController : MonoBehaviour {
         // Gets arrow key input
         movementHorizontal = Input.GetAxis("Horizontal");
         movementVertical = Input.GetAxis ("Vertical");
-
-        Vector3 movement = new Vector3 (movementHorizontal, movementVertical, 0.0f);
-        
-        // Send x and y position to the opponent if they have changed.
-        if (rb.position.x != oldXPosition || rb.position.y != oldYPosition) {
+            turn = new Vector3(0f, turnSpeed, 0f);
+            Vector2 movement = new Vector2(movementHorizontal, movementVertical);
+    
+            // Send x and y position to the opponent if they have changed.
+            if (rb.position.x != oldXPosition || rb.position.y != oldYPosition) {
             sdGameManager.SetPlayerPositions (rb.position.x, rb.position.y);
         }
         oldXPosition = rb.position.x;
@@ -80,31 +80,30 @@ public class PlayerController : MonoBehaviour {
             0.0f
         );
 
+            if (rb.velocity.x > 0)
+            {
+
+                if (rb.transform.rotation.eulerAngles.y > 90)
+                {
+                    rb.transform.Rotate(-turn);
+
+                }
+            }
+            if (rb.velocity.x <0)
+            {
+
+                if (rb.transform.rotation.eulerAngles.y < 270)
+                {
+                     rb.transform.Rotate(turn);
+                }
+             }
         // Flips the player object left or right
         // depending on the direction the player is moving
         // Moving to Right
-    
-        if (rb.velocity.x > 0) {
-            
-            //turnSpeed = turnSpeed * -1;
-            rb.transform.Rotate (-turn);
-            
-        } 
-        // Moving to Left
-        if (rb.velocity.x < 0) {
-            
-            rb.transform.Rotate (turn);
 
-            
-        }
 
-            if (rb.rotation.y >= -0.5 && rb.rotation.y <= 0.5) {
-                rb.transform.localScale = new Vector3 (1, -1, 1);
-            } else {
-                rb.transform.localScale = new Vector3 (1, 1, 1);
-            }
         //rb.rotation = Quaternion.Euler (0.0f, rb.velocity.z * -tilt,  0.0f);
-	}
+    }
         
     // So far, the Update function only manages temporally speed up of the player
     // by pressing a space bar.
