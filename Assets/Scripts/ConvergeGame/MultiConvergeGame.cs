@@ -31,6 +31,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private int bufferBorder = 10;
 	private float leftGraph = 10;
 	private float topGraph = 45;    // DH change. Was 75
+    private float balanceY;        // balance msg Y coordinate
     private int sliderBorder = 20;  // DH change. Gives extra for sliders
 	private float OppViewWidth;    // DH change. Width of opponent view area
 	private Rect windowRect;
@@ -165,6 +166,7 @@ public class MultiConvergeGame : MonoBehaviour
 		simRunning = false;
 		formattedScores = new List<int>();
 		otherScores = new List<int>();
+        balanceY = topGraph + 45*6;     // balance msg Y coordinate
 	}
 	
 	// Use this for initialization
@@ -367,24 +369,24 @@ public class MultiConvergeGame : MonoBehaviour
 		} else {
 			remainLabel = remainLabel + timeDisplayed + " seconds";
 		}
-		GUI.Label (new Rect (bufferBorder, height - 70 - bufferBorder, 400, 30), remainLabel, style);
+		GUI.Label (new Rect (bufferBorder, height - 80 - bufferBorder, 400, 30), remainLabel, style);
 
 		// Add in money balance and bid amount
-		GUI.Label (new Rect (bufferBorder + 450, height/2 + bufferBorder + 110, 200, 30), "Balance: $" + balance, style);
-		GUI.Label (new Rect (bufferBorder + 450, height/2 + bufferBorder + 150, 200, 30), "Bet:      $" + bet, style);
+        GUI.Label (new Rect (bufferBorder + width - 150, balanceY, 200, 30), "Balance: $" + balance, style);
+        GUI.Label (new Rect (bufferBorder + width - 150, balanceY + 30, 200, 30), "Bet:      $" + bet, style);
 		if (betAccepted) {
-			GUI.Label (new Rect (bufferBorder + 450, height/2 + bufferBorder + 190, 300, 30), "Please wait for results of betting.", style);
+            GUI.Label (new Rect (bufferBorder + 450, height - 80 - bufferBorder, 300, 30), "Please wait for results of betting.", style);
 		} else if (results) {
 			if (won == 1) {
-				GUI.Label (new Rect (bufferBorder + 450, height / 2 + bufferBorder + 190, 300, 30), "Congratulations - you won last round!", style);
+                GUI.Label (new Rect (bufferBorder + 450, height - 80 - bufferBorder, 300, 30), "Congratulations - you won last round!", style);
 			} else if (won == 0) {
-				GUI.Label (new Rect (bufferBorder + 450, height / 2 + bufferBorder + 190, 300, 30), "Sorry - you lost last round.", style);
+                GUI.Label (new Rect (bufferBorder + 450, height - 80 - bufferBorder, 300, 30), "Sorry - you lost last round.", style);
 			} else {
-				GUI.Label (new Rect (bufferBorder + 450, height / 2 + bufferBorder + 190, 300, 30), "You did not play last round.", style);
+                GUI.Label (new Rect (bufferBorder + 450, height - 80 - bufferBorder, 300, 30), "You did not play last round.", style);
 			}
 		}
         if (playerDrop > 0) {
-            GUI.Label (new Rect (bufferBorder + 450, height / 2 + bufferBorder + 230, 300, 30), "A player left the game.", style);
+            GUI.Label (new Rect (bufferBorder + 450, height - 80 - bufferBorder + 20, 300, 30), "A player left the game.", style);
             playerDrop--;
         }
 
@@ -1286,16 +1288,30 @@ public class MultiConvergeGame : MonoBehaviour
 
 						ConvergeEcosystem ecosystem = new ConvergeEcosystem (ecosystem_id);
 						int fldSize = br.ReadInt16 ();
+                        Debug.Log("description_fldSize: " + fldSize);
 						ecosystem.description = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                        Debug.Log(ecosystem.description);
 						ecosystem.timesteps = br.ReadInt32 ();
 						fldSize = br.ReadInt16 ();
+                        Debug.Log("config_default_fldSize: " + fldSize);
 						ecosystem.config_default = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                        Debug.Log(ecosystem.config_default);
 						fldSize = br.ReadInt16 ();
+                        Debug.Log("config_target_fldSize: " + fldSize);
 						ecosystem.config_target = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                        Debug.Log(ecosystem.config_target);
 						fldSize = br.ReadInt16 ();
+                        // Harjit's 32 bit length string
+                        // fldSize = br.ReadInt32 ();
+                        Debug.Log("csv_default_string_fldSize: " + fldSize);
 						ecosystem.csv_default_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                        Debug.Log(ecosystem.csv_default_string);
 						fldSize = br.ReadInt16 ();
+                        // Harjit's 32 bit length string
+                        // fldSize = br.ReadInt32 ();
+                        Debug.Log("csv_target_string_fldSize: " + fldSize);
 						ecosystem.csv_target_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                        Debug.Log(ecosystem.csv_target_string);
                         ecosystem.sliderRanges = "";
                         ecosystem.markerEnabled = false;
 						
