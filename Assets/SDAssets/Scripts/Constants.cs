@@ -34,6 +34,9 @@ namespace SD
         public static readonly short CMSG_EAT_PREY = 505;
         public static readonly short SMSG_EAT_PREY = 605;
 
+        public static readonly short CMSG_DISCONNECT = 506;
+        public static readonly short SMSG_DISCONNECT = 606;
+
         public static int USER_ID = -1; // Overwritten by the response. (Player_id)
         public static readonly int TEMP_ROOM_ID = 101;
 
