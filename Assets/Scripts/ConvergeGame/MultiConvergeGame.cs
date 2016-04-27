@@ -32,6 +32,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private float leftGraph = 10;
 	private float topGraph = 45;    // DH change. Was 75
     private float balanceY;        // balance msg Y coordinate
+    private float roundY;          // rounds msgg Y coordinate
     private int sliderBorder = 20;  // DH change. Gives extra for sliders
 	private float OppViewWidth;    // DH change. Width of opponent view area
 	private Rect windowRect;
@@ -40,6 +41,7 @@ public class MultiConvergeGame : MonoBehaviour
     private bool isActive = true;   // Not active until host specifies    Ivan - change to false
     private bool isInitial = true;   // helps with GUI focus
     private bool isSetup = false;   // read parameters   Ivan - change to true
+    private bool isDone = false;   // used to display end result screen
 	// DH change
 	// eliminate blink. Replace isProcessing with betAccepted
 	// private bool isProcessing = true;
@@ -111,6 +113,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private string name_otherPlayer;   // name for other player for graph
 	private List<int> otherScores;
     private int pixelPerChar = 15;
+    private short curRound = 1; 
     // Parameters that host specifies
     private short numRounds = 0;
     private string numRoundsS = "";
@@ -166,7 +169,10 @@ public class MultiConvergeGame : MonoBehaviour
 		simRunning = false;
 		formattedScores = new List<int>();
 		otherScores = new List<int>();
-        balanceY = topGraph + 45*6;     // balance msg Y coordinate
+        balanceY = topGraph + 45*5 + 20;     // balance msg Y coordinate
+        roundY = balanceY + 2 * 30 + 5;
+        curRound = 1;   // Start with Round 1
+        numRounds = 5;    // Over written by user input 
 	}
 	
 	// Use this for initialization
@@ -286,6 +292,10 @@ public class MultiConvergeGame : MonoBehaviour
         if (isSetup && !host) {  // Get configuration info from host
             windowRectConfig = GUI.Window (host_config_id, windowRectConfig, MakeWindowNonHost, "Non-Host Configuration Entry", GUIStyle.none);
         }
+
+        if (isDone) {    // Game over screen
+            windowRectConfig = GUI.Window (host_config_id, windowRectConfig, MakeWindowDone, "Game Over", GUIStyle.none);
+        }
             
 		// Converge Game Interface
 		if (isActive) {
@@ -374,6 +384,9 @@ public class MultiConvergeGame : MonoBehaviour
 		// Add in money balance and bid amount
         GUI.Label (new Rect (bufferBorder + width - 150, balanceY, 200, 30), "Balance: $" + balance, style);
         GUI.Label (new Rect (bufferBorder + width - 150, balanceY + 30, 200, 30), "Bet:      $" + bet, style);
+        GUI.Label (new Rect (bufferBorder + width - 150, roundY, 200, 30), "Total Rounds:  " + numRounds, style);
+        GUI.Label (new Rect (bufferBorder + width - 150, roundY + 30, 200, 30), "Round:          " + curRound, style);
+
 		if (betAccepted) {
             GUI.Label (new Rect (bufferBorder + 450, height - 80 - bufferBorder, 300, 30), "Please wait for results of betting.", style);
 		} else if (results) {
@@ -637,6 +650,40 @@ public class MultiConvergeGame : MonoBehaviour
                 ConvergeNonHostConfigProtocol.Prepare (), ProcessConvergeNonHostConfig);
             Debug.Log ("Sent ConvergeNonHostConfig");
             prot187Sent = true;
+        }
+    }
+
+    void MakeWindowDone(int id) {
+        Functions.DrawBackground(new Rect(0, 0, widthConfig, heightConfig), bgTexture);
+        string hdr1 = "Multiplayer Convergence";
+        int hdr1P = hdr1.Length * pixelPerChar;
+        string hdr2 = "Game Over. Thank you for playing";
+        int hdr2P = hdr2.Length * pixelPerChar;
+        string hdr3 = "Your Final balance is: " + balance;
+        int hdr3P = hdr3.Length * pixelPerChar;
+        string hdr4 = "The Database will be updated with your new Balance";
+        int hdr4P = hdr4.Length * pixelPerChar;
+        string retButton = "Return to Lobby";
+        int retButtonP = 110;
+
+        GUIStyle style = new GUIStyle(GUI.skin.label);
+        style.alignment = TextAnchor.UpperCenter;
+        style.font = font;
+        style.fontSize = 16;
+
+        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.15f, hdr1P, 30), hdr1, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.30f, hdr2P, 30), hdr2, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.45f, hdr3P, 30), hdr3, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr4P) / 2, windowRectConfig.height * 0.60f, hdr4P, 30), hdr4, style);
+
+        if (GUI.Button (new Rect ((windowRectConfig.width - retButtonP) / 2, windowRectConfig.height * 0.80f, retButtonP, 30), retButton)) {
+            Destroy (this);
+            Destroy (foodWeb);
+            GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
+            Species[] s = gs.GetComponents<Species> ();
+            foreach (Species sp in s)
+                Destroy (sp); //destroy the "species" objects
+            Game.SwitchScene ("World");
         }
     }
 
@@ -1072,6 +1119,13 @@ public class MultiConvergeGame : MonoBehaviour
 		betAccepted = false; 
 		windowClosed = false;
 		closedResponseSent = false;
+        curRound++;    // Needs to be replaced by adding round number from server 
+        if (curRound > numRounds) {
+            // Game over - switch to game over display 
+            isActive = false;
+            isDone = true;
+            Debug.Log ("Game over");
+        }
 		Debug.Log ("new balance: " + balance);
 	}
 
