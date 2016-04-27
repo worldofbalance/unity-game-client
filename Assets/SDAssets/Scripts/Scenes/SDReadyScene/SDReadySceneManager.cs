@@ -80,7 +80,7 @@ namespace SD {
             if (args.status == 0) {
                 // Send a request to the opponent indicating that this client is ready to play.
                 RequestSDPosition request = new RequestSDPosition();
-                request.Send (0.ToString (), 0.ToString ());
+                request.Send (0.ToString (), 0.ToString (), 0.ToString());
                 cManager.Send (request);
                 Debug.Log ("Waiting for opponent to respond..");
             } else {
@@ -91,14 +91,6 @@ namespace SD {
         public void ResponseSDStartSync(ExtendedEventArgs eventArgs) {
             Debug.Log ("The opponent is ready to play, loading the game scene.");
             this.isOpponentReady = true;
-            //StartCoroutine (WaitToStartGame());
-        }
-
-        public IEnumerator WaitToStartGame() {
-            while (!(isPlayerReady && isOpponentReady)) {
-                yield return new WaitForSeconds (0.001f); 
-            }
-            SceneManager.LoadScene ("SDGameMain");
         }
     }
 }

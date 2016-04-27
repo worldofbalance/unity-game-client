@@ -22,6 +22,7 @@ namespace SD
             add (Constants.CMSG_POSITION, "RequestSDPosition");
             add(Constants.CMSG_PREY, "RequestSDPrey");
             add (Constants.CMSG_EAT_PREY, "RequestSDDestroyPrey");
+            add (Constants.CMSG_SCORE, "RequestSDScore");
         }
 
         public static void add(short request_id, string name)

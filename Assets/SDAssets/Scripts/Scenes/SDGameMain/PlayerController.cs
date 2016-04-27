@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour {
     
             // Send x and y position to the opponent if they have changed.
             if (rb.position.x != oldXPosition || rb.position.y != oldYPosition) {
-            sdGameManager.SetPlayerPositions (rb.position.x, rb.position.y);
+                sdGameManager.SetPlayerPositions (rb.position.x, rb.position.y, rb.rotation.x);
         }
         oldXPosition = rb.position.x;
         oldYPosition = rb.position.y;

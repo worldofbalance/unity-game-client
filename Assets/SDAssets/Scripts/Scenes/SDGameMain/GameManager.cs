@@ -44,7 +44,7 @@ namespace SD {
                 if (!mQueue.callbackList.ContainsKey (Constants.SMSG_EAT_PREY))
                     mQueue.AddCallback (Constants.SMSG_EAT_PREY, ResponseSDDestroyPrey);
                 if (!mQueue.callbackList.ContainsKey (Constants.SMSG_SCORE))
-                    mQueue.AddMessage (Constants.SMSG_SCORE, ResponseSDChangeScore);
+                    mQueue.AddCallback (Constants.SMSG_SCORE, ResponseSDChangeScore);
                 isMultiplayer = true;
             } else {
                 Debug.LogWarning ("Could not establish a connection to Sea Divided Server. Falling back to offline mode.");
@@ -94,10 +94,10 @@ namespace SD {
         }
 
         // Sends the player's current position to the server.
-        public void SetPlayerPositions(float x, float y) {
+        public void SetPlayerPositions(float x, float y, float r) {
             if (cManager) {
                 RequestSDPosition request = new RequestSDPosition ();
-                request.Send (x.ToString (), y.ToString ());
+                request.Send (x.ToString (), y.ToString (), r.ToString());
                 cManager.Send (request);
             }
         }
@@ -181,9 +181,19 @@ namespace SD {
             }
         }
 
+        public void SendScoreToOpponent(int score) {
+            if (cManager) {
+                RequestSDScore request = new RequestSDScore ();
+                request.Send ((float)score);
+                cManager.Send (request);
+                Debug.Log ("Sent the score " + score);
+            }
+        }
+
         public void ResponseSDChangeScore(ExtendedEventArgs eventArgs) {
             ResponseSDScoreEventArgs args = eventArgs as ResponseSDScoreEventArgs;
-            gameController.setOpponentScore ((int)args.score);
+            gameController.setOpponentScore (args.score);
+            Debug.Log ("Received the opponent's score: " + args.score);
         }
     }
 }

@@ -137,6 +137,9 @@ namespace SD {
         public void AddScore(int newScoreValue) {
             score += newScoreValue;
             UpdateScore ();
+            // Send the score to the opponent.
+            Debug.Log("SDFKSJDFDSJFKSDFJSD");
+            sdGameManager.SendScoreToOpponent(score);
         }
 
         // Updates scoreText UI.
@@ -197,6 +200,9 @@ namespace SD {
         public void Score(){
             this.score += this.unscoredPoint;
             UpdateScore ();
+            // Send the score to the opponent.
+            if (this.unscoredPoint != 0)  // to send the request only once.
+                sdGameManager.SendScoreToOpponent(score);
         }
 
         public int GetHealth(){

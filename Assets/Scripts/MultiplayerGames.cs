@@ -25,17 +25,22 @@ public class MultiplayerGames : MonoBehaviour {
 
 	private int room_id = 0;
 
+    SD.SDMessageQueue sdQueue;
+
 	void Awake() {
 		mainObject = GameObject.Find("MainObject");
 		window_id = Constants.GetUniqueID();
 
 		Game.networkManager.Listen (NetworkCode.PAIR, OnPairResult);
 		Game.networkManager.Listen (NetworkCode.QUIT_ROOM, OnQuitRoomResult);
+        sdQueue = SD.SDMessageQueue.getInstance ();
+        sdQueue.AddCallback (SD.Constants.SMSG_RACE_INIT, SD_ResponsePlayInit);
 	}
 
 	void OnDestroy () {
 		Game.networkManager.Ignore (NetworkCode.PAIR, OnPairResult);
 		Game.networkManager.Ignore (NetworkCode.QUIT_ROOM, OnQuitRoomResult);
+        sdQueue.RemoveCallback (SD.Constants.SMSG_RACE_INIT);
 	}
 
 	// Use this for initialization
@@ -257,4 +262,8 @@ public class MultiplayerGames : MonoBehaviour {
         return request;
     }
    
+    public void SD_ResponsePlayInit(SD.ExtendedEventArgs eventArgs) {
+        SD.ResponsePlayInitEventArgs args = eventArgs as SD.ResponsePlayInitEventArgs;
+        SD.Constants.PLAYER_NUMBER = args.playerNumber;
+    }
 }

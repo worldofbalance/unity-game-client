@@ -41,6 +41,8 @@ namespace SD
         public static readonly short SMSG_SCORE = 607;
 
         public static int USER_ID = -1; // Overwritten by the response. (Player_id)
+        public static int PLAYER_NUMBER = -1;
+
         public static readonly int TEMP_ROOM_ID = 101;
 
         public static readonly int PLAYER_WIN = 1;

@@ -29,6 +29,7 @@ public class SDLogin : MonoBehaviour {
         windowRect = new Rect(left, top, width, height);
         font = Resources.Load<Font>("Fonts/" + "Chalkboard");
         SD.SDMessageQueue.getInstance().AddCallback (SD.Constants.SMSG_AUTH, SD_ResponseLogin);
+        SD.SDMessageQueue.getInstance ().AddCallback (SD.Constants.SMSG_RACE_INIT, SD_ResponseLogin);
     }
 
     // Use this for initialization
@@ -42,7 +43,8 @@ public class SDLogin : MonoBehaviour {
     }
 
     void OnDestroy() {
-
+        SD.SDMessageQueue.getInstance().RemoveCallback (SD.Constants.SMSG_AUTH);
+        SD.SDMessageQueue.getInstance ().RemoveCallback (SD.Constants.SMSG_RACE_INIT);
     }
 
     void OnGUI() {
@@ -170,6 +172,10 @@ public class SDLogin : MonoBehaviour {
         request.Send(SD.Constants.USER_ID, SD.Constants.TEMP_ROOM_ID);
         return request;
     }
+    public void SD_ResponsePlayInit(SD.ExtendedEventArgs eventArgs) {
+        SD.ResponsePlayInitEventArgs args = eventArgs as SD.ResponsePlayInitEventArgs;
+        SD.Constants.PLAYER_NUMBER = args.playerNumber;
 
+    }
 }
 

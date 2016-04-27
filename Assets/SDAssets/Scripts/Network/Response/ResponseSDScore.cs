@@ -5,7 +5,7 @@ namespace SD {
 
     public class ResponseSDScoreEventArgs : ExtendedEventArgs {
 
-        public float score { get; set; }
+        public int score { get; set; }
 
         public ResponseSDScoreEventArgs() {
             event_id = Constants.SMSG_SCORE;
@@ -14,10 +14,10 @@ namespace SD {
 
     public class ResponseSDScore : NetworkResponse {
 
-        private float score;
+        private int score;
 
         public override void parse() {
-            score = DataReader.ReadFloat (dataStream);
+            score = DataReader.ReadInt (dataStream);
         }
 
         public override ExtendedEventArgs process() {

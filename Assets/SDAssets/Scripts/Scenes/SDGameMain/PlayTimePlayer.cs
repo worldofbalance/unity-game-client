@@ -13,6 +13,7 @@ namespace SD
         public float movementVertical { get; set; }
         public float xPosition { get; set; }
         public float yPosition { get; set; }
+        public int score {get; set;}
 
         public PlayTimePlayer ()
         {
@@ -23,6 +24,7 @@ namespace SD
             movementVertical = 0.0f;
             xPosition = 0.0f;
             yPosition = 0.0f;
+            score = 0;
         }
     }
 }

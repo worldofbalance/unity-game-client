@@ -1,5 +1,4 @@
-﻿//author: Ye
-using UnityEngine;
+﻿using UnityEngine;
 
 using System;
 namespace SD
@@ -7,6 +6,9 @@ namespace SD
     public class ResponsePlayInitEventArgs : ExtendedEventArgs
     {
         public short status { get; set; }
+        public int playerId { get; set; }
+        public int playerNumber { get; set; }
+        public string playerName { get; set;}
 
         public ResponsePlayInitEventArgs()
         {
@@ -20,7 +22,10 @@ namespace SD
     public class ResponsePlayInit : NetworkResponse
     {
 
-        private short status;//start a battle: 0; wait for a battle: 1
+        private short status;
+        private int playerId;
+        private int playerNumber;
+        private string playerName;
 
         public ResponsePlayInit()
         {
@@ -29,17 +34,9 @@ namespace SD
         public override void parse()
         {
             status = DataReader.ReadShort(dataStream);
-            //		Battle.stopSendRequest();
-            if (status == 0)
-            {
-                //Debug.Log("Battle Preparation Started");
-                //change to battle scene
-                //when the battle is ended, change stopSendRequest to true;
-            }
-            else if (status == 1)
-            {
-                Debug.Log("request received by server, wait for a race");
-            }
+            playerId = DataReader.ReadInt (dataStream);
+            playerNumber = DataReader.ReadInt (dataStream);
+            playerName = DataReader.ReadString (dataStream);
         }
 
         public override ExtendedEventArgs process()
@@ -48,17 +45,9 @@ namespace SD
 
             args = new ResponsePlayInitEventArgs();
             args.status = status;
-
-            if (status == 0)
-            {
-                //battle start, stop sending battle request
-                Debug.Log("response received from server");
-            }
-            else if (status == 1)
-            {
-                //battle not start, continue sending battle request
-
-            }
+            args.playerId = playerId;
+            args.playerNumber = playerNumber;
+            args.playerName = playerName;
             return args;
         }
     }
