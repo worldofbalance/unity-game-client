@@ -34,10 +34,10 @@ public class Trees : MonoBehaviour {
 
         if (player.player1) { //Your name is pink
             //transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
-            transform.Find ("NameText").GetComponent<TextMesh> ().color = Color.magenta;
-        } else { //Enemy name is red
+            transform.Find ("NameText").GetComponent<Renderer> ().material.SetColor("_Color", Color.red);
+        } else { //Enemy name is redateria
             //transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
-            transform.Find("NameText").GetComponent<TextMesh>().color = Color.red;
+            transform.Find("NameText").GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
         }
         //Set dmg text
         transform.Find("DamageText").GetComponent<TextMesh>().text = "";
