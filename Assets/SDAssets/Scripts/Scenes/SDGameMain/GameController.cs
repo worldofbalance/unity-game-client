@@ -39,6 +39,8 @@ namespace SD {
         public Rigidbody opponentBase;
         private Vector3 playerInitialPosition = new Vector3(0,0,0);
         private Quaternion playerInitialRotation = Quaternion.Euler(0,90,0);
+        private Vector3 opponentInitialPosition = new Vector3 (0, 0, 0);
+        private Quaternion opponentInitialRotation = Quaternion.Euler (0, 270, 0);
         private Vector3 playerBaseInitialPosition = new Vector3(-125,0,0);
         private Quaternion playerBaseInitialRotation = Quaternion.Euler(0,0,0);
         private Vector3 opponentBaseInitialPosition = new Vector3(125,0,0);
@@ -62,6 +64,10 @@ namespace SD {
         // Initializes the player's score, and UI texts.
         // Also spawns numbers of prey at random positions.
         void Start () {
+
+            if (Constants.PLAYER_NUMBER == 2) {  // The player who joins the host will have a different position to start from.
+                swapPositions();
+            }
             Rigidbody playerClone = (Rigidbody)Instantiate (player, playerInitialPosition, playerInitialRotation);
             Rigidbody playerBaseClone = (Rigidbody)Instantiate (playerBase, playerBaseInitialPosition, playerBaseInitialRotation);
             Rigidbody opponentBaseClone = (Rigidbody)Instantiate (opponentBase, opponentBaseInitialPosition, opponentBaseInitialRotation);
@@ -107,6 +113,25 @@ namespace SD {
 
         public static GameController getInstance() {
             return gameController;
+        }
+
+        // Swaps the positions and rotations of the players and bases for the opponent's view.
+        private void swapPositions() {
+            Vector3 tempV = playerInitialPosition;
+            playerInitialPosition = opponentInitialPosition;
+            opponentBaseInitialPosition = tempV;
+
+            tempV = playerBaseInitialPosition;
+            playerBaseInitialPosition = opponentBaseInitialPosition;
+            opponentBaseInitialPosition = tempV;
+
+            Quaternion tempQ = playerInitialRotation;
+            playerInitialRotation = opponentInitialRotation;
+            opponentInitialRotation = tempQ;
+
+            tempQ = playerBaseInitialRotation;
+            playerBaseInitialRotation = opponentBaseInitialRotation;
+            opponentBaseInitialRotation = playerBaseInitialRotation;
         }
 
         // Spawns prey at a random position within the boundary
