@@ -15,8 +15,9 @@ public class BuildMenu : MonoBehaviour
 	//Access to DemRectUI script for RectUI creation
 	public DemRectUI demRectUI;
 	private GameObject quitUI;	//instance of UI for after pressed quit button
-	private float qBX; //quit button width
-	private float qBY; //quit button height
+
+	private GameObject statUI;
+	private Statistic statistic;
 
     // Toggle counter
     int toggleCount = 0;
@@ -94,6 +95,8 @@ public class BuildMenu : MonoBehaviour
     //panelObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
 		quitUI = null;
+		statUI = null;
+		statistic = new Statistic ();
     }
 
  
@@ -191,14 +194,20 @@ public class BuildMenu : MonoBehaviour
         // Add an onClick listener to dectect button clicks
         toggleButton.GetComponent<Button>().onClick.AddListener(() => { selectMenu(toggleButton, menuButtons); });
 
-		//quit button 
+		//statistic button
 		float qBX = Screen.width / 10.0f;
 		float qBY = Screen.height / 10.0f;
+		demButton.setSize (qBX, qBY);
+		GameObject statButton = demButton.CreateButton (Screen.width/2.0f, 0, "statistic");
+		demButton.SetButtonText (statButton, "statistic");
+		statButton.GetComponent<Button> ().onClick.AddListener (() => {selectStatistic();});
+
+		//quit button 
+		qBX = Screen.width / 10.0f;
 		demButton.setSize (qBX, qBY);
 		GameObject quitButton = demButton.CreateButton (Screen.width - qBX, 0, "Quit");
 		demButton.SetButtonText (quitButton, "Quit");
 		quitButton.GetComponent<Button> ().onClick.AddListener (() => {selectQuit();});
-        
     }
 
 
@@ -298,7 +307,6 @@ public class BuildMenu : MonoBehaviour
 	//click on quit button
 	void selectQuit(){
 		DemAudioManager.audioClick.Play();
-		Debug.Log (Screen.width);
 
 		if (main.currentSelection) {
 			Destroy(main.currentSelection);
@@ -325,7 +333,6 @@ public class BuildMenu : MonoBehaviour
 				new Vector2 (quitUI.GetComponent<RectTransform> ().sizeDelta.x/5.0f*3.0f,
 					-quitUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f);
 			demButton.SetButtonText (noButton, "Back");
-			//noButton.GetComponent<Button> ().onClick.AddListener (()=>{quitUI.SetActive(false);});
 			noButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); quitUI.SetActive(false); mainUIObject.SetActive(true);});
 
 			mainUIObject.SetActive (false);
@@ -337,6 +344,45 @@ public class BuildMenu : MonoBehaviour
 			quitUI.SetActive (true);
 			mainUIObject.SetActive (false);
 		}
+	}
+
+
+	//click on statistic button
+	public void selectStatistic(){
+		DemAudioManager.audioClick.Play();
+
+		if (main.currentSelection) {
+			Destroy(main.currentSelection);
+			main.boardController.ClearAvailableTiles();
+		}
+
+		if (statUI == null) {
+			statUI = demRectUI.createRectUI ("statUI", 0, 0, Screen.width / 2.0f, Screen.height / 1.5f);
+			demRectUI.setUIText (statUI, "statistic testing00",0,0);
+			demRectUI.setUIText (statUI, "statistic testing01",0,1);
+			demRectUI.setUIText (statUI, "statistic testing10",1,0);
+			demRectUI.setUIText (statUI, "statistic testing11",1,1);
+			demRectUI.setUIText (statUI, "statistic testing20",2,0);
+			demRectUI.setUIText (statUI, "statistic testing21",2,1);
+
+			GameObject backButton = demButton.CreateButton (0, 0, "back");
+			backButton.transform.SetParent (statUI.transform);
+			backButton.GetComponent<RectTransform> ().anchoredPosition = 
+				new Vector2 (statUI.GetComponent<RectTransform> ().sizeDelta.x/2.0f- backButton.GetComponent<RectTransform>().sizeDelta.x/2.0f,
+					-statUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*4.0f);
+			demButton.SetButtonText (backButton, "Back");
+			backButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); statUI.SetActive(false); mainUIObject.SetActive(true);});
+
+			mainUIObject.SetActive (false);
+
+			return;
+		}
+
+		if (!statUI.activeInHierarchy) {
+			statUI.SetActive (true);
+			mainUIObject.SetActive (false);
+		}
+
 	}
 
 

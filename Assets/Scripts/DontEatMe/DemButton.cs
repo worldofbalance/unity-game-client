@@ -105,7 +105,7 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         //Set text and its position on the button
         buttonText.AddComponent<Text>();
         buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Chalkboard");
-		    buttonText.GetComponent<Text> ().fontSize = (int)(Screen.width/42);
+		buttonText.GetComponent<Text> ().fontSize = (int)(Screen.width/45);
         buttonText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
         buttonText.GetComponent<Text>().color = Color.black;
         buttonText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
@@ -113,7 +113,6 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         buttonText.GetComponent<Text>().text = text;
 
     }
-
 
     // Change the size of the button
     public void setSize(float newSizeX, float newSizeY)

@@ -31,6 +31,7 @@ public class DemRectUI : MonoBehaviour {
 		UI.GetComponent<RectTransform> ().sizeDelta = new Vector2 (width, height);
 	}
 
+	// set UI text , mainly for quitUI
 	public void setUIText(GameObject UI, string text){
 		GameObject UIText = new GameObject("UITxt");
 		UIText.transform.SetParent(UI.transform);
@@ -49,6 +50,34 @@ public class DemRectUI : MonoBehaviour {
 		UIText.GetComponent<RectTransform> ().sizeDelta =
 			new Vector2 (UI.GetComponent<RectTransform> ().sizeDelta.x/5.0f*3,
 						UI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3);
+
+		UIText.GetComponent<Text>().text = text;
+	}
+
+
+	//overload function with specific detail of text box and location, mainly for statistic UI
+	// col and row start count from 0, like array
+	public void setUIText(GameObject UI, string text, int row, int col){
+		GameObject UIText = new GameObject(text);
+		UIText.transform.SetParent(UI.transform);
+
+		// Set the layer to UI layer
+		UIText.layer = 5;
+
+		//Set text and its position on the button
+		UIText.AddComponent<Text>();
+		UIText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Chalkboard");
+		UIText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
+		UIText.GetComponent<Text>().color = Color.black;
+		UIText.GetComponent<Text> ().fontSize = (int)(Screen.width/42);
+
+		UIText.GetComponent<RectTransform>().anchoredPosition = 
+			new Vector2 (col*UI.GetComponent<RectTransform> ().sizeDelta.x/2.0f - UI.GetComponent<RectTransform> ().sizeDelta.x/4.0f, 
+				(2-row)*UI.GetComponent<RectTransform> ().sizeDelta.x/5.0f - UI.GetComponent<RectTransform> ().sizeDelta.x/8.0f);
+		
+		UIText.GetComponent<RectTransform> ().sizeDelta =
+			new Vector2 (UI.GetComponent<RectTransform> ().sizeDelta.x/2.0f,
+				UI.GetComponent<RectTransform> ().sizeDelta.y/4.0f);
 
 		UIText.GetComponent<Text>().text = text;
 	}
