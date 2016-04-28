@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 /**
 	Static constants and methods for defining and returning species attributes for the Don't Eat Me minigame.
@@ -32,18 +33,20 @@ public class SpeciesConstants
 	private struct Prey
 	{
 		public string name;
+        public string lore; // Lore (i.e. description) taken from 'http://smurf.sfsu.edu/~wob/guide/species.php'
 		public int speciesID;
 		public int health;
 
         // public int[] preyIDLIst; // TODO: create prey list --> includes plants, but might include other prey (TBD)
         public int[] predatorIDList;
 
-		public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList)
+		public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList, string _lore = "")
 		{
 			name = _name;
 			speciesID = _speciesID;
 			health = _health;
             predatorIDList = _predatorIDList;
+            lore = _lore;
 		}
 	};
 
@@ -51,6 +54,7 @@ public class SpeciesConstants
 	private struct Predator
 	{
 		public string name;
+        public string lore; // Lore (i.e. description) taken from 'http://smurf.sfsu.edu/~wob/guide/species.php'
 		public int speciesID;
 		public int hunger;
 		public int voracity;
@@ -58,13 +62,14 @@ public class SpeciesConstants
         public int[] preyIDList;
         // public int[] predatorIDLIst; // TODO: create predator list --> includes larger predators (TBD)
 
-		public Predator (string _name, int _speciesID, int _hunger, int _voracity, int[] _preyIDList)
+		public Predator (string _name, int _speciesID, int _hunger, int _voracity, int[] _preyIDList, string _lore = "")
 		{
 			name = _name;
 			speciesID = _speciesID;
 			hunger = _hunger;
 			voracity = _voracity;
             preyIDList = _preyIDList;
+            lore = _lore;
 		}
 	};
 
@@ -78,11 +83,16 @@ public class SpeciesConstants
             new int[]                           // Predators
             {
                 (int)SPECIES_ID.Lion
-            }
+            },
+            // Lore
+            "The African buffalo is a large African bovine. " +
+            "It is not closely related to the slightly larger wild Asian water buffalo, but its ancestry remains unclear. " +
+            "Owing to its unpredictable nature which makes it highly dangerous to humans, it has not been domesticated " +
+            "unlike its Asian counterpart the domestic Asian water buffalo."
         ),
 		new Prey
         (
-            "TreeMouse",                        // Name
+            "Tree Mouse",                       // Name
             (int)SPECIES_ID.TreeMouse,          // Species ID
             5,                                  // Health
             new int[]                           // Predators
@@ -92,40 +102,50 @@ public class SpeciesConstants
                 (int)SPECIES_ID.ServalCat,
                 (int)SPECIES_ID.AfricanWildDog,
                 (int)SPECIES_ID.Leopard
-            }
+            },
+            // Lore
+            "Tree Mouse, Prionomys batesi, is a poorly understood climbing mouse from Central Africa. " +
+            "It is unique enough that it has been placed in a genus of its own, Prionomys, since its discovery in 1910."
         ),
 		new Prey
         (
-            "BushHyrax",                        // Name
+            "Bush Hyrax",                       // Name
             (int)SPECIES_ID.BushHyrax,          // Species ID
             15,                                 // Health
             new int[]                           // Predators
             {
                 (int)SPECIES_ID.ServalCat,
                 (int)SPECIES_ID.Leopard
-            }
+            },
+            // Lore
+            "The yellow-spotted rock hyrax or bush hyrax is a species of mammal in the family Procaviidae."
         ),
         new Prey
         (
-            "KoriBuskard",                      // Name
+            "Kori Buskard",                     // Name
             (int)SPECIES_ID.KoriBuskard,        // Species ID
             20,                                 // Health
             new int[]                           // Predators
             {
                 (int)SPECIES_ID.Leopard,
                 (int)SPECIES_ID.Lion
-            }
+            },
+            // Lore
+            "The Kori Bustard is a large bird native to Africa. It is a member of the bustard family. " +
+            "It may be the heaviest bird capable of flight."
         ),
         new Prey
         (
-            "CrestedPorcupine",                 // Name
+            "Crested Porcupine",                // Name
             (int)SPECIES_ID.CrestedPorcupine,   // Species ID
             25,                                 // Health
             new int[]                           // Predators
             {
                 (int)SPECIES_ID.AfricanWildDog,
                 (int)SPECIES_ID.Leopard
-            }
+            },
+            // Lore
+            "The crested porcupine is a species of rodent in the Hystricidae family."
         ),
         new Prey
         (
@@ -137,7 +157,9 @@ public class SpeciesConstants
                 (int)SPECIES_ID.AfricanWildDog,
                 (int)SPECIES_ID.Leopard,
                 (int)SPECIES_ID.Lion
-            }
+            },
+            // Lore
+            "Oribi are graceful slender-legged, long-necked small antelope found in grassland almost throughout Sub-Saharan Africa."
         )
 	}; 
 
@@ -145,18 +167,21 @@ public class SpeciesConstants
 	private static Predator[] PREDATORS = {
         new Predator
         (
-            "BatEaredFox",                      // Name
+            "Bat-Eared Fox",                    // Name
             (int)SPECIES_ID.BatEaredFox,        // Species ID
             10,                                 // Hunger
             10,                                 // Voracity
             new int[]                           // Prey
             {
                 (int)SPECIES_ID.TreeMouse
-            }
+            },
+            // Lore
+            "The bat-eared fox is a canid of the African savanna, named for its large ears. " +
+            "Fossil records show this canid to first appear during the middle Pleistocene, about 800,000 years ago."
         ),
         new Predator
         (
-            "BlackMamba",                       // Name
+            "Black Mamba",                      // Name
             (int)SPECIES_ID.BlackMamba,         // Species ID
             20,                                 // Hunger
             5,                                  // Voracity
@@ -165,11 +190,14 @@ public class SpeciesConstants
                 (int)SPECIES_ID.TreeMouse,
                 (int)SPECIES_ID.BushHyrax,
                 (int)SPECIES_ID.CrestedPorcupine
-            }
+            },
+            // Lore
+            "The black mamba, also called the common black mamba or black-mouthed mamba, is the longest venomous snake in Africa, " +
+            "averaging around 2.5 to 3.2 m in length, and sometimes growing to lengths of 4.45 m."
         ),
         new Predator
         (
-            "ServalCat",                        // Name
+            "Serval Cat",                       // Name
             (int)SPECIES_ID.ServalCat,          // Species ID
             15,                                 // Hunger
             10,                                 // Voracity
@@ -177,11 +205,15 @@ public class SpeciesConstants
             {
                 (int)SPECIES_ID.TreeMouse,
                 (int)SPECIES_ID.BushHyrax
-            }
+            },
+            // Lore
+            "The serval, Leptailurus serval or Caracal serval, known in Afrikaans as Tierboskat, \"tiger-forest-cat\", " +
+            "is a medium-sized African wild cat. DNA studies have shown that the serval is closely related to the " +
+            "African golden cat and the caracal."
         ),
         new Predator
         (
-            "AfricanWildDog",                   // Name
+            "African Wild Dog",                 // Name
             (int)SPECIES_ID.AfricanWildDog,     // Species ID
             55,                                 // Hunger
             50,                                 // Voracity
@@ -190,8 +222,11 @@ public class SpeciesConstants
                 (int)SPECIES_ID.TreeMouse,
                 (int)SPECIES_ID.Oribi,
                 (int)SPECIES_ID.CrestedPorcupine
-            }
-        ),new Predator
+            },
+            // Lore
+            "African Wild Dog is a canid found only in Africa, especially in savannas and lightly wooded areas."
+        ),
+        new Predator
         (
             "Leopard",                          // Name
             (int)SPECIES_ID.Leopard,            // Species ID
@@ -201,7 +236,10 @@ public class SpeciesConstants
             {
                 (int)SPECIES_ID.TreeMouse,
                 (int)SPECIES_ID.BushHyrax
-            }
+            },
+            // Lore
+            "The leopard, Panthera pardus, is a member of the Felidae family and the smallest of the four \"big cats\" " +
+            "in the genus Panthera, the other three being the tiger, lion, and jaguar."
         ),
         new Predator
         (
@@ -214,28 +252,55 @@ public class SpeciesConstants
                 (int)SPECIES_ID.Oribi,
                 (int)SPECIES_ID.KoriBuskard,
                 (int)SPECIES_ID.Buffalo
-            }
+            },
+            // Lore
+            "The lion is one of the four big cats in the genus Panthera, and a member of the family Felidae. " +
+            "With some males exceeding 250 kg in weight, it is the second-largest living cat after the tiger."
         )
 	};
 
-	// Type constants
+	// Type constants (not consistent with database!)
 	private static short PREY_TYPE = 1;
 	private static short PREDATOR_TYPE = 2;
 
-	// Default values
+	// Default values (self-descriptive)
 	private static short DEFAULT_TYPE = 0;
-	private static int DEFAULT_SPECIES_ID = 0;
+
+    private static int DEFAULT_SPECIES_ID = 0;
+    private static string DEFAULT_SPECIES_NAME = "[ No name ]";
 	private static int DEFAULT_HEALTH = 10;
 	private static int DEFAULT_HUNGER = 25;
 	private static int DEFAULT_VORACITY = 25;
 
-	/* PUBLIC CONSTANTS */
-	public static int NUM_PREY = PREY.Length;
-	public static int NUM_PREDATORS = PREDATORS.Length;
-	public static int NUM_SPECIES = NUM_PREY + NUM_PREDATORS;
+    private static string DEFAULT_LORE = "[ No description available ]";
 
-    public static IEnumerable<string> PREY_NAMES = PREY.AsEnumerable().Select(prey => prey.name);
-    public static IEnumerable<string> PREDATOR_NAMES = PREDATORS.AsEnumerable().Select(predator => predator.name);
+    // Contains (species name, species ID) pairs
+    private static Dictionary<string, int> NAME_TO_ID =
+        (from prey in PREY select new KeyValuePair<string, int>(prey.name, prey.speciesID))
+        .Concat
+        (from predator in PREDATORS select new KeyValuePair<string, int>(predator.name, predator.speciesID))
+        .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+    /* PRIVATE METHODS */
+    /**
+        Internal method for removing whitespace and hyphen chars from a string.
+    */
+    private static string Compact (string s)
+    {
+        return s.Replace('\x20', '\x01').Replace('\x2d', '\x01');
+    }
+
+	/* PUBLIC CONSTANTS */
+
+    // Number of available prey, predators, and total species, respectively
+	public static readonly int NUM_PREY = PREY.Length;
+	public static readonly int NUM_PREDATORS = PREDATORS.Length;
+	public static readonly int NUM_SPECIES = NUM_PREY + NUM_PREDATORS;
+
+    // Names of all available prey, predators, and total species, respectively
+    public static readonly string[] PREY_NAMES = (from prey in PREY select prey.name).ToArray();
+    public static readonly string[] PREDATOR_NAMES = (from predator in PREDATORS select predator.name).ToArray();
+    public static readonly string[] SPECIES_NAMES = PREY_NAMES.Concat(PREDATOR_NAMES).ToArray();
 
 	/* PUBLIC METHODS */
 	/**
@@ -243,20 +308,7 @@ public class SpeciesConstants
 	*/
 	public static int SpeciesID (string name)
 	{
-		// Search prey
-		foreach (Prey prey in PREY)
-		{
-			if (prey.name == name)
-				return prey.speciesID;
-		}
-		// Search predators
-		foreach (Predator predator in PREDATORS)
-		{
-			if (predator.name == name)
-				return predator.speciesID;
-		}
-		// Otherwise return default
-		return DEFAULT_SPECIES_ID;
+        return NAME_TO_ID.ContainsKey(name) ? NAME_TO_ID[name] : DEFAULT_SPECIES_ID;
 	}
 
 	/**
@@ -264,20 +316,7 @@ public class SpeciesConstants
 	*/
 	public static string SpeciesName (int id)
 	{
-		// Search prey
-		foreach (Prey prey in PREY)
-		{
-			if (prey.speciesID == id)
-				return prey.name;
-		}
-		// Search predators
-		foreach (Predator predator in PREDATORS)
-		{
-			if (predator.speciesID == id)
-				return predator.name;
-		}
-		// Otherwise return empty string
-		return "";
+        return NAME_TO_ID.ContainsValue(id) ? NAME_TO_ID.First(pair => pair.Value == id).Key : DEFAULT_SPECIES_NAME;
 	}
 
 	/**
@@ -470,5 +509,49 @@ public class SpeciesConstants
         }
         // Otherwise return emtpy array
         return new int[]{};
+    }
+
+    /**
+        Returns the lore for a species.
+        Search by species name.
+    */
+    public static string SpeciesLore (string name)
+    {
+        // Search prey
+        foreach (Prey prey in PREY)
+        {
+            if (prey.name == name)
+                return prey.lore;
+        }
+        // Search predators
+        foreach (Predator predator in PREDATORS)
+        {
+            if (predator.name == name)
+                return predator.lore;
+        }
+        // Otherwise return default
+        return DEFAULT_LORE;
+    }
+
+    /**
+        Returns the lore for a species.
+        Search by species name.
+    */
+    public static string SpeciesLore (int id)
+    {
+        // Search prey
+        foreach (Prey prey in PREY)
+        {
+            if (prey.speciesID == id)
+                return prey.lore;
+        }
+        // Search predators
+        foreach (Predator predator in PREDATORS)
+        {
+            if (predator.speciesID == id)
+                return predator.lore;
+        }
+        // Otherwise return default
+        return DEFAULT_LORE;
     }
 }

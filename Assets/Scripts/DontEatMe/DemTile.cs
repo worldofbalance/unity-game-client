@@ -251,10 +251,21 @@ public class DemTile : MonoBehaviour
             if (resident)
             {
                 Debug.Log(resident.name + " is here");
+                BuildInfo info = resident.GetComponent<BuildInfo>();
+
+                // Determine Health or Hunger text
+                string healthLevel = "";
+                if (SpeciesConstants.SpeciesType(info.name) == 1)
+                    healthLevel = "Health: " + (info as PreyInfo).GetHealth().ToString();
+                else if (SpeciesConstants.SpeciesType(info.name) == 2)
+                    healthLevel = "Hunger: " + (info as PredatorInfo).GetHunger().ToString();
+
                 panelObject.transform.GetChild(0).GetComponent<Image>().sprite = resident.GetComponent<SpriteRenderer>().sprite;
                 panelObject.transform.GetChild(1).GetComponent<Text>().text = resident.name;
+                panelObject.transform.GetChild(2).GetComponent<Text>().text = healthLevel;
                 panelObject.transform.GetChild(0).gameObject.SetActive(true);
                 panelObject.transform.GetChild(1).gameObject.SetActive(true);
+                panelObject.transform.GetChild(2).gameObject.SetActive(true);
             }
         }
 
@@ -275,6 +286,8 @@ public class DemTile : MonoBehaviour
         }
         panelObject.transform.GetChild(0).gameObject.SetActive(false);
         panelObject.transform.GetChild(1).gameObject.SetActive(false);
+        panelObject.transform.GetChild(2).gameObject.SetActive(false);
+
     }
 
     /**
