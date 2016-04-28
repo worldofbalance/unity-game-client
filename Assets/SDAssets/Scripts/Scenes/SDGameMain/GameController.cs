@@ -37,10 +37,10 @@ namespace SD {
         public Rigidbody opponent;
         public Rigidbody playerBase;
         public Rigidbody opponentBase;
-        private Vector3 playerInitialPosition = new Vector3(0,0,0);
+        private Vector3 playerInitialPosition = new Vector3(-100,0,0);
         private Quaternion playerInitialRotation = Quaternion.Euler(0,90,0);
-        private Vector3 opponentInitialPosition = new Vector3 (0, 0, 0);
-        private Quaternion opponentInitialRotation = Quaternion.Euler (0, 270, 0);
+        private Vector3 opponentInitialPosition = new Vector3 (100, 0, 0);
+        private Quaternion opponentInitialRotation = Quaternion.Euler (0, -90, 0);
         private Vector3 playerBaseInitialPosition = new Vector3(-125,0,0);
         private Quaternion playerBaseInitialRotation = Quaternion.Euler(0,0,0);
         private Vector3 opponentBaseInitialPosition = new Vector3(125,0,0);
@@ -94,7 +94,7 @@ namespace SD {
             }
 
             if (sdGameManager.getConnectionManager ()) {  // We are playing multiplayer
-                rbOpponent = (Rigidbody)Instantiate (opponent, playerInitialPosition, playerInitialRotation);
+                rbOpponent = (Rigidbody)Instantiate (opponent, opponentInitialPosition, opponentInitialRotation);
                 rbOpponent.gameObject.SetActive (true);
                 opponentPlayer = new PlayTimePlayer ();
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
@@ -119,7 +119,7 @@ namespace SD {
         private void swapPositions() {
             Vector3 tempV = playerInitialPosition;
             playerInitialPosition = opponentInitialPosition;
-            opponentBaseInitialPosition = tempV;
+            opponentInitialPosition = tempV;
 
             tempV = playerBaseInitialPosition;
             playerBaseInitialPosition = opponentBaseInitialPosition;

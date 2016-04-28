@@ -174,6 +174,7 @@ public class SDLogin : MonoBehaviour {
     public void SD_ResponsePlayInit(SD.ExtendedEventArgs eventArgs) {
         SD.ResponsePlayInitEventArgs args = eventArgs as SD.ResponsePlayInitEventArgs;
         SD.Constants.PLAYER_NUMBER = args.playerNumber;
+        Debug.Log ("The player number is " + args.playerNumber);
         Game.SwitchScene ("SDReadyScene");
     }
 }
