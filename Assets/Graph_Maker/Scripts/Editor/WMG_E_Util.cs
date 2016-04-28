@@ -106,6 +106,14 @@ public class WMG_E_Util : Editor {
 						observableCollection.ValueChangedViaEditor(i);
 					}
 				}
+				else if (prop.propertyType == SerializedPropertyType.Boolean) {
+					bool prev = prop.boolValue;
+					EditorGUILayout.PropertyField (prop);
+					if (prev != prop.boolValue) {
+						list.serializedObject.ApplyModifiedProperties ();
+						observableCollection.ValueChangedViaEditor (i);
+					}
+				}
 			}
 		}
 		if (showListLabel) {
@@ -183,6 +191,19 @@ public class WMG_E_Util : Editor {
 //			EditorGUI.indentLevel -= 1;
 //		}
 //	}
+
+	public bool ExposeAndReturnBool(WMG_PropertyField field, string tooltip = "") {
+		var emptyOptions = new GUILayoutOption[0];
+		if (field.Type == SerializedPropertyType.Boolean)
+		{
+			bool oldValue = (bool)field.GetValue();
+			bool newValue = EditorGUILayout.Toggle(new GUIContent(field.Name, tooltip), oldValue, emptyOptions);
+			if (oldValue != newValue)
+				field.SetValue(newValue);
+			return newValue;
+		}
+		return false;
+	}
 
 	// Function to display properties in inspector, invokes setter for observable properties
 	public void ExposeProperty(WMG_PropertyField field, string tooltip = "")

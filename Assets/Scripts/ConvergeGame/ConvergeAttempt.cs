@@ -16,6 +16,8 @@ public class ConvergeAttempt {
 	public CSVObject csv_object { get; private set; }
 	//public ConvergeManager manager { get; set; }
 	public Dictionary<string, ConvergeParam> seriesParams { get; set; }
+    private bool markerEnabled = false;
+    private string markerRanges = "";
 
 	public ConvergeAttempt(int player_id, 
 	                       int ecosystem_id, 
@@ -34,7 +36,32 @@ public class ConvergeAttempt {
 		this.config = config;
 		SetCSV (csv_string);
 		this.seriesParams = null;
+        markerEnabled = false;
 	}
+
+    // DH change to support multiplayer convergence 
+    public ConvergeAttempt(int player_id, 
+                           int ecosystem_id, 
+                           int attempt_id,
+                           bool allow_hints,
+                           int hint_id,
+                           string config,
+                           string csv_string,
+                           string markerRanges,
+                           bool enabled
+    ) {
+        this.player_id = player_id;
+        this.ecosystem_id = ecosystem_id;
+        this.attempt_id = attempt_id;
+        this.allow_hints = allow_hints;
+        this.hint_id = hint_id;
+        this.config = config;
+        SetCSV (csv_string);
+        this.seriesParams = null;
+        this.markerRanges = markerRanges;
+        this.markerEnabled = enabled;
+    }
+
 
 	public void SetCSV (string str)
 	{
@@ -61,6 +88,9 @@ public class ConvergeAttempt {
 		int nodeCnt = 0;
 		int nodeId;
 		int start, end, nodeIdx;
+        string parseRanges = markerRanges + ",";
+        int startMR, endMR;
+        float lowRange, highRange;
 		int paramCnt;
 		float value, valNotNeeded;
 		string name;
@@ -68,6 +98,7 @@ public class ConvergeAttempt {
 
 		//sequence is nodeCnt,[node0],biomass0,perunitbiomass0,paramCnt0,(if any)paramID0,value0,paramID1,value1,...
 		//[node1],biomass1,perunitbiomass1,paramCnt1,...,[nodeN],biomassN,...
+        startMR = 0; 
 		if (remainder != null) {
 			//"nodeCnt,"
 			nodeCnt = int.Parse(remainder.Substring(0, remainder.IndexOf(",")));
@@ -106,6 +137,36 @@ public class ConvergeAttempt {
 				remainder = remainder.Substring(end + 1);
 
 				ConvergeParam param = new ConvergeParam (name, nodeId, paramId, value);
+
+                // DH change 
+                // Add reading of marker ranges if enabled
+                if (markerEnabled) {
+                    Debug.Log ("CA: nodeID: " + nodeId);
+                    endMR = parseRanges.IndexOf(",");
+                    if (endMR == -1) {
+                        lowRange = -1;
+                        highRange = -1;
+                        Debug.Log ("CA: no , found, first");
+                    } else {
+                        lowRange = float.Parse(parseRanges.Substring(0, endMR));
+                        parseRanges = parseRanges.Substring(endMR + 1) + " ";
+                        Debug.Log("CA: low range: " + lowRange);
+                        endMR = parseRanges.IndexOf(",");
+                        if (endMR == -1) {
+                            lowRange = -1;
+                            highRange = -1;
+                            Debug.Log ("CA: no , found, second");
+                        } else {
+                            highRange = float.Parse(parseRanges.Substring(0, endMR));
+                            Debug.Log("CA: high range: " + highRange);
+                            parseRanges = parseRanges.Substring(endMR + 1) + " ";
+                        }
+                    }
+                    param.lowRange = lowRange;
+                    param.highRange = highRange;
+                    param.markerEnabled = true;
+                }
+
 				seriesParams.Add (param.nodeIdParamId, param);
 			}
 			//get link parameters
