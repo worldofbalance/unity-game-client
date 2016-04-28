@@ -12,6 +12,12 @@ public class BuildMenu : MonoBehaviour
     // Access to DemButton script for button creation
     public DemButton demButton;
 
+	//Access to DemRectUI script for RectUI creation
+	public DemRectUI demRectUI;
+	private GameObject quitUI;	//instance of UI for after pressed quit button
+	private float qBX; //quit button width
+	private float qBY; //quit button height
+
     // Toggle counter
     int toggleCount = 0;
 
@@ -46,6 +52,10 @@ public class BuildMenu : MonoBehaviour
 
     public GameObject panelObject;
 
+	//mainUI
+	public GameObject mainUIObject;
+	public GameObject canvasObject;
+
     // this method increases score every 2s
     void increaseResources()
     {
@@ -65,140 +75,28 @@ public class BuildMenu : MonoBehaviour
 
       turnSystem = mainObject.GetComponent<DemTurnSystem> ();
 
-      panelObject = GameObject.Find("Canvas/Panel");
+	  //mainUI add here
+	  canvasObject = GameObject.Find ("Canvas");
+	  mainUIObject = GameObject.Find ("Canvas/mainUI");
+	  mainUIObject.transform.SetParent (canvasObject.transform);
+		mainUIObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+    mainUIObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+    mainUIObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+    mainUIObject.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
+    mainUIObject.GetComponent<RectTransform>().offsetMin = new Vector2(0, 0);
+		
+      //panelObject = GameObject.Find("Canvas/Panel");
+	  panelObject = GameObject.Find("Canvas/mainUI/Panel");
+    panelObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+    panelObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 0);
+    panelObject.GetComponent<RectTransform>().offsetMax = new Vector2(-100, 50);
+    panelObject.GetComponent<RectTransform>().offsetMin = new Vector2(100, 0);
+    //panelObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+
+		quitUI = null;
     }
 
-    /**
-    void OnGUI()
-    {
-        // draw resource menu
-        GUILayout.BeginArea(new Rect(0, 0, 155, 200));
-        GUILayout.BeginHorizontal("box");
-
-        // draw resource counter
-        GUILayout.Button(new GUIContent("Resources: " + currentResources.ToString()), GUILayout.Height(70));
-
-        // end GUI for resource menu
-        GUILayout.EndHorizontal();
-        GUILayout.EndArea();
-
-        // draw the plant menu
-        GUILayout.BeginArea(new Rect(0, 80, 100, 400));
-        GUILayout.BeginVertical();
-
-        // Draw each plant's build info
-
-        //GUI.enabled = turnSystem.IsTurnLocked();
-
-
-        foreach (DemAnimalFactory plant in plants)
-        {
-
-            //BuildInfo info = plant.GetComponent<BuildInfo> ();
-
-            //GUI.enabled = currentResources >= info.price;
-            // if button is clicked, then set currentlyBuilding to the info of the button you clicked
-            if (GUILayout.Button(new GUIContent(plant.GetImageForOnGUI()), GUILayout.Width(40), GUILayout.Height(40)))
-            {
-                DemAudioManager.audioClick.Play();
-
-                // If a selection is currently in progress...
-                if (main.currentSelection)
-                {
-                    // Ignore button click if for the same species
-                    if (currentAnimalFactory == plant)
-                        return;
-                    // Otherwise, destroy the current selection before continuing
-                    else
-                        Destroy(main.currentSelection);
-                    main.boardController.ClearAvailableTiles(); //fix bug
-                }
-                // Set / reset currentlyBuilding
-
-                //currentlyBuilding = info;
-                currentAnimalFactory = plant;
-
-
-                // Create the current prey object
-                //GameObject currentPlant = plant.Create(); //DemAnimalFactory.Create(currentlyBuilding.name , 0 ,0) as GameObject;
-
-                // Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
-                Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
-                init_pos.z = -1.5f;
-
-                // Instantiate the current prey
-                main.currentSelection = plant.Create();
-                //DemMain.currentSelection.GetComponent<BuildInfo>().isPlant = true;
-                main.currentSelection.GetComponent<BuildInfo>().speciesType = 0;
-
-
-                // Set DemMain's preyOrigin as the center of the button
-                main.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-
-                main.boardController.SetAvailableTiles();
-
-            }
-
-        }
-
-        // End GUI for plant menu
-        GUILayout.EndVertical();
-        GUILayout.EndArea();
-
-        // Now, draw prey menu
-        GUILayout.BeginArea(new Rect(300, 0, 500, 220));
-        GUILayout.BeginHorizontal("box");
-
-        // draw each prey's build info
-        foreach (DemAnimalFactory singlePrey in prey)
-        {
-
-            // if button is clicked, then set currentlyBuilding to the info of the button you clicked
-
-            if (GUILayout.Button(new GUIContent(singlePrey.GetImageForOnGUI()), GUILayout.Width(40), GUILayout.Height(40)))
-            {
-                DemAudioManager.audioClick.Play();
-                // If a selection is currently in progress...
-                if (main.currentSelection)
-                {
-                    // Ignore button click if for the same species
-                    if (currentAnimalFactory == singlePrey)
-                        return;
-                    // Otherwise, destroy the current selection before continuing
-                    else
-                        Destroy(main.currentSelection);
-                    main.boardController.ClearAvailableTiles();     //fix the prey placement bug after change currentSelection from plant to prey
-                }
-                // Set / reset currentlyBuilding
-
-                currentAnimalFactory = singlePrey;
-
-
-
-                // Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
-                Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
-                init_pos.z = -1.5f;
-
-
-                // Instantiate the current prey
-                main.currentSelection = singlePrey.Create();
-                main.currentSelection.GetComponent<BuildInfo>().speciesType = 1;
-
-
-                // Set DemMain's preyOrigin as the center of the button
-                main.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-
-                main.boardController.SetAvailableTiles();
-
-
-            }
-        }
-
-        // End GUI for prey menu
-        GUILayout.EndVertical();
-        GUILayout.EndArea();
-    }
-    */
+ 
 
     // Use this for initialization
     void Start()
@@ -257,6 +155,10 @@ public class BuildMenu : MonoBehaviour
         gameObject.AddComponent<DemButton>();
         demButton = gameObject.GetComponent<DemButton>();
 
+		    // building the RectUI
+		    gameObject.AddComponent<DemRectUI>();
+		    demRectUI = gameObject.GetComponent<DemRectUI> ();
+
         
         // Toggle button to switch between plant and prey menu
         demButton.setSize(Screen.width * 0.1f, Screen.height/14);
@@ -288,6 +190,14 @@ public class BuildMenu : MonoBehaviour
 
         // Add an onClick listener to dectect button clicks
         toggleButton.GetComponent<Button>().onClick.AddListener(() => { selectMenu(toggleButton, menuButtons); });
+
+		//quit button 
+		float qBX = Screen.width / 10.0f;
+		float qBY = Screen.height / 10.0f;
+		demButton.setSize (qBX, qBY);
+		GameObject quitButton = demButton.CreateButton (Screen.width - qBX, 0, "Quit");
+		demButton.SetButtonText (quitButton, "Quit");
+		quitButton.GetComponent<Button> ().onClick.AddListener (() => {selectQuit();});
         
     }
 
@@ -385,6 +295,50 @@ public class BuildMenu : MonoBehaviour
         main.boardController.SetAvailableTiles();
     }
 
+	//click on quit button
+	void selectQuit(){
+		DemAudioManager.audioClick.Play();
+		Debug.Log (Screen.width);
+
+		if (main.currentSelection) {
+			Destroy(main.currentSelection);
+			main.boardController.ClearAvailableTiles();
+		}
+
+		if (quitUI == null) {
+			quitUI = demRectUI.createRectUI ("quitUI", 0, 0, Screen.width / 2.0f, Screen.height / 2.0f);
+			demRectUI.setUIText (quitUI, "Are you sure you want to quit?");
+
+			//Quit Button on Quit UI
+			GameObject yesButton = demButton.CreateButton (0, 0, "Yes");
+			yesButton.transform.SetParent (quitUI.transform);
+			yesButton.GetComponent<RectTransform> ().anchoredPosition = 
+				new Vector2 (quitUI.GetComponent<RectTransform> ().sizeDelta.x/5.0f,
+							-quitUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f);
+			demButton.SetButtonText (yesButton, "Quit");
+			yesButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); Game.SwitchScene("World");});
+
+			//back button on Quit UI
+			GameObject noButton = demButton.CreateButton (0, 0, "No");
+			noButton.transform.SetParent (quitUI.transform);
+			noButton.GetComponent<RectTransform> ().anchoredPosition = 
+				new Vector2 (quitUI.GetComponent<RectTransform> ().sizeDelta.x/5.0f*3.0f,
+					-quitUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f);
+			demButton.SetButtonText (noButton, "Back");
+			//noButton.GetComponent<Button> ().onClick.AddListener (()=>{quitUI.SetActive(false);});
+			noButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); quitUI.SetActive(false); mainUIObject.SetActive(true);});
+
+			mainUIObject.SetActive (false);
+
+			return;
+		}
+
+		if (!quitUI.activeInHierarchy) {
+			quitUI.SetActive (true);
+			mainUIObject.SetActive (false);
+		}
+	}
+
 
 
     public void endGame()
@@ -428,6 +382,26 @@ public class BuildMenu : MonoBehaviour
 
   public void SetCurrentAnimalFactory(DemAnimalFactory newAnimalFactory){
     currentAnimalFactory = newAnimalFactory;
+  }
+
+  public void ToggleButtonLocks(){
+    if (turnSystem.IsTurnLocked ()) {
+      for (int i = 0; i < 6; i++) {
+        menuButtons [i].GetComponent<Button> ().interactable = true;
+        foreach(Image image in menuButtons [i].GetComponentsInChildren<Image>()){
+          image.color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
+        }
+      }
+    } else {
+
+      for (int i = 0; i < 6; i++) {
+        menuButtons [i].GetComponent<Button> ().interactable = false;
+        foreach(Image image in menuButtons [i].GetComponentsInChildren<Image>()){
+          image.color = new Color(1.0F, 1.0F, 1.0F, 0.8F);
+        }
+      }
+    }
+
   }
 
 }

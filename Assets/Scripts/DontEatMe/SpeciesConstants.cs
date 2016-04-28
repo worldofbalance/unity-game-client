@@ -1,4 +1,7 @@
-﻿/**
+﻿using System.Collections.Generic;
+using System.Linq;
+
+/**
 	Static constants and methods for defining and returning species attributes for the Don't Eat Me minigame.
 
 	@author: Jeremy Erickson
@@ -230,6 +233,9 @@ public class SpeciesConstants
 	public static int NUM_PREY = PREY.Length;
 	public static int NUM_PREDATORS = PREDATORS.Length;
 	public static int NUM_SPECIES = NUM_PREY + NUM_PREDATORS;
+
+    public static IEnumerable<string> PREY_NAMES = PREY.AsEnumerable().Select(prey => prey.name);
+    public static IEnumerable<string> PREDATOR_NAMES = PREDATORS.AsEnumerable().Select(predator => predator.name);
 
 	/* PUBLIC METHODS */
 	/**
