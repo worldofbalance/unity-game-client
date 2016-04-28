@@ -14,6 +14,7 @@ namespace SD
         public float xPosition { get; set; }
         public float yPosition { get; set; }
         public int score {get; set;}
+        public float xRotation { get; set; }
 
         public PlayTimePlayer ()
         {

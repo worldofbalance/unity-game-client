@@ -138,7 +138,6 @@ namespace SD {
             score += newScoreValue;
             UpdateScore ();
             // Send the score to the opponent.
-            Debug.Log("SDFKSJDFDSJFKSDFJSD");
             sdGameManager.SendScoreToOpponent(score);
         }
 

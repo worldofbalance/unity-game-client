@@ -106,6 +106,7 @@ namespace SD {
             ResponseSDPositionEventArgs args = eventArgs as ResponseSDPositionEventArgs;
             gameController.getOpponentPlayer().xPosition = args.xPosition;
             gameController.getOpponentPlayer ().yPosition = args.yPosition;
+            gameController.getOpponentPlayer ().xRotation = args.rotation;
         }
 
         // Sends the keyboard inputs to the server.

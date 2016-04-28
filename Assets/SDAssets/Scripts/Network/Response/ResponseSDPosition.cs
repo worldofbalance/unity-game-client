@@ -29,7 +29,6 @@ namespace SD {
 
         public override ExtendedEventArgs process ()
         {
-            // TODO: Add more functionality when the gameobjects are in place.
             ResponseSDPositionEventArgs args = new ResponseSDPositionEventArgs ();
             args.xPosition = xPosition;
             args.yPosition = yPosition;

@@ -9,15 +9,17 @@ namespace SD {
         private Rigidbody rbOpponent;
         float xPosition;
         float yPosition;
+        float xRotation;
 
         // Use this for initialization
         void Start () {
-            GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
+            /*GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
             if (gameControllerObject != null) {
                 sdGameController = gameControllerObject.GetComponent<GameController> ();
             } else {
                 Debug.Log ("Game Controller not found");
-            }
+            }*/
+            sdGameController = GameController.getInstance ();
             sdGameManager = GameManager.getInstance ();
             rbOpponent = sdGameController.getOpponent ().GetComponent<Rigidbody> ();
             xPosition = yPosition = 0.0f;
@@ -28,6 +30,8 @@ namespace SD {
                 xPosition = sdGameController.getOpponentPlayer ().xPosition;
                 yPosition = sdGameController.getOpponentPlayer ().yPosition;
                 rbOpponent.MovePosition (new Vector3(xPosition, yPosition, 0));
+                xRotation = sdGameController.getOpponentPlayer ().xRotation;
+                rbOpponent.MoveRotation (Quaternion.AngleAxis(xRotation, Vector3.forward));
             }
         }
 
