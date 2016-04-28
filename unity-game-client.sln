@@ -5,10 +5,6 @@ Project("{E8E05F61-D2C5-AF9E-498D-992F7AFC3657}") = "unity-game-client", "Assemb
 EndProject
 Project("{E8E05F61-D2C5-AF9E-498D-992F7AFC3657}") = "unity-game-client", "Assembly-CSharp-Editor.csproj", "{3E4682C0-1E0F-DD6A-6268-0D4E92AB75F1}"
 EndProject
-Project("{E8E05F61-D2C5-AF9E-498D-992F7AFC3657}") = "unity-game-client", "Assembly-UnityScript.unityproj", "{1DA5EF11-A46F-2512-7BB7-2F9CB747C7B6}"
-EndProject
-Project("{E8E05F61-D2C5-AF9E-498D-992F7AFC3657}") = "unity-game-client", "Assembly-UnityScript-Editor.unityproj", "{3D24FC3C-16AC-DC81-2AD3-854F5BAB9C88}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,14 +19,6 @@ Global
 		{3E4682C0-1E0F-DD6A-6268-0D4E92AB75F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E4682C0-1E0F-DD6A-6268-0D4E92AB75F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E4682C0-1E0F-DD6A-6268-0D4E92AB75F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1DA5EF11-A46F-2512-7BB7-2F9CB747C7B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1DA5EF11-A46F-2512-7BB7-2F9CB747C7B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1DA5EF11-A46F-2512-7BB7-2F9CB747C7B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1DA5EF11-A46F-2512-7BB7-2F9CB747C7B6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D24FC3C-16AC-DC81-2AD3-854F5BAB9C88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D24FC3C-16AC-DC81-2AD3-854F5BAB9C88}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D24FC3C-16AC-DC81-2AD3-854F5BAB9C88}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D24FC3C-16AC-DC81-2AD3-854F5BAB9C88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
