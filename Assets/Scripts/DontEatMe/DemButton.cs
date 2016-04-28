@@ -87,8 +87,8 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         buttonImage.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
         buttonImage.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
 
-    buttonImage.GetComponent<RectTransform>().offsetMax = new Vector2(-5, -5);
-    buttonImage.GetComponent<RectTransform>().offsetMin = new Vector2(5, 5);
+        buttonImage.GetComponent<RectTransform>().offsetMax = new Vector2(-5, -5);
+        buttonImage.GetComponent<RectTransform>().offsetMin = new Vector2(5, 5);
         //buttonImage.GetComponent<RectTransform> ().
         //buttonImage.GetComponent<RectTransform>().localScale = new Vector3(0.7f, 0.7f, 1);
     }

@@ -80,144 +80,23 @@ public class BuildMenu : MonoBehaviour
 	  mainUIObject = GameObject.Find ("Canvas/mainUI");
 	  mainUIObject.transform.SetParent (canvasObject.transform);
 		mainUIObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+    mainUIObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+    mainUIObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+    mainUIObject.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
+    mainUIObject.GetComponent<RectTransform>().offsetMin = new Vector2(0, 0);
 		
       //panelObject = GameObject.Find("Canvas/Panel");
 	  panelObject = GameObject.Find("Canvas/mainUI/Panel");
+    panelObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+    panelObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 0);
+    panelObject.GetComponent<RectTransform>().offsetMax = new Vector2(-100, 50);
+    panelObject.GetComponent<RectTransform>().offsetMin = new Vector2(100, 0);
+    //panelObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
 		quitUI = null;
     }
 
-    /**
-    void OnGUI()
-    {
-        // draw resource menu
-        GUILayout.BeginArea(new Rect(0, 0, 155, 200));
-        GUILayout.BeginHorizontal("box");
-
-        // draw resource counter
-        GUILayout.Button(new GUIContent("Resources: " + currentResources.ToString()), GUILayout.Height(70));
-
-        // end GUI for resource menu
-        GUILayout.EndHorizontal();
-        GUILayout.EndArea();
-
-        // draw the plant menu
-        GUILayout.BeginArea(new Rect(0, 80, 100, 400));
-        GUILayout.BeginVertical();
-
-        // Draw each plant's build info
-
-        //GUI.enabled = turnSystem.IsTurnLocked();
-
-
-        foreach (DemAnimalFactory plant in plants)
-        {
-
-            //BuildInfo info = plant.GetComponent<BuildInfo> ();
-
-            //GUI.enabled = currentResources >= info.price;
-            // if button is clicked, then set currentlyBuilding to the info of the button you clicked
-            if (GUILayout.Button(new GUIContent(plant.GetImageForOnGUI()), GUILayout.Width(40), GUILayout.Height(40)))
-            {
-                DemAudioManager.audioClick.Play();
-
-                // If a selection is currently in progress...
-                if (main.currentSelection)
-                {
-                    // Ignore button click if for the same species
-                    if (currentAnimalFactory == plant)
-                        return;
-                    // Otherwise, destroy the current selection before continuing
-                    else
-                        Destroy(main.currentSelection);
-                    main.boardController.ClearAvailableTiles(); //fix bug
-                }
-                // Set / reset currentlyBuilding
-
-                //currentlyBuilding = info;
-                currentAnimalFactory = plant;
-
-
-                // Create the current prey object
-                //GameObject currentPlant = plant.Create(); //DemAnimalFactory.Create(currentlyBuilding.name , 0 ,0) as GameObject;
-
-                // Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
-                Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
-                init_pos.z = -1.5f;
-
-                // Instantiate the current prey
-                main.currentSelection = plant.Create();
-                //DemMain.currentSelection.GetComponent<BuildInfo>().isPlant = true;
-                main.currentSelection.GetComponent<BuildInfo>().speciesType = 0;
-
-
-                // Set DemMain's preyOrigin as the center of the button
-                main.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-
-                main.boardController.SetAvailableTiles();
-
-            }
-
-        }
-
-        // End GUI for plant menu
-        GUILayout.EndVertical();
-        GUILayout.EndArea();
-
-        // Now, draw prey menu
-        GUILayout.BeginArea(new Rect(300, 0, 500, 220));
-        GUILayout.BeginHorizontal("box");
-
-        // draw each prey's build info
-        foreach (DemAnimalFactory singlePrey in prey)
-        {
-
-            // if button is clicked, then set currentlyBuilding to the info of the button you clicked
-
-            if (GUILayout.Button(new GUIContent(singlePrey.GetImageForOnGUI()), GUILayout.Width(40), GUILayout.Height(40)))
-            {
-                DemAudioManager.audioClick.Play();
-                // If a selection is currently in progress...
-                if (main.currentSelection)
-                {
-                    // Ignore button click if for the same species
-                    if (currentAnimalFactory == singlePrey)
-                        return;
-                    // Otherwise, destroy the current selection before continuing
-                    else
-                        Destroy(main.currentSelection);
-                    main.boardController.ClearAvailableTiles();     //fix the prey placement bug after change currentSelection from plant to prey
-                }
-                // Set / reset currentlyBuilding
-
-                currentAnimalFactory = singlePrey;
-
-
-
-                // Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
-                Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
-                init_pos.z = -1.5f;
-
-
-                // Instantiate the current prey
-                main.currentSelection = singlePrey.Create();
-                main.currentSelection.GetComponent<BuildInfo>().speciesType = 1;
-
-
-                // Set DemMain's preyOrigin as the center of the button
-                main.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-
-                main.boardController.SetAvailableTiles();
-
-
-            }
-        }
-
-        // End GUI for prey menu
-        GUILayout.EndVertical();
-        GUILayout.EndArea();
-    }
-    */
+ 
 
     // Use this for initialization
     void Start()
