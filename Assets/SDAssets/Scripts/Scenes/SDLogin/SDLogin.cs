@@ -29,7 +29,7 @@ public class SDLogin : MonoBehaviour {
         windowRect = new Rect(left, top, width, height);
         font = Resources.Load<Font>("Fonts/" + "Chalkboard");
         SD.SDMessageQueue.getInstance().AddCallback (SD.Constants.SMSG_AUTH, SD_ResponseLogin);
-        SD.SDMessageQueue.getInstance ().AddCallback (SD.Constants.SMSG_RACE_INIT, SD_ResponseLogin);
+        SD.SDMessageQueue.getInstance ().AddCallback (SD.Constants.SMSG_RACE_INIT, SD_ResponsePlayInit);
     }
 
     // Use this for initialization
@@ -160,7 +160,6 @@ public class SDLogin : MonoBehaviour {
             // send the request to initialize the game.
             SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
             sManager.Send(SD_RequestPlayInit());
-            Game.SwitchScene ("SDReadyScene");
         }
         else {
             Debug.Log("SD: Login Failed");
@@ -175,7 +174,7 @@ public class SDLogin : MonoBehaviour {
     public void SD_ResponsePlayInit(SD.ExtendedEventArgs eventArgs) {
         SD.ResponsePlayInitEventArgs args = eventArgs as SD.ResponsePlayInitEventArgs;
         SD.Constants.PLAYER_NUMBER = args.playerNumber;
-
+        Game.SwitchScene ("SDReadyScene");
     }
 }
 
