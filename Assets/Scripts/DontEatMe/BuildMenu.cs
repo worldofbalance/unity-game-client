@@ -15,6 +15,7 @@ public class BuildMenu : MonoBehaviour
 	//Access to DemRectUI script for RectUI creation
 	public DemRectUI demRectUI;
 	private GameObject quitUI;	//instance of UI for after pressed quit button
+    private GameObject gameOverUI;  //instance of UI for after pressed quit button
 	private float qBX; //quit button width
 	private float qBY; //quit button height
 
@@ -386,16 +387,29 @@ public class BuildMenu : MonoBehaviour
 
     public void endGame()
     {
-        /*
-            Debug.Log("Game ended with X coins: " + coins);
+        gameOverUI = demRectUI.createRectUI ("quitUI", 0, 0, Screen.width / 2.0f, Screen.height / 2.0f);
+        demRectUI.setUIText (quitUI, "Game Over! Play Again?");
 
-            //LOBBY TEAM, PUT YOUR RETURN CODE HERE, PASS BACK
-            //coins variable
-            NetworkManager.Send(
-                EndGameProtocol.Prepare(1, coins),
-                ProcessEndGame
-            );
-      */
+        //Quit Button on Quit UI
+        GameObject yesButton = demButton.CreateButton (0, 0, "Yes");
+        yesButton.transform.SetParent (quitUI.transform);
+        yesButton.GetComponent<RectTransform> ().anchoredPosition = 
+            new Vector2 (quitUI.GetComponent<RectTransform> ().sizeDelta.x/5.0f,
+                -quitUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f);
+        demButton.SetButtonText (yesButton, "Quit");
+        yesButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); Game.SwitchScene("World");});
+
+        //back button on Quit UI
+        GameObject noButton = demButton.CreateButton (0, 0, "No");
+        noButton.transform.SetParent (quitUI.transform);
+        noButton.GetComponent<RectTransform> ().anchoredPosition = 
+            new Vector2 (quitUI.GetComponent<RectTransform> ().sizeDelta.x/5.0f*3.0f,
+                -quitUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f);
+        demButton.SetButtonText (noButton, "Back");
+        //noButton.GetComponent<Button> ().onClick.AddListener (()=>{quitUI.SetActive(false);});
+        noButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); Game.SwitchScene("World");});
+
+        mainUIObject.SetActive (false);
     }
 
 
