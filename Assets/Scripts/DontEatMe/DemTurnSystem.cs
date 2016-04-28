@@ -30,6 +30,7 @@ public class DemTurnSystem : MonoBehaviour {
     tweenManager = mainObject.GetComponent<DemTweenManager> ();
     buildMenu = mainObject.GetComponent<BuildMenu> ();
     lives = 3;
+    buildMenu.UpdateLives (lives);
 
   }
 	
@@ -126,6 +127,7 @@ public class DemTurnSystem : MonoBehaviour {
     BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
     predator.GetTile ().RemoveAnimal ();
     lives--;
+    buildMenu.UpdateLives (lives);
 
     if (lives == 0) {
       

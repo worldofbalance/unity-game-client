@@ -448,4 +448,10 @@ public class BuildMenu : MonoBehaviour
 
   }
 
+
+    public void UpdateLives(int lives){
+        livesText.GetComponent<Text> ().text = "Lives: " + lives;
+    }
+        
+
 }
