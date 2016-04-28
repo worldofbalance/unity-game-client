@@ -26,8 +26,8 @@ public class DemTile : MonoBehaviour
 
     private IEnumerator pulse; // Called as a coroutine to start/stop pulsing of tile colors
     private bool hasPulse; // Denotes if tile has currently active pulse
-    private const float defaultPulseFrequency = 1.25f; // Default pulse frequency
-    private const float defaultPulseFactor = 0.2f; // Default value for synchronizing pulse modulation with frequency
+    private const float defaultPulseFrequency = 0.625f; // Default pulse frequency
+    private const float defaultPulseFactor = 0.1f; // Default value for synchronizing pulse modulation with frequency
     public float DefaultPulseFrequency { get { return defaultPulseFrequency; } } // Public accessor
 
     // Values for defining a restore point for pulse
@@ -101,6 +101,7 @@ public class DemTile : MonoBehaviour
         Defines and returns a coroutine for pulsing between two different colors at a particular frequency.
         An optional delay to start the coroutine may be specified in seconds.
         Note that by default, the pulse is synced with the master clock defined by EnableMasterPulse.
+        Also note that defining a non-positive pulse factor will set the tile to a solid color specified by 'color1'.
     */
     IEnumerator Pulse
     (
@@ -137,16 +138,23 @@ public class DemTile : MonoBehaviour
         Sets the pulse parameters.
         Changes will affect both active and inactive pulses.
     */
-    public void SetPulse (Color color1, Color color2, float frequency = defaultPulseFrequency)
+    public void SetPulse
+    (
+        Color color1, 
+        Color color2, 
+        float frequency = defaultPulseFrequency, 
+        float pulseFactor = defaultPulseFactor,
+        bool syncWithMaster = true
+    )
     {
         if (hasPulse)
         {
             SignalPulse(false);
-            pulse = Pulse(color1, color2, frequency);
+            pulse = Pulse(color1, color2, frequency, pulseFactor, syncWithMaster);
             SignalPulse(true);
         }
         else
-            pulse = Pulse(color1, color2, frequency);
+            pulse = Pulse(color1, color2, frequency, pulseFactor, syncWithMaster);
     }
 
     /**
@@ -223,19 +231,17 @@ public class DemTile : MonoBehaviour
         
         // Set highlight color
         // TODO: change highlight color based on a tile's legality
-        if (buildMenu.currentAnimalFactory != null) {
-         if (available)
-         {
-	            //this.GetComponent<Renderer>().material.color = Color.cyan;
-                SetPulse(Color.gray, Color.cyan);
+        if (buildMenu.currentAnimalFactory != null)
+        {
+            if (available)
+            {
+                    SetPulse(Color.cyan, Color.cyan, 0, 0);
+            }
 
-         }
 	        else
             {
-	            //this.GetComponent<Renderer>().material.color = Color.red;
-                SetPulse(Color.Lerp(Color.white, Color.red, 0.5f), Color.red);
+                SetPulse(Color.red, Color.Lerp(Color.red, Color.white, 0.25f), 0.25f, 0.05f, false);
                 SignalPulse(true);
-                Debug.Log("Unavailable tile here...");
             }
         }
         else {

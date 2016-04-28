@@ -17,12 +17,9 @@ public class DemBoard : MonoBehaviour {
 
   public GameObject gameBoard;
 
-  private Color highlightColor;
+  private Color highlightColor1, highlightColor2; // Highlight colors for available tile pulse
 
   private DemMain main;
-
-  private int tick;
-  private bool ticking;
 
 	// Use this for initialization
 	void Awake () {
@@ -43,10 +40,9 @@ public class DemBoard : MonoBehaviour {
     // Calculate the bottom edge of the screen based on the aspect ratio
     bottomEdge = 0 - Camera.main.orthographicSize;
 
-
-    //We need to pick a better color
-    //highlightColor = new Color(0.0F, 0.0F, 1.0F, 0.1F);
-    highlightColor = new Color(50.0F/255.0F, 150.0F/255.0F, 255.0F/255.0F);
+    // Define highlight colors
+    highlightColor1 = Color.white;
+    highlightColor2 = Color.Lerp(Color.blue, Color.white, 0.25f);
 
 	}
 
@@ -108,8 +104,8 @@ public class DemBoard : MonoBehaviour {
                         //Tiles[x, y].GetComponent<DemTile>().currentColor = highlightColor;
                         //Tiles[x, y].GetComponent<DemTile>().available = true;
                         DemTile tile = Tiles[x,y].GetComponent<DemTile>();
-                        tile.SetPulse(Color.Lerp(Color.green, highlightColor, 0.5f), highlightColor);
-                        tile.SetRestorePulse(Color.Lerp(Color.green, highlightColor, 0.5f), highlightColor);
+                        tile.SetPulse(highlightColor1, highlightColor2);
+                        tile.SetRestorePulse(highlightColor1, highlightColor2);
                         tile.SignalPulse(true);
                         tile.available = true;
                     }
@@ -127,8 +123,8 @@ public class DemBoard : MonoBehaviour {
                                 //Tiles[x - 1, y].GetComponent<DemTile>().currentColor = highlightColor;
                                 //Tiles[x - 1, y].GetComponent<DemTile>().available = true;
                                 DemTile tile = Tiles[x - 1,y].GetComponent<DemTile>();
-                                tile.SetPulse(Color.Lerp(Color.green, highlightColor, 0.5f), highlightColor);
-                                tile.SetRestorePulse(Color.Lerp(Color.green, highlightColor, 0.5f), highlightColor);
+                                tile.SetPulse(highlightColor1, highlightColor2);
+                                tile.SetRestorePulse(highlightColor1, highlightColor2);
                                 tile.SignalPulse(true);
                                 tile.available = true;
                             }
