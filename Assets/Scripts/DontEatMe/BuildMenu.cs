@@ -155,9 +155,9 @@ public class BuildMenu : MonoBehaviour
         gameObject.AddComponent<DemButton>();
         demButton = gameObject.GetComponent<DemButton>();
 
-		// building the RectUI
-		gameObject.AddComponent<DemRectUI>();
-		demRectUI = gameObject.GetComponent<DemRectUI> ();
+		    // building the RectUI
+		    gameObject.AddComponent<DemRectUI>();
+		    demRectUI = gameObject.GetComponent<DemRectUI> ();
 
         
         // Toggle button to switch between plant and prey menu
@@ -382,6 +382,26 @@ public class BuildMenu : MonoBehaviour
 
   public void SetCurrentAnimalFactory(DemAnimalFactory newAnimalFactory){
     currentAnimalFactory = newAnimalFactory;
+  }
+
+  public void ToggleButtonLocks(){
+    if (turnSystem.IsTurnLocked ()) {
+      for (int i = 0; i < 6; i++) {
+        menuButtons [i].GetComponent<Button> ().interactable = true;
+        foreach(Image image in menuButtons [i].GetComponentsInChildren<Image>()){
+          image.color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
+        }
+      }
+    } else {
+
+      for (int i = 0; i < 6; i++) {
+        menuButtons [i].GetComponent<Button> ().interactable = false;
+        foreach(Image image in menuButtons [i].GetComponentsInChildren<Image>()){
+          image.color = new Color(1.0F, 1.0F, 1.0F, 0.8F);
+        }
+      }
+    }
+
   }
 
 }

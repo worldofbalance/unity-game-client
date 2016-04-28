@@ -18,6 +18,7 @@ public class DemTurnSystem : MonoBehaviour {
   private DemTweenManager tweenManager;
   DemTile tile;
   private int lives;
+  private BuildMenu buildMenu;
 
 
   void Awake()
@@ -27,6 +28,7 @@ public class DemTurnSystem : MonoBehaviour {
     board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
     main = mainObject.GetComponent<DemMain> ();
     tweenManager = mainObject.GetComponent<DemTweenManager> ();
+    buildMenu = mainObject.GetComponent<BuildMenu> ();
     lives = 3;
 
   }
@@ -36,6 +38,7 @@ public class DemTurnSystem : MonoBehaviour {
   {
 
     turnLock = true;
+    buildMenu.ToggleButtonLocks ();
     activePredators = board.GetPredators ();
     Debug.Log ("Total predators :" + activePredators.Count);
     foreach(KeyValuePair<int, GameObject> predator in activePredators)
@@ -169,6 +172,7 @@ public class DemTurnSystem : MonoBehaviour {
       //GenerateNewPredators ();
       tweenList.Clear();
       turnLock = false;
+      buildMenu.ToggleButtonLocks ();
     }
 
   }

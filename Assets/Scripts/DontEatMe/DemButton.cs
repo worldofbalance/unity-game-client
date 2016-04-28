@@ -12,7 +12,7 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     //Canvas Object
     //public GameObject canvasObject;
-	public GameObject mainUIObject;
+	  public GameObject mainUIObject;
 
     //Panel Object
     public GameObject panelObject;
@@ -37,8 +37,8 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         buttonPrefab = Resources.Load<GameObject>("DontEatMe/Prefabs/Button");
 
         //canvasObject = GameObject.Find("Canvas");
-		//panelObject = GameObject.Find("Canvas/Panel");
-		mainUIObject = GameObject.Find("Canvas/mainUI");
+		    //panelObject = GameObject.Find("Canvas/Panel");
+		    mainUIObject = GameObject.Find("Canvas/mainUI");
         panelObject = GameObject.Find("Canvas/mainUI/Panel");
 
         xSize = buttonPrefab.GetComponent<RectTransform>().sizeDelta.x;
@@ -58,7 +58,7 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         buttonId += 1;
 
         //button.transform.SetParent(canvasObject.transform);
-		button.transform.SetParent(mainUIObject.transform);
+		    button.transform.SetParent(mainUIObject.transform);
 
         // Set the position of the button
 
