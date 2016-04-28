@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour {
 
     private float movementHorizontal;
     private float movementVertical;
-  
+    private float xRotationAngle;
 
     public Boundary boundary;
     private Vector3 scale;
@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour {
     
             // Send x and y position to the opponent if they have changed.
             if (rb.position.x != oldXPosition || rb.position.y != oldYPosition) {
-                sdGameManager.SetPlayerPositions (rb.position.x, rb.position.y, rb.rotation.x);
+                sdGameManager.SetPlayerPositions (rb.position.x, rb.position.y, xRotationAngle);
         }
         oldXPosition = rb.position.x;
         oldYPosition = rb.position.y;
@@ -117,6 +117,7 @@ public class PlayerController : MonoBehaviour {
                 var screenPoint = Camera.main.WorldToScreenPoint(transform.localPosition);
                 var offset = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
                 var angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+                xRotationAngle = angle;
                 transform.rotation = Quaternion.Euler(angle - 180, -90, 0);
 
                 mouse.z = transform.position.z - Camera.main.transform.position.z;

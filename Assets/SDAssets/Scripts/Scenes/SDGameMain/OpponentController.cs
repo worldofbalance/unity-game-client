@@ -31,7 +31,7 @@ namespace SD {
                 yPosition = sdGameController.getOpponentPlayer ().yPosition;
                 rbOpponent.MovePosition (new Vector3(xPosition, yPosition, 0));
                 xRotation = sdGameController.getOpponentPlayer ().xRotation;
-                rbOpponent.MoveRotation (Quaternion.AngleAxis(xRotation, Vector3.forward));
+                rbOpponent.MoveRotation (Quaternion.Euler(xRotation - 180, -90, 0));
             }
         }
 
