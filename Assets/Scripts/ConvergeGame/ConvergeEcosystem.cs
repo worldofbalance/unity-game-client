@@ -10,6 +10,10 @@ public class ConvergeEcosystem {
 	public string config_default { get; set; }
 	public string config_target { get; set; }
 	private string _csv_default_string;
+    // DH change
+    public string sliderRanges { get; set; }
+    public bool markerEnabled { get; set; }
+
 	public string csv_default_string
 	{
 		get

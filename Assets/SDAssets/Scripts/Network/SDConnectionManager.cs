@@ -48,7 +48,7 @@ namespace SD
         try
         {
             mySocket = new TcpClient();
-            IAsyncResult result = mySocket.BeginConnect(Config.REMOTE_HOST, SD.Constants.REMOTE_PORT, null, null);
+            IAsyncResult result = mySocket.BeginConnect(Config.GetHost(), SD.Constants.REMOTE_PORT, null, null);
             int cTimeoutSeconds = 2;
             result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(cTimeoutSeconds));
             if (!mySocket.Connected) {
