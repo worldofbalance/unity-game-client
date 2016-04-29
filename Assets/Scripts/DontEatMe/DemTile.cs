@@ -60,7 +60,6 @@ public class DemTile : MonoBehaviour
         // Set resident to null
         resident = null;
 
-
         center = this.GetComponent<Renderer>().bounds.center;
         center.z = -1.5f;
 

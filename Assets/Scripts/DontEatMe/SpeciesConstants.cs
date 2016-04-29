@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 /**
 	Static constants and methods for defining and returning species attributes for the Don't Eat Me minigame.
