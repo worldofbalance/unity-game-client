@@ -187,11 +187,11 @@ public class SpeciesConstants
             (int)SPECIES_ID.GrassAndHerbs,      // Species ID
             new int[2][]                        // Effect range
             {
-                // . . *
+                // . * .
                 // . O .
-                // . . *
-                new int[2]{-1, 1},
-                new int[2]{-1, -1}
+                // . * .
+                new int[2]{0, 1},
+                new int[2]{0, -1}
             },
             // Lore
             "Grasses are among the most versatile life forms. They became widespread toward the end of the " +
@@ -202,13 +202,14 @@ public class SpeciesConstants
         (
             "Trees And Shrubs",                 // Name
             (int)SPECIES_ID.TreesAndShrubs,     // Species ID
-            new int[2][]                        // Effect range
+            new int[3][]                        // Effect range
             {
-                // . . .
-                // * O *
-                // . . .
-                new int[2]{1, 0},
-                new int[2]{-1, 0}
+                // . . * 
+                // . O * 
+                // . . * 
+                new int[2]{-1, 1},
+                new int[2]{-1, 0},
+                new int[2]{-1, -1}
             },
             // Lore
             "Special"
