@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using System;
 
 /**
 	Static constants and methods for defining and returning species attributes for the Don't Eat Me minigame.
@@ -13,19 +15,46 @@ public class SpeciesConstants
 
     // Reference for all species ID values (consistent with database)
     private enum SPECIES_ID
-    {        
-        AfricanWildDog      = 74,
-        BatEaredFox         = 4,
-        BlackMamba          = 6,
+    {
+        // Plants
+        Acacia              = 1007,
+        BigTree             = 1008,
+        Boabab              = 1009,
+        GrainsAndSeeds      = 1004,
+        GrassAndHerbs       = 1005,
+        TreesAndShrubs      = 1001,
+        // Prey
         Buffalo             = 7,
         BushHyrax           = 48,
         CrestedPorcupine    = 72,
         KoriBuskard         = 65,
+        Oribi               = 73,
+        TreeMouse           = 31,
+        // Predators        
+        AfricanWildDog      = 74,
+        BatEaredFox         = 4,
+        BlackMamba          = 6,
         Leopard             = 80,
         Lion                = 86,
-        Oribi               = 73,
-        ServalCat           = 69,
-        TreeMouse           = 31
+        ServalCat           = 69
+    };
+
+    // Defines a plant
+    private struct Plant
+    {
+        public string name;
+        public string lore; // Lore (i.e. description) taken from 'http://smurf.sfsu.edu/~wob/guide/species.php'
+        public int speciesID;
+        public int[][] range; // Array of [x,y] offset pairs with [0,0] @ plant origin, denoting relative effect range
+
+        // Constructor
+        public Plant (string _name, int _speciesID, int[][] _range, string _lore = "")
+        {
+            name = _name;
+            speciesID = _speciesID;
+            range = _range;
+            lore = _lore;
+        }
     };
 
 	// Defines a prey
@@ -39,6 +68,7 @@ public class SpeciesConstants
         // public int[] preyIDLIst; // TODO: create prey list --> includes plants, but might include other prey (TBD)
         public int[] predatorIDList;
 
+        // Constructor
 		public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList, string _lore = "")
 		{
 			name = _name;
@@ -61,6 +91,7 @@ public class SpeciesConstants
         public int[] preyIDList;
         // public int[] predatorIDLIst; // TODO: create predator list --> includes larger predators (TBD)
 
+        // Constructor
 		public Predator (string _name, int _speciesID, int _hunger, int _voracity, int[] _preyIDList, string _lore = "")
 		{
 			name = _name;
@@ -72,8 +103,121 @@ public class SpeciesConstants
 		}
 	};
 
+    // All available plants
+    private static Plant[] PLANTS = 
+    {
+        new Plant
+        (
+            "Acacia",                           // Name
+            (int)SPECIES_ID.Acacia,             // Species ID
+            new int[4][]                        // Effect range
+            {
+                // . * .
+                // * O *
+                // . * .
+                new int[2]{0, 1},
+                new int[2]{0, -1},
+                new int[2]{1, 0},
+                new int[2]{-1, 0}
+            },
+            // Lore
+            "Acacia is a genus of shrubs and trees belonging to the subfamily Mimosoideae of the family Fabaceae, " +
+            "first described in Africa by the Swedish botanist Carl Linnaeus in 1773."
+        ),
+        new Plant
+        (
+            "Big Tree",                         // Name
+            (int)SPECIES_ID.BigTree,            // Species ID
+            new int[4][]                        // Effect range
+            {
+                // * . *
+                // . O .
+                // * . *
+                new int[2]{1, 1},
+                new int[2]{-1, 1},
+                new int[2]{1, -1},
+                new int[2]{-1, -1}
+            },
+            // Lore
+            "Trees are an important component of the natural landscape because of their prevention of erosion " +
+            "and the provision of a weather-sheltered ecosystem in and under their foliage. " +
+            "They also play an important role in producing oxygen and reducing carbon dioxide in the atmosphere, " +
+            "as well as moderating ground temperatures."
+        ),
+        new Plant
+        (
+            "Baobab",                           // Name
+            (int)SPECIES_ID.Boabab,             // Species ID
+            new int[8][]                        // Effect range
+            {
+                // * * *
+                // * O *
+                // * * *
+                new int[2]{1, 1},
+                new int[2]{0, 1},
+                new int[2]{-1, 1},
+                new int[2]{1, 0},
+                new int[2]{-1, 0},
+                new int[2]{1, -1},
+                new int[2]{0, -1},
+                new int[2]{-1, -1}
+            },
+            // Lore
+            "Baobab is a genus of eight species of tree, six native to Madagascar, one native to mainland Africa " +
+            "and the Arabian Peninsula and one to Australia. The mainland African species also occurs on Madagascar, " +
+            "but it is not a native of that island."
+        ),
+        new Plant
+        (
+            "Grains And Seeds",                 // Name
+            (int)SPECIES_ID.GrainsAndSeeds,     // Species ID
+            new int[1][]                        // Effect range
+            {
+                // . . .
+                // . O *
+                // . . .
+                new int[2]{-1, 0}
+            },
+            // Lore
+            "Special"
+        ),
+        new Plant
+        (
+            "Grass And Herbs",                  // Name
+            (int)SPECIES_ID.GrassAndHerbs,      // Species ID
+            new int[2][]                        // Effect range
+            {
+                // . . *
+                // . O .
+                // . . *
+                new int[2]{-1, 1},
+                new int[2]{-1, -1}
+            },
+            // Lore
+            "Grasses are among the most versatile life forms. They became widespread toward the end of the " +
+            "Cretaceous period, and fossilized dinosaur dung have been found containing phytoliths of a variety of " +
+            "grasses that include grasses that are related to modern rice and bamboo."
+        ),
+        new Plant
+        (
+            "Trees And Shrubs",                 // Name
+            (int)SPECIES_ID.TreesAndShrubs,     // Species ID
+            new int[2][]                        // Effect range
+            {
+                // . . .
+                // * O *
+                // . . .
+                new int[2]{1, 0},
+                new int[2]{-1, 0}
+            },
+            // Lore
+            "Special"
+        )
+    };
+
 	// All available prey
-	private static Prey[] PREY = {
+	private static Prey[] PREY = 
+    {
 		new Prey
         (
             "Buffalo",                          // Name
@@ -163,7 +307,8 @@ public class SpeciesConstants
 	}; 
 
 	// All available predators
-	private static Predator[] PREDATORS = {
+	private static Predator[] PREDATORS = 
+    {
         new Predator
         (
             "Bat-Eared Fox",                    // Name
@@ -259,6 +404,7 @@ public class SpeciesConstants
 	};
 
 	// Type constants (not consistent with database!)
+    private static short PLANT_TYPE = 0;
 	private static short PREY_TYPE = 1;
 	private static short PREDATOR_TYPE = 2;
 
@@ -267,6 +413,7 @@ public class SpeciesConstants
 
     private static int DEFAULT_SPECIES_ID = 0;
     private static string DEFAULT_SPECIES_NAME = "[ No name ]";
+    private static int[][] DEFAULT_RANGE = new int[1][]{ new int[2]{-1, 0} };
 	private static int DEFAULT_HEALTH = 10;
 	private static int DEFAULT_HUNGER = 25;
 	private static int DEFAULT_VORACITY = 25;
@@ -275,6 +422,8 @@ public class SpeciesConstants
 
     // Contains (species name, species ID) pairs
     private static Dictionary<string, int> NAME_TO_ID =
+        (from plant in PLANTS select new KeyValuePair<string, int>(plant.name, plant.speciesID))
+        .Concat
         (from prey in PREY select new KeyValuePair<string, int>(prey.name, prey.speciesID))
         .Concat
         (from predator in PREDATORS select new KeyValuePair<string, int>(predator.name, predator.speciesID))
@@ -291,15 +440,17 @@ public class SpeciesConstants
 
 	/* PUBLIC CONSTANTS */
 
-    // Number of available prey, predators, and total species, respectively
+    // Number of available plants, prey, predators, and total species, respectively
+    public static readonly int NUM_PLANTS = PLANTS.Length;
 	public static readonly int NUM_PREY = PREY.Length;
 	public static readonly int NUM_PREDATORS = PREDATORS.Length;
-	public static readonly int NUM_SPECIES = NUM_PREY + NUM_PREDATORS;
+	public static readonly int NUM_SPECIES = NUM_PLANTS + NUM_PREY + NUM_PREDATORS;
 
-    // Names of all available prey, predators, and total species, respectively
+    // Names of all available plants, prey, predators, and total species, respectively
+    public static readonly string[] PLANT_NAMES = (from plant in PLANTS select plant.name).ToArray();
     public static readonly string[] PREY_NAMES = (from prey in PREY select prey.name).ToArray();
     public static readonly string[] PREDATOR_NAMES = (from predator in PREDATORS select predator.name).ToArray();
-    public static readonly string[] SPECIES_NAMES = PREY_NAMES.Concat(PREDATOR_NAMES).ToArray();
+    public static readonly string[] SPECIES_NAMES = PLANT_NAMES.Concat(PREY_NAMES).Concat(PREDATOR_NAMES).ToArray();
 
 	/* PUBLIC METHODS */
 	/**
@@ -317,6 +468,34 @@ public class SpeciesConstants
 	{
         return NAME_TO_ID.ContainsValue(id) ? NAME_TO_ID.First(pair => pair.Value == id).Key : DEFAULT_SPECIES_NAME;
 	}
+
+    /**
+        Returns a plant's effect range.
+        Search by species name.
+    */
+    public static int[][] Range (string name)
+    {
+        foreach (Plant plant in PLANTS)
+        {
+            if (plant.name == name)
+                return plant.range;
+        }
+        return DEFAULT_RANGE;
+    }
+
+    /**
+        Returns a plant's effect range.
+        Search by species ID.
+    */
+    public static int[][] Range (int id)
+    {
+        foreach (Plant plant in PLANTS)
+        {
+            if (plant.speciesID == id)
+                return plant.range;
+        }
+        return DEFAULT_RANGE;
+    }
 
 	/**
 		Returns a prey's starting health.
