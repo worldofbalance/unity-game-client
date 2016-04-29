@@ -38,9 +38,9 @@ public class MultiConvergeGame : MonoBehaviour
 	private Rect windowRect;
     private Rect windowRectConfig;
 	// Logic
-    private bool isActive = false;   // Not active until host specifies    Ivan - change to false
+    private bool isActive = true;   // Not active until host specifies    Ivan - change to false
     private bool isInitial = true;   // helps with GUI focus
-    private bool isSetup = true;   // read parameters   Ivan - change to true
+    private bool isSetup = false;   // read parameters   Ivan - change to true
     private bool isDone = false;   // used to display end result screen
 	// DH change
 	// eliminate blink. Replace isProcessing with betAccepted
@@ -215,8 +215,11 @@ public class MultiConvergeGame : MonoBehaviour
 		// DH change - start everyone at beginning to make equal
 		// GetPriorAttempts ();
 		// Replacement for GetPriorAttempts()
-        // NoPriorAttempts();
 
+        if (!isSetup) {
+            NoPriorAttempts();
+            InitializeBarGraph();
+        }
 		
 
 		//create array of ecosystem descriptions
@@ -231,7 +234,6 @@ public class MultiConvergeGame : MonoBehaviour
 		moment = DateTime.Now;
 		timeNow = moment.Millisecond;
 		Debug.Log ("Time: " + timeNow);
-		// InitializeBarGraph();
 	}
 	
 	// Update is called once per frame
