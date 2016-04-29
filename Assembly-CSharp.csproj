@@ -515,6 +515,7 @@
      <None Include="Assets\CWAssets\Resources\Images\Battle\$Alpha-Selective.shader" />
      <None Include="Assets\SDAssets\3DModels\Fish School\Shaders\BumpSpecRim.shader" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween50.xml" />
+     <None Include="Assets\CWAssets\Resources\Images\3DText.shader" />
      <None Include="Assets\SDAssets\3DModels\Fish School\Shaders\BumpSpecRimVertex.shader" />
      <None Include="Assets\RRAssets\Resources\ItemLocationFiles\1.txt" />
      <None Include="Assets\CWAssets\Resources\Images\Battle\$3DTextOneSided.shader" />
