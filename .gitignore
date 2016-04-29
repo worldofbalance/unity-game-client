@@ -21,6 +21,10 @@ ExportedObj/
 *.booproj
 *.svd
 
+# Explicit files of the above formats somehow still being tracked
+unity-game-client.userprefs
+unity-game-client.sln
+Assembly-CSharp.csproj
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -47,7 +51,7 @@ dist/
 nbdist/
 nbactions.xml
 .nb-gradle/
-projectsettings/ProjectVersion.txt
+[Pp]rojectsettings/ProjectVersion.txt
 
 
 # Editor-specific temporary files
