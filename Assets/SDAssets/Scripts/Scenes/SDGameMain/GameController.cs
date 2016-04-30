@@ -48,6 +48,7 @@ namespace SD {
 
         private static GameController gameController;
         private static GameManager sdGameManager;
+        private PlayTimePlayer currentPlayer;
         private PlayTimePlayer opponentPlayer;
         private Rigidbody rbOpponent;
         private Dictionary <int, NPCFish> npcFishes = new Dictionary<int, NPCFish>();
@@ -82,6 +83,7 @@ namespace SD {
             UpdateHealth ();
 
             sdGameManager = SD.GameManager.getInstance ();
+            currentPlayer = new PlayTimePlayer ();
 
             for (int i = 1; i <= numPrey; i++) {
                 NPCFish npcFish = new NPCFish (i);
@@ -98,6 +100,7 @@ namespace SD {
                 rbOpponent.gameObject.SetActive (true);
                 opponentPlayer = new PlayTimePlayer ();
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
+                opponentPlayer.yRotation = opponentInitialRotation.eulerAngles.y;
             }
 
         }
@@ -249,7 +252,10 @@ namespace SD {
         public Rigidbody getOpponent() {
                 return rbOpponent;
         }
-        
+
+        public PlayTimePlayer getCurrentPlayer() {
+            return currentPlayer;
+        }
         public PlayTimePlayer getOpponentPlayer() {
             return opponentPlayer;
         }

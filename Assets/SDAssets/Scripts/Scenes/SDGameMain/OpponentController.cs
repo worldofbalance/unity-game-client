@@ -11,6 +11,7 @@ namespace SD {
         private float yPosition;
         private float xRotation;
         private float yAngle;
+        private float yRotation;
         private float turnSpeed = 10f;
         private Vector3 turn;
 
@@ -20,7 +21,7 @@ namespace SD {
             sdGameManager = GameManager.getInstance ();
             rbOpponent = sdGameController.getOpponent ().GetComponent<Rigidbody> ();
             xPosition = yPosition = 0.0f;
-            yAngle = -90;
+            yAngle = yRotation = -90;
             turn = new Vector3 (0f, turnSpeed, 0f);
         }
 
@@ -28,26 +29,26 @@ namespace SD {
             if (sdGameManager.getIsMultiplayer ()) {
                 xPosition = sdGameController.getOpponentPlayer ().xPosition;
                 yPosition = sdGameController.getOpponentPlayer ().yPosition;
+                yRotation = sdGameController.getOpponentPlayer ().yRotation;
                 rbOpponent.MovePosition (new Vector3(xPosition, yPosition, 0));
-                xRotation = sdGameController.getOpponentPlayer ().xRotation;
-                yAngle = -90;
-                if (xRotation >= -90 && xRotation <= 90) {
-                    // invert the angle to avoid upside down movement.
-                    xRotation = 180 - xRotation;
-                    yAngle = 90;
-                }
-                rbOpponent.MoveRotation (Quaternion.Euler(xRotation - 180, yAngle, 0));
-                if (sdGameController.getOpponentPlayer ().isTurningLeft) {
-                    if (rbOpponent.transform.rotation.eulerAngles.y < 270) {
-                        rbOpponent.transform.Rotate (-turn);
-                    }
-                    sdGameController.getOpponentPlayer ().isTurningLeft = false;
+
+               /* if (sdGameController.getOpponentPlayer ().isTurningLeft) {
+                    xRotation = sdGameController.getOpponentPlayer ().xRotation;
+                    sdGameController.getOpponentPlayer ().yRotation = yRotation = 180;
+                    rbOpponent.MoveRotation (Quaternion.Euler (xRotation - 180, yRotation, 0));
                 } else if (sdGameController.getOpponentPlayer ().isTurningRight) {
-                    if (rbOpponent.transform.rotation.eulerAngles.y > 90) {
-                        rbOpponent.transform.Rotate (turn);
+                    xRotation = sdGameController.getOpponentPlayer ().xRotation;
+                    sdGameController.getOpponentPlayer ().yRotation = yRotation = -180;
+                    rbOpponent.MoveRotation (Quaternion.Euler (xRotation - 180, yRotation, 0));
+                } else { */
+                    xRotation = sdGameController.getOpponentPlayer ().xRotation;
+                    yAngle = -90;
+                    if (xRotation >= -90 && xRotation <= 90) {
+                        xRotation = 180 - xRotation;
+                        yAngle = 90;
                     }
-                    sdGameController.getOpponentPlayer ().isTurningRight = false;
-                }
+                    rbOpponent.MoveRotation (Quaternion.Euler (xRotation - 180, yAngle, 0));
+               // }
             }
         }
 

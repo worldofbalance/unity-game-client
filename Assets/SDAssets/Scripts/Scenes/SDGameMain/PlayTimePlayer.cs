@@ -15,6 +15,7 @@ namespace SD
         public float yPosition { get; set; }
         public int score {get; set;}
         public float xRotation { get; set; }
+        public float yRotation {get; set;}
         public bool isTurningLeft { get; set; }
         public bool isTurningRight {get; set; }
 

@@ -115,12 +115,12 @@ namespace SD {
                 RequestSDKeyboard request = new RequestSDKeyboard ();
                 request.Send (keyCode, keyCombination);
                 cManager.Send (request);
-                Debug.Log ("Sent a request for " + keyCode);
             }
         }
 
         public void ResponseSDKeyboard(ExtendedEventArgs eventArgs) {
             ResponseSDKeyboardEventArgs args = eventArgs as ResponseSDKeyboardEventArgs;
+            Debug.Log ("Running the keyboard response");
             if (args.keyCode == (int)KeyCode.Space) {
                 if (args.keyCombination == 0) {  // Space key down
                     // Speed up the opponent.
@@ -131,13 +131,22 @@ namespace SD {
                     // Space key up
                     gameController.getOpponentPlayer().speed = gameController.getOpponentPlayer().speed / gameController.getOpponentPlayer().speedUpFactor;
                 }
+            }
 
-                if (args.keyCode == (int)KeyCode.RightArrow) {
+            // Turning right/left with the arrow keys.
+            if (args.keyCode == (int)KeyCode.RightArrow) {
+                if (args.keyCombination == 0) {
                     gameController.getOpponentPlayer ().isTurningRight = true;
+                } else {
+                    gameController.getOpponentPlayer ().isTurningRight = false;
                 }
+            }
 
-                if (args.keyCode == (int)KeyCode.LeftArrow) {
+            if (args.keyCode == (int)KeyCode.LeftArrow) {
+                if (args.keyCombination == 0) {
                     gameController.getOpponentPlayer ().isTurningLeft = true;
+                } else {
+                    gameController.getOpponentPlayer ().isTurningLeft = false;
                 }
             }
         }

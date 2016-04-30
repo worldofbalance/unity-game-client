@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour {
     private static SD.GameManager sdGameManager;
     private float oldXPosition, oldYPosition;
     private float oldYRotation;
-
+    private int turnCounter = 0;
 	// Detects the player object, and reads the 'GameController' Object
     void Start () {
         rb = GetComponent<Rigidbody> ();
@@ -62,12 +62,11 @@ public class PlayerController : MonoBehaviour {
         // Gets arrow key input
         movementHorizontal = Input.GetAxis("Horizontal");
         movementVertical = Input.GetAxis ("Vertical");
-            turn = new Vector3(0f, turnSpeed, 0f);
-            Vector2 movement = new Vector2(movementHorizontal, movementVertical);
-    
-            // Send x and y position to the opponent if they have changed.
-            if (rb.position.x != oldXPosition || rb.position.y != oldYPosition) {
-                sdGameManager.SetPlayerPositions (rb.position.x, rb.position.y, xRotationAngle);
+        turn = new Vector3(0f, turnSpeed, 0f);
+        Vector2 movement = new Vector2(movementHorizontal, movementVertical);
+        // Send x and y position to the opponent if they have changed.
+        if (rb.position.x != oldXPosition || rb.position.y != oldYPosition) {
+            sdGameManager.SetPlayerPositions (rb.position.x, rb.position.y, xRotationAngle);
         }
         oldXPosition = rb.position.x;
         oldYPosition = rb.position.y;
@@ -81,25 +80,28 @@ public class PlayerController : MonoBehaviour {
             0.0f
         );
 
-            if (rb.velocity.x > 0)
-            {
-
-                if (rb.transform.rotation.eulerAngles.y > 90)
-                {
-                    rb.transform.Rotate(-turn);
-                    sdGameManager.SetKeyboardActions ((int)KeyCode.RightArrow, 0);
-                   
-                }
+        if (rb.velocity.x > 0)
+        {
+            if (rb.transform.rotation.eulerAngles.y > 90) { // Right turn
+                float eulerX = rb.transform.rotation.eulerAngles.x;  // Required to support syncing orientation for keyboard
+                if (eulerX >= 270 && eulerX <= 360)
+                    xRotationAngle = 360 - eulerX;
+                else if (eulerX >= 0 && eulerX <= 90)
+                    xRotationAngle = -eulerX;
+                rb.transform.Rotate (-turn);
             }
-            if (rb.velocity.x <0)
-            {
-
-                if (rb.transform.rotation.eulerAngles.y < 270)
-                {
-                    rb.transform.Rotate(turn);
-                    sdGameManager.SetKeyboardActions ((int)KeyCode.LeftArrow, 0);
-                }
-             }
+        } 
+        if (rb.velocity.x < 0)
+        {
+            if (rb.transform.rotation.eulerAngles.y < 270) { // Left turn
+                float eulerX = rb.transform.rotation.eulerAngles.x;
+                if (eulerX >= 270 && eulerX <= 360)
+                    xRotationAngle = eulerX - 180;
+                else if (eulerX >= 0 && eulerX <= 90)
+                    xRotationAngle = eulerX - 180;
+                rb.transform.Rotate (turn);
+            }
+        }
         // Flips the player object left or right
         // depending on the direction the player is moving
         // Moving to Right
@@ -120,12 +122,13 @@ public class PlayerController : MonoBehaviour {
                 var offset = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
                 var angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
                 var yAngle = -90;
+                xRotationAngle = angle;
                 if (angle >= -90 && angle <= 90) {
                     // invert the angle to avoid upside down movement.
                     angle = 180 - angle;
                     yAngle = 90;
                 }
-                xRotationAngle = angle;
+
                 transform.rotation = Quaternion.Euler(angle - 180, yAngle, 0);
                 mouse.z = transform.position.z - Camera.main.transform.position.z;
                 mouse = Camera.main.ScreenToWorldPoint(mouse);
@@ -146,9 +149,6 @@ public class PlayerController : MonoBehaviour {
                 speed = MindSpeed;
                 currentStamina++;
             }
-
-      
-        
     }
 
     // Returns true if the player is moving.
