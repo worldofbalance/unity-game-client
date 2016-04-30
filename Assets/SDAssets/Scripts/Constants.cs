@@ -8,7 +8,7 @@ namespace SD
         // Constants
         public static readonly string CLIENT_VERSION = "1.00";
         //public static readonly string REMOTE_HOST = "localhost";
-        public static readonly int REMOTE_PORT = 20040;
+        public static readonly int REMOTE_PORT = 9258; // 20040
 
         public static readonly short CMSG_AUTH = 101;
         public static readonly short SMSG_AUTH = 201;
