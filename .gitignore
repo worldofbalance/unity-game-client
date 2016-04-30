@@ -20,7 +20,7 @@ ExportedObj/
 *.pidb
 *.booproj
 *.svd
-
+Assembly-CSharp.csproj
 
 # Unity3D generated meta files
 *.pidb.meta
