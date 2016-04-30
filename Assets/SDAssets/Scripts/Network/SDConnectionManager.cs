@@ -49,7 +49,7 @@ namespace SD
         {
             mySocket = new TcpClient();
             IAsyncResult result = mySocket.BeginConnect(Config.GetHost(), SD.Constants.REMOTE_PORT, null, null);
-            int cTimeoutSeconds = 2;
+            int cTimeoutSeconds = 5;
             result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(cTimeoutSeconds));
             if (!mySocket.Connected) {
                 throw new Exception("Connection Timeout: Could not connect to Sea Divided Server in " + cTimeoutSeconds + " seconds.");
