@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour {
 
     private static SD.GameManager sdGameManager;
     private float oldXPosition, oldYPosition;
+    private float oldYRotation;
 
 	// Detects the player object, and reads the 'GameController' Object
     void Start () {
@@ -86,7 +87,8 @@ public class PlayerController : MonoBehaviour {
                 if (rb.transform.rotation.eulerAngles.y > 90)
                 {
                     rb.transform.Rotate(-turn);
-
+                    sdGameManager.SetKeyboardActions ((int)KeyCode.RightArrow, 0);
+                   
                 }
             }
             if (rb.velocity.x <0)
@@ -94,13 +96,13 @@ public class PlayerController : MonoBehaviour {
 
                 if (rb.transform.rotation.eulerAngles.y < 270)
                 {
-                     rb.transform.Rotate(turn);
+                    rb.transform.Rotate(turn);
+                    sdGameManager.SetKeyboardActions ((int)KeyCode.LeftArrow, 0);
                 }
              }
         // Flips the player object left or right
         // depending on the direction the player is moving
         // Moving to Right
-
 
         //rb.rotation = Quaternion.Euler (0.0f, rb.velocity.z * -tilt,  0.0f);
     }
@@ -117,9 +119,14 @@ public class PlayerController : MonoBehaviour {
                 var screenPoint = Camera.main.WorldToScreenPoint(transform.localPosition);
                 var offset = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
                 var angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+                var yAngle = -90;
+                if (angle >= -90 && angle <= 90) {
+                    // invert the angle to avoid upside down movement.
+                    angle = 180 - angle;
+                    yAngle = 90;
+                }
                 xRotationAngle = angle;
-                transform.rotation = Quaternion.Euler(angle - 180, -90, 0);
-
+                transform.rotation = Quaternion.Euler(angle - 180, yAngle, 0);
                 mouse.z = transform.position.z - Camera.main.transform.position.z;
                 mouse = Camera.main.ScreenToWorldPoint(mouse);
 

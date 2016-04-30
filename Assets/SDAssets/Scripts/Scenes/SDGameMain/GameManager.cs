@@ -131,6 +131,14 @@ namespace SD {
                     // Space key up
                     gameController.getOpponentPlayer().speed = gameController.getOpponentPlayer().speed / gameController.getOpponentPlayer().speedUpFactor;
                 }
+
+                if (args.keyCode == (int)KeyCode.RightArrow) {
+                    gameController.getOpponentPlayer ().isTurningRight = true;
+                }
+
+                if (args.keyCode == (int)KeyCode.LeftArrow) {
+                    gameController.getOpponentPlayer ().isTurningLeft = true;
+                }
             }
         }
 

@@ -15,6 +15,8 @@ namespace SD
         public float yPosition { get; set; }
         public int score {get; set;}
         public float xRotation { get; set; }
+        public bool isTurningLeft { get; set; }
+        public bool isTurningRight {get; set; }
 
         public PlayTimePlayer ()
         {
@@ -26,6 +28,8 @@ namespace SD
             xPosition = 0.0f;
             yPosition = 0.0f;
             score = 0;
+            isTurningLeft = false;
+            isTurningRight = false;
         }
     }
 }
