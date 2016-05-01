@@ -110,9 +110,11 @@ public class Trees : MonoBehaviour {
         
         if(hp <= 0){
             Debug.Log("End Game");  
-
-            this.player.isWon=false;
-            removeAfterDelay = true;
+            
+            if (this.player.playerID != 0) { //if playerID = 0, the other player lost
+                this.player.isWon = false;
+            }
+                removeAfterDelay = true;
         }
         
     }
