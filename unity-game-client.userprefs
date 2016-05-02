@@ -4,10 +4,12 @@
     <Files>
       <File FileName="Assets\Scripts\Network\NetworkCode.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Network\NetworkProtocolTable.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\ConvergeGame\MultiConvergeGame.cs" Line="290" Column="10" />
       <File FileName="Assets\Scripts\MultiplayerGames.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Constants.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GUI\Bar Graph\BarGraph.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Network\NetworkManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\ConvergeGame\MultiConvergeGame.cs" Line="1039" Column="70" />
       <File FileName="Assets\Scripts\Config.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Constants.cs" Line="18" Column="10" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
