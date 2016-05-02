@@ -15,7 +15,8 @@ namespace CW
 		private Vector3 oriPosition;
 		private Vector3 newPosition;
 		private bool zoomed = false;
-        private bool clicked = false, removeAfterDelay,frozen = false;
+        private bool clicked = false, removeAfterDelay;
+        public bool frozen = false;
 		//VELOCITY
 		private Vector3 targetPosition, startPosition;
 		private float velocity, terminalVelocity, angle, distance;
@@ -240,8 +241,15 @@ namespace CW
             this.canAttackNow = canAttackNow;	
 		}
         public void freeze(){
+            
             frozen = true;
-            frozenTurns = 1;
+
+        }
+
+        public void unfreeze(){
+            
+            frozen = false;
+
         }
 		public bool canAttack ()
 		{
@@ -272,9 +280,7 @@ namespace CW
 			target.hp += deltaHealth;
 		}
 
-		public void applyWeatherEffect(int weather){
 
-		}
 	
 		public void attackTree (Trees tree)
 		{
@@ -298,12 +304,10 @@ namespace CW
              * P2 animals frozenTurns--, frozenTurns = 0
              * P2 animals still frozen, end turn, frozen = false
              */
+            
             canAttackNow = true;
-            if (player == GameManager.player1) {
-                frozen = false;
-            } else {
-
-            }
+            frozen=false;
+            
 		}
         public void Remove(){
             removeAfterDelay = true;
@@ -421,7 +425,8 @@ namespace CW
             } else if (!canAttackNow) {
                 ((Behaviour)GetComponent("Halo")).enabled = false;
                 transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Done";
-            } else if (frozen) {
+            }
+            if (frozen) {
                 ((Behaviour)GetComponent("Halo")).enabled = false;
                 transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Frozen";
             }
