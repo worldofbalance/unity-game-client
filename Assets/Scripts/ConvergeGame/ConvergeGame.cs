@@ -23,7 +23,7 @@ public class ConvergeGame : MonoBehaviour
 	private float topGraph = 75;
 	private Rect windowRect;
 	//for buttons
-	private float uiHeight = 25;
+	private float uiHeight = 35;
 	private Vector2 scrollPosition;
 	// Logic
 	private bool isActive = true;
@@ -151,7 +151,7 @@ public class ConvergeGame : MonoBehaviour
 			//	Submit();
 			//}
 		}
-		GUI.skin.label.fontSize = 12;  //for legend series labels
+		GUI.skin.label.fontSize = 16;  //for legend series labels
 
 		if (showPopup) {
 			GUI.Window (Constants.CONVERGE_POPUP_WIN, popupRect, ShowPopup, "Error", GUIStyle.none);
@@ -166,11 +166,11 @@ public class ConvergeGame : MonoBehaviour
 		//for text
 		GUIStyle style = new GUIStyle (GUI.skin.label);
 		style.font = font;
-		style.fontSize = 12;
+		style.fontSize = 16;
 		style.alignment = TextAnchor.MiddleCenter;
 
 		GUIStyle button = new GUIStyle(GUI.skin.button);
-		button.fontSize = 12;
+		button.fontSize = 16;
 
 		
 
@@ -309,7 +309,7 @@ public class ConvergeGame : MonoBehaviour
 	{
 		style.alignment = TextAnchor.UpperRight;
 		style.font = font;
-		style.fontSize = 12;
+		style.fontSize = 16;
 		Color savedColor = GUI.color;
 		Color savedBkgdColor = GUI.backgroundColor;
 
@@ -422,7 +422,7 @@ public class ConvergeGame : MonoBehaviour
 		}
 		style.alignment = TextAnchor.MiddleCenter;
 		style.font = font;
-		style.fontSize = 12;
+		style.fontSize = 16;
 	}
 
 	void DrawResetButtons (int screenOffset, GUIStyle style)
@@ -481,7 +481,7 @@ public class ConvergeGame : MonoBehaviour
 		GUIStyle style = new GUIStyle (GUI.skin.label);
 		style.alignment = TextAnchor.UpperCenter;
 		style.font = font;
-		style.fontSize = 12;
+		style.fontSize = 16;
 		
 		Functions.DrawBackground (new Rect (0, 0, popupRect.width, popupRect.height), bgTexture);
 		GUI.BringWindowToFront (windowID);

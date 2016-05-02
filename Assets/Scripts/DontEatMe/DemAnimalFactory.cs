@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEditor; // Contains the PrefabUtility class.
+//using UnityEditor; // Contains the PrefabUtility class.
 using System;
 
 /**
