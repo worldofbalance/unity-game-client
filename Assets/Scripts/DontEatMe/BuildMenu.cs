@@ -103,10 +103,12 @@ public class BuildMenu : MonoBehaviour
         scoreText = GameObject.Find("Canvas/mainUI/MenuPanel/ScoreText");
         livesText = GameObject.Find("Canvas/mainUI/MenuPanel/LivesText");
         turnSystemText = GameObject.Find("Canvas/mainUI/MenuPanel/TurnSystemText");
+        /*
     panelObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
     panelObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 0);
     panelObject.GetComponent<RectTransform>().offsetMax = new Vector2(-100, 50);
     panelObject.GetComponent<RectTransform>().offsetMin = new Vector2(100, 0);
+    */
     //panelObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
         scoreText.GetComponent<Text> ().font = fontFamily;
