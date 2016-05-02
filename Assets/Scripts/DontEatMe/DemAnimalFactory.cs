@@ -45,11 +45,11 @@ public class DemAnimalFactory
         {
         	// Prey
         	case 1:
-				info = animal.AddComponent<PreyInfo>();
+				info = animal.AddComponent<PreyInfo>().Initialize(this.speciesId);
 				break;
         	// Predator
         	case 2:
-        		info = animal.AddComponent<PredatorInfo>();
+        		info = animal.AddComponent<PredatorInfo>().Initialize(this.speciesId);
         		break;
         	// Plant --> case 0 --> may need a PlantInfo class later (?)
         	// Omnivore --> case ? --> some prey may also be predators, so an OmnivoreInfo class would accommodate this (?)

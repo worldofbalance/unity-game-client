@@ -95,7 +95,7 @@ namespace CW
 			transform.Find ("DamageText").GetComponent<MeshRenderer> ().material.color = Color.red;
 
 			//Initializes off screen
-			transform.position = new Vector3 (1000, 1000, 1000);
+			transform.position = new Vector3 (9999, 9999, 9999);
 
 			//rotate facedown if player 2
 			if (!player.player1 && !Constants.SINGLE_PLAYER) {
@@ -438,6 +438,25 @@ namespace CW
 			}
 			//Moving
 			moving ();
+
+            if(Input.GetMouseButtonDown(0) && player.handCentered)
+                {
+                    Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+                    RaycastHit hit;
+                    if(Physics.Raycast(ray, out hit))
+                    {
+
+                        Debug.Log(hit.transform.gameObject.name);
+                        if(hit.transform.gameObject.name != "Card(Clone)" && hit.transform.gameObject.name != "Cardback(Clone)")
+                        {
+                            Debug.Log("Plane Clicked");
+                            player.handCentered = false;
+                            player.handPos = new Vector3(550, 10, -375);
+                            player.reposition();
+
+                        }
+                    }
+                }
 		}
 
 		//For wrapping long text
