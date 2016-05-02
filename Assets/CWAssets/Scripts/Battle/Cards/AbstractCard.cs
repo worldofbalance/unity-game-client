@@ -263,10 +263,7 @@ namespace CW
 
 				clicked.receiveAttack (target.dmg);
 			}
-			canAttackNow = false;
-		
-		
-		
+			canAttackNow = false;		
 		}
 
 		public void applyFood(AbstractCard target, int deltaAttack, int deltaHealth){
@@ -386,8 +383,8 @@ namespace CW
 		}
 	
 		void Update ()
-		{	
-			if (removeAfterDelay) {
+		{
+            if (removeAfterDelay) {
 				delayTimer += Time.deltaTime;
 
 				if (delayTimer > DELAY_CONSTANT) {
@@ -422,8 +419,10 @@ namespace CW
             if (canAttack()) {
                 transform.Find ("DoneText").GetComponent<TextMesh> ().text = "";
             } else if (!canAttackNow) {
+                ((Behaviour)GetComponent("Halo")).enabled = false;
                 transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Done";
             } else if (frozen) {
+                ((Behaviour)GetComponent("Halo")).enabled = false;
                 transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Frozen";
             }
 			//If damaged
