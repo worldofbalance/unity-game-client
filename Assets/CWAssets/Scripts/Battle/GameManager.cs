@@ -130,7 +130,7 @@ namespace CW
 				//Player's endturn refreshes the player's minions so they can attack next turn.
 				player1.endTurn ();
 				// Not sure if this needs to be here
-				player2.endTurn ();
+				//player2.endTurn ();
 				player2.isActive = true;
 				player2.addMana ();
 				if (player2.hand.Count != 5) {
@@ -169,7 +169,7 @@ namespace CW
 
 				}
 			}// End if SinglePlayer
-		
+
 		}
 
 		//Wrapper for endturn function

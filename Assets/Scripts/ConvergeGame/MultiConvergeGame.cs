@@ -1338,8 +1338,8 @@ public class MultiConvergeGame : MonoBehaviour
 	{
 		ResponseConvergeEcosystems response = new ResponseConvergeEcosystems ();
 		
-		string filename = "converge-ecosystems-Ben.txt";
-        string filenameR = "converge-ecosystems-Ben-sliders.txt";
+		string filename = "converge-ecosystems.txt";
+        string filenameR = "converge-ecosystems-sliders.txt";
 		ecosystemList = new List<ConvergeEcosystem> ();
         Debug.Log("ecosystem files: " + filename + " " + filenameR);
 		
@@ -1376,15 +1376,15 @@ public class MultiConvergeGame : MonoBehaviour
                         Debug.Log("config_target_fldSize: " + fldSize);
 						ecosystem.config_target = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
                         Debug.Log(ecosystem.config_target);
-						// fldSize = br.ReadInt16 ();
+						fldSize = br.ReadInt16 ();
                         // Harjit's 32 bit length string
-                        fldSize = br.ReadInt32 ();
+                        // fldSize = br.ReadInt32 ();
                         Debug.Log("Harjit: csv_default_string_fldSize: " + fldSize);
 						ecosystem.csv_default_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
                         Debug.Log(ecosystem.csv_default_string);
-						// fldSize = br.ReadInt16 ();
+						fldSize = br.ReadInt16 ();
                         // Harjit's 32 bit length string
-                        fldSize = br.ReadInt32 ();
+                        // fldSize = br.ReadInt32 ();
                         Debug.Log("Harjit: csv_target_string_fldSize: " + fldSize);
 						ecosystem.csv_target_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
                         Debug.Log(ecosystem.csv_target_string);

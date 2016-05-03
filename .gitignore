@@ -20,7 +20,7 @@ ExportedObj/
 *.pidb
 *.booproj
 *.svd
-
+Assembly-CSharp.csproj
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -47,6 +47,8 @@ dist/
 nbdist/
 nbactions.xml
 .nb-gradle/
+projectsettings/ProjectVersion.txt
+
 
 # Editor-specific temporary files
 *.swp

@@ -208,10 +208,14 @@ namespace CW
 				Texture2D winTexture = (Texture2D)Resources.Load ("Prefabs/Battle/win", typeof(Texture2D));
 				gameOver.GetComponent<Renderer>().material.mainTexture = winTexture;
 			}
-			//gameOver.transform.Find ("GameOverText").GetComponent<TextMesh> ().text = "You've been awarded " + gold + " gold";
-			//gameOver.transform.position = new Vector3 (0, 30, 0);
-			// return player to lobby
-			GameManager.protocols.sendQuitMatch (playerID);
+            //gameOver.transform.Find ("GameOverText").GetComponent<TextMesh> ().text = "You've been awarded " + gold + " gold";
+            //gameOver.transform.position = new Vector3 (0, 30, 0);
+            // return player to lobby
+            int wonGame = isWon ? 1 : 0;
+            if (playerID == 0) {
+                playerID = GameManager.player1.playerID;
+            }
+			GameManager.protocols.sendMatchOver (playerID, wonGame);
 		}
 		
 		//Method Instantiates the cards with AbstractCard scripts from the deckData
@@ -436,9 +440,7 @@ namespace CW
 				AbstractCard cardInPlay = ((GameObject)cardsInPlay [i]).GetComponent<AbstractCard> ();
 				cardInPlay.endTurn ();
 			}
-			
-			
-		}
+        }
 		
 		//Resets the players active cards in field 	
 		public void resetCards ()

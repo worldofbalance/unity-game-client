@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System;           // Math
+using System.Linq;      // AsEnumerable
 
 /**
 	Extends BuildInfo.cs to add predator-specific content.
@@ -10,12 +11,24 @@ public class PredatorInfo : BuildInfo {
 	private int currentVoracity; // Current voracity of predator (<= 0 implies unable to consume)
 
 	/**
-		Initialize predator data.
+		Initializes predator data and returns this instance.
+
+        This is necessary to synchronize initialization of supplementary data members that rely on these values
+        specifically when initializing via a call to the parent's AddComponent method, as both the typical Start and
+        Awake methods are not properly synced.
+
+        A typical example of how to optimally attach a PredatorInfo component to a parent object would be:
+        PredatorInfo predatorInfo = parentObject.AddComponent<PredatorInfo>().Initialize(speciesID);
 	*/
-	void Start () {
+    public PredatorInfo Initialize (int _speciesID) {
+        // Initialize critical species-dependent data
+        this.speciesId = _speciesID;
 		this.speciesType = 2;
-		this.currentHunger = SpeciesConstants.Hunger(this.speciesId);
+        this.currentHunger = SpeciesConstants.Hunger(this.speciesId);
 		this.currentVoracity = SpeciesConstants.Voracity(this.speciesId);
+
+        // Return the instance reference once initialized 
+        return this;
 	}
 
 	/**
@@ -37,13 +50,52 @@ public class PredatorInfo : BuildInfo {
 	}
 
 	/**
-		Reduces current hunger and returns satisfied status.
+        Reduces current hunger and returns nutritional amount consumed.
+        Specifies an arbitrary amount of nutrition (positive integer only).
+        If the "forced" parameter is set to true (default is false), then the predator's voracity is ignored altogether;
+        otherwise, the voracity places an upper bound on the amount consumed this call.
 	*/
-	public bool Consume (int nutrition)
+	public int Consume (int nutrition, bool forced = false)
 	{
-		this.currentHunger -= nutrition;
-		return this.Satisfied();
+        // Return 0 if nutrition is non-positive or if predator is not hungry
+        if (nutrition <= 0 || this.currentHunger <= 0)
+            return 0;
+
+        int consumed = 0; // Set amount consumed to 0 initially
+        
+        // Check "force" flag, reduce hunger accordingly
+        if (forced)
+            consumed = this.currentHunger - nutrition;
+
+        else
+            consumed = this.currentHunger - Math.Min(this.currentVoracity, nutrition);
+
+        // Return appropriate amount conusmed
+        if (this.currentHunger < 0)
+            return consumed + this.currentHunger;
+
+        return consumed;
 	}
+
+    /**
+        Reduces current hunger and returns nutritional amount consumed.
+        Specifies a PreyInfo object to consume, reducing its health in the process.
+        If the "forced" parameter is set to true (default is false), then the predator's prey list is ignored;
+        otherwise, the predator will only consume valid prey.
+    */
+    public int Consume (PreyInfo prey, bool forced = false)
+    {
+        // Check if prey should be consumed
+        if (this.IsPredatorOf(prey.speciesId) || forced)
+        {
+            int nutrition = prey.Injure(this.currentVoracity);
+            this.currentHunger -= nutrition;
+            return nutrition;
+        }
+
+        // Otherwise return 0
+        return 0;
+    }
 
 	/**
 		Returns true if predator is hungry, false otherwise.
@@ -61,6 +113,24 @@ public class PredatorInfo : BuildInfo {
 	{
 		return this.currentHunger <= 0;
 	}
+
+    /**
+        Returns true if a species is a natural prey.
+        Search by species name.
+    */
+    public bool IsPredatorOf (string preyName)
+    {
+        return SpeciesConstants.PreyIDList(this.speciesId).AsEnumerable().Contains(SpeciesConstants.SpeciesID(preyName));
+    }
+
+    /**
+        Returns true if a species is a natural prey.
+        Search by species ID.
+    */
+    public bool IsPredatorOf (int preyID)
+    {
+        return SpeciesConstants.PreyIDList(this.speciesId).AsEnumerable().Contains(preyID);
+    }
 
 	// Methods for potential later use //
 

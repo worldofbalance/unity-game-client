@@ -17,7 +17,12 @@ namespace SD
 
             add(Constants.SMSG_AUTH, "ResponseLogin");
             add(Constants.SMSG_RACE_INIT, "ResponsePlayInit");
-
+            add (Constants.SMSG_SDSTART_GAME, "ResponseSDStartGame");
+            add (Constants.SMSG_SDEND_GAME, "ResponseSDEndGame");
+            add (Constants.SMSG_KEYBOARD, "ResponseSDKeyboard");
+            add (Constants.SMSG_POSITION, "ResponseSDPosition");
+            add(Constants.SMSG_PREY, "ResponseSDPrey");
+            add (Constants.SMSG_EAT_PREY, "ResponseSDDestroyPrey");
         }
 
         public static void add(short response_id, string name)

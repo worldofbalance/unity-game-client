@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting;
 
 public class DemBoard : MonoBehaviour {
   public GameObject[,] Tiles = new GameObject[9 , 5];
@@ -16,7 +17,7 @@ public class DemBoard : MonoBehaviour {
 
   public GameObject gameBoard;
 
-  private Color highlightColor;
+  private Color highlightColor1, highlightColor2; // Highlight colors for available tile pulse
 
   private DemMain main;
 
@@ -39,12 +40,29 @@ public class DemBoard : MonoBehaviour {
     // Calculate the bottom edge of the screen based on the aspect ratio
     bottomEdge = 0 - Camera.main.orthographicSize;
 
+    // Define highlight colors
+    highlightColor1 = Color.white;
+    highlightColor2 = Color.Lerp(Color.blue, Color.white, 0.25f);
 
-    //We need to pick a better color
-    highlightColor = new Color(0.0F, 0.0F, 1.0F, 0.1F);
- 
-	
 	}
+
+    /**
+        Coroutine for pulsing DemTile highlight colors from one value to another.
+        Pulsing is implemented as a repeating linear tween between color1 and color2; the frequency is in the familiar
+        Hertz unit, with a single cycle represented by the transition from one color to the next and back again.
+        For example, if color1 was pure red and color2 was pure blue, one cycle would be defined as the transition from
+        pure red to pure blue back to pure red, and a frequency of 1.0 would complete this transition in 1 second.
+    */
+    /*public IEnumerator PulseTileColors (Color color1, Color color2, float frequency)
+    {
+        // Initialize tween color as color1
+        Color tweenColor = color1;
+
+        while (true)
+        {
+            tweenColor = Color.Lerp(color1, color2, Mathf.PingPong(1.0f, 1.0f));
+        }
+    }*/
 	
   public void Add(int x, int y){
 
@@ -70,55 +88,62 @@ public class DemBoard : MonoBehaviour {
     Tiles[x, y].AddComponent<DemTile>(); // Add the DemTile script to each cube
   }
 
-  public void SetAvailableTiles(){
-      
-    for (int x = 1; x < 9; x++){
-      for (int y = 0; y < 5; y++){
+    
+    public void SetAvailableTiles ()
+    {
+        for (int x = 1; x < 9; x++)
+        {
+            for (int y = 0; y < 5; y++)
+            {
 
-		if (main.currentSelection.GetComponent<BuildInfo>().isPlant()) {
-          
-          if (!Tiles [x, y].GetComponent<DemTile> ().resident) {
-            Tiles [x, y].GetComponent<Renderer> ().material.color = highlightColor;
-            Tiles [x, y].GetComponent<DemTile> ().currentColor = highlightColor;
-            Tiles [x, y].GetComponent<DemTile> ().available = true;
-          }
-
-        } else {
-          
-            if(Tiles [x, y].GetComponent<DemTile> ().hasPlant()){
-              
-                       if (x - 1 >= 0) {
-                
-                          if (!Tiles [x - 1, y].GetComponent<DemTile> ().resident) {
-                            Tiles [x-1, y].GetComponent<Renderer> ().material.color = highlightColor;
-                            Tiles [x-1, y].GetComponent<DemTile> ().currentColor = highlightColor;
-                            Tiles [x-1, y].GetComponent<DemTile> ().available = true;
-
-
-                          }
-                       }
+                if (main.currentSelection.GetComponent<BuildInfo>().isPlant())
+                {
+                    if (!Tiles[x, y].GetComponent<DemTile>().resident)
+                    {
+                        //Tiles[x, y].GetComponent<Renderer>().material.color = highlightColor;
+                        //Tiles[x, y].GetComponent<DemTile>().currentColor = highlightColor;
+                        //Tiles[x, y].GetComponent<DemTile>().available = true;
+                        DemTile tile = Tiles[x,y].GetComponent<DemTile>();
+                        tile.SetPulse(highlightColor1, highlightColor2);
+                        tile.SetRestorePulse(highlightColor1, highlightColor2);
+                        tile.SignalPulse(true);
+                        tile.available = true;
+                    }
                 }
 
-
+                else
+                {
+                    if (Tiles[x, y].GetComponent<DemTile>().hasPlant())
+                    {
+                        if (x - 1 >= 0)
+                        {
+                            if (!Tiles[x - 1, y].GetComponent<DemTile>().resident)
+                            {
+                                //Tiles[x - 1, y].GetComponent<Renderer>().material.color = highlightColor;
+                                //Tiles[x - 1, y].GetComponent<DemTile>().currentColor = highlightColor;
+                                //Tiles[x - 1, y].GetComponent<DemTile>().available = true;
+                                DemTile tile = Tiles[x - 1,y].GetComponent<DemTile>();
+                                tile.SetPulse(highlightColor1, highlightColor2);
+                                tile.SetRestorePulse(highlightColor1, highlightColor2);
+                                tile.SignalPulse(true);
+                                tile.available = true;
+                            }
+                        }
+                    }
+                }
+            }
         }
-        
-
-
-      }
-
     }
-
-  }
 
   public void ClearAvailableTiles(){
     for (int x = 0; x < 9; x++){
 
       for (int y = 0; y < 5; y++){
-        
         Tiles [x, y].GetComponent<Renderer> ().material.color = Color.white;
         Tiles [x, y].GetComponent<DemTile> ().currentColor = Color.white;
-        Tiles [x, y].GetComponent<DemTile> ().available = false;
-
+        DemTile tile = Tiles [x, y].GetComponent<DemTile>();
+        tile.SignalPulse(false);
+        tile.available = false;
       }
 
     }

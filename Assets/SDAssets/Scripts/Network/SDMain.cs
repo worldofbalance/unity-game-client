@@ -24,10 +24,10 @@ namespace SD
         {
             //Application.LoadLevel("RRLogin");
             SDConnectionManager sManager = gameObject.GetComponent<SDConnectionManager>();
-            if (sManager)
-            {
-                StartCoroutine(RequestHeartbeat(1f));
-            }
+            //if (sManager)
+            //{
+            //    StartCoroutine(RequestHeartbeat(1f));
+            //}
         }
 
         // Update is called once per frame
