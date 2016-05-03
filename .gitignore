@@ -24,6 +24,8 @@ ExportedObj/
 # Explicit files of the above formats somehow still being tracked
 unity-game-client.userprefs
 unity-game-client.sln
+
+
 Assembly-CSharp.csproj
 
 # Unity3D generated meta files

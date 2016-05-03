@@ -22,6 +22,7 @@ namespace CW
 		public int matchID;
 		public string playerName;
         public bool handCentered = false;
+        public bool playerFrozen=false;
 		public ProtocolManager getProtocolManager ()
 		{
 			return protocols;
@@ -90,6 +91,7 @@ namespace CW
         }
 		
         public void applyWeather(int card_id, bool currentPlayer){
+            
             switch (card_id) {
                 
                 //fire
@@ -102,6 +104,7 @@ namespace CW
                 
                 //freeze
             case 90:
+                playerFrozen=true;
                 for(int i = 0; i < cardsInPlay.Count; i++){
                     AbstractCard card = ((GameObject)cardsInPlay [i]).GetComponent<AbstractCard> ();
                     card.freeze();
@@ -208,10 +211,14 @@ namespace CW
 				Texture2D winTexture = (Texture2D)Resources.Load ("Prefabs/Battle/win", typeof(Texture2D));
 				gameOver.GetComponent<Renderer>().material.mainTexture = winTexture;
 			}
-			//gameOver.transform.Find ("GameOverText").GetComponent<TextMesh> ().text = "You've been awarded " + gold + " gold";
-			//gameOver.transform.position = new Vector3 (0, 30, 0);
-			// return player to lobby
-			GameManager.protocols.sendQuitMatch (playerID);
+            //gameOver.transform.Find ("GameOverText").GetComponent<TextMesh> ().text = "You've been awarded " + gold + " gold";
+            //gameOver.transform.position = new Vector3 (0, 30, 0);
+            // return player to lobby
+            int wonGame = isWon ? 1 : 0;
+            if (playerID == 0) {
+                playerID = GameManager.player1.playerID;
+            }
+			GameManager.protocols.sendMatchOver (playerID, wonGame);
 		}
 		
 		//Method Instantiates the cards with AbstractCard scripts from the deckData
@@ -429,16 +436,17 @@ namespace CW
 		// resets Cards 
 		public void endTurn ()
 		{
+            //DebugConsole.Log("end turn in battle player");
 			showTurn = 120;
+            playerFrozen=false;
+            GameManager.player2.playerFrozen=false;
 			//Debug.Log ("endTurn called");
 			for (int i = 0; i < cardsInPlay.Count; i++) {
 				//Gets the AbstractCard component
 				AbstractCard cardInPlay = ((GameObject)cardsInPlay [i]).GetComponent<AbstractCard> ();
 				cardInPlay.endTurn ();
 			}
-			
-			
-		}
+        }
 		
 		//Resets the players active cards in field 	
 		public void resetCards ()

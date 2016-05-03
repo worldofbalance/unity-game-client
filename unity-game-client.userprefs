@@ -1,0 +1,34 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+<<<<<<< HEAD
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/CWAssets/Scripts/Battle/BattlePlayer.cs">
+    <Files>
+      <File FileName="Assets/CWAssets/Scripts/Battle/BattlePlayer.cs" Line="93" Column="26" />
+=======
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/DontEatMe/BuildMenu.cs">
+    <Files>
+      <File FileName="Assets/Scripts/DontEatMe/BuildMenu.cs" Line="400" Column="56" />
+      <File FileName="Assets/Scripts/DontEatMe/DemButton.cs" Line="77" Column="33" />
+      <File FileName="Assets/Scripts/DontEatMe/DemRectUI.cs" Line="20" Column="36" />
+      <File FileName="Assets/Scripts/DontEatMe/SpeciesConstants.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/DontEatMe/BuildInfo.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/DontEatMe/PredatorInfo.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/DontEatMe/DemMain.cs" Line="82" Column="5" />
+      <File FileName="Assets/Scripts/DontEatMe/DemAudioManager.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/DontEatMe/DemPredatorEnterTween.cs" Line="31" Column="7" />
+      <File FileName="Assets/Scripts/DontEatMe/DemPredatorExitTween.cs" Line="11" Column="23" />
+      <File FileName="Assets/Scripts/DontEatMe/DemTurnSystem.cs" Line="40" Column="20" />
+      <File FileName="Assets/Scripts/DontEatMe/DemAnimalFactory.cs" Line="49" Column="11" />
+      <File FileName="Assets/Scripts/DontEatMe/DemTileTransitionTween.cs" Line="29" Column="38" />
+      <File FileName="Assets/Scripts/DontEatMe/DemTween.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/DontEatMe/DemBoard.cs" Line="37" Column="61" />
+      <File FileName="Assets/Scripts/DontEatMe/DemTweenManager.cs" Line="25" Column="1" />
+      <File FileName="Assets/Scripts/WorldMenu.cs" Line="22" Column="1" />
+>>>>>>> b87ac37bfaa6cc93c598b19915591688dcc17405
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

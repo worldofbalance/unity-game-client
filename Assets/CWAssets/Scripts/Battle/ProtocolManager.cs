@@ -227,12 +227,17 @@ public class ProtocolManager : MonoBehaviour{
 
 		
 	}
+	
+	public void sendMatchOver (int playerID, int wonGame){
+        CWGame.networkManager.Send(MatchOverProtocol.Prepare(playerID, wonGame), ProcessQuitMatch);
+//		CWGame.networkManager.Send ( QuitMatchProtocol.Prepare (playerID), 
+//            ProcessQuitMatch);
+	}
 
-
-	// Send if "leave/quit match" button clicked
-	public void sendQuitMatch (int playerID){
+    // Send if "leave/quit match" button clicked
+    public void sendQuitMatch (int playerID){
 		CWGame.networkManager.Send ( QuitMatchProtocol.Prepare (playerID), 
-		                     ProcessQuitMatch);
+            ProcessQuitMatch);
 	}
 	
 	public void ProcessQuitMatch(NetworkResponse response){
