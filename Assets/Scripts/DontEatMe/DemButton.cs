@@ -37,9 +37,9 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         buttonPrefab = Resources.Load<GameObject>("DontEatMe/Prefabs/Button");
 
         //canvasObject = GameObject.Find("Canvas");
-		    //panelObject = GameObject.Find("Canvas/Panel");
-		    mainUIObject = GameObject.Find("Canvas/mainUI");
-        panelObject = GameObject.Find("Canvas/mainUI/Panel");
+		panelObject = GameObject.Find("Canvas/Panel");
+		mainUIObject = GameObject.Find("Canvas/mainUI");
+        //panelObject = GameObject.Find("Canvas/mainUI/Panel");
 
         xSize = buttonPrefab.GetComponent<RectTransform>().sizeDelta.x;
         ySize = buttonPrefab.GetComponent<RectTransform>().sizeDelta.y;
@@ -144,31 +144,33 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (eventData.pointerEnter == this.gameObject)
-        {
+        
+            panelObject.SetActive(true);
+            panelObject.transform.position = new Vector3(Input.mousePosition.x + 180, Input.mousePosition.y);
             if (this.gameObject.transform.GetChild(0).gameObject.activeSelf)
             {
-                panelObject.transform.GetChild(0).GetComponent<Image>().sprite = this.gameObject.transform.GetChild(0).GetComponent<Image>().sprite;
+                //panelObject.transform.GetChild(0).GetComponent<Image>().sprite = this.gameObject.transform.GetChild(0).GetComponent<Image>().sprite;
                 panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(0).gameObject.name;
                 //panelObject.transform.GetChild(2).GetComponent<Text>().text = ;
             }
 
             else
             {
-                panelObject.transform.GetChild(0).GetComponent<Image>().sprite = this.gameObject.transform.GetChild(1).GetComponent<Image>().sprite;
+                //panelObject.transform.GetChild(0).GetComponent<Image>().sprite = this.gameObject.transform.GetChild(1).GetComponent<Image>().sprite;
                 panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(1).gameObject.name;
             }
 
-                panelObject.transform.GetChild(0).gameObject.SetActive(true);
+                //panelObject.transform.GetChild(0).gameObject.SetActive(true);
                 panelObject.transform.GetChild(1).gameObject.SetActive(true);
-        }
+       
        
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        panelObject.transform.GetChild(0).gameObject.SetActive(false);
-        panelObject.transform.GetChild(1).gameObject.SetActive(false);
+        panelObject.SetActive(false);
+        //panelObject.transform.GetChild(0).gameObject.SetActive(false);
+        //panelObject.transform.GetChild(1).gameObject.SetActive(false);
     }
 
     
