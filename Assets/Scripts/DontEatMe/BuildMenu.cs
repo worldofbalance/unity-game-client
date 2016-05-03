@@ -99,10 +99,11 @@ public class BuildMenu : MonoBehaviour
 		
       //panelObject = GameObject.Find("Canvas/Panel");
 	  panelObject = GameObject.Find("Canvas/mainUI/Panel");
-        menuPanel = GameObject.Find("Canvas/mainUI/MenuPanel");
-        scoreText = GameObject.Find("Canvas/mainUI/MenuPanel/ScoreText");
-        livesText = GameObject.Find("Canvas/mainUI/MenuPanel/LivesText");
-        turnSystemText = GameObject.Find("Canvas/mainUI/MenuPanel/TurnSystemText");
+    menuPanel = GameObject.Find("Canvas/mainUI/MenuPanel");
+    scoreText = GameObject.Find("Canvas/mainUI/MenuPanel/ScoreText");
+    livesText = GameObject.Find("Canvas/mainUI/MenuPanel/LivesText");
+    turnSystemText = GameObject.Find("Canvas/mainUI/MenuPanel/TurnSystemText");
+
     panelObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
     panelObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 0);
     panelObject.GetComponent<RectTransform>().offsetMax = new Vector2(-100, 50);
@@ -130,7 +131,7 @@ public class BuildMenu : MonoBehaviour
         turnSystemText.GetComponent<RectTransform> ().localPosition = new Vector3 (90,0,0);
         turnSystemText.GetComponent<Text> ().text = "Your Turn!";
 
-		quitUI = null;
+		    quitUI = null;
     }
 
  
@@ -464,7 +465,9 @@ public class BuildMenu : MonoBehaviour
 
 
     public void UpdateLives(int lives){
+        
         livesText.GetComponent<Text> ().text = "Lives: " + lives;
+        
     }
         
 

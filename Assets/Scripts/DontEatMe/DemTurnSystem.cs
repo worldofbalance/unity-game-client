@@ -30,8 +30,13 @@ public class DemTurnSystem : MonoBehaviour {
     tweenManager = mainObject.GetComponent<DemTweenManager> ();
     buildMenu = mainObject.GetComponent<BuildMenu> ();
     lives = 3;
-    buildMenu.UpdateLives (lives);
 
+
+  }
+
+  void Start()
+  {
+    buildMenu.UpdateLives (lives);
   }
 	
 
