@@ -169,7 +169,7 @@ namespace SD {
                 fish.yPosition = args.yPosition;
                 fish.isAlive = args.isAlive;
                 fish.id = args.prey_id;
-                gameController.spawnPrey (fish.id);
+                gameController.spawnPrey (fish.id, 0);
             } else {
                 // Destroy the NPC Fish at the specified position if fish is not alive.
                 fish.isAlive = false;

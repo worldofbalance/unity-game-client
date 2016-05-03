@@ -14,6 +14,7 @@ namespace SD {
 
         public GameObject Prey;
         public Vector3 spawnValue;
+        public GameObject[] preyArray;
 
         // Number of prey spawn at a game start
         public int numPrey;
@@ -91,7 +92,7 @@ namespace SD {
                 if (sdGameManager.getConnectionManager ()) {
                     sdGameManager.FindNPCFishPosition (i); // Finds and spawns prey at the returned location.
                 } else {
-                    spawnPrey (i);
+                    spawnPrey (i, Random.Range(0, preyArray.Length-1));
                 }
             }
 
@@ -138,7 +139,7 @@ namespace SD {
         }
 
         // Spawns prey at a random position within the boundary
-        public void spawnPrey(int i){
+        public void spawnPrey(int i, int preyIndex){
             Vector3 spawnPosition;
             if (npcFishes [i].xPosition != 0 && npcFishes [i].yPosition != 0) {
                 spawnPosition = new Vector3 (npcFishes [i].xPosition, npcFishes [i].yPosition, 0);
@@ -147,8 +148,8 @@ namespace SD {
                 spawnPosition = new Vector3 (Random.Range(boundary.xMin, boundary.xMax), Random.Range(boundary.yMin, boundary.yMax), 0);
                 Debug.Log ("Spawning Prey " + i + " from local random numbers");
             }
-            Quaternion spawnRotation = Quaternion.identity;
-            npcFishObjects [i] = Instantiate (Prey, spawnPosition, spawnRotation) as GameObject;
+            Quaternion spawnRotation = Quaternion.Euler(0, 90,0);
+            npcFishObjects [i] = Instantiate (preyArray[preyIndex], spawnPosition, spawnRotation) as GameObject;
             npcFishObjects [i].name = "Prey" + i;
             npcFishObjects [i].SetActive (true);
             // Associate the metadata of the prey with the gameobject.
