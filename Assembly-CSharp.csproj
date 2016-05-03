@@ -92,12 +92,10 @@
      <Compile Include="Assets\CWAssets\Scripts\GUI\Bar Graph\SeriesSet.cs" />
      <Compile Include="Assets\CWAssets\Scripts\GUI\Chat\Chat.cs" />
      <Compile Include="Assets\CWAssets\Scripts\GUI\Database\Card.cs" />
-     <Compile Include="Assets\CWAssets\Scripts\GUI\Database\Database.cs" />
      <Compile Include="Assets\CWAssets\Scripts\GUI\Database\Page.cs" />
      <Compile Include="Assets\CWAssets\Scripts\GUI\Database\View.cs" />
      <Compile Include="Assets\CWAssets\Scripts\GUI\Graph\Graph.cs" />
      <Compile Include="Assets\CWAssets\Scripts\GUI\Graph\GraphUnit.cs" />
-     <Compile Include="Assets\CWAssets\Scripts\GUI\Graph\GraphsCompare.cs" />
      <Compile Include="Assets\CWAssets\Scripts\GUI\Graph\Series.cs" />
      <Compile Include="Assets\CWAssets\Scripts\GUI\LabColors.cs" />
      <Compile Include="Assets\CWAssets\Scripts\GUI\Parameters.cs" />
@@ -161,8 +159,6 @@
      <Compile Include="Assets\CWAssets\Scripts\Register.cs" />
      <Compile Include="Assets\CWAssets\Scripts\RegisterColorPanel.cs" />
      <Compile Include="Assets\CWAssets\Scripts\Species.cs" />
-     <Compile Include="Assets\CWAssets\Scripts\SpeciesData.cs" />
-     <Compile Include="Assets\CWAssets\Scripts\SpeciesTable.cs" />
      <Compile Include="Assets\CWAssets\Scripts\Strings.cs" />
      <Compile Include="Assets\CWAssets\Scripts\Tests.cs" />
      <Compile Include="Assets\CWAssets\Scripts\TileSelectGUI.cs" />
