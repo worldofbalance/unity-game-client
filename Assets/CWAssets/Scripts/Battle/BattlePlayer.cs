@@ -22,6 +22,7 @@ namespace CW
 		public int matchID;
 		public string playerName;
         public bool handCentered = false;
+        public bool playerFrozen=false;
 		public ProtocolManager getProtocolManager ()
 		{
 			return protocols;
@@ -90,6 +91,7 @@ namespace CW
         }
 		
         public void applyWeather(int card_id, bool currentPlayer){
+            
             switch (card_id) {
                 
                 //fire
@@ -102,6 +104,7 @@ namespace CW
                 
                 //freeze
             case 90:
+                playerFrozen=true;
                 for(int i = 0; i < cardsInPlay.Count; i++){
                     AbstractCard card = ((GameObject)cardsInPlay [i]).GetComponent<AbstractCard> ();
                     card.freeze();
@@ -433,7 +436,10 @@ namespace CW
 		// resets Cards 
 		public void endTurn ()
 		{
+            //DebugConsole.Log("end turn in battle player");
 			showTurn = 120;
+            playerFrozen=false;
+            GameManager.player2.playerFrozen=false;
 			//Debug.Log ("endTurn called");
 			for (int i = 0; i < cardsInPlay.Count; i++) {
 				//Gets the AbstractCard component

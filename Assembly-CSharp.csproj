@@ -379,6 +379,7 @@
      <Compile Include="Assets\Scripts\DontEatMe\DemBioMass.cs" />
      <Compile Include="Assets\Scripts\DontEatMe\DemBoard.cs" />
      <Compile Include="Assets\Scripts\DontEatMe\DemButton.cs" />
+     <Compile Include="Assets\Scripts\DontEatMe\DemGetCredit.cs" />
      <Compile Include="Assets\Scripts\DontEatMe\DemMain.cs" />
      <Compile Include="Assets\Scripts\DontEatMe\DemPredatorEnterTween.cs" />
      <Compile Include="Assets\Scripts\DontEatMe\DemPredatorExitTween.cs" />
