@@ -248,10 +248,12 @@ public class BuildMenu : MonoBehaviour
        // quitButton.transform.SetParent(menuPanel.transform); 
 
 
-        quitButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 0);
-        quitButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
-        quitButton.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
-        quitButton.GetComponent<RectTransform>().offsetMin = new Vector2(-65, 0);
+        //quitButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 0);
+        //quitButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+        //quitButton.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
+        //quitButton.GetComponent<RectTransform>().offsetMin = new Vector2(-65, 0);
+    quitButton.GetComponent<RectTransform>().pivot = new Vector2 (0.5f, 0.5f);
+    quitButton.GetComponent<RectTransform> ().localPosition = new Vector2 (600, -33);
         
     }
 
