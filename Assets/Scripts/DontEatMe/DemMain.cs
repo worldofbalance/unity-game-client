@@ -63,7 +63,10 @@ public class DemMain : MonoBehaviour
 
 
   void Start()
+
   {
+    DemAudioManager.audioBg.Play();
+
     for (int x = 0; x < 9; x++)
     {
 

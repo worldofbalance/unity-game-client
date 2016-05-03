@@ -9,6 +9,7 @@ public class DemAudioManager : MonoBehaviour {
   public static AudioSource audioUiRollOver;
   public static AudioSource audioFail;
   public static AudioSource audioFail2;
+  public static AudioSource audioBg;
 
 	// Use this for initialization
   public AudioSource AddAudio(AudioClip clip, bool loop, bool playAwake, float vol) { 
@@ -28,6 +29,8 @@ public class DemAudioManager : MonoBehaviour {
     audioUiRollOver = AddAudio(Resources.Load<AudioClip>("Audio/ui_rollover") as AudioClip, false, false, 0.1f);
     audioFail = AddAudio(Resources.Load<AudioClip>("Audio/fail") as AudioClip, false, false, 0.1f);
     audioFail2 = AddAudio(Resources.Load<AudioClip>("Audio/fail2") as AudioClip, false, false, 0.1f);
+    audioBg = AddAudio(Resources.Load<AudioClip>("Audio/dem_loop") as AudioClip, true, false, 0.1f);
+   
   } 
 
 }

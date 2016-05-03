@@ -105,7 +105,7 @@ public class BuildMenu : MonoBehaviour
       //panelObject = GameObject.Find("Canvas/Panel");
 	  panelObject = GameObject.Find("Canvas/mainUI/Panel");
     menuPanel = GameObject.Find("Canvas/mainUI/MenuPanel");
-    scoreText = GameObject.Find("Canvas/mainUI/CreditsWidget/CreditsWidgetText");
+    scoreText = GameObject.Find("Canvas/mainUI/CreditsWidget/CreditWidgetText");
     livesText = GameObject.Find("Canvas/mainUI/LivesWidget/LivesWidgetText");
     turnSystemText = GameObject.Find("Canvas/mainUI/TurnWidget/TurnWidgetText");
 
@@ -247,13 +247,15 @@ public class BuildMenu : MonoBehaviour
 		quitButton.GetComponent<Button> ().onClick.AddListener (() => {selectQuit();});
        // quitButton.transform.SetParent(menuPanel.transform); 
 
-
-        //quitButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 0);
-        //quitButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
-        //quitButton.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
-        //quitButton.GetComponent<RectTransform>().offsetMin = new Vector2(-65, 0);
     quitButton.GetComponent<RectTransform>().pivot = new Vector2 (0.5f, 0.5f);
-    quitButton.GetComponent<RectTransform> ().localPosition = new Vector2 (600, -33);
+        quitButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
+        quitButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+   
+        quitButton.GetComponent<RectTransform>().offsetMax = new Vector2(-70, -25);
+        quitButton.GetComponent<RectTransform>().offsetMin = new Vector2(-70, -45);
+
+    quitButton.GetComponent<RectTransform> ().sizeDelta =new Vector2(70, 45);
+
         
     }
 
@@ -482,5 +484,11 @@ public class BuildMenu : MonoBehaviour
         
     }
         
+
+  public void UpdateCredits(int credits){
+
+    scoreText.GetComponent<Text> ().text =  credits.ToString();
+
+  }
 
 }
