@@ -144,10 +144,9 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (eventData.pointerEnter == this.gameObject)
-        {
+        
             panelObject.SetActive(true);
-            panelObject.transform.position = new Vector3(Input.mousePosition.x + 150, Input.mousePosition.y);
+            panelObject.transform.position = new Vector3(Input.mousePosition.x + 180, Input.mousePosition.y);
             if (this.gameObject.transform.GetChild(0).gameObject.activeSelf)
             {
                 //panelObject.transform.GetChild(0).GetComponent<Image>().sprite = this.gameObject.transform.GetChild(0).GetComponent<Image>().sprite;
@@ -163,7 +162,7 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
                 //panelObject.transform.GetChild(0).gameObject.SetActive(true);
                 panelObject.transform.GetChild(1).gameObject.SetActive(true);
-        }
+       
        
     }
 
