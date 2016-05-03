@@ -63,6 +63,9 @@ public class BuildMenu : MonoBehaviour
 
     private Font fontFamily;
 
+  private Sprite popupBackground;
+  private Sprite infoWidget;
+
 	//mainUI
 	public GameObject mainUIObject;
 	public GameObject canvasObject;
@@ -77,6 +80,8 @@ public class BuildMenu : MonoBehaviour
     //Loading Resources
     void Awake()
     {
+    infoWidget = Resources.Load<Sprite> ("DontEatMe/Sprites/infoWidget");
+    popupBackground = Resources.Load<Sprite> ("DontEatMe/Sprites/popup");
        fontFamily = Resources.Load<Font>("Fonts/Chalkboard");
       
       backgroundMaterial = Resources.Load<Material>("DontEatMe/Materials/DontEatMeBg");  
@@ -100,16 +105,19 @@ public class BuildMenu : MonoBehaviour
       //panelObject = GameObject.Find("Canvas/Panel");
 	  panelObject = GameObject.Find("Canvas/mainUI/Panel");
     menuPanel = GameObject.Find("Canvas/mainUI/MenuPanel");
-    scoreText = GameObject.Find("Canvas/mainUI/MenuPanel/ScoreText");
-    livesText = GameObject.Find("Canvas/mainUI/MenuPanel/LivesText");
-    turnSystemText = GameObject.Find("Canvas/mainUI/MenuPanel/TurnSystemText");
+    scoreText = GameObject.Find("Canvas/mainUI/CreditsWidget/CreditsWidgetText");
+    livesText = GameObject.Find("Canvas/mainUI/LivesWidget/LivesWidgetText");
+    turnSystemText = GameObject.Find("Canvas/mainUI/TurnWidget/TurnWidgetText");
+
+
 
     panelObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
     panelObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 0);
     panelObject.GetComponent<RectTransform>().offsetMax = new Vector2(-100, 50);
     panelObject.GetComponent<RectTransform>().offsetMin = new Vector2(100, 0);
-    //panelObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+    panelObject.GetComponent<Image> ().sprite = infoWidget;
 
+    /*
         scoreText.GetComponent<Text> ().font = fontFamily;
         //scoreText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
         scoreText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
@@ -130,7 +138,7 @@ public class BuildMenu : MonoBehaviour
         turnSystemText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
         turnSystemText.GetComponent<RectTransform> ().localPosition = new Vector3 (90,0,0);
         turnSystemText.GetComponent<Text> ().text = "Your Turn!";
-
+*/
 		    quitUI = null;
     }
 
@@ -140,6 +148,7 @@ public class BuildMenu : MonoBehaviour
     void Start()
     {
         turnSystem.IsTurnLocked();
+        turnSystemText.GetComponent<Text> ().text = "Your Turn!";
 
         currentAnimalFactory = null;
         currentlyBuilding = null;
@@ -236,7 +245,7 @@ public class BuildMenu : MonoBehaviour
 		GameObject quitButton = demButton.CreateButton (Screen.width - qBX, 0, "Quit");
 		demButton.SetButtonText (quitButton, "Quit");
 		quitButton.GetComponent<Button> ().onClick.AddListener (() => {selectQuit();});
-        quitButton.transform.SetParent(menuPanel.transform); 
+       // quitButton.transform.SetParent(menuPanel.transform); 
 
 
         quitButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 0);
@@ -352,6 +361,7 @@ public class BuildMenu : MonoBehaviour
 
 		if (quitUI == null) {
 			quitUI = demRectUI.createRectUI ("quitUI", 0, 0, Screen.width / 2.0f, Screen.height / 2.0f);
+      quitUI.GetComponent<Image> ().sprite = popupBackground;
 			demRectUI.setUIText (quitUI, "Are you sure you want to quit?");
 
 			//Quit Button on Quit UI
@@ -466,7 +476,7 @@ public class BuildMenu : MonoBehaviour
 
     public void UpdateLives(int lives){
         
-        livesText.GetComponent<Text> ().text = "Lives: " + lives;
+    livesText.GetComponent<Text> ().text =  lives.ToString();
         
     }
         
