@@ -1338,8 +1338,8 @@ public class MultiConvergeGame : MonoBehaviour
 	{
 		ResponseConvergeEcosystems response = new ResponseConvergeEcosystems ();
 		
-		string filename = "converge-ecosystems.txt";
-        string filenameR = "converge-ecosystems-sliders.txt";
+		string filename = "converge-ecosystems-Ben.txt";
+        string filenameR = "converge-ecosystems-Ben-sliders.txt";
 		ecosystemList = new List<ConvergeEcosystem> ();
         Debug.Log("ecosystem files: " + filename + " " + filenameR);
 		
