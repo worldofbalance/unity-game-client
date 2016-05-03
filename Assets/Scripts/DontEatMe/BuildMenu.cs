@@ -102,19 +102,20 @@ public class BuildMenu : MonoBehaviour
     mainUIObject.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
     mainUIObject.GetComponent<RectTransform>().offsetMin = new Vector2(0, 0);
 		
-      //panelObject = GameObject.Find("Canvas/Panel");
-	  panelObject = GameObject.Find("Canvas/mainUI/Panel");
+      panelObject = GameObject.Find("Canvas/Panel");
+	  //panelObject = GameObject.Find("Canvas/mainUI/Panel");
     menuPanel = GameObject.Find("Canvas/mainUI/MenuPanel");
     scoreText = GameObject.Find("Canvas/mainUI/CreditsWidget/CreditWidgetText");
     livesText = GameObject.Find("Canvas/mainUI/LivesWidget/LivesWidgetText");
     turnSystemText = GameObject.Find("Canvas/mainUI/TurnWidget/TurnWidgetText");
 
 
-
+    /*
     panelObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
     panelObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 0);
     panelObject.GetComponent<RectTransform>().offsetMax = new Vector2(-100, 50);
     panelObject.GetComponent<RectTransform>().offsetMin = new Vector2(100, 0);
+    */
     panelObject.GetComponent<Image> ().sprite = infoWidget;
 
     /*
