@@ -19,6 +19,7 @@ public class DemTurnSystem : MonoBehaviour {
   DemTile tile;
   private int lives;
   private BuildMenu buildMenu;
+  private int credits;
 
 
   void Awake()
@@ -30,8 +31,14 @@ public class DemTurnSystem : MonoBehaviour {
     tweenManager = mainObject.GetComponent<DemTweenManager> ();
     buildMenu = mainObject.GetComponent<BuildMenu> ();
     lives = 3;
-    buildMenu.UpdateLives (lives);
+    credits = 0;
 
+
+  }
+
+  void Start()
+  {
+    buildMenu.UpdateLives (lives);
   }
 	
 
@@ -99,6 +106,9 @@ public class DemTurnSystem : MonoBehaviour {
       }
 
       if(nextAnimal.isPrey()){
+        DemAudioManager.audioSelection.Play ();
+        credits++;
+        buildMenu.UpdateCredits (credits);
         markForDeletion = true;
       }
 

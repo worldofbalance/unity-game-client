@@ -91,19 +91,32 @@ public class DemBoard : MonoBehaviour {
     
     public void SetAvailableTiles ()
     {
+        // Determine next tile
+        /*
+            FORMAT: 5 rows (y-axis), 9 columns (x-axis):
+
+              8 7 6 5 4 3 2 1 0
+            4 . . . . . . . . . 4
+            3 . . . . . . . . . 3
+            2 . . . . . . . . . 2
+            1 . . . . . . . . . 1
+            0 . . . . . . . . . 0
+              8 7 6 5 4 3 2 1 0 
+        */
         for (int x = 1; x < 9; x++)
         {
             for (int y = 0; y < 5; y++)
             {
+                // Define DemTile component for simple access
+                DemTile tile = Tiles[x,y].GetComponent<DemTile>();
 
+                // If building a plant
                 if (main.currentSelection.GetComponent<BuildInfo>().isPlant())
                 {
-                    if (!Tiles[x, y].GetComponent<DemTile>().resident)
-                    {
-                        //Tiles[x, y].GetComponent<Renderer>().material.color = highlightColor;
-                        //Tiles[x, y].GetComponent<DemTile>().currentColor = highlightColor;
-                        //Tiles[x, y].GetComponent<DemTile>().available = true;
-                        DemTile tile = Tiles[x,y].GetComponent<DemTile>();
+                    // If tile is clear
+                    if (!tile.resident)
+                    {   
+                        // Trigger highlight pulse and set as available
                         tile.SetPulse(highlightColor1, highlightColor2);
                         tile.SetRestorePulse(highlightColor1, highlightColor2);
                         tile.SignalPulse(true);
@@ -111,21 +124,32 @@ public class DemBoard : MonoBehaviour {
                     }
                 }
 
+                // If building a prey
                 else
                 {
-                    if (Tiles[x, y].GetComponent<DemTile>().hasPlant())
+                    if (tile.hasPlant())
                     {
-                        if (x - 1 >= 0)
-                        {
-                            if (!Tiles[x - 1, y].GetComponent<DemTile>().resident)
+                        // Get range data for the plant and iterate for available tiles
+                        int[][] range = SpeciesConstants.Range(tile.resident.GetComponent<BuildInfo>().name);
+
+                        foreach (int[] coord in range)
+                        {                        
+                            // Range must not extend past grid bounds
+                            if (x + coord[0] < 0 || x + coord[0] > 8 || y + coord[1] < 0 || y + coord[1] > 4)
+                                continue;
+
+                            // Define tile
+                            tile = Tiles[x + coord[0], y + coord[1]].GetComponent<DemTile>();
+
+                            // Tile must be free
+                            if (!tile.resident)
                             {
-                                //Tiles[x - 1, y].GetComponent<Renderer>().material.color = highlightColor;
-                                //Tiles[x - 1, y].GetComponent<DemTile>().currentColor = highlightColor;
-                                //Tiles[x - 1, y].GetComponent<DemTile>().available = true;
-                                DemTile tile = Tiles[x - 1,y].GetComponent<DemTile>();
+                                // Set the pulse for each tile
                                 tile.SetPulse(highlightColor1, highlightColor2);
                                 tile.SetRestorePulse(highlightColor1, highlightColor2);
                                 tile.SignalPulse(true);
+
+                                // Set availability
                                 tile.available = true;
                             }
                         }

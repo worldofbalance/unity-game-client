@@ -11,6 +11,7 @@ public class DemTile : MonoBehaviour
   	public int idX; // X-coord for DemTile
   	public int idY; // Y-coord for DemTile
     public Color currentColor;
+    public Color rangeColor; // Color for plant range indicator pulse
 
     public bool available;
 
@@ -60,7 +61,6 @@ public class DemTile : MonoBehaviour
         // Set resident to null
         resident = null;
 
-
         center = this.GetComponent<Renderer>().bounds.center;
         center.z = -1.5f;
 
@@ -75,6 +75,7 @@ public class DemTile : MonoBehaviour
         pulseTick = 0;
         pulseFactor = defaultPulseFactor;
         masterPulseFrequency = defaultPulseFrequency;
+        rangeColor = new Color(40f/255f, 170f/255f, 220f/255f);
 
         // Enable master pulse if needed
         if (!masterPulseEnabled)
@@ -228,33 +229,68 @@ public class DemTile : MonoBehaviour
     */
     void OnMouseEnter ()
     {
-        
-        // Set highlight color
-        // TODO: change highlight color based on a tile's legality
+        // Set tile pulse
+        // If building...
         if (buildMenu.currentAnimalFactory != null)
         {
             if (available)
             {
-                    SetPulse(Color.cyan, Color.cyan, 0, 0);
+                // As build origin, paint a solid color (no pulse)
+                SetPulse(Color.cyan, Color.cyan, 0, 0);
+
+                // Pulse the range tiles for a plant
+                if (buildMenu.currentAnimalFactory.GetType() == 0)
+                {
+                    // Grab range offset data for the plant
+                    int[][] range = SpeciesConstants.Range(buildMenu.currentAnimalFactory.GetName());
+                    foreach (int[] coord in range)
+                    {
+                        // Skip tiles that are out of range
+                        if (idX + coord[0] < 0 || idX + coord[0] > 8 || idY + coord[1] < 0 || idY + coord[1] > 4)
+                            continue;
+
+                        // If tile is free, set pulse
+                        DemTile tile =  main.boardController.Tiles[idX + coord[0], idY + coord[1]].GetComponent<DemTile>();
+                        if (!tile.resident)
+                            tile.SetPulse(rangeColor, Color.white);
+                    }
+                }
+
             }
 
+            // If not available, pulse red
 	        else
             {
                 SetPulse(Color.red, Color.Lerp(Color.red, Color.white, 0.25f), 0.25f, 0.05f, false);
                 SignalPulse(true);
             }
+        // If not building...
         }
-        else {
+        else
+        {
+            // Sublte white-to-gray for empty cursor
             SetPulse(Color.white, new Color(0.7f, 0.7f, 0.7f));
             SignalPulse(true);
-        	//this.GetComponent<Renderer>().material.color = Color.gray;
+
+            // If tile occupied, output some stats
             if (resident)
             {
                 Debug.Log(resident.name + " is here");
+                BuildInfo info = resident.GetComponent<BuildInfo>();
+
+                // Determine Health or Hunger text
+                string healthLevel = "";
+                if (SpeciesConstants.SpeciesType(info.name) == 1)
+                    healthLevel = "Health: " + (info as PreyInfo).GetHealth().ToString();
+                else if (SpeciesConstants.SpeciesType(info.name) == 2)
+                    healthLevel = "Hunger: " + (info as PredatorInfo).GetHunger().ToString();
+
                 panelObject.transform.GetChild(0).GetComponent<Image>().sprite = resident.GetComponent<SpriteRenderer>().sprite;
                 panelObject.transform.GetChild(1).GetComponent<Text>().text = resident.name;
+                panelObject.transform.GetChild(2).GetComponent<Text>().text = healthLevel;
                 panelObject.transform.GetChild(0).gameObject.SetActive(true);
                 panelObject.transform.GetChild(1).gameObject.SetActive(true);
+                panelObject.transform.GetChild(2).gameObject.SetActive(true);
             }
         }
 
@@ -267,7 +303,28 @@ public class DemTile : MonoBehaviour
     {
         // Reset highlight color
         if (buildMenu.currentAnimalFactory != null && available)
+        {
+            // ... for current tile
             RestorePulse();
+
+            // ... for plant range tiles (if building)
+            if (buildMenu.currentAnimalFactory.GetType() == 0)
+            {
+                int[][] range = SpeciesConstants.Range(buildMenu.currentAnimalFactory.GetName());
+                foreach (int[] coord in range)
+                {
+                    // Skip tiles that are out of range
+                    if (idX + coord[0] > 8 || idX + coord[0] < 0 || idY + coord[1] > 4 || idY + coord[1] < 0)
+                        continue;
+
+                    DemTile tile =  main.boardController.Tiles[idX + coord[0], idY + coord[1]].GetComponent<DemTile>();
+                    // Tile must be free
+                    if (!tile.resident)
+                        // Set the pulse for each tile
+                        tile.RestorePulse();
+                }
+            }
+        }
         else
         {
             SignalPulse(false);
@@ -275,6 +332,8 @@ public class DemTile : MonoBehaviour
         }
         panelObject.transform.GetChild(0).gameObject.SetActive(false);
         panelObject.transform.GetChild(1).gameObject.SetActive(false);
+        panelObject.transform.GetChild(2).gameObject.SetActive(false);
+
     }
 
     /**
