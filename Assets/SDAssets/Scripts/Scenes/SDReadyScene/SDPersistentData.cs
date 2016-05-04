@@ -10,8 +10,8 @@ namespace SD {
         private int winningScore;
         private int gameResult;
         private static SDPersistentData sdPersistentData;
-        private SDConnectionManager cManager;
-        private SDMessageQueue mQueue;
+        /*private SDConnectionManager cManager; TODO
+        private SDMessageQueue mQueue;*/
 
         void Awake() {
             if (sdPersistentData) {
@@ -24,11 +24,14 @@ namespace SD {
 
         void Start() {
             initializeData ();
-            cManager = SDConnectionManager.getInstance ();
+            /*cManager = SDConnectionManager.getInstance (); TODO 
             mQueue = SDMessageQueue.getInstance ();
             if (cManager && mQueue) {
                 if (!mQueue.callbackList.ContainsKey (Constants.SMSG_DISCONNECT))
                     mQueue.AddCallback (Constants.SMSG_DISCONNECT, ResponseSDOpponentDisconnect);
+            }*/
+            if (SDMain.networkManager != null) {
+                SDMain.networkManager.Listen (NetworkCode.SD_DISCONNECT, ResponseSDOpponentDisconnect);
             }
         }
 
@@ -88,13 +91,8 @@ namespace SD {
             return gameResult;
         }
 
-        public void ResponseSDOpponentDisconnect(ExtendedEventArgs eventArgs) {
-            ResponseSDDisconnectEventArgs args = eventArgs as ResponseSDDisconnectEventArgs;
-            if (args.status == 0) {
-                Debug.Log ("Your opponent has disconnected. so be careful.");
-            } else {
-                Debug.Log ("Have no clue what just happened");
-            }
+        public void ResponseSDOpponentDisconnect(NetworkResponse r) {
+            Debug.Log ("Opponent Disconnected");
         }
     }
 }

@@ -10,7 +10,7 @@ namespace SD
         //public static readonly string REMOTE_HOST = "localhost";
         public static readonly int REMOTE_PORT = 9258; // 20040
 
-        public static readonly short CMSG_AUTH = 101;
+        /*public static readonly short CMSG_AUTH = 101;
         public static readonly short SMSG_AUTH = 201;
 
         public static readonly short CMSG_RACE_INIT = 501;
@@ -39,7 +39,7 @@ namespace SD
 
         public static readonly short CMSG_SCORE = 507;
         public static readonly short SMSG_SCORE = 607;
-
+*/
         public static int USER_ID = -1; // Overwritten by the response. (Player_id)
         public static int PLAYER_NUMBER = -1;
 

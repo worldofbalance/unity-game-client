@@ -28,8 +28,10 @@ public class SDLogin : MonoBehaviour {
 
         windowRect = new Rect(left, top, width, height);
         font = Resources.Load<Font>("Fonts/" + "Chalkboard");
-        SD.SDMessageQueue.getInstance().AddCallback (SD.Constants.SMSG_AUTH, SD_ResponseLogin);
-        SD.SDMessageQueue.getInstance ().AddCallback (SD.Constants.SMSG_RACE_INIT, SD_ResponsePlayInit);
+        /*SD.SDMessageQueue.getInstance().AddCallback (SD.Constants.SMSG_AUTH, SD_ResponseLogin);
+        SD.SDMessageQueue.getInstance ().AddCallback (SD.Constants.SMSG_RACE_INIT, SD_ResponsePlayInit);*/
+        SD.SDMain.networkManager.Listen (NetworkCode.SD_GAME_LOGIN, SD_ResponseLogin);
+        SD.SDMain.networkManager.Listen (NetworkCode.SD_PLAY_INIT, SDProcessPlayInit);
     }
 
     // Use this for initialization
@@ -43,8 +45,10 @@ public class SDLogin : MonoBehaviour {
     }
 
     void OnDestroy() {
-        SD.SDMessageQueue.getInstance().RemoveCallback (SD.Constants.SMSG_AUTH);
-        SD.SDMessageQueue.getInstance ().RemoveCallback (SD.Constants.SMSG_RACE_INIT);
+        /*SD.SDMessageQueue.getInstance().RemoveCallback (SD.Constants.SMSG_AUTH);
+        SD.SDMessageQueue.getInstance ().RemoveCallback (SD.Constants.SMSG_RACE_INIT);*/
+        SD.SDMain.networkManager.Ignore (NetworkCode.SD_GAME_LOGIN, SD_ResponseLogin);
+        SD.SDMain.networkManager.Ignore(NetworkCode.SD_PLAY_INIT, SDProcessPlayInit);
     }
 
     void OnGUI() {
@@ -114,8 +118,7 @@ public class SDLogin : MonoBehaviour {
             GUI.FocusControl("password_field");
         } else {
             // Send a request to login.
-            SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
-            sManager.Send(SD_RequestLogin(user_id, password));
+            SD.SDMain.networkManager.Send (SD.SDLoginProtocol.Prepare (user_id, password), SD_ResponseLogin);
         }
     }
         
@@ -141,15 +144,25 @@ public class SDLogin : MonoBehaviour {
         //reset GUI focus if reactivating login.
         this.isInitial = this.isInitial || this.isActive;
     }
-        
 
-    public SD.RequestLogin SD_RequestLogin(string username, string password)
+    public void SD_ResponseLogin(NetworkResponse r)
     {
-        SD.RequestLogin request = new SD.RequestLogin();
-        request.send(username, password);
-        return request;
+        SD.ResponseSDLogin response = r as SD.ResponseSDLogin;
+        if (response.status == 0)
+        {
+            Debug.Log ("Logged in ");
+            SD.Constants.USER_ID = response.userId;
+            // Send the playInit request.
+            SD.SDMain.networkManager.Send (SD.SDPlayInitProtocol.Prepare (
+                SD.Constants.USER_ID, SD.Constants.TEMP_ROOM_ID), SDProcessPlayInit);
+            Debug.Log ("Sent the play init request");
+        }
+        else {
+            Debug.Log("SD: Login Failed");
+        }
     }
 
+    /*
     public void SD_ResponseLogin(SD.ExtendedEventArgs eventArgs)
     {
         SD.ResponseLoginEventArgs args = eventArgs as SD.ResponseLoginEventArgs;
@@ -165,6 +178,7 @@ public class SDLogin : MonoBehaviour {
             Debug.Log("SD: Login Failed");
         }
     }
+
     public SD.RequestPlayInit SD_RequestPlayInit()
     {
         SD.RequestPlayInit request = new SD.RequestPlayInit();
@@ -173,6 +187,13 @@ public class SDLogin : MonoBehaviour {
     }
     public void SD_ResponsePlayInit(SD.ExtendedEventArgs eventArgs) {
         SD.ResponsePlayInitEventArgs args = eventArgs as SD.ResponsePlayInitEventArgs;
+        SD.Constants.PLAYER_NUMBER = args.playerNumber;
+        Debug.Log ("The player number is " + args.playerNumber);
+        Game.SwitchScene ("SDReadyScene");
+    }*/
+
+    public void SDProcessPlayInit(NetworkResponse response) {
+        SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;
         SD.Constants.PLAYER_NUMBER = args.playerNumber;
         Debug.Log ("The player number is " + args.playerNumber);
         Game.SwitchScene ("SDReadyScene");

@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 namespace SD {
     public class SDReadySceneManager : MonoBehaviour {
 
-        private SDConnectionManager cManager;
-        private SDMessageQueue mQueue;
+        /*private SDConnectionManager cManager; TODO
+        private SDMessageQueue mQueue;*/
         private static SDReadySceneManager sceneManager;
         private bool _isPlayerReady, _isOpponentReady;
         private bool isPlayerReady { 
@@ -41,12 +41,18 @@ namespace SD {
         // Use this for initialization
         void Start () {
             sceneManager = this;
-            cManager = SDConnectionManager.getInstance ();
-            mQueue = SDMessageQueue.getInstance ();
+            /*cManager = SDConnectionManager.getInstance (); tODO
+            mQueue = SDMessageQueue.getInstance ();*/
             isPlayerReady = false;
             isOpponentReady = false;
 
-            if (cManager && mQueue) {
+            if (SDMain.networkManager != null) {
+                SDMain.networkManager.Listen (NetworkCode.SD_START_GAME, ResponseSDStartGame);
+                SDMain.networkManager.Listen (NetworkCode.SD_PLAYER_POSITION, ResponseSDStartSync);
+            }else {
+                Debug.LogWarning ("Could not obtain a connection to Sea Divided Server. Falling back to offline mode.");
+            }
+            /*if (cManager && mQueue) { TODO
                 if (!mQueue.callbackList.ContainsKey(Constants.SMSG_SDSTART_GAME))
                     mQueue.AddCallback (Constants.SMSG_SDSTART_GAME, ResponseSDStartGame);
                 if (mQueue.callbackList.ContainsKey(Constants.SMSG_POSITION))  // Remove when we create a new protocol.
@@ -57,14 +63,15 @@ namespace SD {
                     mQueue.AddCallback (Constants.SMSG_POSITION, ResponseSDStartSync);
             } else {
                 Debug.LogWarning ("Could not obtain a connection to Sea Divided Server. Falling back to offline mode.");
-            }
+            }*/
         }
 
         public void StartGame() {
-            if (cManager) {
-                RequestSDStartGame request = new RequestSDStartGame ();
+            if (SDMain.networkManager != null) {
+                SDMain.networkManager.Send (SDStartGameProtocol.Prepare (Constants.USER_ID), ResponseSDStartGame);
+                /*RequestSDStartGame request = new RequestSDStartGame ();
                 request.Send (Constants.USER_ID);
-                cManager.Send (request);
+                cManager.Send (request);*/
                 isPlayerReady = true;
             } else {
                 Debug.LogWarning ("Starting game without server component.");
@@ -72,23 +79,27 @@ namespace SD {
             }
         }
 
-        public void ResponseSDStartGame (ExtendedEventArgs eventArgs)
+        public void ResponseSDStartGame (NetworkResponse r)
         {
+            ResponseSDStartGame response = r as ResponseSDStartGame;
             Debug.Log ("ResponseSDStartGame called.");
-            ResponseSDStartGameEventArgs args = eventArgs as ResponseSDStartGameEventArgs;
+            /*ResponseSDStartGameEventArgs args = eventArgs as ResponseSDStartGameEventArgs;*/ 
 
-            if (args.status == 0) {
+            if (response.status == 0) {
                 // Send a request to the opponent indicating that this client is ready to play.
-                RequestSDPosition request = new RequestSDPosition();
+                SDMain.networkManager.Send (SDPlayerPositionProtocol.Prepare (
+                    0.ToString (), 0.ToString (), 0.ToString()), ResponseSDStartSync);
+                /*RequestSDPosition request = new RequestSDPosition();
                 request.Send (0.ToString (), 0.ToString (), 0.ToString());
-                cManager.Send (request);
+                cManager.Send (request);*/
                 Debug.Log ("Waiting for opponent to respond..");
             } else {
                 Debug.Log ("Encountered an error in starting the game.");
             }
         }
 
-        public void ResponseSDStartSync(ExtendedEventArgs eventArgs) {
+        public void ResponseSDStartSync(NetworkResponse r) {
+            ResponseSDPlayerPosition response = r as ResponseSDPlayerPosition;
             Debug.Log ("The opponent is ready to play, loading the game scene.");
             this.isOpponentReady = true;
         }
