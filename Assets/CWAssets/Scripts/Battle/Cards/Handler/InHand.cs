@@ -16,7 +16,8 @@ namespace CW
             //DebugConsole.Log("affect in hand, diet="+card.diet+card.dietChar);
 
 			//set Max card in field.
-			if (player.isActive && player.currentMana >= card.getManaCost () && player == GameManager.player1) {
+			if (player.isActive && player.currentMana >= card.getManaCost () && player == GameManager.player1) 
+            {
 		
 				GameObject removeCard = (GameObject)player.hand [player.hand.IndexOf (card.gameObject)];
 		
@@ -63,6 +64,7 @@ namespace CW
 				}
 
 			}
+            
 	
 		}
 		void startFoodCard(){

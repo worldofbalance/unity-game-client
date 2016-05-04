@@ -2,12 +2,7 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Config.cs">
     <Files>
-      <File FileName="Assets/CWAssets/Scripts/Battle/Actions/WeatherCardAction.cs" Line="22" Column="44" />
-      <File FileName="Assets/CWAssets/Scripts/Battle/BattlePlayer.cs" Line="442" Column="32" />
-      <File FileName="Assets/CWAssets/Scripts/Battle/Actions/EndTurnAction.cs" Line="19" Column="98" />
-      <File FileName="Assets/CWAssets/Scripts/Battle/Cards/Handler/InHand.cs" Line="54" Column="47" />
-      <File FileName="Assets/CWAssets/Scripts/Network/Protocol/BattleProtocols/EndTurnProtocol.cs" Line="9" Column="14" />
-      <File FileName="Assets/CWAssets/Scripts/Battle/GameManager.cs" Line="133" Column="18" />
+      <File FileName="Assets/Game.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/Config.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
