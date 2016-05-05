@@ -30,8 +30,8 @@ public class SDLogin : MonoBehaviour {
         font = Resources.Load<Font>("Fonts/" + "Chalkboard");
         /*SD.SDMessageQueue.getInstance().AddCallback (SD.Constants.SMSG_AUTH, SD_ResponseLogin);
         SD.SDMessageQueue.getInstance ().AddCallback (SD.Constants.SMSG_RACE_INIT, SD_ResponsePlayInit);*/
-        SD.SDMain.networkManager.Listen (NetworkCode.SD_GAME_LOGIN, SD_ResponseLogin);
-        SD.SDMain.networkManager.Listen (NetworkCode.SD_PLAY_INIT, SDProcessPlayInit);
+        //SD.SDMain.networkManager.Listen (NetworkCode.SD_GAME_LOGIN, SD_ResponseLogin);
+        //SD.SDMain.networkManager.Listen (NetworkCode.SD_PLAY_INIT, SDProcessPlayInit);
     }
 
     // Use this for initialization
@@ -47,8 +47,8 @@ public class SDLogin : MonoBehaviour {
     void OnDestroy() {
         /*SD.SDMessageQueue.getInstance().RemoveCallback (SD.Constants.SMSG_AUTH);
         SD.SDMessageQueue.getInstance ().RemoveCallback (SD.Constants.SMSG_RACE_INIT);*/
-        SD.SDMain.networkManager.Ignore (NetworkCode.SD_GAME_LOGIN, SD_ResponseLogin);
-        SD.SDMain.networkManager.Ignore(NetworkCode.SD_PLAY_INIT, SDProcessPlayInit);
+        //SD.SDMain.networkManager.Ignore (NetworkCode.SD_GAME_LOGIN, SD_ResponseLogin);
+        //SD.SDMain.networkManager.Ignore(NetworkCode.SD_PLAY_INIT, SDProcessPlayInit);
     }
 
     void OnGUI() {

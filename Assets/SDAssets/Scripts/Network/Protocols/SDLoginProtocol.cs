@@ -17,10 +17,15 @@ namespace SD
 
         public static NetworkResponse Parse (MemoryStream dataStream) {
             ResponseSDLogin response = new ResponseSDLogin ();
-            response.userId = DataReader.ReadInt (dataStream);
-            response.lastLogout = DataReader.ReadString (dataStream);
-            response.playerMoney = DataReader.ReadInt (dataStream);
-            response.playerLevel = DataReader.ReadShort (dataStream);
+            response.status = DataReader.ReadShort(dataStream);
+            if (response.status == 0) {
+                response.userId = DataReader.ReadInt (dataStream);
+                response.username = DataReader.ReadString (dataStream);
+            }
+
+            //response.lastLogout = DataReader.ReadString (dataStream);  TODO 
+            //response.playerMoney = DataReader.ReadInt (dataStream);
+            //response.playerLevel = DataReader.ReadShort (dataStream);
             return response;
         }
     }
@@ -31,9 +36,9 @@ namespace SD
         public short status { get; set; }
         public int userId { get; set; }
         public string username { get; set; }
-        public string lastLogout { get; set; }
-        public short playerLevel { get; set; }
-        public int playerMoney { get; set; }
+        //public string lastLogout { get; set; }
+        //public short playerLevel { get; set; }
+        //public int playerMoney { get; set; }
 
         public ResponseSDLogin ()
         {
