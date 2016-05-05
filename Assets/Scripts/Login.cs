@@ -151,8 +151,6 @@ public class Login : MonoBehaviour {
 			cManager.Send(RR_RequestLogin(user_id, password));
 
             SD.SDMain.networkManager.Send (SD.SDLoginProtocol.Prepare (user_id, password), SD_ResponseLogin);
-            /*SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
-            sManager.Send(SD_RequestLogin(user_id, password));*/
         }
 	}
 	
@@ -267,14 +265,7 @@ public class Login : MonoBehaviour {
 			Debug.Log ("RR: Login Failed");
 		}
 	}
-    /*
-    public SD.RequestLogin SD_RequestLogin(string username, string password)
-    {
-        SD.RequestLogin request = new SD.RequestLogin();
-        request.send(username, password);
-        return request;
-    }
-*/
+
     public void SD_ResponseLogin(NetworkResponse r)
     {
         SD.ResponseSDLogin response = r as SD.ResponseSDLogin;

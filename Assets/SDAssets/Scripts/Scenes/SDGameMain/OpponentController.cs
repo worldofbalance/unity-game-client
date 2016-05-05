@@ -32,23 +32,13 @@ namespace SD {
                 yRotation = sdGameController.getOpponentPlayer ().yRotation;
                 rbOpponent.MovePosition (new Vector3(xPosition, yPosition, 0));
 
-               /* if (sdGameController.getOpponentPlayer ().isTurningLeft) {
-                    xRotation = sdGameController.getOpponentPlayer ().xRotation;
-                    sdGameController.getOpponentPlayer ().yRotation = yRotation = 180;
-                    rbOpponent.MoveRotation (Quaternion.Euler (xRotation - 180, yRotation, 0));
-                } else if (sdGameController.getOpponentPlayer ().isTurningRight) {
-                    xRotation = sdGameController.getOpponentPlayer ().xRotation;
-                    sdGameController.getOpponentPlayer ().yRotation = yRotation = -180;
-                    rbOpponent.MoveRotation (Quaternion.Euler (xRotation - 180, yRotation, 0));
-                } else { */
-                    xRotation = sdGameController.getOpponentPlayer ().xRotation;
-                    yAngle = -90;
-                    if (xRotation >= -90 && xRotation <= 90) {
-                        xRotation = 180 - xRotation;
-                        yAngle = 90;
-                    }
-                    rbOpponent.MoveRotation (Quaternion.Euler (xRotation - 180, yAngle, 0));
-               // }
+                xRotation = sdGameController.getOpponentPlayer ().xRotation;
+                yAngle = -90;
+                if (xRotation >= -90 && xRotation <= 90) {
+                    xRotation = 180 - xRotation;
+                    yAngle = 90;
+                }
+                rbOpponent.MoveRotation (Quaternion.Euler (xRotation - 180, yAngle, 0));
             }
         }
 

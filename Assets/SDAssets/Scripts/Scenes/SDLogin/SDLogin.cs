@@ -28,10 +28,6 @@ public class SDLogin : MonoBehaviour {
 
         windowRect = new Rect(left, top, width, height);
         font = Resources.Load<Font>("Fonts/" + "Chalkboard");
-        /*SD.SDMessageQueue.getInstance().AddCallback (SD.Constants.SMSG_AUTH, SD_ResponseLogin);
-        SD.SDMessageQueue.getInstance ().AddCallback (SD.Constants.SMSG_RACE_INIT, SD_ResponsePlayInit);*/
-        //SD.SDMain.networkManager.Listen (NetworkCode.SD_GAME_LOGIN, SD_ResponseLogin);
-        //SD.SDMain.networkManager.Listen (NetworkCode.SD_PLAY_INIT, SDProcessPlayInit);
     }
 
     // Use this for initialization
@@ -45,10 +41,6 @@ public class SDLogin : MonoBehaviour {
     }
 
     void OnDestroy() {
-        /*SD.SDMessageQueue.getInstance().RemoveCallback (SD.Constants.SMSG_AUTH);
-        SD.SDMessageQueue.getInstance ().RemoveCallback (SD.Constants.SMSG_RACE_INIT);*/
-        //SD.SDMain.networkManager.Ignore (NetworkCode.SD_GAME_LOGIN, SD_ResponseLogin);
-        //SD.SDMain.networkManager.Ignore(NetworkCode.SD_PLAY_INIT, SDProcessPlayInit);
     }
 
     void OnGUI() {
@@ -66,7 +58,6 @@ public class SDLogin : MonoBehaviour {
     }
 
     void MakeWindow(int id) {
-        //Functions.DrawBackground(new Rect(0, 0, width, height), bgTexture);
 
         GUIStyle style = new GUIStyle(GUI.skin.label);
         style.alignment = TextAnchor.UpperCenter;
@@ -161,36 +152,6 @@ public class SDLogin : MonoBehaviour {
             Debug.Log("SD: Login Failed");
         }
     }
-
-    /*
-    public void SD_ResponseLogin(SD.ExtendedEventArgs eventArgs)
-    {
-        SD.ResponseLoginEventArgs args = eventArgs as SD.ResponseLoginEventArgs;
-
-        if (args.status == 0)
-        {
-            SD.Constants.USER_ID = args.user_id;
-            // send the request to initialize the game.
-            SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
-            sManager.Send(SD_RequestPlayInit());
-        }
-        else {
-            Debug.Log("SD: Login Failed");
-        }
-    }
-
-    public SD.RequestPlayInit SD_RequestPlayInit()
-    {
-        SD.RequestPlayInit request = new SD.RequestPlayInit();
-        request.Send(SD.Constants.USER_ID, SD.Constants.TEMP_ROOM_ID);
-        return request;
-    }
-    public void SD_ResponsePlayInit(SD.ExtendedEventArgs eventArgs) {
-        SD.ResponsePlayInitEventArgs args = eventArgs as SD.ResponsePlayInitEventArgs;
-        SD.Constants.PLAYER_NUMBER = args.playerNumber;
-        Debug.Log ("The player number is " + args.playerNumber);
-        Game.SwitchScene ("SDReadyScene");
-    }*/
 
     public void SDProcessPlayInit(NetworkResponse response) {
         SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;

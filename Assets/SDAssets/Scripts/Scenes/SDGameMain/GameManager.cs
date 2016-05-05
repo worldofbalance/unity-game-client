@@ -27,20 +27,6 @@ namespace SD {
             persistentObject = SDPersistentData.getInstance ();
 
             if (SDMain.networkManager != null) {
-                /*if (!mQueue.callbackList.ContainsKey(Constants.SMSG_SDEND_GAME))
-                    mQueue.AddCallback (Constants.SMSG_SDEND_GAME, ResponseSDEndGame);
-                if (mQueue.callbackList.ContainsKey (Constants.SMSG_POSITION))
-                    mQueue.RemoveCallback (Constants.SMSG_POSITION);
-                if (!mQueue.callbackList.ContainsKey (Constants.SMSG_POSITION))
-                    mQueue.AddCallback (Constants.SMSG_POSITION, ResponseSDPosition);
-                if (!mQueue.callbackList.ContainsKey (Constants.SMSG_KEYBOARD))
-                    mQueue.AddCallback (Constants.SMSG_KEYBOARD, ResponseSDKeyboard);
-                if (!mQueue.callbackList.ContainsKey (Constants.SMSG_PREY))
-                    mQueue.AddCallback (Constants.SMSG_PREY, ResponseSDPrey);
-                if (!mQueue.callbackList.ContainsKey (Constants.SMSG_EAT_PREY))
-                    mQueue.AddCallback (Constants.SMSG_EAT_PREY, ResponseSDDestroyPrey);
-                if (!mQueue.callbackList.ContainsKey (Constants.SMSG_SCORE))
-                    mQueue.AddCallback (Constants.SMSG_SCORE, ResponseSDChangeScore);*/
                 SDMain.networkManager.Listen (NetworkCode.SD_END_GAME, ResponseSDEndGame);
                 SDMain.networkManager.Listen (NetworkCode.SD_PLAYER_POSITION, ResponseSDPosition);
                 SDMain.networkManager.Listen (NetworkCode.SD_KEYBOARD, ResponseSDKeyboard);
@@ -70,9 +56,6 @@ namespace SD {
             }
             if (isMultiplayer) {
                 SDMain.networkManager.Send (SDEndGameProtocol.Prepare (gameCompleted, (float)finalScore));
-                /*RequestSDEndGame request = new RequestSDEndGame ();
-                request.Send (gameCompleted, (float)finalScore);
-                cManager.Send (request);*/
             } else {
                 SceneManager.LoadScene ("SDGameEnd");
             }
@@ -97,9 +80,6 @@ namespace SD {
             if (SDMain.networkManager != null) {
                 SDMain.networkManager.Send (SDPlayerPositionProtocol.Prepare (
                     x.ToString (), y.ToString (), r.ToString ()));
-                /*RequestSDPosition request = new RequestSDPosition ();
-                request.Send (x.ToString (), y.ToString (), r.ToString());
-                cManager.Send (request);*/
             }
         }
 
@@ -114,9 +94,6 @@ namespace SD {
         public void SetKeyboardActions(int keyCode, int keyCombination) {
             if (SDMain.networkManager != null) {
                 SDMain.networkManager.Send (SDKeyboardProtocol.Prepare (keyCode, keyCombination));
-                /*RequestSDKeyboard request = new RequestSDKeyboard ();
-                request.Send (keyCode, keyCombination);
-                cManager.Send (request);*/
             }
         }
 
@@ -158,17 +135,11 @@ namespace SD {
         public void FindNPCFishPosition(int id) {
             if (SDMain.networkManager != null) {
                 SDMain.networkManager.Send (SDPreyProtocol.Prepare (id));
-                /*
-                RequestSDPrey request = new RequestSDPrey ();
-                request.Send (id);
-                cManager.Send (request);
-                */
             }
         }
 
         public void ResponseSDPrey(NetworkResponse r) {
             ResponseSDPrey response = r as ResponseSDPrey;
-            //ResponseSDPreyEventArgs args = eventArgs as ResponseSDPreyEventArgs;
             NPCFish fish = gameController.getNpcFishes()[response.preyId];
             if (response.isAlive) {
                 // Set the position of the fish and spawn it.
@@ -187,9 +158,6 @@ namespace SD {
         public void DestroyNPCFish(int id) {
             if (SDMain.networkManager != null) {
                 SDMain.networkManager.Send (SDDestroyPreyProtocol.Prepare (id));
-                /*RequestSDDestroyPrey request = new RequestSDDestroyPrey ();
-                request.Send (id);
-                cManager.Send (request);*/
             } else {
                 NPCFish fish = gameController.getNpcFishes()[id];
                 fish.isAlive = false;
@@ -198,7 +166,6 @@ namespace SD {
 
         public void ResponseSDDestroyPrey(NetworkResponse r) {
             ResponseSDDestroyPrey response = r as ResponseSDDestroyPrey;
-            //ResponseSDDestroyPreyEventArgs args = eventArgs as ResponseSDDestroyPreyEventArgs;
             NPCFish fish = gameController.getNpcFishes()[response.preyId];
             if (fish.isAlive) {
                 // The NPC Fish destroyed on the server is still alive in the client, so destroy it.
@@ -211,16 +178,12 @@ namespace SD {
         public void SendScoreToOpponent(int score) {
             if (SDMain.networkManager != null) {
                 SDMain.networkManager.Send (SDScoreProtocol.Prepare ((float)score));
-                /*RequestSDScore request = new RequestSDScore ();
-                request.Send ((float)score);
-                cManager.Send (request);*/
                 Debug.Log ("Sent the score " + score);
             }
         }
 
         public void ResponseSDChangeScore(NetworkResponse r) {
             ResponseSDScore response = r as ResponseSDScore;
-            //ResponseSDScoreEventArgs args = eventArgs as ResponseSDScoreEventArgs;
             gameController.setOpponentScore (response.score);
             Debug.Log ("Received the opponent's score: " + response.score);
         }

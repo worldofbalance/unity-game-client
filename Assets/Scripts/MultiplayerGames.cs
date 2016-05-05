@@ -31,8 +31,6 @@ public class MultiplayerGames : MonoBehaviour {
 
 		Game.networkManager.Listen (NetworkCode.PAIR, OnPairResult);
 		Game.networkManager.Listen (NetworkCode.QUIT_ROOM, OnQuitRoomResult);
-        /*sdQueue = SD.SDMessageQueue.getInstance ();
-        sdQueue.AddCallback (SD.Constants.SMSG_RACE_INIT, SD_ResponsePlayInit);*/
 	}
 
 	void OnDestroy () {
@@ -115,15 +113,6 @@ public class MultiplayerGames : MonoBehaviour {
         GUI.enabled = enableSDButton;
         if (GUI.Button(new Rect(165, windowRect.height - 40, 160, 30), "Play Sea Divided")) {
             Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_SEA_DIVIDED, -1));
-            foreach (var item in RoomManager.getInstance().getRooms()) {
-                if (item.Value.host == GameState.player.GetName ()) {
-                    SD.SDMain.networkManager.Send (
-                        SD.SDPlayInitProtocol.Prepare (SD.Constants.USER_ID, item.Key), 
-                        SDProcessPlayInit
-                    );
-                    break;
-                }
-            } 
         }
 
 		GUI.enabled = true;
@@ -184,7 +173,6 @@ public class MultiplayerGames : MonoBehaviour {
 			if (args.gameID == Constants.MINIGAME_RUNNING_RHINO) {
 				RR.RRConnectionManager cManager = RR.RRConnectionManager.getInstance ();
 				cManager.Send (RR_RequestRaceInit ());
-
 				Game.SwitchScene ("RRReadyScene");
 			} else if (args.gameID == Constants.MINIGAME_CARDS_OF_WILD) {
 				CW.GameManager.matchID = args.id;
@@ -194,15 +182,10 @@ public class MultiplayerGames : MonoBehaviour {
                     (GameState.player.GetID(), args.id), 
                     ProcessMatchInit);
             } else if (args.gameID == Constants.MINIGAME_SEA_DIVIDED) {
-                if (GameState.player.GetName () != room.host) {
-                    SD.SDMain.networkManager.Send (
-                        SD.SDPlayInitProtocol.Prepare (SD.Constants.USER_ID, this.room_id), 
-                        SDProcessPlayInit
-                    );
-                }
-                /*SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
-                sManager.Send(SD_RequestPlayInit()); */
-                //Game.SwitchScene ("SDReadyScene");
+                SD.SDMain.networkManager.Send (
+                    SD.SDPlayInitProtocol.Prepare (SD.Constants.USER_ID, this.room_id), 
+                    SDProcessPlayInit
+                );
             } else if (args.gameID == Constants.MINIGAME_MULTI_CONVERGENCE) {
 				// DH change
 				MultiConvergeGame.matchID = args.id;   // game id
@@ -270,7 +253,6 @@ public class MultiplayerGames : MonoBehaviour {
     public void SDProcessPlayInit(NetworkResponse response) {
         SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;
         SD.Constants.PLAYER_NUMBER = args.playerNumber;
-        Debug.Log ("This is player number " + SD.Constants.PLAYER_NUMBER);
         Game.SwitchScene ("SDReadyScene");
     }
 
