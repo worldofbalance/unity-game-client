@@ -12,6 +12,7 @@ public class Constants {
     // IP address may be 130.212.3.51
 
 	public static readonly int REMOTE_PORT = 9255;    //20041;
+	// public static readonly int REMOTE_PORT = 9257;    //9257 9255 for locahost
 
 	public static readonly float HEARTBEAT_RATE = 1f;
 	

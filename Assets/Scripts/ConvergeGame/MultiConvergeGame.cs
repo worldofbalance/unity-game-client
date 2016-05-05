@@ -31,6 +31,8 @@ public class MultiConvergeGame : MonoBehaviour
 	private int bufferBorder = 10;
 	private float leftGraph = 10;
 	private float topGraph = 45;    // DH change. Was 75
+    private float balanceY;        // balance msg Y coordinate
+    private float roundY;          // rounds msgg Y coordinate
     private int sliderBorder = 20;  // DH change. Gives extra for sliders
 	private float OppViewWidth;    // DH change. Width of opponent view area
 	private Rect windowRect;
@@ -39,6 +41,7 @@ public class MultiConvergeGame : MonoBehaviour
     private bool isActive = true;   // Not active until host specifies    Ivan - change to false
     private bool isInitial = true;   // helps with GUI focus
     private bool isSetup = false;   // read parameters   Ivan - change to true
+    private bool isDone = false;   // used to display end result screen
 	// DH change
 	// eliminate blink. Replace isProcessing with betAccepted
 	// private bool isProcessing = true;
@@ -85,7 +88,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private bool host;    // Is this player the host?
 	private int timeRemain = 0;   // How many seconds left in round. Could be negative
     private int timeDisplayed = 0;   // Value displayed for time remaining
-    private int timeCheck = -30;   // timeRemain value to check for no response
+    private int timeCheck = -120;   // timeRemain value to check for no response
     private int checkCount = 0;   // count of number of CheckPlayers msgs sent
     private int playerDrop = 0;   // Count of frames to display player dropped msg 
 	private string remainLabel;
@@ -110,6 +113,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private string name_otherPlayer;   // name for other player for graph
 	private List<int> otherScores;
     private int pixelPerChar = 15;
+    private short curRound = 1; 
     // Parameters that host specifies
     private short numRounds = 0;
     private string numRoundsS = "";
@@ -117,16 +121,21 @@ public class MultiConvergeGame : MonoBehaviour
     private string timeWindowS = "";
     private short betAmount = 0;
     private string betAmountS = "";
-    private short ecoCount = 10;
+    private short ecoCount = 0;
     private short ecoNumber = 0;
     private string ecoNumberS = "";
-    private bool prot187Sent = false;
+    private DateTime tStamp;
+    private DateTime tNow;
+    private TimeSpan tDiff;
+    private bool sendNonHost = true;
     // Initial response message from client
     string ftr1 = "";
     int ftr1P = 0;
 
 	void Awake ()
     {
+        tStamp = DateTime.UtcNow;
+        sendNonHost = true;
         DontDestroyOnLoad (gameObject.GetComponent ("Login"));
         player_id = GameState.player.GetID ();
 
@@ -165,6 +174,10 @@ public class MultiConvergeGame : MonoBehaviour
 		simRunning = false;
 		formattedScores = new List<int>();
 		otherScores = new List<int>();
+        balanceY = topGraph + 45*5 + 20;     // balance msg Y coordinate
+        roundY = balanceY + 2 * 30 + 5;
+        curRound = 1;   // Start with Round 1
+        numRounds = 5;    // Over written by user input 
 	}
 	
 	// Use this for initialization
@@ -195,25 +208,32 @@ public class MultiConvergeGame : MonoBehaviour
 		ReadConvergeEcosystemsFile ();
 		//set default ecosystem values
 		new_ecosystem_id = Constants.ID_NOT_SET;
+
 		ecosystem_idx = 0;     // Initially set to first ecosystem
 		ecosystem_id = GetEcosystemId (ecosystem_idx);
 		//get player's most recent prior attempts 
 		// DH change - start everyone at beginning to make equal
 		// GetPriorAttempts ();
 		// Replacement for GetPriorAttempts()
-		NoPriorAttempts();
+
+        if (!isSetup) {
+            NoPriorAttempts();
+            InitializeBarGraph();
+        }
+		
 
 		//create array of ecosystem descriptions
+        /*
 		if (ecosystemList != null) {
 			ecosysDescripts = ConvergeEcosystem.GetDescriptions (ecosystemList);
 		}
+        */      
 		// GetHints ();
 		Debug.Log ("Now in MultiConverge.cs");
 
 		moment = DateTime.Now;
 		timeNow = moment.Millisecond;
 		Debug.Log ("Time: " + timeNow);
-		InitializeBarGraph();
 	}
 	
 	// Update is called once per frame
@@ -247,14 +267,14 @@ public class MultiConvergeGame : MonoBehaviour
 			}
 		}
 
-        if ((timeRemain < timeCheck) && (checkCount < 3)) {  // waiting too long for some client(s). Check Server
+        if ((timeRemain < timeCheck) && (checkCount < 3) && isActive) {  // waiting too long for some client(s). Check Server
             checkCount++;
             CheckPlayers();
         }
             
 			
 		// Check if betting window closed and no bet entered
-		if (!betAccepted && windowClosed && !closedResponseSent) {
+		if (!betAccepted && windowClosed && !closedResponseSent && isActive) {
 			short betEntered = 0;	
 			int improveValue = 0;
 			closedResponseSent = true;
@@ -283,6 +303,10 @@ public class MultiConvergeGame : MonoBehaviour
 
         if (isSetup && !host) {  // Get configuration info from host
             windowRectConfig = GUI.Window (host_config_id, windowRectConfig, MakeWindowNonHost, "Non-Host Configuration Entry", GUIStyle.none);
+        }
+
+        if (isDone) {    // Game over screen
+            windowRectConfig = GUI.Window (host_config_id, windowRectConfig, MakeWindowDone, "Game Over", GUIStyle.none);
         }
             
 		// Converge Game Interface
@@ -367,24 +391,27 @@ public class MultiConvergeGame : MonoBehaviour
 		} else {
 			remainLabel = remainLabel + timeDisplayed + " seconds";
 		}
-		GUI.Label (new Rect (bufferBorder, height - 70 - bufferBorder, 400, 30), remainLabel, style);
+		GUI.Label (new Rect (bufferBorder, height - 75 - bufferBorder, 400, 30), remainLabel, style);
 
 		// Add in money balance and bid amount
-		GUI.Label (new Rect (bufferBorder + 450, height/2 + bufferBorder + 110, 200, 30), "Balance: $" + balance, style);
-		GUI.Label (new Rect (bufferBorder + 450, height/2 + bufferBorder + 150, 200, 30), "Bet:      $" + bet, style);
+        GUI.Label (new Rect (bufferBorder + width - 150, balanceY, 200, 30), "Balance: $" + balance, style);
+        GUI.Label (new Rect (bufferBorder + width - 150, balanceY + 30, 200, 30), "Bet:      $" + bet, style);
+        GUI.Label (new Rect (bufferBorder + width - 150, roundY, 200, 30), "Total Rounds:  " + numRounds, style);
+        GUI.Label (new Rect (bufferBorder + width - 150, roundY + 30, 200, 30), "Round:          " + curRound, style);
+
 		if (betAccepted) {
-			GUI.Label (new Rect (bufferBorder + 450, height/2 + bufferBorder + 190, 300, 30), "Please wait for results of betting.", style);
+            GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Please wait for results of betting.", style);
 		} else if (results) {
 			if (won == 1) {
-				GUI.Label (new Rect (bufferBorder + 450, height / 2 + bufferBorder + 190, 300, 30), "Congratulations - you won last round!", style);
+                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Congratulations - you won last round!", style);
 			} else if (won == 0) {
-				GUI.Label (new Rect (bufferBorder + 450, height / 2 + bufferBorder + 190, 300, 30), "Sorry - you lost last round.", style);
+                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Sorry - you lost last round.", style);
 			} else {
-				GUI.Label (new Rect (bufferBorder + 450, height / 2 + bufferBorder + 190, 300, 30), "You did not play last round.", style);
+                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "You did not play last round.", style);
 			}
 		}
         if (playerDrop > 0) {
-            GUI.Label (new Rect (bufferBorder + 450, height / 2 + bufferBorder + 230, 300, 30), "A player left the game.", style);
+            GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder + 20, 300, 30), "A player left the game.", style);
             playerDrop--;
         }
 
@@ -511,7 +538,7 @@ public class MultiConvergeGame : MonoBehaviour
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
-            GUI.Label(new Rect(0, 0, windowRectConfig.width * 0.85f, 30), "Enter Number of Rounds (10 to 50)", style);
+            GUI.Label(new Rect(0, 0, windowRectConfig.width * 0.85f, 30), "Enter Number of Rounds (5 to 50)", style);
             GUI.SetNextControlName("number_of_rounds");
             numRoundsS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 25), numRoundsS, 25);
         }
@@ -541,7 +568,7 @@ public class MultiConvergeGame : MonoBehaviour
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
-            GUI.Label(new Rect(0, 0, windowRectConfig.width * 0.85f, 30), "Enter EcoSystem Number (0 to " + ecoCount + ")", style);
+            GUI.Label(new Rect(0, 0, windowRectConfig.width * 0.85f, 30), "Enter EcoSystem Number (0 to " + (ecoCount-1) + ")", style);
             GUI.SetNextControlName("ecosystem_number");
             ecoNumberS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 25), ecoNumberS, 25);
         }
@@ -573,13 +600,13 @@ public class MultiConvergeGame : MonoBehaviour
         betAmount = Int16.TryParse (betAmountS, out tempConvert) ? tempConvert : neg1;
         ecoNumber = Int16.TryParse (ecoNumberS, out tempConvert) ? tempConvert : neg1;
 
-        if ((numRounds < 10) || (numRounds > 50)) {
+        if ((numRounds < 5) || (numRounds > 50)) {
             GUI.FocusControl ("number_of_rounds");
         } else if ((timeWindow < 30) || (timeWindow > 180)) {
             GUI.FocusControl ("bet_time");
         } else if ((betAmount < 20) || (betAmount > 200)) {
             GUI.FocusControl ("bet_amount");
-        } else if ((ecoNumber < 0) || (ecoNumber > ecoCount)) {
+        } else if ((ecoNumber < 0) || (ecoNumber >= ecoCount)) {
             GUI.FocusControl ("ecosystem_number");
         } else {
             Game.networkManager.Send (
@@ -592,9 +619,10 @@ public class MultiConvergeGame : MonoBehaviour
             ftr1P = ftr1.Length * pixelPerChar;
 
             bet = betAmount;
-            // ecosystem_idx = ecoNumber;  // implement after ecosystems read
+            ecosystem_idx = ecoNumber;  // implement after ecosystems read
             ecosystem_id = GetEcosystemId (ecosystem_idx);
             NoPriorAttempts();
+            InitializeBarGraph();
         }
     }
 
@@ -630,28 +658,70 @@ public class MultiConvergeGame : MonoBehaviour
         GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.60f, hdr3P, 30), hdr3, style);
         GUI.Label(new Rect((windowRectConfig.width - ftr1P) / 2, windowRectConfig.height * 0.80f, ftr1P, 30), ftr1, style);
 
-        if (!prot187Sent) {
+        tNow = DateTime.UtcNow;
+        tDiff = tNow.Subtract(tStamp);
+        if ((tDiff.TotalSeconds > 1) && sendNonHost) {
             Game.networkManager.Send (
                 ConvergeNonHostConfigProtocol.Prepare (), ProcessConvergeNonHostConfig);
-            Debug.Log ("Sent ConvergeNonHostConfig");
-            prot187Sent = true;
+            tStamp = tNow;
+            Debug.Log ("Sent ConvergeNonHostConfig. Time = " + tNow);
+            sendNonHost = false;    // wait for response before sending again
+        }
+    }
+
+    void MakeWindowDone(int id) {
+        Functions.DrawBackground(new Rect(0, 0, widthConfig, heightConfig), bgTexture);
+        string hdr1 = "Multiplayer Convergence";
+        int hdr1P = hdr1.Length * pixelPerChar;
+        string hdr2 = "Game Over. Thank you for playing";
+        int hdr2P = hdr2.Length * pixelPerChar;
+        string hdr3 = "Your Final balance is: " + balance;
+        int hdr3P = hdr3.Length * pixelPerChar;
+        string hdr4 = "The Database will be updated with your new Balance";
+        int hdr4P = hdr4.Length * pixelPerChar;
+        string retButton = "Return to Lobby";
+        int retButtonP = 110;
+
+        GUIStyle style = new GUIStyle(GUI.skin.label);
+        style.alignment = TextAnchor.UpperCenter;
+        style.font = font;
+        style.fontSize = 16;
+
+        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.15f, hdr1P, 30), hdr1, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.30f, hdr2P, 30), hdr2, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.45f, hdr3P, 30), hdr3, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr4P) / 2, windowRectConfig.height * 0.60f, hdr4P, 30), hdr4, style);
+
+        if (GUI.Button (new Rect ((windowRectConfig.width - retButtonP) / 2, windowRectConfig.height * 0.80f, retButtonP, 30), retButton)) {
+            Destroy (this);
+            Destroy (foodWeb);
+            GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
+            Species[] s = gs.GetComponents<Species> ();
+            foreach (Species sp in s)
+                Destroy (sp); //destroy the "species" objects
+            Game.SwitchScene ("World");
         }
     }
 
     public void ProcessConvergeNonHostConfig (NetworkResponse response)
     {
         ResponseConvergeNonHostConfig args = response as ResponseConvergeNonHostConfig;
-        Debug.Log ("In responseconvergenonhostconfg - received values");
-        bet = args.betAmount;
-        // ecosystem_idx = args.ecoNumber;   // implement when new ecosystems ready
-        ecosystem_id = GetEcosystemId (ecosystem_idx);
-        NoPriorAttempts();
-        Debug.Log("bet/ecosystem_idx: " + bet + " " + ecosystem_idx);
-        Debug.Log("numRounds / time window: " + args.numRounds + " " + args.timeWindow); 
-        ftr1 = "Game Configuration information received";
-        ftr1P = ftr1.Length * pixelPerChar;
-        isSetup = false;
-        isActive = true;
+        sendNonHost = true; 
+        numRounds = args.numRounds;
+        Debug.Log ("In responseconvergenonhostconfg - received values. NumRounds = " + numRounds);
+        if (numRounds > 0) {
+            bet = args.betAmount;
+            ecosystem_idx = args.ecoNumber;   // implement when new ecosystems ready
+            ecosystem_id = GetEcosystemId (ecosystem_idx);
+            NoPriorAttempts();
+            InitializeBarGraph();
+            Debug.Log("bet/ecosystem_idx: " + bet + " " + ecosystem_idx);
+            Debug.Log("numRounds / time window: " + numRounds + " " + args.timeWindow); 
+            ftr1 = "Game Configuration information received";
+            ftr1P = ftr1.Length * pixelPerChar;
+            isSetup = false;
+            isActive = true;
+        }
     }
 
 
@@ -1070,6 +1140,13 @@ public class MultiConvergeGame : MonoBehaviour
 		betAccepted = false; 
 		windowClosed = false;
 		closedResponseSent = false;
+        curRound++;    // Needs to be replaced by adding round number from server 
+        if (curRound > numRounds) {
+            // Game over - switch to game over display 
+            isActive = false;
+            isDone = true;
+            Debug.Log ("Game over");
+        }
 		Debug.Log ("new balance: " + balance);
 	}
 
@@ -1264,7 +1341,7 @@ public class MultiConvergeGame : MonoBehaviour
 		string filename = "converge-ecosystems.txt";
         string filenameR = "converge-ecosystems-sliders.txt";
 		ecosystemList = new List<ConvergeEcosystem> ();
-		
+        Debug.Log("ecosystem files: " + filename + " " + filenameR);
 		
         if (!File.Exists (filenameR)) {
             Debug.Log(filenameR + " not found.");
@@ -1280,22 +1357,37 @@ public class MultiConvergeGame : MonoBehaviour
 					int size = br.ReadInt16 ();
 					int responseId = br.ReadInt16 ();
 					ecosystemCnt = br.ReadInt16 ();
+                    ecoCount = (short) ecosystemCnt;
 
 					for (int i = 0; i < ecosystemCnt; i++) {
 						int ecosystem_id = br.ReadInt32 ();
 
 						ConvergeEcosystem ecosystem = new ConvergeEcosystem (ecosystem_id);
 						int fldSize = br.ReadInt16 ();
+                        Debug.Log("description_fldSize: " + fldSize);
 						ecosystem.description = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                        Debug.Log(ecosystem.description);
 						ecosystem.timesteps = br.ReadInt32 ();
 						fldSize = br.ReadInt16 ();
+                        Debug.Log("config_default_fldSize: " + fldSize);
 						ecosystem.config_default = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                        Debug.Log(ecosystem.config_default);
 						fldSize = br.ReadInt16 ();
+                        Debug.Log("config_target_fldSize: " + fldSize);
 						ecosystem.config_target = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                        Debug.Log(ecosystem.config_target);
 						fldSize = br.ReadInt16 ();
+                        // Harjit's 32 bit length string
+                        // fldSize = br.ReadInt32 ();
+                        Debug.Log("Harjit: csv_default_string_fldSize: " + fldSize);
 						ecosystem.csv_default_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                        Debug.Log(ecosystem.csv_default_string);
 						fldSize = br.ReadInt16 ();
+                        // Harjit's 32 bit length string
+                        // fldSize = br.ReadInt32 ();
+                        Debug.Log("Harjit: csv_target_string_fldSize: " + fldSize);
 						ecosystem.csv_target_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                        Debug.Log(ecosystem.csv_target_string);
                         ecosystem.sliderRanges = "";
                         ecosystem.markerEnabled = false;
 						
