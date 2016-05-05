@@ -16,7 +16,6 @@ public class EndTurnAction : TurnAction {
 	
 	override public void execute ()
         {
-            DebugConsole.Log("end turn action, p2frozen="+GameManager.player2.playerFrozen+",p1frozen="+GameManager.player1.playerFrozen);
             // means player2 played frozed card
             if (GameManager.player2.playerFrozen && GameManager.player1.playerFrozen==true) 
             {
@@ -32,6 +31,14 @@ public class EndTurnAction : TurnAction {
                     card.unfreeze ();
                 }
                
+            }
+            else
+            {
+                for (int i = 0; i < GameManager.player2.cardsInPlay.Count; i++) {
+                    AbstractCard card = ((GameObject)GameManager.player2.cardsInPlay [i]).GetComponent<AbstractCard> ();
+                    card.unfreeze ();
+                }
+
             }
 
 		GameManager.manager.startTurn();

@@ -69,12 +69,22 @@ namespace CW
             else // for weather, its blue similar to food card
             {
                 cardTexture = (Texture2D)Resources.Load("Images/Battle/cardfront_f", typeof(Texture2D));
-                if(this.name.Equals("Acacia"))
+                if (this.name.Equals("Acacia"))
+                {
                     speciesTexture = (Texture2D)Resources.Load("Images/Battle/fire", typeof(Texture2D));
+                    this.name="Fire";
+                }
                 else if(this.name.Equals("Big Tree"))
+                {
                     speciesTexture = (Texture2D)Resources.Load("Images/Battle/freez", typeof(Texture2D));
+                    this.name="Freez";
+                }
                 else
+                {
                     speciesTexture = (Texture2D)Resources.Load("Images/Battle/rain", typeof(Texture2D));
+                    this.name="Rain";
+                }
+                    
             }
 
 			//Changing cardfront texture
@@ -422,9 +432,14 @@ namespace CW
 			}
             if (canAttack()) {
                 transform.Find ("DoneText").GetComponent<TextMesh> ().text = "";
-            } else if (!canAttackNow) {
+            } 
+            else if (!canAttackNow) {
                 ((Behaviour)GetComponent("Halo")).enabled = false;
                 transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Done";
+            }
+            if(player.currentMana < getManaCost ())
+            {
+                ((Behaviour)GetComponent("Halo")).enabled = false;
             }
             if (frozen) {
                 ((Behaviour)GetComponent("Halo")).enabled = false;
