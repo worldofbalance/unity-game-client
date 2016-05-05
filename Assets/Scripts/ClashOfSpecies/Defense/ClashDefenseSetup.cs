@@ -20,6 +20,8 @@ public class ClashDefenseSetup : MonoBehaviour
     public GameObject errorCanvas;
     public Text errorMessage;
 
+    COSTouchInputControler cosInController;
+
     void Awake()
     {
         manager = GameObject.Find("MainObject").GetComponent<ClashGameManager>();
@@ -34,7 +36,7 @@ public class ClashDefenseSetup : MonoBehaviour
         terrain.transform.position = Vector3.zero;
         terrain.transform.localScale = Vector3.one;
 
-        Camera.main.GetComponent<ClashBattleCamera>().target = terrain;
+//        Camera.main.GetComponent<ClashBattleCamera>().target = terrain;
 
         foreach (var species in manager.pendingDefenseConfig.layout.Keys)
         {
@@ -66,45 +68,32 @@ public class ClashDefenseSetup : MonoBehaviour
             item.transform.localScale = Vector3.one;
             itemReference.amountLabel.text = remaining[currentSpecies.id].ToString();
         }
+
+        cosInController = ScriptableObject.CreateInstance<COSTouchInputControler>();
     }
 
     void Update()
     {
-
+        RaycastHit hit = cosInController.TouchUpdate(Camera.main);
         if (selected == null)
             return;
 
-        if (Input.GetButtonDown("Fire1") && !EventSystem.current.IsPointerOverGameObject())
+        if (cosInController.TouchState == COSTouchInputControler.COSTouchState.TerrainTapped)
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100000, LayerMask.GetMask("Terrain")))
+            var allyObject = COSTouchInputControler.SpawnAlly(hit, selected, remaining, toggleGroup);
+
+            if (allyObject != null)
             {
-                NavMeshHit placement;
-                if (NavMesh.SamplePosition(hit.point, out placement, 1000, 1))
-                {
-                    var allyResource = Resources.Load<GameObject>("Prefabs/ClashOfSpecies/Units/" + selected.name);
-                    var allyObject = Instantiate(allyResource, placement.position, Quaternion.identity) as GameObject;
-                    allyObject.tag = "Ally";
-                    
-                    Vector2 normPos = new Vector2(placement.position.x - terrain.transform.position.x,
-                                          placement.position.z - terrain.transform.position.z);
-                    normPos.x = normPos.x / terrain.terrainData.size.x;
-                    normPos.y = normPos.y / terrain.terrainData.size.z;
 
-                    manager.pendingDefenseConfig.layout[selected].Add(normPos);
-                    remaining[selected.id]--;
+                Vector2 normPos = new Vector2(allyObject.transform.position.x - terrain.transform.position.x,
+                                      allyObject.transform.position.z - terrain.transform.position.z);
+                normPos.x = normPos.x / terrain.terrainData.size.x;
+                normPos.y = normPos.y / terrain.terrainData.size.z;
 
-                    var toggle = toggleGroup.ActiveToggles().FirstOrDefault();
-                    toggle.transform.parent.GetComponent<ClashUnitListItem>().amountLabel.text = remaining[selected.id].ToString();
+                manager.pendingDefenseConfig.layout[selected].Add(normPos);
 
-                    if (remaining[selected.id] == 0)
-                    {
-                        toggle.enabled = false;
-                        toggle.interactable = false;
-                        selected = null;
-                    } 
-                }
+                if (remaining[selected.id] == 0)
+                    selected = null;
             }
         }
     }

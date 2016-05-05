@@ -32,19 +32,79 @@ public class ClashBattleController : MonoBehaviour
 
     private Boolean finished = false;
 
+    public float moveSensitivityX = 1.0f;
+    public float moveSensitivityY = 1.0f;
+    public bool updateZoomSensitivity = true;
+    public float zoomSpeed = 0.05f;
+    public float minZoom = 1.0f;
+    public float maxZoom = 20.0f;
+    public bool invertMoveX = true;
+    public bool invertMoveY = false;
+
+    public bool enemyAIEnabled = false;
+
+    public bool allyAIEnabled = false;
+
+    //    public float mapWidth = 60.0f;
+    //    public float mapHeight = 40.0f;
+
+    /// <summary>
+    /// Touch controler fields
+    /// </summary>
+
+    public float minFOV = 10f;
+    public float maxFOV = 79.9f;
+
+    float minPanDistance = 2;
+
+    bool isPanning;
+
+    public float inertiaDuration = 1.0f;
+
+    private Camera _camera;
+
+    public float terrainCameraPadding = 40;
+
+    private float minX, maxX, minZ, maxZ;
+    private float horizontalExtent, verticalExtent;
+
+    private float scrollVelocity = 0.0f;
+    private float timeTouchPhaseEnded;
+    //    private Vector3 scrollDirection = Vector3.zero;
+    private Vector3 oldTouchPos;
+    //    private int walkableArea = -1;
+    //    private int waterArea = -1;
+    //    private int notWalkableArea = -1;
+
+    COSTouchInputControler cosInController;
+
+    /// <summary>
+    /// Touch controler fields end
+    /// </summary>
+
     void Awake()
     {
         manager = GameObject.Find("MainObject").GetComponent<ClashGameManager>();
         toggleGroup = unitList.gameObject.GetComponent<ToggleGroup>();
     }
 
+    int walkableAreaMask;
+
     void Start()
     {
+        
+        walkableAreaMask = (int)Math.Pow(2, NavMesh.GetAreaFromName("Walkable"));
         var terrainResource = Resources.Load("Prefabs/ClashOfSpecies/Terrains/" + manager.currentTarget.terrain);
         var terrainObject = Instantiate(terrainResource, Vector3.zero, Quaternion.identity) as GameObject;
 
         terrain = terrainObject.GetComponentInChildren<Terrain>();
-        Camera.main.GetComponent<ClashBattleCamera>().target = terrain;
+//        Camera.main.GetComponent<ClashBattleCamera>().target = terrain;
+
+        _camera = Camera.main;
+        minX = terrainCameraPadding;
+        maxX = Terrain.activeTerrain.terrainData.size.x - terrainCameraPadding;
+        minZ = terrainCameraPadding;
+        maxZ = Terrain.activeTerrain.terrainData.size.z - terrainCameraPadding;
 
         foreach (var pair in manager.currentTarget.layout)
         {
@@ -54,12 +114,16 @@ public class ClashBattleController : MonoBehaviour
             List<Vector2> positions = pair.Value;
             foreach (var pos in positions)
             {
+//                Debug.DrawRay()
                 var speciesPos = new Vector3(pos.x * terrain.terrainData.size.x, 0.0f, pos.y * terrain.terrainData.size.z);
+                RaycastHit hitInfo;
+                Physics.Raycast(new Vector3(speciesPos.x, 50, speciesPos.z), 50 * Vector3.down, out hitInfo);
+//                Debug.DrawRay(new Vector3(speciesPos.x, 50, speciesPos.z), 50 * Vector3.down, Color.green, 10f);
                 NavMeshHit placement;
-                if (NavMesh.SamplePosition(speciesPos, out placement, 1000, 1))
+                if (NavMesh.SamplePosition(hitInfo.point, out placement, 1000, walkableAreaMask))
                 {
                     var speciesResource = Resources.Load<GameObject>("Prefabs/ClashOfSpecies/Units/" + species.name);
-                    var speciesObject = Instantiate(speciesResource, speciesPos, Quaternion.identity) as GameObject;
+                    var speciesObject = Instantiate(speciesResource, placement.position, Quaternion.identity) as GameObject;
                     speciesObject.tag = "Enemy";
 
                     var unit = speciesObject.AddComponent<ClashBattleUnit>();
@@ -74,14 +138,6 @@ public class ClashBattleController : MonoBehaviour
                     bar.transform.localPosition = new Vector3(0.0f, 8.0f, 0.0f);
                     bar.SetActive(true);
                     bar.tag = Constants.TAG_HEALTH_BAR;
-
-//                    var copy = Instantiate(speciesObject);
-//                    var obstacle = copy.AddComponent<NavMeshObstacle>();
-//                    obstacle.radius = Constants.UnitColliderRadius;
-//                    var position = obstacle.transform.position;
-//                    obstacle.transform.position = new Vector3(position.x, position.y - obstacle.height - 1, position.z);
-//                    obstacle.height *= 2;
-//                    obstacle.height++; 
 
                     GetBuffs(unit, speciesObject.tag);
                     if (species.type == UnitType.PLANT)
@@ -140,111 +196,97 @@ public class ClashBattleController : MonoBehaviour
                 var response = res as ResponseClashInitiateBattle;
                 Debug.Log("Received ResponseClashInitiateBattle from server. valid = " + response.valid);
             });
+
+//        walkableArea = NavMesh.GetAreaFromName("Walkable");
+//        waterArea = NavMesh.GetAreaFromName("Water");
+//        notWalkableArea = NavMesh.GetAreaFromName("Not Walkable");
+
+        cosInController = ScriptableObject.CreateInstance<COSTouchInputControler>();
     }
 
     private ClashBattleUnit allySelected;
-    public ClashBattleCamera cbcHandle;
+
 
     void Update()
     {
-        
+        RaycastHit hit = cosInController.TouchUpdate(_camera);
 
-        if (selected == null)
+        if (alliesList.Count == 25)
         {
-            if (Input.GetButtonDown("Fire1") && !EventSystem.current.IsPointerOverGameObject())
+            allyAIEnabled = true;
+            enemyAIEnabled = true;
+        }
+
+        if (cosInController.TouchState == COSTouchInputControler.COSTouchState.TerrainTapped)
+        {
+            if (selected != null && remaining[selected.id] > 0)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, 1000))
+                var allyObject = COSTouchInputControler.SpawnAlly(hit, selected, remaining, toggleGroup);
+
+                if (allyObject == null)
                 {
-//                    Transform targetedEnemy;
-                    if (hit.collider.CompareTag("Ally"))
+//                selected = null;
+                    return;
+                }
+                
+                var unit = allyObject.AddComponent<ClashBattleUnit>();
+                alliesList.Add(unit);
+                unit.species = selected;
+                var trigger = allyObject.AddComponent<SphereCollider>();
+                trigger.radius = Constants.UnitColliderRadius;
+                var bar = Instantiate(healthBar, unit.transform.position, Quaternion.identity) as GameObject;
+                bar.transform.SetParent(unit.transform);
+                bar.transform.localPosition = new Vector3(0.0f, 8.0f, 0.0f);
+                bar.SetActive(false);
+                //                    bar.tag = Constants.TAG_HEALTH_BAR;
+                GetBuffs(unit, allyObject.tag);
+                if (unit.species.type == UnitType.PLANT)
+                {
+                    GiveBuffs(unit, allyObject.tag);
+                    UpdateBuffPanel(unit.species, true);
+                }
+            }
+            else if (selected == null)
+            {
+                if (hit.collider.CompareTag("Ally"))
+                {
+
+                    allySelected = hit.collider.gameObject.GetComponent<ClashBattleUnit>();
+                    allySelected.target = null;
+                    allySelected.TargetPoint = Vector3.zero;
+                    allySelected.setSelected(true);
+                }
+                else if (allySelected != null && hit.collider.CompareTag("Enemy"))
+                {
+                    //                        targetedEnemy = hit.transform;
+                    allySelected.target = hit.collider.gameObject.GetComponent<ClashBattleUnit>();
+                    allySelected.setSelected(false);
+                }
+                else
+                {
+                    if (allySelected)
                     {
-                        
-                        allySelected = hit.collider.gameObject.GetComponent<ClashBattleUnit>();
-                        allySelected.target = null;
-                        allySelected.TargetPoint = Vector3.zero;
-                        allySelected.setSelected(true);
-                    }
-                    else if (allySelected != null && hit.collider.CompareTag("Enemy"))
-                    {
-//                        targetedEnemy = hit.transform;
-                        allySelected.target = hit.collider.gameObject.GetComponent<ClashBattleUnit>();
+                        allySelected.TargetPoint = hit.point;
                         allySelected.setSelected(false);
-                    }
-                    else
-                    {
-                        if (allySelected)
-                        {
-                            allySelected.TargetPoint = hit.point;
-                            allySelected.setSelected(false);
-                            allySelected = null;
-                        }
-                        else
-                        {
-//                            cbcHandle.CheckForDraging();
-                            cbcHandle.setDraging(true);
-                        }
+                        allySelected = null;
                     }
                 }
             }
-            else
-                cbcHandle.setDraging(false);
-            return;
-        }
-            
-
-
-        if (Input.GetButtonDown("Fire1") && !EventSystem.current.IsPointerOverGameObject())
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 1000, LayerMask.GetMask("Terrain")))
+            else if (remaining[selected.id] == 0)
             {
-                NavMeshHit placement;
-                if (NavMesh.SamplePosition(hit.point, out placement, 1000, 1))
-//                if (terrain.GetComponent<Collider>().Raycast(ray, out placement, Mathf.Infinity))
-                {
-                    //Added by Omar
-                    var allyResource = Resources.Load<GameObject>("Prefabs/ClashOfSpecies/Units/" + selected.name);
-                    var allyObject = Instantiate(allyResource, placement.position, Quaternion.identity) as GameObject;
-                    allyObject.tag = "Ally";
-
-                    var unit = allyObject.AddComponent<ClashBattleUnit>();
-                    alliesList.Add(unit);
-                    unit.species = selected;
-                    
-                    var trigger = allyObject.AddComponent<SphereCollider>();
-                    trigger.radius = Constants.UnitColliderRadius;
-
-                    var bar = Instantiate(healthBar, unit.transform.position, Quaternion.identity) as GameObject;
-                    bar.transform.SetParent(unit.transform);
-                    bar.transform.localPosition = new Vector3(0.0f, 8.0f, 0.0f);
-                    bar.SetActive(false);
-//                    bar.tag = Constants.TAG_HEALTH_BAR;
-
-                    GetBuffs(unit, allyObject.tag);
-                    if (unit.species.type == UnitType.PLANT)
-                    {
-                        GiveBuffs(unit, allyObject.tag);
-                        UpdateBuffPanel(unit.species, true);
-                    }
-
-                    remaining[selected.id]--;
-                    var toggle = toggleGroup.ActiveToggles().FirstOrDefault();
-                    toggle.transform.parent.GetComponent<ClashUnitListItem>().amountLabel.text = remaining[selected.id].ToString();
-					
-                    if (remaining[selected.id] == 0)
-                    {
-                        toggle.enabled = false;
-                        toggle.interactable = false;
-                        selected = null;
-                    } 
-                }
+                selected = null;
             }
         }
 
-        cbcHandle.CheckZoom();
+    }
+
+    void LateUpdate()
+    {
+        Vector3 pos = new Vector3(
+                          Mathf.Clamp(_camera.transform.position.x, minX, maxX),
+                          _camera.transform.position.y, 
+                          Mathf.Clamp(_camera.transform.position.z, minZ, maxZ));
+        _camera.transform.position = pos;
     }
 
     void FixedUpdate()
@@ -288,7 +330,8 @@ public class ClashBattleController : MonoBehaviour
                     {
                         return (enemy.transform.position - u.transform.position).sqrMagnitude;
                     }).FirstOrDefault();
-//                enemy.target = target;
+                if (enemyAIEnabled)
+                    enemy.target = target;
             }
         }
 
@@ -331,7 +374,8 @@ public class ClashBattleController : MonoBehaviour
                     {
                         return (ally.transform.position - u.transform.position).sqrMagnitude;
                     }).FirstOrDefault();
-                ally.target = target;
+                if (allyAIEnabled)
+                    ally.target = target;
             }
         }
 

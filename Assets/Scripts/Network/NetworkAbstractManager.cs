@@ -51,7 +51,7 @@ public abstract class NetworkAbstractManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!cManager.Connected)
+        if (cManager == null || !cManager.Connected)
         {
             Debug.Log("Not Connected: " + toString());
             return;

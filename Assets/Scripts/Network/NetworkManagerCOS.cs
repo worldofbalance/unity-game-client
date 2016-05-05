@@ -9,6 +9,15 @@ using System.Net.Sockets;
 public class NetworkManagerCOS : NetworkAbstractManager
 {
     private static NetworkManagerCOS instance;
+    private bool isLoggedInToCosServer = false;
+    private bool retryOnce = true;
+
+
+    public bool IsLoggedInToCosServer
+    {
+        get { return isLoggedInToCosServer; }
+        set { isLoggedInToCosServer = value; }
+    }
 
     public static NetworkManagerCOS getInstance()
     {
@@ -50,10 +59,7 @@ public class NetworkManagerCOS : NetworkAbstractManager
         ResponseClient args = response as ResponseClient;
         Constants.SESSION_ID_COS = args.session_id;
 
-        Send(
-            LoginProtocol.Prepare(GameState.account.username, GameState.account.password),
-            ProcessLogin
-        );
+        sendLoginReq();
     }
 
     public void ProcessLogin(NetworkResponse response)
@@ -63,11 +69,28 @@ public class NetworkManagerCOS : NetworkAbstractManager
         if (args.status == 0)
         {
             Debug.Log("Succesfully logged to COS server" + args.status);
+            isLoggedInToCosServer = true;
         }
         else
         {
             Debug.Log("login to cos server failed, server message = " + args.status);
+            isLoggedInToCosServer = false;
+            if (retryOnce)
+            {
+                retryOnce = false;
+                sendLoginReq();
+            }
+
             //mainObject.GetComponent<Main>().CreateMessageBox("Login Failed");
         }
+    }
+
+    void sendLoginReq()
+    {
+        Send(
+            LoginProtocol.Prepare(GameState.account.username, GameState.account.password),
+            //                    LoginProtocol.Prepare("dule", "qwerty"),
+            ProcessLogin
+        );
     }
 }

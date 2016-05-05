@@ -15,11 +15,13 @@ public class ClashSplash : MonoBehaviour
 	
     public Texture animals;
     private Rect windowRect;
+    private bool clashEntryProcessed;
 
     void Awake()
     {
         manager = GameObject.Find("MainObject").AddComponent<ClashGameManager>();
         GameObject.Find("MainObject").AddComponent<NetworkManagerCOS>();
+        clashEntryProcessed = false;
     }
 	
     // Use this for initialization
@@ -33,25 +35,25 @@ public class ClashSplash : MonoBehaviour
                     manager.availableSpecies = response.speciesList;
                 }));
 		
-        yield return StartCoroutine(Execute(ClashEntryProtocol.Prepare(), (res) =>
-                {
-                    var response = res as ResponseClashEntry;
-                    if (response.config != null)
-                    {
-                        manager.defenseConfig = new ClashDefenseConfig();
-                        foreach (var pair in response.config)
-                        {
-                            var species = manager.availableSpecies.SingleOrDefault((el) => el.id == pair.Key);
-                            manager.defenseConfig.layout.Add(species, pair.Value);
-                        }
-                        manager.defenseConfig.terrain = response.terrain;
-                        Game.LoadScene("ClashMain");
-                    }
-                    else
-                    {
-                        Game.LoadScene("ClashDefenseShop");
-                    }
-                }));
+//        yield return StartCoroutine(Execute(ClashEntryProtocol.Prepare(), (res) =>
+//                {
+//                    var response = res as ResponseClashEntry;
+//                    if (response.config != null)
+//                    {
+//                        manager.defenseConfig = new ClashDefenseConfig();
+//                        foreach (var pair in response.config)
+//                        {
+//                            var species = manager.availableSpecies.SingleOrDefault((el) => el.id == pair.Key);
+//                            manager.defenseConfig.layout.Add(species, pair.Value);
+//                        }
+//                        manager.defenseConfig.terrain = response.terrain;
+//                        Game.LoadScene("ClashMain");
+//                    }
+//                    else
+//                    {
+//                        Game.LoadScene("ClashDefenseShop");
+//                    }
+//                }));
     }
 
     IEnumerator Execute(NetworkRequest req, NetworkManagerCOS.Callback cb)
@@ -80,5 +82,29 @@ public class ClashSplash : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (NetworkManagerCOS.getInstance().IsLoggedInToCosServer && !clashEntryProcessed)
+        {
+            clashEntryProcessed = true;
+            NetworkManagerCOS.getInstance().Send(ClashEntryProtocol.Prepare(), (res) =>
+                {
+                    var response = res as ResponseClashEntry;
+                    if (response.config != null)
+                    {
+                        manager.defenseConfig = new ClashDefenseConfig();
+                        foreach (var pair in response.config)
+                        {
+                            var species = manager.availableSpecies.SingleOrDefault((el) => el.id == pair.Key);
+                            manager.defenseConfig.layout.Add(species, pair.Value);
+                        }
+                        manager.defenseConfig.terrain = response.terrain;
+                        Game.LoadScene("ClashMain");
+                    }
+                    else
+                    {
+                        Game.LoadScene("ClashDefenseShop");
+                    }
+
+                });
+        }
     }
 }

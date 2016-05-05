@@ -76,6 +76,7 @@ ModelImporter:
     7400002: Armature|eat
     7400004: Armature|walk
     7400006: Armature|walk0
+    7400008: Armature|eat0
     9500000: //RootNode
     13700000: Elephant.001
   materials:

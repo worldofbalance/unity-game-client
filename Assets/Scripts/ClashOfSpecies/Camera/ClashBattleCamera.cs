@@ -5,9 +5,13 @@ public class ClashBattleCamera : MonoBehaviour
 {
 
     private SphereCollider reticle = null;
-    private Terrain surface = null;
+
+    //    [SerializeField]
+    public Terrain surface = null;
+
     private Bounds bounds;
     private Vector3 offset;
+
 
     public Terrain target
     {
@@ -34,8 +38,6 @@ public class ClashBattleCamera : MonoBehaviour
         }
     }
 
-    //    public Terrain test;
-
     public bool dragging = false;
     public Vector3 lastMouse;
     public float yawSpeed = 5.0f;
@@ -43,7 +45,12 @@ public class ClashBattleCamera : MonoBehaviour
     public float moveSpeed = 5.0f;
     public float zoomLevel = 100.0f;
 
+    public float minFOV = 10f;
+    public float maxFOV = 79.9f;
+    private float minX, maxX, minZ, maxZ, minY = 35.0f, maxY = 80.0f;
+    public float terrainCameraPadding = 40;
 
+    Camera _camera;
 
     // Update is called once per frame
     void OnDrawGizmosSelected()
@@ -57,19 +64,30 @@ public class ClashBattleCamera : MonoBehaviour
         lastMouse = Input.mousePosition;
     }
 
+    public void Start()
+    {
+        target = surface;
+
+        _camera = Camera.main;
+        minX = terrainCameraPadding;
+        maxX = Terrain.activeTerrain.terrainData.size.x - terrainCameraPadding;
+        minZ = terrainCameraPadding;
+        maxZ = Terrain.activeTerrain.terrainData.size.z - terrainCameraPadding;
+    }
+
     public void Update()
     {
         if (!reticle)
             return;
 
-//        if (Input.GetMouseButtonDown(1))
-//        {
-//            dragging = true;
-//            lastMouse = Input.mousePosition;
-//        }
-//
-//        if (Input.GetMouseButtonUp(1))
-//            dragging = false;
+        if (Input.GetMouseButtonDown(1))
+        {
+            dragging = true;
+            lastMouse = Input.mousePosition;
+        }
+
+        if (Input.GetMouseButtonUp(1))
+            dragging = false;
 
         var offset = reticle.transform.position - transform.position;
         var tempX = Vector3.Cross(Vector3.up, offset).normalized;
@@ -83,11 +101,17 @@ public class ClashBattleCamera : MonoBehaviour
             var delta = Input.mousePosition - lastMouse;
             transform.RotateAround(reticle.transform.position, Vector3.up, yawSpeed * delta.x);
             transform.RotateAround(reticle.transform.position, tempX, -pitchSpeed * delta.y);
+//            if (transform.position.y >= minY && transform.position.y <= maxY)
+//                transform.RotateAround(reticle.transform.position, tempX, -pitchSpeed * delta.y);
+//            else
+//                transform.position = new Vector3(transform.position.x,
+//                    Mathf.Clamp(_camera.fieldOfView, minY, maxY),
+//                    transform.position.z);
 
             // Counter-rotate to offset overpitch.
             if (transform.rotation.eulerAngles.x > 80.0f)
             {
-                if (transform.position.y > 0.0f)
+                if (transform.position.y > 35.0f)
                 {
                     transform.RotateAround(reticle.transform.position, tempX, -1.0f * (transform.rotation.eulerAngles.x - 85.0f));
                 }
@@ -122,7 +146,15 @@ public class ClashBattleCamera : MonoBehaviour
 
         CheckZoom();
 
-//        checkForPinchZoom();
+    }
+
+    void LateUpdate()
+    {
+        Vector3 pos = new Vector3(
+                          Mathf.Clamp(_camera.transform.position.x, minX, maxX),
+                          _camera.transform.position.y,
+                          Mathf.Clamp(_camera.transform.position.z, minZ, maxZ));
+        _camera.transform.position = pos;
     }
 
     public void CheckZoom()
@@ -133,91 +165,21 @@ public class ClashBattleCamera : MonoBehaviour
         var zoomAxis = (transform.position - reticle.transform.position).normalized;
         if (Input.GetKey(KeyCode.Q))
         {
-            zoomLevel = Mathf.Max(20.0f, zoomLevel - 10.0f);
+//            zoomLevel = Mathf.Max(20.0f, zoomLevel - 2.0f);
+            _camera.fieldOfView -= 1.0f;
         }
 
         if (Input.GetKey(KeyCode.Z))
         {
-            zoomLevel = Mathf.Min(100.0f, zoomLevel + 10.0f);
+//            zoomLevel = Mathf.Min(50.0f, zoomLevel + 2.0f);
+            _camera.fieldOfView += 1.0f;
         }
+        // Clamp the field of view to make sure it's between minFOV and maxFOV.
+        _camera.fieldOfView = Mathf.Clamp(_camera.fieldOfView, minFOV, maxFOV);
 
-        transform.position = reticle.transform.position + (zoomAxis * zoomLevel);
-        transform.LookAt(reticle.transform);
+
+
+//        transform.position = reticle.transform.position + (zoomAxis * zoomLevel);
+//        transform.LookAt(reticle.transform);
     }
-
-    void LateUpdate()
-    {
-        float pinchAmount = 0;
-        Quaternion desiredRotation = transform.rotation;
-
-        DetectTouchMovement.Calculate();
-
-        if (Mathf.Abs(DetectTouchMovement.pinchDistanceDelta) > 0)
-        { // zoom
-            pinchAmount = DetectTouchMovement.pinchDistanceDelta;
-        }
-
-        if (Mathf.Abs(DetectTouchMovement.turnAngleDelta) > 0)
-        { // rotate
-            Vector3 rotationDeg = Vector3.zero;
-            rotationDeg.z = -DetectTouchMovement.turnAngleDelta;
-            desiredRotation *= Quaternion.Euler(rotationDeg);
-        }
-
-
-        // not so sure those will work:
-        transform.rotation = desiredRotation;
-        transform.position += Vector3.forward * pinchAmount;
-    }
-
-    //    public float perspectiveZoomSpeed = 0.5f;
-    //    // The rate of change of the field of view in perspective mode.
-    //    public float orthoZoomSpeed = 0.5f;
-    //    // The rate of change of the orthographic size in orthographic mode.
-    //    private Camera camera;
-
-    //    void Start()
-    //    {
-    //        camera = Camera.main;
-    //    }
-
-    //    private void checkForPinchZoom()
-    //    {
-    //        // If there are two touches on the device...
-    //        if (Input.touchCount == 2)
-    //        {
-    //            // Store both touches.
-    //            Touch touchZero = Input.GetTouch(0);
-    //            Touch touchOne = Input.GetTouch(1);
-    //
-    //            // Find the position in the previous frame of each touch.
-    //            Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
-    //            Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
-    //
-    //            // Find the magnitude of the vector (the distance) between the touches in each frame.
-    //            float prevTouchDeltaMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
-    //            float touchDeltaMag = (touchZero.position - touchOne.position).magnitude;
-    //
-    //            // Find the difference in the distances between each frame.
-    //            float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
-    //
-    //            // If the camera is orthographic...
-    //            if (camera.orthographic)
-    //            {
-    //                // ... change the orthographic size based on the change in distance between the touches.
-    //                camera.orthographicSize += deltaMagnitudeDiff * orthoZoomSpeed;
-    //
-    //                // Make sure the orthographic size never drops below zero.
-    //                camera.orthographicSize = Mathf.Max(camera.orthographicSize, 0.1f);
-    //            }
-    //            else
-    //            {
-    //                // Otherwise change the field of view based on the change in distance between the touches.
-    //                camera.fieldOfView += deltaMagnitudeDiff * perspectiveZoomSpeed;
-    //
-    //                // Clamp the field of view to make sure it's between 0 and 180.
-    //                camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 0.1f, 179.9f);
-    //            }
-    //        }
-    //    }
 }
