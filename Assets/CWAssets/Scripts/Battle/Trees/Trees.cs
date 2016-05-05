@@ -34,10 +34,10 @@ public class Trees : MonoBehaviour {
 
         if (player.player1) { //Your name is pink
             //transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
-            transform.Find ("NameText").GetComponent<TextMesh> ().color = Color.magenta;
-        } else { //Enemy name is red
+                transform.Find ("NameText").GetComponent<Renderer> ().material.SetColor("_Color", Color.cyan);
+        } else { //Enemy name is redateria
             //transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
-            transform.Find("NameText").GetComponent<TextMesh>().color = Color.red;
+            transform.Find("NameText").GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
         }
         //Set dmg text
         transform.Find("DamageText").GetComponent<TextMesh>().text = "";
@@ -110,9 +110,11 @@ public class Trees : MonoBehaviour {
         
         if(hp <= 0){
             Debug.Log("End Game");  
-
-            this.player.isWon=false;
-            removeAfterDelay = true;
+            
+            if (this.player.playerID != 0) { //if playerID = 0, the other player lost
+                this.player.isWon = false;
+            }
+                removeAfterDelay = true;
         }
         
     }

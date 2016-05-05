@@ -1,15 +1,16 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Config.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/CWAssets/Scripts/Battle/Trees/Trees.cs">
     <Files>
-      <File FileName="Assets\Game.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Network\NetworkCode.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Network\NetworkProtocolTable.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\ConvergeGame\MultiConvergeGame.cs" Line="251" Column="26" />
-      <File FileName="Assets\Scripts\MultiplayerGames.cs" Line="114" Column="65" />
-      <File FileName="Assets\Scripts\Login.cs" Line="154" Column="18" />
-      <File FileName="Assets\Scripts\Config.cs" Line="7" Column="5" />
-      <File FileName="Assets\Scripts\Constants.cs" Line="11" Column="5" />
+      <File FileName="Assets/CWAssets/CWGame.cs" Line="1" Column="1" />
+      <File FileName="Assets/Game.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Config.cs" Line="1" Column="1" />
+      <File FileName="Assets/CWAssets/Scripts/Constants.cs" Line="22" Column="69" />
+      <File FileName="Assets/CWAssets/Scripts/Battle/Actions/EndTurnAction.cs" Line="1" Column="1" />
+      <File FileName="Assets/CWAssets/Scripts/Battle/Cards/AbstractCard.cs" Line="58" Column="65" />
+      <File FileName="Assets/CWAssets/Scripts/Battle/Cards/Handler/InHand.cs" Line="1" Column="1" />
+      <File FileName="Assets/CWAssets/Scripts/Battle/BattlePlayer.cs" Line="1" Column="1" />
+      <File FileName="Assets/CWAssets/Scripts/Battle/Trees/Trees.cs" Line="47" Column="59" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

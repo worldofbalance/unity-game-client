@@ -15,7 +15,8 @@ namespace CW
 		private Vector3 oriPosition;
 		private Vector3 newPosition;
 		private bool zoomed = false;
-        private bool clicked = false, removeAfterDelay,frozen = false;
+        private bool clicked = false, removeAfterDelay;
+        public bool frozen = false;
 		//VELOCITY
 		private Vector3 targetPosition, startPosition;
 		private float velocity, terminalVelocity, angle, distance;
@@ -68,12 +69,22 @@ namespace CW
             else // for weather, its blue similar to food card
             {
                 cardTexture = (Texture2D)Resources.Load("Images/Battle/cardfront_f", typeof(Texture2D));
-                if(this.name.Equals("Acacia"))
+                if (this.name.Equals("Acacia"))
+                {
                     speciesTexture = (Texture2D)Resources.Load("Images/Battle/fire", typeof(Texture2D));
+                    this.name="Fire";
+                }
                 else if(this.name.Equals("Big Tree"))
+                {
                     speciesTexture = (Texture2D)Resources.Load("Images/Battle/freez", typeof(Texture2D));
+                    this.name="Freez";
+                }
                 else
+                {
                     speciesTexture = (Texture2D)Resources.Load("Images/Battle/rain", typeof(Texture2D));
+                    this.name="Rain";
+                }
+                    
             }
 
 			//Changing cardfront texture
@@ -94,7 +105,7 @@ namespace CW
 			transform.Find ("DamageText").GetComponent<MeshRenderer> ().material.color = Color.red;
 
 			//Initializes off screen
-			transform.position = new Vector3 (1000, 1000, 1000);
+			transform.position = new Vector3 (9999, 9999, 9999);
 
 			//rotate facedown if player 2
 			if (!player.player1 && !Constants.SINGLE_PLAYER) {
@@ -240,8 +251,15 @@ namespace CW
             this.canAttackNow = canAttackNow;	
 		}
         public void freeze(){
+            
             frozen = true;
-            frozenTurns = 1;
+
+        }
+
+        public void unfreeze(){
+            
+            frozen = false;
+
         }
 		public bool canAttack ()
 		{
@@ -272,9 +290,7 @@ namespace CW
 			target.hp += deltaHealth;
 		}
 
-		public void applyWeatherEffect(int weather){
 
-		}
 	
 		public void attackTree (Trees tree)
 		{
@@ -298,12 +314,10 @@ namespace CW
              * P2 animals frozenTurns--, frozenTurns = 0
              * P2 animals still frozen, end turn, frozen = false
              */
+            
             canAttackNow = true;
-            if (player == GameManager.player1) {
-                frozen = false;
-            } else {
-
-            }
+            frozen=false;
+            
 		}
         public void Remove(){
             removeAfterDelay = true;
@@ -418,10 +432,16 @@ namespace CW
 			}
             if (canAttack()) {
                 transform.Find ("DoneText").GetComponent<TextMesh> ().text = "";
-            } else if (!canAttackNow) {
+            } 
+            else if (!canAttackNow) {
                 ((Behaviour)GetComponent("Halo")).enabled = false;
                 transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Done";
-            } else if (frozen) {
+            }
+            if(player.currentMana < getManaCost ())
+            {
+                ((Behaviour)GetComponent("Halo")).enabled = false;
+            }
+            if (frozen) {
                 ((Behaviour)GetComponent("Halo")).enabled = false;
                 transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Frozen";
             }
@@ -433,6 +453,25 @@ namespace CW
 			}
 			//Moving
 			moving ();
+
+            if(Input.GetMouseButtonDown(0) && player.handCentered)
+                {
+                    Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+                    RaycastHit hit;
+                    if(Physics.Raycast(ray, out hit))
+                    {
+
+                        Debug.Log(hit.transform.gameObject.name);
+                        if(hit.transform.gameObject.name != "Card(Clone)" && hit.transform.gameObject.name != "Cardback(Clone)")
+                        {
+                            Debug.Log("Plane Clicked");
+                            player.handCentered = false;
+                            player.handPos = new Vector3(550, 10, -375);
+                            player.reposition();
+
+                        }
+                    }
+                }
 		}
 
 		//For wrapping long text

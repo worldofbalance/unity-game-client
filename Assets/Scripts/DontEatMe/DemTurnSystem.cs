@@ -17,6 +17,10 @@ public class DemTurnSystem : MonoBehaviour {
   private GameObject mainObject;
   private DemTweenManager tweenManager;
   DemTile tile;
+  private int lives;
+  private BuildMenu buildMenu;
+  private int credits;
+
 
   void Awake()
   {
@@ -25,7 +29,16 @@ public class DemTurnSystem : MonoBehaviour {
     board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
     main = mainObject.GetComponent<DemMain> ();
     tweenManager = mainObject.GetComponent<DemTweenManager> ();
+    buildMenu = mainObject.GetComponent<BuildMenu> ();
+    lives = 3;
+    credits = 0;
 
+
+  }
+
+  void Start()
+  {
+    buildMenu.UpdateLives (lives);
   }
 	
 
@@ -33,6 +46,7 @@ public class DemTurnSystem : MonoBehaviour {
   {
 
     turnLock = true;
+    buildMenu.ToggleButtonLocks ();
     activePredators = board.GetPredators ();
     Debug.Log ("Total predators :" + activePredators.Count);
     foreach(KeyValuePair<int, GameObject> predator in activePredators)
@@ -44,18 +58,24 @@ public class DemTurnSystem : MonoBehaviour {
 	    
       currentTile = board.Tiles [x, y].GetComponent<DemTile> ();
 
-      if(x+1 == 9){
-          //Do the bounds checking first instead of last
-          currentTile.RemoveAnimal (); //remove predator
-          Debug.Log("you lost, or whatever, bla bla bla...");
-          continue;
+      if (x + 1 == 9) {
+        //Do the bounds checking first instead of last
+        //currentTile.RemoveAnimal (); //remove predator
+          
+        //Debug.Log ("you lost, or whatever, bla bla bla...");
+        Debug.Log("arrived at final tile");
+        tweenList.Enqueue (new DemPredatorExitTween (predator.Value,  500));
+        //continue;
+
+      } else {
+        
+
+        nextTile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
+
+
+        animal.SetNextTile (nextTile);
+        tweenList.Enqueue (new DemTileTransitionTween (predator.Value, nextTile.GetCenter (), 500));
       }
-
-      nextTile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
-
-
-      animal.SetNextTile (nextTile);
-      tweenList.Enqueue(new DemTileTransitionTween (predator.Value, nextTile.GetCenter (), 700));
 
     }
 
@@ -86,6 +106,9 @@ public class DemTurnSystem : MonoBehaviour {
       }
 
       if(nextAnimal.isPrey()){
+        DemAudioManager.audioSelection.Play ();
+        credits++;
+        buildMenu.UpdateCredits (credits);
         markForDeletion = true;
       }
 
@@ -105,6 +128,27 @@ public class DemTurnSystem : MonoBehaviour {
       
     ProcessTweens ();
 
+
+  }
+
+
+  public void PredatorExit(GameObject finishedPredator){
+
+    BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
+    predator.GetTile ().RemoveAnimal ();
+    lives--;
+    buildMenu.UpdateLives (lives);
+
+    if (lives == 0) {
+      
+      GameOver ();
+    
+    } else {
+
+      activePredators.Remove(finishedPredator.GetInstanceID());
+      ProcessTweens ();
+
+    }
 
   }
 
@@ -140,13 +184,21 @@ public class DemTurnSystem : MonoBehaviour {
       //GenerateNewPredators ();
       tweenList.Clear();
       turnLock = false;
+      buildMenu.ToggleButtonLocks ();
     }
 
   }
 
+  public int GetLives(){
+    return lives;
+  }
 
 
 
+  public void GameOver(){
+    turnLock = true;
+    Debug.Log ("game Over");
+  }
 
 
 }

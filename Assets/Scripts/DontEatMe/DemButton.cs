@@ -11,7 +11,8 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     public GameObject buttonPrefab;
 
     //Canvas Object
-    public GameObject canvasObject;
+    //public GameObject canvasObject;
+	  public GameObject mainUIObject;
 
     //Panel Object
     public GameObject panelObject;
@@ -34,8 +35,11 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     void Awake()
     {
         buttonPrefab = Resources.Load<GameObject>("DontEatMe/Prefabs/Button");
-        canvasObject = GameObject.Find("Canvas");
-        panelObject = GameObject.Find("Canvas/Panel");
+
+        //canvasObject = GameObject.Find("Canvas");
+		panelObject = GameObject.Find("Canvas/Panel");
+		mainUIObject = GameObject.Find("Canvas/mainUI");
+        //panelObject = GameObject.Find("Canvas/mainUI/Panel");
 
         xSize = buttonPrefab.GetComponent<RectTransform>().sizeDelta.x;
         ySize = buttonPrefab.GetComponent<RectTransform>().sizeDelta.y;
@@ -53,13 +57,15 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         button.name = name;
         buttonId += 1;
 
-        button.transform.SetParent(canvasObject.transform);
+        //button.transform.SetParent(canvasObject.transform);
+		    button.transform.SetParent(mainUIObject.transform);
 
         // Set the position of the button
 
         button.GetComponent<RectTransform>().sizeDelta = new Vector2(xSize, ySize);
         button.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
         button.GetComponent<RectTransform>().pivot = new Vector2(0, 1);
+
 
         return button;
     }
@@ -78,7 +84,13 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         buttonImage.AddComponent<Image>();
         buttonImage.GetComponent<Image>().sprite = species.GetImage();
         buttonImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-        buttonImage.GetComponent<RectTransform>().localScale = new Vector3(0.7f, 0.7f, 1);
+        buttonImage.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+        buttonImage.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+
+        buttonImage.GetComponent<RectTransform>().offsetMax = new Vector2(-7, -7);
+        buttonImage.GetComponent<RectTransform>().offsetMin = new Vector2(7, 7);
+        //buttonImage.GetComponent<RectTransform> ().
+        //buttonImage.GetComponent<RectTransform>().localScale = new Vector3(0.7f, 0.7f, 1);
     }
 
     // Create text for the button
@@ -93,6 +105,7 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         //Set text and its position on the button
         buttonText.AddComponent<Text>();
         buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Chalkboard");
+		    buttonText.GetComponent<Text> ().fontSize = (int)(Screen.width/42);
         buttonText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
         buttonText.GetComponent<Text>().color = Color.black;
         buttonText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
@@ -131,31 +144,33 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (eventData.pointerEnter == this.gameObject)
-        {
+        
+            panelObject.SetActive(true);
+            panelObject.transform.position = new Vector3(Input.mousePosition.x + 180, Input.mousePosition.y);
             if (this.gameObject.transform.GetChild(0).gameObject.activeSelf)
             {
-                panelObject.transform.GetChild(0).GetComponent<Image>().sprite = this.gameObject.transform.GetChild(0).GetComponent<Image>().sprite;
+                //panelObject.transform.GetChild(0).GetComponent<Image>().sprite = this.gameObject.transform.GetChild(0).GetComponent<Image>().sprite;
                 panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(0).gameObject.name;
                 //panelObject.transform.GetChild(2).GetComponent<Text>().text = ;
             }
 
             else
             {
-                panelObject.transform.GetChild(0).GetComponent<Image>().sprite = this.gameObject.transform.GetChild(1).GetComponent<Image>().sprite;
+                //panelObject.transform.GetChild(0).GetComponent<Image>().sprite = this.gameObject.transform.GetChild(1).GetComponent<Image>().sprite;
                 panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(1).gameObject.name;
             }
 
-                panelObject.transform.GetChild(0).gameObject.SetActive(true);
+                //panelObject.transform.GetChild(0).gameObject.SetActive(true);
                 panelObject.transform.GetChild(1).gameObject.SetActive(true);
-        }
+       
        
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        panelObject.transform.GetChild(0).gameObject.SetActive(false);
-        panelObject.transform.GetChild(1).gameObject.SetActive(false);
+        panelObject.SetActive(false);
+        //panelObject.transform.GetChild(0).gameObject.SetActive(false);
+        //panelObject.transform.GetChild(1).gameObject.SetActive(false);
     }
 
     

@@ -11,6 +11,7 @@ public class DemTile : MonoBehaviour
   	public int idX; // X-coord for DemTile
   	public int idY; // Y-coord for DemTile
     public Color currentColor;
+    public Color rangeColor; // Color for plant range indicator pulse
 
     public bool available;
 
@@ -23,13 +24,29 @@ public class DemTile : MonoBehaviour
     public GameObject panelObject;
     private DemMain main;
     private DemTurnSystem turnSystem;
-    
+
+    private IEnumerator pulse; // Called as a coroutine to start/stop pulsing of tile colors
+    private bool hasPulse; // Denotes if tile has currently active pulse
+    private const float defaultPulseFrequency = 0.625f; // Default pulse frequency
+    private const float defaultPulseFactor = 0.1f; // Default value for synchronizing pulse modulation with frequency
+    public float DefaultPulseFrequency { get { return defaultPulseFrequency; } } // Public accessor
+
+    // Values for defining a restore point for pulse
+    private Color restoreColor1;
+    private Color restoreColor2;
+    private float restoreColorFrequency;
+
+    private static int pulseTick; // Synchronizes each pulse
+    private static float pulseFactor; // Synchronizes pulse modulation with frequency
+    private static float masterPulseFrequency; // Master pulse frequency
+    private static bool masterPulseEnabled; // True if master pulse clock enabled
 
     // Use this for initialization
     void Start ()
     {
         mainObject = GameObject.Find ("MainObject");
         panelObject = GameObject.Find("Canvas/Panel");
+		//panelObject = GameObject.Find("Canvas/mainUI/Panel");
         buildMenu = mainObject.GetComponent<BuildMenu> ();
         main = mainObject.GetComponent<DemMain> ();
         turnSystem = mainObject.GetComponent<DemTurnSystem> ();
@@ -44,13 +61,167 @@ public class DemTile : MonoBehaviour
         // Set resident to null
         resident = null;
 
-
         center = this.GetComponent<Renderer>().bounds.center;
         center.z = -1.5f;
 
         
 
-        this.currentColor = Color.white;
+        currentColor = Color.white;
+
+        // Set initial pulse parameters
+        ResetPulse();
+        SetRestorePulse(Color.white, new Color(0.7f, 0.7f, 0.7f));
+        hasPulse = false;
+        pulseTick = 0;
+        pulseFactor = defaultPulseFactor;
+        masterPulseFrequency = defaultPulseFrequency;
+        rangeColor = new Color(40f/255f, 170f/255f, 220f/255f);
+
+        // Enable master pulse if needed
+        if (!masterPulseEnabled)
+        {
+            StartCoroutine(EnableMasterPulse());
+            masterPulseEnabled = true;
+        }
+    }
+
+    /**
+        Static method for DemTile pulse synchronization.
+    */
+    static IEnumerator EnableMasterPulse ()
+    {
+        float delayFactor = pulseFactor / 2.0f;
+        while (true)
+        {
+            yield return new WaitForSeconds(delayFactor / masterPulseFrequency);
+            pulseTick ++;
+        }
+    }
+
+    /**
+        Defines and returns a coroutine for pulsing between two different colors at a particular frequency.
+        An optional delay to start the coroutine may be specified in seconds.
+        Note that by default, the pulse is synced with the master clock defined by EnableMasterPulse.
+        Also note that defining a non-positive pulse factor will set the tile to a solid color specified by 'color1'.
+    */
+    IEnumerator Pulse
+    (
+        Color color1, 
+        Color color2, 
+        float frequency = defaultPulseFrequency, 
+        float pulseFactor = defaultPulseFactor,
+        bool syncWithMaster = true
+    )
+    {
+        if (syncWithMaster)
+        {
+            for (int i = pulseTick; true; i = pulseTick)
+            {
+                this.GetComponent<Renderer>().material.color = Color.Lerp(color1, color2, Mathf.PingPong(pulseTick * pulseFactor, 1.0f));
+                while (i == pulseTick)
+                    yield return null;
+            }
+        }
+        else
+        {
+            float delayFactor = 0.5f * pulseFactor;
+
+            for (int i = 0; true; i++)
+            {
+                this.GetComponent<Renderer>().material.color = Color.Lerp(color1, color2, Mathf.PingPong(i * pulseFactor, 1.0f));
+                yield return new WaitForSeconds(delayFactor / frequency);
+            }
+        }
+    }
+
+
+    /**
+        Sets the pulse parameters.
+        Changes will affect both active and inactive pulses.
+    */
+    public void SetPulse
+    (
+        Color color1, 
+        Color color2, 
+        float frequency = defaultPulseFrequency, 
+        float pulseFactor = defaultPulseFactor,
+        bool syncWithMaster = true
+    )
+    {
+        if (hasPulse)
+        {
+            SignalPulse(false);
+            pulse = Pulse(color1, color2, frequency, pulseFactor, syncWithMaster);
+            SignalPulse(true);
+        }
+        else
+            pulse = Pulse(color1, color2, frequency, pulseFactor, syncWithMaster);
+    }
+
+    /**
+        Resets pulse to default values.
+    */
+    public void ResetPulse ()
+    {
+        pulse = Pulse(Color.white, new Color(0.7f, 0.7f, 0.7f));
+    }
+
+    /**
+        Sets the pulse to its restore point.
+    */
+    void RestorePulse ()
+    {
+        if (hasPulse)
+        {
+            SignalPulse(false);
+            pulse = GetRestorePulse();
+            SignalPulse(true);
+        }
+        else
+            pulse = GetRestorePulse();
+    }
+
+    /**
+        Defines the restore pulse.
+    */
+    public void SetRestorePulse (Color color1, Color color2, float frequency = defaultPulseFrequency)
+    {
+        restoreColor1 = color1;
+        restoreColor2 = color2;
+        restoreColorFrequency = frequency;
+    }
+
+    /**
+        Returns a pulse instance as a restore.
+    */
+    IEnumerator GetRestorePulse ()
+    {
+        return Pulse(restoreColor1, restoreColor2, restoreColorFrequency);
+    }
+
+    /**
+        Sends a signal to activate (signal = true) or deactivate (signal = false) the Pulse coroutine.
+
+        Ignores activation signals if a pulse coroutine is currently active, preventing pulse overlap.
+        Note that the pulse parameters must be defined with SetPulse prior to calling, otherwise the current values
+        will be used.
+    */
+    public void SignalPulse (bool signal)
+    {
+        if (signal)
+        {
+            if (!hasPulse)
+            {
+                StartCoroutine(this.pulse);
+                hasPulse = true;
+            }
+        }
+
+        else if (hasPulse)
+        {
+            StopCoroutine(this.pulse);
+            hasPulse = false;
+        }
     }
 
     /**
@@ -58,24 +229,73 @@ public class DemTile : MonoBehaviour
     */
     void OnMouseEnter ()
     {
-        
-        // Set highlight color
-        // TODO: change highlight color based on a tile's legality
-        if (buildMenu.currentAnimalFactory!= null) {
-         if (available)
-	            this.GetComponent<Renderer>().material.color = Color.cyan;
+        // Set tile pulse
+        // If building...
+        if (buildMenu.currentAnimalFactory != null)
+        {
+            if (available)
+            {
+                // As build origin, paint a solid color (no pulse)
+                SetPulse(Color.cyan, Color.cyan, 0, 0);
+
+                // Pulse the range tiles for a plant
+                if (buildMenu.currentAnimalFactory.GetType() == 0)
+                {
+                    // Grab range offset data for the plant
+                    int[][] range = SpeciesConstants.Range(buildMenu.currentAnimalFactory.GetName());
+                    foreach (int[] coord in range)
+                    {
+                        // Skip tiles that are out of range
+                        if (idX + coord[0] < 0 || idX + coord[0] > 8 || idY + coord[1] < 0 || idY + coord[1] > 4)
+                            continue;
+
+                        // If tile is free, set pulse
+                        DemTile tile =  main.boardController.Tiles[idX + coord[0], idY + coord[1]].GetComponent<DemTile>();
+                        if (!tile.resident)
+                            tile.SetPulse(rangeColor, Color.white);
+                    }
+                }
+
+            }
+
+            // If not available, pulse red
 	        else
-	            this.GetComponent<Renderer>().material.color = Color.red;
+            {
+                SetPulse(Color.red, Color.Lerp(Color.red, Color.white, 0.25f), 0.25f, 0.05f, false);
+                SignalPulse(true);
+            }
+        // If not building...
         }
-        else {
-        	this.GetComponent<Renderer>().material.color = Color.gray;
+        else
+        {
+            // Sublte white-to-gray for empty cursor
+            SetPulse(Color.white, new Color(0.7f, 0.7f, 0.7f));
+            SignalPulse(true);
+
+            // If tile occupied, output some stats
             if (resident)
             {
                 Debug.Log(resident.name + " is here");
-                panelObject.transform.GetChild(0).GetComponent<Image>().sprite = resident.GetComponent<SpriteRenderer>().sprite;
+                BuildInfo info = resident.GetComponent<BuildInfo>();
+
+                // Determine Health or Hunger text
+                string healthLevel = "";
+                if (SpeciesConstants.SpeciesType(info.name) == 1)
+                    healthLevel = "Health: " + (info as PreyInfo).GetHealth().ToString();
+                else if (SpeciesConstants.SpeciesType(info.name) == 2)
+                    healthLevel = "Hunger: " + (info as PredatorInfo).GetHunger().ToString();
+
+                //panelObject.transform.GetChild(0).GetComponent<Image>().sprite = resident.GetComponent<SpriteRenderer>().sprite;
+                if (resident.transform.position.x < 2)
+                    panelObject.transform.position = new Vector3(Input.mousePosition.x + 150, Input.mousePosition.y);
+                else
+                    panelObject.transform.position = new Vector3(Input.mousePosition.x, Input.mousePosition.y);
+                panelObject.SetActive(true);
                 panelObject.transform.GetChild(1).GetComponent<Text>().text = resident.name;
-                panelObject.transform.GetChild(0).gameObject.SetActive(true);
+                panelObject.transform.GetChild(2).GetComponent<Text>().text = healthLevel;
+                //panelObject.transform.GetChild(0).gameObject.SetActive(true);
                 panelObject.transform.GetChild(1).gameObject.SetActive(true);
+                panelObject.transform.GetChild(2).gameObject.SetActive(true);
             }
         }
 
@@ -87,9 +307,39 @@ public class DemTile : MonoBehaviour
     void OnMouseExit ()
     {
         // Reset highlight color
-      this.GetComponent<Renderer>().material.color = currentColor;
-        panelObject.transform.GetChild(0).gameObject.SetActive(false);
+        if (buildMenu.currentAnimalFactory != null && available)
+        {
+            // ... for current tile
+            RestorePulse();
+
+            // ... for plant range tiles (if building)
+            if (buildMenu.currentAnimalFactory.GetType() == 0)
+            {
+                int[][] range = SpeciesConstants.Range(buildMenu.currentAnimalFactory.GetName());
+                foreach (int[] coord in range)
+                {
+                    // Skip tiles that are out of range
+                    if (idX + coord[0] > 8 || idX + coord[0] < 0 || idY + coord[1] > 4 || idY + coord[1] < 0)
+                        continue;
+
+                    DemTile tile =  main.boardController.Tiles[idX + coord[0], idY + coord[1]].GetComponent<DemTile>();
+                    // Tile must be free
+                    if (!tile.resident)
+                        // Set the pulse for each tile
+                        tile.RestorePulse();
+                }
+            }
+        }
+        else
+        {
+            SignalPulse(false);
+            this.GetComponent<Renderer>().material.color = currentColor;
+        }
+        //panelObject.transform.GetChild(0).gameObject.SetActive(false);
+        panelObject.SetActive(false);
         panelObject.transform.GetChild(1).gameObject.SetActive(false);
+        panelObject.transform.GetChild(2).gameObject.SetActive(false);
+
     }
 
     /**

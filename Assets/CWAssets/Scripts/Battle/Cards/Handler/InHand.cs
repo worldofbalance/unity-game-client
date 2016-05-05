@@ -16,7 +16,8 @@ namespace CW
             //DebugConsole.Log("affect in hand, diet="+card.diet+card.dietChar);
 
 			//set Max card in field.
-			if (player.isActive && player.currentMana >= card.getManaCost () && player == GameManager.player1) {
+			if (player.isActive && player.currentMana >= card.getManaCost () && player == GameManager.player1) 
+            {
 		
 				GameObject removeCard = (GameObject)player.hand [player.hand.IndexOf (card.gameObject)];
 		
@@ -49,8 +50,10 @@ namespace CW
                     player.hand.Remove (removeCard);
                     GameObject.Destroy(removeCard);
                     player.currentMana -= card.getManaCost ();
+
                     player.applyWeather(card.cardID, true);
                     GameManager.player2.applyWeather(card.cardID,true);
+
                     player.getProtocolManager().sendWeatherCard(player.playerID, card.cardID);
                 }
                 else if(card.diet == AbstractCard.DIET.FOOD){
@@ -61,6 +64,7 @@ namespace CW
 				}
 
 			}
+            
 	
 		}
 		void startFoodCard(){
