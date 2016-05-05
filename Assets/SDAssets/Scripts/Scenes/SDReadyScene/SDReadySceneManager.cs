@@ -47,8 +47,8 @@ namespace SD {
             isOpponentReady = false;
 
             if (SDMain.networkManager != null) {
-                SDMain.networkManager.Listen (NetworkCode.SD_START_GAME, ResponseSDStartGame);
-                SDMain.networkManager.Listen (NetworkCode.SD_PLAYER_POSITION, ResponseSDStartSync);
+                //SDMain.networkManager.Listen (NetworkCode.SD_START_GAME, ResponseSDStartGame);
+                //SDMain.networkManager.Listen (NetworkCode.SD_PLAYER_POSITION, ResponseSDStartSync);
             }else {
                 Debug.LogWarning ("Could not obtain a connection to Sea Divided Server. Falling back to offline mode.");
             }

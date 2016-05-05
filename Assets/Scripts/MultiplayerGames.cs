@@ -115,6 +115,15 @@ public class MultiplayerGames : MonoBehaviour {
         GUI.enabled = enableSDButton;
         if (GUI.Button(new Rect(165, windowRect.height - 40, 160, 30), "Play Sea Divided")) {
             Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_SEA_DIVIDED, -1));
+            foreach (var item in RoomManager.getInstance().getRooms()) {
+                if (item.Value.host == GameState.player.GetName ()) {
+                    SD.SDMain.networkManager.Send (
+                        SD.SDPlayInitProtocol.Prepare (SD.Constants.USER_ID, item.Key), 
+                        SDProcessPlayInit
+                    );
+                    break;
+                }
+            } 
         }
 
 		GUI.enabled = true;
@@ -185,12 +194,15 @@ public class MultiplayerGames : MonoBehaviour {
                     (GameState.player.GetID(), args.id), 
                     ProcessMatchInit);
             } else if (args.gameID == Constants.MINIGAME_SEA_DIVIDED) {
-                gameObject.AddComponent <SD.SDMain>();
-                SD.SDMain.networkManager.Send (SD.SDPlayInitProtocol.Prepare (
-                SD.Constants.USER_ID, this.room_id), SDProcessPlayInit);
+                if (GameState.player.GetName () != room.host) {
+                    SD.SDMain.networkManager.Send (
+                        SD.SDPlayInitProtocol.Prepare (SD.Constants.USER_ID, this.room_id), 
+                        SDProcessPlayInit
+                    );
+                }
                 /*SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
-                sManager.Send(SD_RequestPlayInit());
-                Game.SwitchScene ("SDReadyScene");*/
+                sManager.Send(SD_RequestPlayInit()); */
+                //Game.SwitchScene ("SDReadyScene");
             } else if (args.gameID == Constants.MINIGAME_MULTI_CONVERGENCE) {
 				// DH change
 				MultiConvergeGame.matchID = args.id;   // game id
@@ -258,6 +270,7 @@ public class MultiplayerGames : MonoBehaviour {
     public void SDProcessPlayInit(NetworkResponse response) {
         SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;
         SD.Constants.PLAYER_NUMBER = args.playerNumber;
+        Debug.Log ("This is player number " + SD.Constants.PLAYER_NUMBER);
         Game.SwitchScene ("SDReadyScene");
     }
 
