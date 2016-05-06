@@ -19,10 +19,10 @@ public class Boundary
 
 public class PlayerController : MonoBehaviour {
     Rigidbody rb;
-    private const int MindSpeed = 35;
-    private float speed = 40;
+    private const int MindSpeed = 40;
+    private float speed = 45;
     public float speedUpFactor = 1.5f;
-    private const int MaxSpeed = 60;
+    private const int MaxSpeed = 80;
     private float turnSpeed = 10f;
     private Vector3 turn;
     private Vector3 goUpDown;
@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour {
     private float movementHorizontal;
     private float movementVertical;
     private float xRotationAngle;
+    private Vector3 target;
 
     public Boundary boundary;
     private Vector3 scale;
@@ -115,6 +116,7 @@ public class PlayerController : MonoBehaviour {
     //              as long as the player keeps on presing a space bar
     void Update(){
         currentStamina = gameController.GetStamina();
+           
             if (Input.GetMouseButton(0))
             {
                 var mouse = Input.mousePosition;
@@ -132,24 +134,24 @@ public class PlayerController : MonoBehaviour {
                 transform.rotation = Quaternion.Euler(angle - 180, yAngle, 0);
                 mouse.z = transform.position.z - Camera.main.transform.position.z;
                 mouse = Camera.main.ScreenToWorldPoint(mouse);
+                target = mouse;
 
-                if (Input.GetKey(KeyCode.Space) && currentStamina > 0) {
-                    speed = speed * speedUpFactor;
-                    if (speed > MaxSpeed) { speed = MaxSpeed; }
-                    gameController.SetStamina(currentStamina - .25f);
-                }
-                transform.position = Vector3.MoveTowards(transform.position, mouse, speed * Time.deltaTime);
+               
+              //  transform.position = Vector3.MoveTowards(transform.position, mouse, speed * Time.deltaTime);
             }
 		 if (Input.GetKey(KeyCode.Space) && currentStamina >0){
                  speed = speed * speedUpFactor;
                 if (speed > MaxSpeed) { speed = MaxSpeed; }
                 gameController.SetStamina (currentStamina-.25f);
         }
-            if (isMoving()==false) {
-                speed = MindSpeed;
+
+          transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime); 
+            if (isMoving() == false)
+            {
+                speed = 40; 
                 currentStamina++;
             }
-    }
+        }
 
     // Returns true if the player is moving.
     // Otherwise returns false.
@@ -163,3 +165,4 @@ public class PlayerController : MonoBehaviour {
 
 }
 }
+
