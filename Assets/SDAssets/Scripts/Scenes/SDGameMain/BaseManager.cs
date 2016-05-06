@@ -40,7 +40,8 @@ namespace SD {
         // Runs while the player is staying in the base
         void OnTriggerStay(Collider other) {
             if (other.tag == "Player") {
-                gameController.stamina += staminaRevoverRate;
+                if (gameController)
+                    gameController.stamina += staminaRevoverRate;
 
                 // After couplse seconds that is defined by timeToScore, 
                 // add unscored points to the actual score

@@ -83,6 +83,17 @@ public class NetworkProtocolTable {
 		Add(NetworkCode.RETURN_LOBBY, "CW.ReturnLobby");
 		Add(NetworkCode.APPLY_FOOD, "CW.ApplyFoodBuff");
         Add(NetworkCode.APPLY_WEATHER, "CW.ApplyWeather");
+
+        // Sea Divided
+        Add(NetworkCode.SD_GAME_LOGIN, "SD.SDLogin");
+        Add (NetworkCode.SD_PLAY_INIT, "SD.SDPlayInit");
+        Add (NetworkCode.SD_START_GAME, "SD.SDStartGame");
+        Add (NetworkCode.SD_END_GAME, "SD.SDEndGame");
+        Add (NetworkCode.SD_PLAYER_POSITION, "SD.SDPlayerPosition");
+        Add (NetworkCode.SD_KEYBOARD, "SD.SDKeyboard");
+        Add (NetworkCode.SD_PREY, "SD.SDPrey");
+        Add (NetworkCode.SD_EAT_PREY, "SD.SDDestroyPrey");
+        Add (NetworkCode.SD_SCORE, "SD.SDScore");
 	}
 	
 	public static void Add(short protocol_id, string name) {

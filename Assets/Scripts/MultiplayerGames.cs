@@ -25,22 +25,17 @@ public class MultiplayerGames : MonoBehaviour {
 
 	private int room_id = 0;
 
-    SD.SDMessageQueue sdQueue;
-
 	void Awake() {
 		mainObject = GameObject.Find("MainObject");
 		window_id = Constants.GetUniqueID();
 
 		Game.networkManager.Listen (NetworkCode.PAIR, OnPairResult);
 		Game.networkManager.Listen (NetworkCode.QUIT_ROOM, OnQuitRoomResult);
-        sdQueue = SD.SDMessageQueue.getInstance ();
-        sdQueue.AddCallback (SD.Constants.SMSG_RACE_INIT, SD_ResponsePlayInit);
 	}
 
 	void OnDestroy () {
 		Game.networkManager.Ignore (NetworkCode.PAIR, OnPairResult);
 		Game.networkManager.Ignore (NetworkCode.QUIT_ROOM, OnQuitRoomResult);
-        sdQueue.RemoveCallback (SD.Constants.SMSG_RACE_INIT);
 	}
 
 	// Use this for initialization
@@ -178,7 +173,6 @@ public class MultiplayerGames : MonoBehaviour {
 			if (args.gameID == Constants.MINIGAME_RUNNING_RHINO) {
 				RR.RRConnectionManager cManager = RR.RRConnectionManager.getInstance ();
 				cManager.Send (RR_RequestRaceInit ());
-
 				Game.SwitchScene ("RRReadyScene");
 			} else if (args.gameID == Constants.MINIGAME_CARDS_OF_WILD) {
 				CW.GameManager.matchID = args.id;
@@ -188,9 +182,10 @@ public class MultiplayerGames : MonoBehaviour {
                     (GameState.player.GetID(), args.id), 
                     ProcessMatchInit);
             } else if (args.gameID == Constants.MINIGAME_SEA_DIVIDED) {
-                SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance();
-                sManager.Send(SD_RequestPlayInit());
-                Game.SwitchScene ("SDReadyScene");
+                SD.SDMain.networkManager.Send (
+                    SD.SDPlayInitProtocol.Prepare (SD.Constants.USER_ID, this.room_id), 
+                    SDProcessPlayInit
+                );
             } else if (args.gameID == Constants.MINIGAME_MULTI_CONVERGENCE) {
 				// DH change
 				MultiConvergeGame.matchID = args.id;   // game id
@@ -248,22 +243,17 @@ public class MultiplayerGames : MonoBehaviour {
 		}
 	}
 
-
 	public RR.RequestRaceInit RR_RequestRaceInit ()
 	{
 		RR.RequestRaceInit request = new RR.RequestRaceInit ();
 		request.Send (RR.Constants.USER_ID, this.room_id);
 		return request;
 	}
-    public SD.RequestPlayInit SD_RequestPlayInit()
-    {
-        SD.RequestPlayInit request = new SD.RequestPlayInit();
-        request.Send(SD.Constants.USER_ID, this.room_id);
-        return request;
-    }
-   
-    public void SD_ResponsePlayInit(SD.ExtendedEventArgs eventArgs) {
-        SD.ResponsePlayInitEventArgs args = eventArgs as SD.ResponsePlayInitEventArgs;
+
+    public void SDProcessPlayInit(NetworkResponse response) {
+        SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;
         SD.Constants.PLAYER_NUMBER = args.playerNumber;
+        Game.SwitchScene ("SDReadyScene");
     }
+
 }

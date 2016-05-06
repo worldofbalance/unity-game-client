@@ -28,7 +28,7 @@ namespace SD {
                 Debug.Log ("Touched");
                 int npcFishId = gameObject.GetComponentInParent<NPCFishData> ().getNPCFishData ().id;
                 Debug.Log ("Consumed prey with ID: " + npcFishId);
-                if (GameManager.getInstance().getConnectionManager()) {
+                if (SDMain.networkManager != null) {
                     GameManager.getInstance ().DestroyNPCFish (npcFishId);
                 }
                 gameController.destroyPrey (npcFishId);

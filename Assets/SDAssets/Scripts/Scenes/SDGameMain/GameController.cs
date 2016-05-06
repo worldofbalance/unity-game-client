@@ -89,14 +89,14 @@ namespace SD {
             for (int i = 1; i <= numPrey; i++) {
                 NPCFish npcFish = new NPCFish (i);
                 npcFishes [i] = npcFish;
-                if (sdGameManager.getConnectionManager ()) {
+                if (SDMain.networkManager != null) {
                     sdGameManager.FindNPCFishPosition (i); // Finds and spawns prey at the returned location.
                 } else {
                     spawnPrey (i, Random.Range(0, preyArray.Length-1));
                 }
             }
 
-            if (sdGameManager.getConnectionManager ()) {  // We are playing multiplayer
+            if (SDMain.networkManager != null) {  // We are playing multiplayer
                 rbOpponent = (Rigidbody)Instantiate (opponent, opponentInitialPosition, opponentInitialRotation);
                 rbOpponent.gameObject.SetActive (true);
                 opponentPlayer = new PlayTimePlayer ();
