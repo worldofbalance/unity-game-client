@@ -9,7 +9,7 @@ namespace SD
     public class NPCFishController : MonoBehaviour
     {
         public NPCFish npcFish;
-        private int counter=0;
+
 
         public NPCFish getNPCFishController() {
             return npcFish;
@@ -21,11 +21,26 @@ namespace SD
 
         void Update()
         {
-
-            npcFish.MoveToTarget();
-            if(counter/5>1)npcFish.SetTarget();
-            counter++;
             
+            SetTarget(npcFish);
+            for(int i = 0; i < 3; i++)
+            { MoveToTarget(npcFish); }
+            
+            
+            
+        }
+
+        public void SetTarget(NPCFish Fish)
+        {
+
+            Fish.target = new Vector2(Fish.xPosition + UnityEngine.Random.Range(-2.0f, 2.0f), Fish.yPosition + UnityEngine.Random.Range(-2.0f, 2.0f));
+        }
+
+        public void MoveToTarget(NPCFish Fish)
+        {
+            Fish.xRotationAngle = Vector2.Angle(Fish.current, Fish.target);
+            Fish.current = Vector2.MoveTowards(Fish.current, Fish.target, 35 * Time.deltaTime);
+
         }
     }
 }
