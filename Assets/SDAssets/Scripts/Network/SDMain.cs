@@ -24,6 +24,7 @@ namespace SD
         // Use this for initialization
         void Start()
         {
+            StartCoroutine (RequestInGameHeartbeat()); 
         }
 
         // Update is called once per frame
@@ -31,5 +32,17 @@ namespace SD
         {
             networkManager.Update();
         }
+
+        IEnumerator RequestInGameHeartbeat()
+        {
+            while(true) {
+                // Send a heartbeat request only if we are actually in a game.
+                if (SDPersistentData.getInstance () != null) {
+                    networkManager.Send (SDHeartbeatProtocol.Prepare ());
+                }
+                yield return new WaitForSeconds(Constants.HEARTBEAT_SECONDS);
+            }
+        }
+
     }
 }
