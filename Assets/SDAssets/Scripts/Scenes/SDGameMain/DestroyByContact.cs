@@ -26,7 +26,7 @@ namespace SD {
         void OnTriggerEnter(Collider other) {
             if (other.tag == "Player") {
                 Debug.Log ("Touched");
-                int npcFishId = gameObject.GetComponentInParent<NPCFishData> ().getNPCFishData ().id;
+                int npcFishId = gameObject.GetComponentInParent<NPCFishController>().getNPCFishController().id;
                 Debug.Log ("Consumed prey with ID: " + npcFishId);
                 if (SDMain.networkManager != null) {
                     GameManager.getInstance ().DestroyNPCFish (npcFishId);
