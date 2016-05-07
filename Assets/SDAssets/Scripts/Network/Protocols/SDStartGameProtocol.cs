@@ -16,6 +16,7 @@ namespace SD
         public static NetworkResponse Parse (MemoryStream dataStream) {
             ResponseSDStartGame response = new ResponseSDStartGame ();
             response.status = DataReader.ReadShort(dataStream);
+            response.startDateTime = DataReader.ReadString (dataStream);
             return response;
         }
     }
@@ -23,6 +24,7 @@ namespace SD
     public class ResponseSDStartGame : NetworkResponse
     {
         public short status { get; set; }
+        public string startDateTime { get; set; }
 
         public ResponseSDStartGame ()
         {

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 namespace SD {
@@ -9,6 +10,8 @@ namespace SD {
         private bool isGameCompleted;
         private int winningScore;
         private int gameResult;
+        private DateTime roundStartTime;
+
         private static SDPersistentData sdPersistentData;
         /*private SDConnectionManager cManager; TODO
         private SDMessageQueue mQueue;*/
@@ -45,6 +48,7 @@ namespace SD {
             setIsGameCompleted (false);  // is the current game completed.
             setWinningScore(0);
             setGameResult (0);
+            setRoundStartTime (DateTime.UtcNow.ToString());
         }
 
         public static SDPersistentData getInstance() {
@@ -89,6 +93,16 @@ namespace SD {
 
         public int getGameResult() {
             return gameResult;
+        }
+
+        public void setRoundStartTime(string dateTimeString) {
+            roundStartTime = DateTime.Parse (dateTimeString);
+            Debug.Log ("The Round start time is " + roundStartTime);
+            Debug.Log ("UTC Now is " + DateTime.UtcNow);
+        }
+
+        public DateTime getRoundStartTime() {
+            return roundStartTime;
         }
 
         public void ResponseSDOpponentDisconnect(NetworkResponse r) {

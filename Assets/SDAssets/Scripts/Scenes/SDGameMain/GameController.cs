@@ -55,9 +55,10 @@ namespace SD {
         private Dictionary <int, NPCFish> npcFishes = new Dictionary<int, NPCFish>();
         private Dictionary <int, GameObject> npcFishObjects = new Dictionary<int, GameObject>();
         private bool hasSurrendered;
+        private bool isGameTimeTicking = false;
 
         public GameObject surrenderPanelCanvas;
-
+        public GameObject countdownPanelCanvas;
 
 
         void Awake () {
@@ -102,17 +103,24 @@ namespace SD {
                 opponentPlayer = new PlayTimePlayer ();
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
                 opponentPlayer.yRotation = opponentInitialRotation.eulerAngles.y;
+                isGameTimeTicking = false; // Wait for time sync if in multiplayer mode
+                gameController.countdownPanelCanvas.SetActive (true);
+            } else {
+                isGameTimeTicking = true; // Start the timer immediately if in offline mode
+                gameController.countdownPanelCanvas.SetActive (false);
             }
 
         }
 
         // Automatically revovers stamina, and refreshs staminaText UI every frame.
         void Update() {
-            RecoverStamina ();
-            UpdateStamina ();
-            UpdateUnscoredPoint ();
-            UpdateOpponentScore ();
-            UpdateHealth ();
+            if (getIsGameTimeTicking ()) {
+                RecoverStamina ();
+                UpdateStamina ();
+                UpdateUnscoredPoint ();
+                UpdateOpponentScore ();
+                UpdateHealth ();
+            }
         }
 
         public static GameController getInstance() {
@@ -283,6 +291,14 @@ namespace SD {
 
         public void setOpponentScore(int opScore) {
             opponentScore = opScore;
+        }
+
+        public bool getIsGameTimeTicking() {
+            return isGameTimeTicking;
+        }
+
+        public void setIsGameTimeTicking(bool isTicking) {
+            isGameTimeTicking = isTicking;
         }
     } 
 
