@@ -1,14 +1,29 @@
-﻿<Properties StartupItem="Assembly-CSharp.csproj">
+﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Constants.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleController.cs">
     <Files>
       <File FileName="Assets/Game.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Config.cs" Line="6" Column="6" />
-      <File FileName="Assets/Scripts/Constants.cs" Line="16" Column="50" />
+      <File FileName="Assets/Scripts/Network/NetworkManagerCOS.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleController.cs" Line="140" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Defense/ClashDefenseSetup.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/COSTouchInputControler.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Camera/ClashBattleCamera.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Main/ClashMainMenu.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Config.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Network/NetworkManager.cs" Line="38" Column="43" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/ClashOfSpecies/Battle/SpeciesClickController.cs" line="160" column="1" />
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/ClashOfSpecies/Camera/ClashBattleCamera.cs" line="286" column="1" />
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/ClashOfSpecies/Camera/ClashBattleCamera.cs" line="205" column="1" />
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/ClashOfSpecies/Camera/ClashBattleCamera.cs" line="254" column="26" />
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/Network/Protocol/ClashOfSpecies/ClashDefenseSetupProtocol.cs" line="29" column="1" />
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/ClashOfSpecies/Defense/ClashDefenseSetup.cs" line="81" column="1" />
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/ClashOfSpecies/Camera/ClashBattleCamera.cs" line="337" column="1" />
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/ClashOfSpecies/Battle/ClashBattleController.cs" line="251" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>
