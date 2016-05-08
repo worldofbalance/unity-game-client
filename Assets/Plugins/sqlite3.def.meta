@@ -1,6 +1,11 @@
 fileFormatVersion: 2
-guid: 5f7983f3ae50244529f299ba34d3360d
-timeCreated: 1458444501
+<<<<<<< HEAD
+guid: 674d4941d9b424d91acd8daaa339d16e
+timeCreated: 1458708334
+=======
+guid: fda397ff54964494b861b3498636c3b7
+timeCreated: 1458717787
+>>>>>>> 49fd84d19b5adfcd03ee0eb3ba2b473a62bea23b
 licenseType: Free
 PluginImporter:
   serializedVersion: 1
@@ -9,6 +14,16 @@ PluginImporter:
   isPreloaded: 0
   platformData:
     Any:
+<<<<<<< HEAD
+=======
+      enabled: 0
+      settings: {}
+    Editor:
+      enabled: 0
+      settings:
+        DefaultValueInitialized: true
+    Xbox360:
+>>>>>>> 49fd84d19b5adfcd03ee0eb3ba2b473a62bea23b
       enabled: 1
       settings: {}
   userData: 

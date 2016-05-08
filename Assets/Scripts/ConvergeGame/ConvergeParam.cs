@@ -10,6 +10,10 @@ public class ConvergeParam
 	public string nodeIdParamId { get; set; }
 	public float value { get; set; }
 	public float origVal { get; set; }
+    // DH change to add low and high values to show on slider
+    public float lowRange { get; set; }
+    public float highRange { get; set; }
+    public bool markerEnabled { get; set; }
 
 	public ConvergeParam (string name,
 	                      int nodeId,
@@ -23,6 +27,9 @@ public class ConvergeParam
 		this.value = value;
 		this.origVal = value;
 		this.nodeIdParamId = NodeIdParamId (nodeId, paramId);
+        this.markerEnabled = false;
+        lowRange = -1;
+        highRange = -1;
 	}
 
 	public static string NodeIdParamId (int nodeId, string paramId)
