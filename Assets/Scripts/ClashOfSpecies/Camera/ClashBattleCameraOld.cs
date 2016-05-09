@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
 
-public class ClashBattleCamera : InputControllerBase
+public class ClashBattleCameraOld : MonoBehaviour
 {
 
     private SphereCollider reticle = null;
 
-    private Terrain surface = null;
+    //    [SerializeField]
+    public Terrain surface = null;
 
     private Bounds bounds;
     private Vector3 offset;
@@ -27,9 +27,9 @@ public class ClashBattleCamera : InputControllerBase
             reticle.transform.rotation = Quaternion.identity;
 
             // Set transform position to the initial offset. Assign the offset vector and make camera look at reticle.
-            Camera.main.transform.position = reticle.transform.position + ((Vector3.back + Vector3.up).normalized * zoomLevel);
-            offset = Camera.main.transform.position - reticle.transform.position;
-            Camera.main.transform.LookAt (reticle.transform);
+            transform.position = reticle.transform.position + ((Vector3.back + Vector3.up).normalized * zoomLevel);
+            offset = transform.position - reticle.transform.position;
+            transform.LookAt (reticle.transform);
 
 
             bounds = new Bounds (surface.terrainData.size * 0.5f, surface.terrainData.size);
@@ -48,8 +48,9 @@ public class ClashBattleCamera : InputControllerBase
     private float minX, maxX, minZ, maxZ, minY = 35.0f, maxY = 80.0f;
     public float terrainCameraPadding = 40;
 
-    //    Camera _camera;
+    Camera _camera;
 
+    // Update is called once per frame
     void OnDrawGizmosSelected ()
     {
         Gizmos.DrawCube (bounds.center, bounds.size);
@@ -61,54 +62,31 @@ public class ClashBattleCamera : InputControllerBase
         lastMouse = Input.mousePosition;
     }
 
-    //    COSTouchState // eTouchRes;
-    //
-    //    public COSTouchState TouchState {
-    //        get { return // eTouchRes; }
-    //        set { // eTouchRes = value; }
-    //    }
-
-    public ClashBattleCamera ()
-    {
-        
-
-        eTouchRes = COSTouchState.None;
-//        Gizmos.DrawCube (bounds.center, bounds.size);
-        walkableAreaMask = (int)Math.Pow (2, NavMesh.GetAreaFromName ("Walkable"));
-    }
-
-    public override void InputControllerAwake (Terrain surface)
+    public void Start ()
     {
         target = surface;
 
+        _camera = Camera.main;
         minX = terrainCameraPadding;
         maxX = Terrain.activeTerrain.terrainData.size.x - terrainCameraPadding;
         minZ = terrainCameraPadding;
         maxZ = Terrain.activeTerrain.terrainData.size.z - terrainCameraPadding;
     }
 
-    public override RaycastHit InputUpdate (Camera _camera)
+    public void Update ()
     {
-        RaycastHit hit = new RaycastHit ();
         if (!reticle)
-            return hit;
+            return;
 
         if (Input.GetMouseButtonDown (1)) {
             dragging = true;
-            eTouchRes = COSTouchState.IsPanning;
             lastMouse = Input.mousePosition;
-        } else if (Input.GetMouseButtonUp (1)) {
-            dragging = false;
-            eTouchRes = COSTouchState.None;
-        } else if (Input.GetMouseButtonUp (0)) {
-            eTouchRes = COSTouchState.TerrainTapped;
-            Debug.Log ("clicked using mouse");
-            Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-            if (Physics.Raycast (ray, out hit, 1000))
-                return hit;
         }
 
-        var offset = reticle.transform.position - _camera.transform.position;
+        if (Input.GetMouseButtonUp (1))
+            dragging = false;
+
+        var offset = reticle.transform.position - transform.position;
         var tempX = Vector3.Cross (Vector3.up, offset).normalized;
         var tempZ = Vector3.Cross (tempX, Vector3.up).normalized;
 
@@ -117,24 +95,24 @@ public class ClashBattleCamera : InputControllerBase
 
         if (dragging) {
             var delta = Input.mousePosition - lastMouse;
-            _camera.transform.RotateAround (reticle.transform.position, Vector3.up, yawSpeed * delta.x);
-            _camera.transform.RotateAround (reticle.transform.position, tempX, -pitchSpeed * delta.y);
-//            if (transform.position.y >= minY &&_camera.transform.position.y <= maxY)
-//               _camera.transform.RotateAround(reticle.transform.position, tempX, -pitchSpeed * delta.y);
+            transform.RotateAround (reticle.transform.position, Vector3.up, yawSpeed * delta.x);
+            transform.RotateAround (reticle.transform.position, tempX, -pitchSpeed * delta.y);
+//            if (transform.position.y >= minY && transform.position.y <= maxY)
+//                transform.RotateAround(reticle.transform.position, tempX, -pitchSpeed * delta.y);
 //            else
-//               _camera.transform.position = new Vector3(transform.position.x,
+//                transform.position = new Vector3(transform.position.x,
 //                    Mathf.Clamp(_camera.fieldOfView, minY, maxY),
-//                   _camera.transform.position.z);
+//                    transform.position.z);
 
             // Counter-rotate to offset overpitch.
-            if (_camera.transform.rotation.eulerAngles.x > 80.0f) {
-                if (_camera.transform.position.y > 35.0f) {
-                    _camera.transform.RotateAround (reticle.transform.position, tempX, -1.0f * (_camera.transform.rotation.eulerAngles.x - 85.0f));
+            if (transform.rotation.eulerAngles.x > 80.0f) {
+                if (transform.position.y > 35.0f) {
+                    transform.RotateAround (reticle.transform.position, tempX, -1.0f * (transform.rotation.eulerAngles.x - 85.0f));
                 } else {
-                    _camera.transform.RotateAround (reticle.transform.position, tempX, 360.0f - _camera.transform.rotation.eulerAngles.x);
+                    transform.RotateAround (reticle.transform.position, tempX, 360.0f - transform.rotation.eulerAngles.x);
                 }
             }
-            _camera.transform.LookAt (reticle.transform, Vector3.up);
+            transform.LookAt (reticle.transform, Vector3.up);
             lastMouse = Input.mousePosition;
         } else {
             dragging = false;
@@ -150,24 +128,23 @@ public class ClashBattleCamera : InputControllerBase
         attempt.y = height - reticle.transform.position.y;
 
         if (!valid)
-            return hit;
+            return;
 
-        // If succesful, translate both the camera_camera.transform and the reticle by the same amount.
+        // If succesful, translate both the camera transform and the reticle by the same amount.
         reticle.transform.Translate (attempt);
-        _camera.transform.Translate (attempt, Space.World);
+        transform.Translate (attempt, Space.World);
 
         CheckZoom ();
-        MyLateUpdate ();
-        return hit;
+
     }
 
-    void MyLateUpdate ()
+    void LateUpdate ()
     {
         Vector3 pos = new Vector3 (
-                          Mathf.Clamp (Camera.main.transform.position.x, minX, maxX),
-                          Camera.main.transform.position.y,
-                          Mathf.Clamp (Camera.main.transform.position.z, minZ, maxZ));
-        Camera.main.transform.position = pos;
+                          Mathf.Clamp (_camera.transform.position.x, minX, maxX),
+                          _camera.transform.position.y,
+                          Mathf.Clamp (_camera.transform.position.z, minZ, maxZ));
+        _camera.transform.position = pos;
     }
 
     public void CheckZoom ()
@@ -175,18 +152,18 @@ public class ClashBattleCamera : InputControllerBase
         
 
         // Handle zoom.
-        var zoomAxis = (Camera.main.transform.position - reticle.transform.position).normalized;
+        var zoomAxis = (transform.position - reticle.transform.position).normalized;
         if (Input.GetKey (KeyCode.Q)) {
 //            zoomLevel = Mathf.Max(20.0f, zoomLevel - 2.0f);
-            Camera.main.fieldOfView -= 1.0f;
+            _camera.fieldOfView -= 1.0f;
         }
 
         if (Input.GetKey (KeyCode.Z)) {
 //            zoomLevel = Mathf.Min(50.0f, zoomLevel + 2.0f);
-            Camera.main.fieldOfView += 1.0f;
+            _camera.fieldOfView += 1.0f;
         }
         // Clamp the field of view to make sure it's between minFOV and maxFOV.
-        Camera.main.fieldOfView = Mathf.Clamp (Camera.main.fieldOfView, minFOV, maxFOV);
+        _camera.fieldOfView = Mathf.Clamp (_camera.fieldOfView, minFOV, maxFOV);
 
 
 
