@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-/* Description: Class to associate a unity Prey GameObject with its metadata.
+/* Description: Class to control the behavior of an NPC fish in the game.
  */
 
 namespace SD
@@ -11,11 +11,11 @@ namespace SD
         public NPCFish npcFish;
 
 
-        public NPCFish getNPCFishController() {
+        public NPCFish getNPCFishData() {
             return npcFish;
         }
 
-        public void setNPCFishController(NPCFish fish) {
+        public void setNPCFishData(NPCFish fish) {
             npcFish = fish;
         }
 

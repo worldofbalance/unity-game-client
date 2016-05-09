@@ -126,4 +126,6 @@
     public static readonly short SD_DISCONNECT = 309;
     public static readonly short SD_RECONNECT = 310;
     public static readonly short SD_HEARTBEAT = 311;
+    public static readonly short SD_NPCPOSITION = 312;
+    public static readonly short SD_RESPAWN = 313;
 }

@@ -33,6 +33,7 @@ namespace SD {
                 SDMain.networkManager.Listen (NetworkCode.SD_PREY, ResponseSDPrey);
                 SDMain.networkManager.Listen (NetworkCode.SD_EAT_PREY, ResponseSDDestroyPrey);
                 SDMain.networkManager.Listen (NetworkCode.SD_SCORE, ResponseSDChangeScore);
+                SDMain.networkManager.Listen (NetworkCode.SD_RESPAWN, ResponseSDSpawnNpc);
                 isMultiplayer = true;
             } else {
                 Debug.LogWarning ("Could not establish a connection to Sea Divided Server. Falling back to offline mode.");
@@ -182,6 +183,12 @@ namespace SD {
             ResponseSDScore response = r as ResponseSDScore;
             gameController.setOpponentScore (response.score);
             Debug.Log ("Received the opponent's score: " + response.score);
+        }
+
+        public void ResponseSDSpawnNpc(NetworkResponse r) {
+            ResponseSDRespawnNpc response = r as ResponseSDRespawnNpc;
+            Debug.Log ("Received a request to spawn: Species: " + response.speciesId + ", Count: " + response.numNpc);
+            gameController.spawnNpcSet (response.speciesId, response.numNpc);
         }
     }
 }
