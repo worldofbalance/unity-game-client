@@ -1,15 +1,17 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/SDAssets/Scripts/Scenes/SDGameMain/GameController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/SDAssets/Scripts/Scenes/SDGameMain/MainCameraController.cs">
     <Files>
-      <File FileName="Assets/SDAssets/Scripts/Network/Request/NetworkRequest.cs" Line="1" Column="1" />
-      <File FileName="Assets/SDAssets/Scripts/Scenes/SDGameMain/GameController.cs" Line="156" Column="1" />
+      <File FileName="Assets/SDAssets/Scripts/Scenes/SDGameMain/GameController.cs" Line="47" Column="70" />
       <File FileName="Assets/SDAssets/Scripts/Scenes/SDGameMain/GameManager.cs" Line="1" Column="1" />
       <File FileName="Assets/SDAssets/3DModels/Fish School/Scripts/SchoolChild.js" Line="1" Column="1" />
-      <File FileName="Assets/SDAssets/Scripts/Scenes/SDGameMain/NPCFishData.cs" Line="1" Column="1" />
       <File FileName="Assets/SDAssets/Scripts/Scenes/SDGameMain/NPCFish.cs" Line="1" Column="1" />
       <File FileName="Assets/SDAssets/Scripts/Scenes/SDGameMain/DestroyByContact.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/DontEatMe/DemBoard.cs" Line="1" Column="1" />
+      <File FileName="Assets/SDAssets/Scripts/Scenes/SDGameMain/OpponentBaseManager.cs" Line="1" Column="1" />
+      <File FileName="Assets/CWAssets/Scripts/GUI/LabColors.cs" Line="50" Column="3" />
+      <File FileName="Assets/SDAssets/Scripts/Scenes/SDGameMain/PlayerController.cs" Line="1" Column="1" />
+      <File FileName="Assets/SDAssets/Scripts/Scenes/SDGameMain/MainCameraController.cs" Line="23" Column="65" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
