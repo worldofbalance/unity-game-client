@@ -42,9 +42,9 @@ namespace SD {
         private Quaternion playerInitialRotation = Quaternion.Euler(0,90,0);
         private Vector3 opponentInitialPosition = new Vector3 (100, 0, 0);
         private Quaternion opponentInitialRotation = Quaternion.Euler (0, -90, 0);
-        private Vector3 playerBaseInitialPosition = new Vector3(-240,0,0);
+        private Vector3 playerBaseInitialPosition = new Vector3(-260,0,0);
         private Quaternion playerBaseInitialRotation = Quaternion.Euler(0,0,0);
-        private Vector3 opponentBaseInitialPosition = new Vector3(240,0,0);
+        private Vector3 opponentBaseInitialPosition = new Vector3(260,0,0);
         private Quaternion opponentBaseInitialRotation = Quaternion.Euler(0,0,0);
 
         private static GameController gameController;

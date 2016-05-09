@@ -305,6 +305,7 @@
      <Compile Include="Assets\SDAssets\Scripts\Scenes\SDGameMain\OpponentController.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Scenes\SDGameMain\PlayTimePlayer.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Scenes\SDGameMain\PlayerController.cs" />
+     <Compile Include="Assets\SDAssets\Scripts\Scenes\SDGameMain\RadorCameraController.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Scenes\SDGameMain\Rotator.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Scenes\SDGameMain\StatusBarController.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Scenes\SDGameMain\Timer.cs" />
