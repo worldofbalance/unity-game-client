@@ -15,9 +15,11 @@ namespace SD
 
         public static NetworkResponse Parse (MemoryStream dataStream) {
             ResponseSDPrey response = new ResponseSDPrey ();
+            response.speciesId = DataReader.ReadInt (dataStream);
             response.preyId = DataReader.ReadInt(dataStream);
             response.xPosition = DataReader.ReadFloat(dataStream);
             response.yPosition = DataReader.ReadFloat(dataStream);
+            response.rotationAngle = DataReader.ReadFloat (dataStream);
             response.isAlive = DataReader.ReadBool(dataStream);
             return response;
         }
@@ -25,9 +27,11 @@ namespace SD
 
     public class ResponseSDPrey : NetworkResponse
     {
+        public int speciesId { get; set;}
         public int preyId { get; set; }
         public float xPosition { get; set; }
         public float yPosition { get; set; }
+        public float rotationAngle { get; set;}
         public bool isAlive { get; set; }
 
         public ResponseSDPrey ()

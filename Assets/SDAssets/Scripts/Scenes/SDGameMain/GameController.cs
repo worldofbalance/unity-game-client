@@ -150,15 +150,15 @@ namespace SD {
         public void spawnPrey(int i, int preyIndex){
             Vector3 spawnPosition;
             if (npcFishes [i].xPosition != 0 && npcFishes [i].yPosition != 0) {
-                spawnPosition = new Vector3 (npcFishes [i].xPosition, npcFishes [i].yPosition, 0);
-                Debug.Log ("Spawning Prey " + i + " from request result");
+                spawnPosition = new Vector3 (npcFishes [i].xPosition, npcFishes [i].yPosition, npcFishes[i].xRotationAngle);
+                Debug.Log ("Spawning NPCFish " + i + " from request result");
             } else {
                 spawnPosition = new Vector3 (Random.Range(boundary.xMin, boundary.xMax), Random.Range(boundary.yMin, boundary.yMax), 0);
-                Debug.Log ("Spawning Prey " + i + " from local random numbers");
+                Debug.Log ("Spawning NPCFish " + i + " from local random numbers");
             }
             Quaternion spawnRotation = Quaternion.Euler(0, 90,0);
             npcFishObjects [i] = Instantiate (preyArray[preyIndex], spawnPosition, spawnRotation) as GameObject;
-            npcFishObjects [i].name = "Prey" + i;
+            npcFishObjects [i].name = "NPCFish" + i;
             npcFishObjects [i].SetActive (true);
             // Associate the metadata of the prey with the gameobject.
             npcFishObjects[i].GetComponent<NPCFishController>().setNPCFishController(npcFishes[i]);

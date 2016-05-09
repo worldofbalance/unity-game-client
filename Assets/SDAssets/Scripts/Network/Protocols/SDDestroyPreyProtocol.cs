@@ -6,9 +6,10 @@ using System.IO;
 namespace SD
 {
     public class SDDestroyPreyProtocol {
-        public static NetworkRequest Prepare (int preyId)
+        public static NetworkRequest Prepare (int preyId, int speciesId)
         {
             NetworkRequest request = new NetworkRequest (NetworkCode.SD_EAT_PREY);
+            request.AddInt32 (speciesId);
             request.AddInt32 (preyId);
             return request;
         }

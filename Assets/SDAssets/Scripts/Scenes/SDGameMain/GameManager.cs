@@ -141,23 +141,19 @@ namespace SD {
         public void ResponseSDPrey(NetworkResponse r) {
             ResponseSDPrey response = r as ResponseSDPrey;
             NPCFish fish = gameController.getNpcFishes()[response.preyId];
-            if (response.isAlive) {
-                // Set the position of the fish and spawn it.
-                fish.xPosition = response.xPosition;
-                fish.yPosition = response.yPosition;
-                fish.isAlive = response.isAlive;
-                fish.id = response.preyId;
-                gameController.spawnPrey (fish.id, 0);
-            } else {
-                // Destroy the NPC Fish at the specified position if fish is not alive.
-                fish.isAlive = false;
-                gameController.destroyPrey (response.preyId);
-            }
+            // Set the position of the fish and spawn it.
+            fish.id = response.preyId;
+            fish.xPosition = response.xPosition;
+            fish.yPosition = response.yPosition;
+            fish.xRotationAngle = response.rotationAngle;
+            fish.speciesId = response.speciesId;
+            fish.isAlive = true;
+            gameController.spawnPrey (fish.id, fish.speciesId);
         }
 
-        public void DestroyNPCFish(int id) {
+        public void DestroyNPCFish(int id, int speciesId) {
             if (SDMain.networkManager != null) {
-                SDMain.networkManager.Send (SDDestroyPreyProtocol.Prepare (id));
+                SDMain.networkManager.Send (SDDestroyPreyProtocol.Prepare (id, speciesId));
             } else {
                 NPCFish fish = gameController.getNpcFishes()[id];
                 fish.isAlive = false;
