@@ -54,6 +54,7 @@ namespace SD {
         private Rigidbody rbOpponent;
         private Dictionary <int, NPCFish> npcFishes = new Dictionary<int, NPCFish>();
         private Dictionary <int, GameObject> npcFishObjects = new Dictionary<int, GameObject>();
+        private int maxPreyId;
         private bool hasSurrendered;
         private bool isGameTimeTicking = false;
 
@@ -90,6 +91,7 @@ namespace SD {
             for (int i = 1; i <= numPrey; i++) {
                 NPCFish npcFish = new NPCFish (i);
                 npcFishes [i] = npcFish;
+                maxPreyId = i;
                 if (SDMain.networkManager != null) {
                     sdGameManager.FindNPCFishPosition (i); // Finds and spawns prey at the returned location.
                 } else {
@@ -158,15 +160,33 @@ namespace SD {
             }
             Quaternion spawnRotation = Quaternion.Euler(0, 90,0);
             npcFishObjects [i] = Instantiate (preyArray[preyIndex], spawnPosition, spawnRotation) as GameObject;
-            npcFishObjects [i].name = "NPCFish" + i;
+            npcFishObjects [i].name = "NPCFish_" + npcFishes [i].speciesId + "_" + i;
             npcFishObjects [i].SetActive (true);
             // Associate the metadata of the prey with the gameobject.
-            npcFishObjects[i].GetComponent<NPCFishController>().setNPCFishController(npcFishes[i]);
+            npcFishObjects[i].GetComponent<NPCFishController>().setNPCFishData(npcFishes[i]);
         }
 
         public void destroyPrey(int i) {
             if (npcFishObjects [i] != null) {
                 Destroy (npcFishObjects [i]);
+            }
+        }
+
+        // Spawns 'num' Npc fish of type 'speciesId'
+        public void spawnNpcSet(int speciesId, int num) {
+            int startId = maxPreyId + 1;
+            for (int i = startId; i < (startId + num); i++) {
+                Vector3 spawnPosition;
+                NPCFish npcFish = new NPCFish (i);
+                npcFishes [i] = npcFish;
+                maxPreyId = i;
+                // TODO: Change random position to out-of-screen position once the movement is added.
+                spawnPosition = new Vector3 (Random.Range(boundary.xMin, boundary.xMax), Random.Range(boundary.yMin, boundary.yMax), 0);
+                // set the attributes of the npc fish to spawn.
+                npcFish.xPosition = spawnPosition.x;
+                npcFish.yPosition = spawnPosition.y;
+                npcFish.speciesId = speciesId;
+                spawnPrey (i, speciesId);
             }
         }
         // Increases the current score value, and pass the info to scoreText
@@ -299,6 +319,10 @@ namespace SD {
 
         public void setIsGameTimeTicking(bool isTicking) {
             isGameTimeTicking = isTicking;
+        }
+
+        public int getMaxPreyId() {
+            return maxPreyId;
         }
     } 
 
