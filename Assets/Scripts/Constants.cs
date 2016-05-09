@@ -13,13 +13,8 @@ public class Constants
     // Constants
     public static readonly string CLIENT_VERSION = "1.00";
 
-<<<<<<< HEAD
-	public static readonly string REMOTE_HOST = "localhost";
-	//public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
-=======
     public static readonly string REMOTE_HOST = "localhost";
     // public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
->>>>>>> refs/remotes/origin/development
     // IP address may be 130.212.3.51
 
     public static readonly int REMOTE_PORT = 9255;
