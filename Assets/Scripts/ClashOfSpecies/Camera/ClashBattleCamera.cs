@@ -70,16 +70,14 @@ public class ClashBattleCamera : InputControllerBase
 
     public ClashBattleCamera ()
     {
-        
-
         eTouchRes = COSTouchState.None;
-//        Gizmos.DrawCube (bounds.center, bounds.size);
-        walkableAreaMask = (int)Math.Pow (2, NavMesh.GetAreaFromName ("Walkable"));
+
     }
 
     public override void InputControllerAwake (Terrain surface)
     {
         target = surface;
+        walkableAreaMask = (int)Math.Pow (2, NavMesh.GetAreaFromName ("Walkable"));
 
         minX = terrainCameraPadding;
         maxX = Terrain.activeTerrain.terrainData.size.x - terrainCameraPadding;
@@ -106,6 +104,8 @@ public class ClashBattleCamera : InputControllerBase
             Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
             if (Physics.Raycast (ray, out hit, 1000))
                 return hit;
+        } else {
+            eTouchRes = COSTouchState.None;
         }
 
         var offset = reticle.transform.position - _camera.transform.position;

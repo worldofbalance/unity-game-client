@@ -68,6 +68,7 @@ public class ClashDefenseSetup : MonoBehaviour
             cosInController = ScriptableObject.CreateInstance<COSTouchInputControler> ();
         else
             cosInController = ScriptableObject.CreateInstance<ClashBattleCamera> ();
+        cosInController.InputControllerAwake (Terrain.activeTerrain);
     }
 
     void Update ()
