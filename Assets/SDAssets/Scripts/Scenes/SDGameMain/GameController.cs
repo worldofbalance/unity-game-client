@@ -160,7 +160,7 @@ namespace SD {
             }
             Quaternion spawnRotation = Quaternion.Euler(0, 90,0);
             npcFishObjects [i] = Instantiate (preyArray[preyIndex], spawnPosition, spawnRotation) as GameObject;
-            npcFishObjects [i].name = "NPCFish" + i;
+            npcFishObjects [i].name = "NPCFish_" + npcFishes [i].speciesId + "_" + i;
             npcFishObjects [i].SetActive (true);
             // Associate the metadata of the prey with the gameobject.
             npcFishObjects[i].GetComponent<NPCFishController>().setNPCFishData(npcFishes[i]);
@@ -175,7 +175,7 @@ namespace SD {
         // Spawns 'num' Npc fish of type 'speciesId'
         public void spawnNpcSet(int speciesId, int num) {
             int startId = maxPreyId + 1;
-            for (int i = startId; i <= (startId + num); i++) {
+            for (int i = startId; i < (startId + num); i++) {
                 Vector3 spawnPosition;
                 NPCFish npcFish = new NPCFish (i);
                 npcFishes [i] = npcFish;

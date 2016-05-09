@@ -95,6 +95,8 @@ public class NetworkProtocolTable {
         Add (NetworkCode.SD_EAT_PREY, "SD.SDDestroyPrey");
         Add (NetworkCode.SD_SCORE, "SD.SDScore");
         Add (NetworkCode.SD_HEARTBEAT, "SD.SDHeartbeat");
+        Add (NetworkCode.SD_NPCPOSITION, "SD.SDNpcPosition");
+        Add (NetworkCode.SD_RESPAWN, "SD.SDRespawnNpc");
 	}
 	
 	public static void Add(short protocol_id, string name) {

@@ -33,11 +33,17 @@ namespace SD
             networkManager.Update();
         }
 
+        void OnDestroy() {
+            Debug.Log ("Thanks for playing Sea Divided.");
+            StopCoroutine (RequestInGameHeartbeat());
+        }
+ 
         IEnumerator RequestInGameHeartbeat()
         {
+            
             while(true) {
                 // Send a heartbeat request only if we are actually in a game.
-                if (SDPersistentData.getInstance () != null) {
+                if (SDPersistentData.getInstance () != null && networkManager != null) {
                     networkManager.Send (SDHeartbeatProtocol.Prepare ());
                 }
                 yield return new WaitForSeconds(Constants.HEARTBEAT_SECONDS);
