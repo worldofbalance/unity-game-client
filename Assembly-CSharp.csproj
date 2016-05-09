@@ -326,17 +326,24 @@
      <Compile Include="Assets\Scripts\AI.cs" />
      <Compile Include="Assets\Scripts\AnimalAI.cs" />
      <Compile Include="Assets\Scripts\Camera\BasicCamera.cs" />
+     <Compile Include="Assets\Scripts\Camera\TouchCamera.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashBattleController.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashBattleControllerBckUpCpy.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashBattleToggle.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashBattleUnit.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashHealthBar.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashReticle.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClickToMove.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\GameOverManager.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\SpeciesClickController.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\animController.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\COSTouchInputControler.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\ClashBattleCamera.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\ClashBattleSpawner.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\ClashCameraControl.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\ClashDefenseSpawner.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\DetectTouchMovement.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\TouchCameraControl.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\ClashGameManager.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\ClashGetActiveToggle.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\ClashSplash.cs" />
@@ -345,12 +352,14 @@
      <Compile Include="Assets\Scripts\ClashOfSpecies\Defense\ClashUnitListItem.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Main\ClashMainMenu.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Main\ClashPreviewController.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\PinchZoom.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\ResultMenu.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Shop\ClashAttackShop.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Shop\ClashDefenseShop.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Shop\ClashSelectedUnit.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Shop\ClashShopItem.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Shop\ClashTabControl.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\TerrainGrid.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Unit\ClashNavMeshAI.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Unit\ClashUnitAI.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Unit\ClashUnitAttributes.cs" />
@@ -433,9 +442,13 @@
      <Compile Include="Assets\Scripts\Network\ConnectionManager.cs" />
      <Compile Include="Assets\Scripts\Network\DataReader.cs" />
      <Compile Include="Assets\Scripts\Network\GamePacketStream.cs" />
+     <Compile Include="Assets\Scripts\Network\NetworkAbstractManager.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkCode.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkManager.cs" />
+     <Compile Include="Assets\Scripts\Network\NetworkManagerCOS.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkProtocolTable.cs" />
+     <Compile Include="Assets\Scripts\Network\NetworkProtocolTableBase.cs" />
+     <Compile Include="Assets\Scripts\Network\NetworkProtocolTableCOS.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkRequest.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkResponse.cs" />
      <Compile Include="Assets\Scripts\Network\Protocol\BackToLobbyProtocol.cs" />
@@ -530,19 +543,28 @@
      <Compile Include="Assets\Scripts\WorldMenu.cs" />
      <None Include="Assets\RRAssets\Resources\Prefabs\map\ItemLocationFiles\1.txt" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween43.xml" />
+     <None Include="Assets\Shaders\Outlined-Silhouette Only.shader" />
+     <None Include="Assets\Shaders\Outline_Diffuse.shader" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween46.xml" />
      <None Include="Assets\CWAssets\Resources\Prefabs\Battle\$Alpha-Selective.shader" />
      <None Include="Assets\Graph_Maker\Shaders\AreaShading.shader" />
+     <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Simple.shader" />
      <None Include="Assets\CWAssets\Resources\Prefabs\Battle\$3DTextOneSided.shader" />
      <None Include="Assets\Graph_Maker\Shaders\AreaShading_SF.shader" />
      <None Include="Assets\SDAssets\3DModels\Fish School\Shaders\BumpSpecNoCull.shader" />
+     <None Include="Assets\Standard Assets\Environment\Water (Basic)\Shaders\FXWaterBasic.shader" />
      <None Include="Assets\SDAssets\3DModels\Fish School\Shaders\ReflectBumpRimSpecVertex.shader" />
+     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
      <None Include="Assets\Graph_Maker\ReadMe-1.5.4.txt" />
+     <None Include="Assets\Standard Assets\Environment\Water\Water\Shaders\FXWaterPro.shader" />
      <None Include="Assets\CWAssets\Resources\Images\Battle\$Alpha-Selective.shader" />
      <None Include="Assets\SDAssets\3DModels\Fish School\Shaders\BumpSpecRim.shader" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween50.xml" />
      <None Include="Assets\CWAssets\Resources\Images\3DText.shader" />
+     <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\WaterInclude.cginc" />
      <None Include="Assets\SDAssets\3DModels\Fish School\Shaders\BumpSpecRimVertex.shader" />
+     <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Advanced.shader" />
+     <None Include="Assets\Shaders\OutlineShader.shader" />
      <None Include="Assets\RRAssets\Resources\ItemLocationFiles\1.txt" />
      <None Include="Assets\CWAssets\Resources\Images\Battle\$3DTextOneSided.shader" />
  <Reference Include="UnityEngine.UI">
@@ -566,6 +588,10 @@
  <Reference Include="Mono.Data.Sqlite">
  <HintPath>C:/Users/Dana/Documents/GitHub/unity-game-client/Assets/Plugins/Mono.Data.Sqlite.dll</HintPath>
  </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{26E390B2-DF74-9F6C-26E8-4C3790200C5B}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

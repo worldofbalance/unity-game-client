@@ -269,6 +269,7 @@ public class Trees : MonoBehaviour {
         // Call quitmatch protocol -- notify oponent that player is quitting
         // return player to lobby
         GameManager.protocols.sendQuitMatch(player.playerID);
+        removeAfterDelay = true;
     }
     
 }
