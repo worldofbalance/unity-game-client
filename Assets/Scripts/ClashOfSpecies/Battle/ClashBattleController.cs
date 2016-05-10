@@ -345,7 +345,7 @@ public class ClashBattleController : MonoBehaviour
             }
         }
 
-        if (Time.timeSinceLevelLoad > 5.0f && totalAllyHealth == 0 && alliesList.Count () == 25) {//            || Time.timeSinceLevelLoad > 75.0f)
+        if (Time.timeSinceLevelLoad > 5.0f && totalAllyHealth <= 0 && alliesList.Count () == 25) {//            || Time.timeSinceLevelLoad > 75.0f)
             // ENEMIES HAVE WON!
             ReportBattleOutcome (ClashEndBattleProtocol.BattleResult.LOSS);
         }
