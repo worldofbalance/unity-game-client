@@ -18,27 +18,11 @@ public class EcosystemController : MonoBehaviour {
     public Vector3 upperBound { get; set; }
 
     void Awake() {
-        List<Zone> hexEco = new List<Zone>();
-        hexEco.Add(new Zone(1, 0, 1, 1));
-        hexEco.Add(new Zone(2, 0, 2, 1));
-        hexEco.Add(new Zone(3, 0, 3, 1));
-        hexEco.Add(new Zone(4, 1, 1, 1));
-        hexEco.Add(new Zone(5, 1, 2, 1));
-        hexEco.Add(new Zone(6, 1, 3, 1));
-        hexEco.Add(new Zone(7, 1, 4, 1));
-        hexEco.Add(new Zone(8, 2, 0, 1));
-        hexEco.Add(new Zone(9, 2, 1, 1));
-        hexEco.Add(new Zone(10, 2, 2, 1));
-        hexEco.Add(new Zone(11, 2, 3, 1));
-        hexEco.Add(new Zone(12, 2, 4, 1));
-        hexEco.Add(new Zone(13, 3, 1, 1));
-        hexEco.Add(new Zone(14, 3, 2, 1));
-        hexEco.Add(new Zone(15, 3, 3, 1));
-        hexEco.Add(new Zone(16, 3, 4, 1));
-        hexEco.Add(new Zone(17, 4, 1, 1));
-        hexEco.Add(new Zone(18, 4, 2, 1));
-        hexEco.Add(new Zone(19, 4, 3, 1));
-        Generate(hexEco, new Color32(119, 119, 119, 255));
+			Database.NewDatabase (
+				gameObject, 
+		    Constants.MODE_ECOSYSTEM,
+				null
+			);
     }
 
     // Use this for initialization

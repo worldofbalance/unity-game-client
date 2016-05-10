@@ -7,22 +7,18 @@ public class EcosystemMouse : MonoBehaviour {
     public string type = "";
     public GameObject roamingCursor;
     public Zone zone { get; set; }
+		private Database database;
 
     // Use this for initialization
     void Start() {
         roamingCursor.GetComponent<Renderer>().material.color = new Color32(0, 181, 248, 255);
         roamingCursor.transform.localScale *= Constants.ECO_HEX_SCALE;
+				database = gameObject.GetComponent<Database> ();
     }
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyDown("1")) {
-            type = "African Elephant";
-        }
-
-        if (Input.GetKeyDown("2")) {
-            type = "Decaying Material";
-        }
+				type = database.selected != null ? database.selected : "";
 
         if (Input.GetKeyDown(KeyCode.Escape)) {
             type = "";
