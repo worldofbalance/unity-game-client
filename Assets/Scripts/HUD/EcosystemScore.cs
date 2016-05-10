@@ -32,7 +32,7 @@ public class EcosystemScore : MonoBehaviour {
 	void OnGUI() {
         GUIStyle scoreStyle = new GUIStyle ();
         scoreStyle.fontSize = 28;
-
+        scoreStyle.alignment= TextAnchor.LowerCenter;
         GUIExtended.Label (new Rect(200, 650, 200, 50), "Environment Score: " + score , scoreStyle, Color.black, Color.black);
 
 
@@ -40,7 +40,7 @@ public class EcosystemScore : MonoBehaviour {
 			GUIStyle style = new GUIStyle();
 			style.font = skin.font;
 			style.fontSize = 20;
-			style.alignment = TextAnchor.UpperCenter;5
+			//style.alignment = TextAnchor.UpperCenter;
 			
 			Color color = new Color(1.0f, 0.93f, 0.73f, 1.0f);
 	
