@@ -7,8 +7,8 @@
       <File FileName="Assets\Scripts\MultiplayerGames.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\GUI\Bar Graph\BarGraph.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Network\NetworkManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\ConvergeGame\MultiConvergeGame.cs" Line="1341" Column="45" />
-      <File FileName="Assets\Scripts\Config.cs" Line="7" Column="2" />
+      <File FileName="Assets\Scripts\ConvergeGame\MultiConvergeGame.cs" Line="817" Column="33" />
+      <File FileName="Assets\Scripts\Config.cs" Line="5" Column="5" />
       <File FileName="Assets\Scripts\Constants.cs" Line="14" Column="47" />
     </Files>
   </MonoDevelop.Ide.Workbench>
