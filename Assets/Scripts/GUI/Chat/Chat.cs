@@ -34,7 +34,7 @@ public class Chat : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 		if (!isHidden) {
-			windowRect = new Rect(Screen.width - width - 10, Screen.height - height - 10, width, height);
+			//windowRect = new Rect(Screen.width - width - 10, Screen.height - height - 10, width, height);
 		}
 
 		scrollViewVector = Vector2.zero;
