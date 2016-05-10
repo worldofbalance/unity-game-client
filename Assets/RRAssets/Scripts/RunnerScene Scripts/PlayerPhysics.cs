@@ -11,6 +11,9 @@ namespace RR
         public LayerMask collectableMask;
         public LayerMask endFlagMask;
         public LayerMask collectableMask2;
+        public GameObject clouds;
+        public GameObject bushes;
+        public GameObject camera;
 
         private BoxCollider collider;
         private Vector3 s;
@@ -34,6 +37,10 @@ namespace RR
             s = collider.size;
             c = collider.center;
             running = GameObject.Find("GameLogic").GetComponent<Running>();
+
+            clouds = GameObject.Find ("Clouds");
+            bushes = GameObject.Find ("Bushes");
+            camera = GameObject.Find ("Main Camera");
         }
 
         public void Move(Vector2 moveAmount)
@@ -64,6 +71,18 @@ namespace RR
             Vector2 finalTransform = new Vector2(deltaX, deltaY);
 
             transform.Translate(finalTransform);
+
+            clouds.transform.Translate(new Vector3(deltaX * 9 * Time.deltaTime, 0, 0));
+
+            if (camera.transform.position.x - 50 > clouds.transform.position.x) {
+                clouds.transform.Translate(new Vector3(65, -1 * Random.Range (0, 9) - clouds.transform.position.y, 0));
+            }
+
+            bushes.transform.Translate(new Vector3(deltaX * 20 * Time.deltaTime, 0, 0));
+
+            if (camera.transform.position.x - 80 > bushes.transform.position.x) {
+                bushes.transform.Translate(new Vector3(80, 0, 0));
+            }
         }
 
         public float verticleCollisions(float deltaY, float deltaX, Vector2 p)
