@@ -100,7 +100,7 @@ public class MenuScript : MonoBehaviour {
 	public void OpenMultiplayerGames(){
 		Debug.Log("You Pressed Open Multiplayer Games");
 		gameObject.AddComponent <MultiplayerGames>();
-		menuOpen=true;
+		//menuOpen=true;
 	}
 
 

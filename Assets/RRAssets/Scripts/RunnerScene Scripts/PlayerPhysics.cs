@@ -121,13 +121,13 @@ namespace RR
                 {
                     //
                     // // isHitItem return true if player1 eats the item
-                    // string name = hit.collider.gameObject.name.Substring(0,7);
-                    // //Debug.Log("!!!Try to pass name: " + name);
-                    // if (running.isHitItem(name)){
-                    // 	Animator animator = hit.collider.gameObject.GetComponent<Animator>();
-                    // 	animator.SetBool("eaten", true);
-                    // 	//GameObject.Destroy(hit.collider.gameObject);
-                    // }
+                    string name = hit.collider.gameObject.name.Substring(0,7);
+                    //Debug.Log("!!!Try to pass name: " + name);
+                    if (running.isHitItem(name)){
+                    	Animator animator = hit.collider.gameObject.GetComponent<Animator>();
+                    	animator.SetBool("eaten", true);
+                    	//GameObject.Destroy(hit.collider.gameObject);
+                    }
                 }
 
                 else if (Physics.Raycast(ray, out hit, Mathf.Abs(deltaY) + skin, endFlagMask))
@@ -176,13 +176,13 @@ namespace RR
                 else if (Physics.Raycast(ray, out hit, Mathf.Abs(deltaX) + skin, collectableMask))
                 {
                     //
-                    // string name = hit.collider.gameObject.name.Substring(0,7);
-                    // //Debug.Log("!!!Try to pass name: " + name);
-                    // if (running.isHitItem(name)){
-                    // 	Animator animator = hit.collider.gameObject.GetComponent<Animator>();
-                    // 	animator.SetBool("eaten", true);
-                    // 	//GameObject.Destroy(hit.collider.gameObject);
-                    // }
+                    string name = hit.collider.gameObject.name.Substring(0,7);
+                    //Debug.Log("!!!Try to pass name: " + name);
+                    if (running.isHitItem(name)){
+                    	Animator animator = hit.collider.gameObject.GetComponent<Animator>();
+                    	animator.SetBool("eaten", true);
+                    	//GameObject.Destroy(hit.collider.gameObject);
+                    }
                     //
                 }
 
