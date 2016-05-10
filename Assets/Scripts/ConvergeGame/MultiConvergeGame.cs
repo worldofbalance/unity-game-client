@@ -38,9 +38,9 @@ public class MultiConvergeGame : MonoBehaviour
 	private Rect windowRect;
     private Rect windowRectConfig;
 	// Logic
-    private bool isActive = true;   // Not active until host specifies    Ivan - change to false
+    private bool isActive = false;   // Not active until host specifies    Ivan - change to false
     private bool isInitial = true;   // helps with GUI focus
-    private bool isSetup = false;   // read parameters   Ivan - change to true
+    private bool isSetup = true;   // read parameters   Ivan - change to true
     private bool isDone = false;   // used to display end result screen
 	// DH change
 	// eliminate blink. Replace isProcessing with betAccepted
@@ -742,7 +742,8 @@ public class MultiConvergeGame : MonoBehaviour
             int startRange = 0;
             int spanRange = 0;
 
-			float entryHeight = height - heightGraph - 30 * 3 - bufferBorder * 2;
+            // last 35 taken to allocate room for multiplayer convergence text 
+			float entryHeight = height - heightGraph - 30 * 3 - bufferBorder * 2 - 35;
 			GUI.BeginGroup (new Rect (bufferBorder, topGraph + heightGraph + bufferBorder, width, entryHeight));
 
             GUIStyle styleMR = new GUIStyle(GUI.skin.label);
@@ -814,7 +815,7 @@ public class MultiConvergeGame : MonoBehaviour
                     // Add slider markers. First read slider range values
                     highRange = param.highRange;
                     lowRange = param.lowRange;
-                    if (param.markerEnabled && ((highRange != -1) || (lowRange != -1))) {
+                    if (host && param.markerEnabled && ((highRange != -1) || (lowRange != -1))) {
                         if (lowRange == -1) {
                             startRange = 0;
                             lowRange = min;
@@ -1338,8 +1339,8 @@ public class MultiConvergeGame : MonoBehaviour
 	{
 		ResponseConvergeEcosystems response = new ResponseConvergeEcosystems ();
 		
-		string filename = "converge-ecosystems.txt";
-        string filenameR = "converge-ecosystems-sliders.txt";
+		string filename = "converge-ecosystems-Ben";
+        string filenameR = "converge-ecosystems-Ben-sliders.txt";
 		ecosystemList = new List<ConvergeEcosystem> ();
         Debug.Log("ecosystem files: " + filename + " " + filenameR);
 		
