@@ -33,15 +33,16 @@ public class Chat : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start() {
-		if (!isHidden) {
-			windowRect = new Rect(Screen.width - width - 10, Screen.height - height - 10, width, height);
-		}
+		
 
 		scrollViewVector = Vector2.zero;
 	}
 	
 	// Update is called once per frame
 	void Update() {
+        if (isHidden) {
+            windowRect = new Rect(Screen.width - width - 10, Screen.height - height - 10, width, height);
+        }
 	}
 
 	void OnDestroy() {
@@ -50,6 +51,12 @@ public class Chat : MonoBehaviour {
 			ProcessMessage
 		);
 	}
+    public void toggleChat(){
+        if (!isHidden)
+            isHidden = true;
+        else
+            isHidden = false;
+    }
 
 	void OnGUI() {
 		GUI.skin = skin;

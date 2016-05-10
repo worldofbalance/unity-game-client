@@ -27,6 +27,8 @@ unity-game-client.sln
 
 
 Assembly-CSharp.csproj
+ProjectSettings/GraphicsSettings.asset
+ProjectSettings/ProjectSettings.asset
 
 # Unity3D generated meta files
 *.pidb.meta
