@@ -17,14 +17,8 @@ public class NetworkResponseTable {
 		add(Constants.SMSG_GAME_STATE, "ResponseGameState");
 		add(Constants.SMSG_RACE_INIT, "ResponseRaceInit");
 		add(Constants.SMSG_KEYBOARD, "ResponseKeyboard");
-//<<<<<<< HEAD
-//		add(Constants.SMSG_RRPOSITION, "RRResponsePostion");
-//<<<<<<< HEAD
-//=======
-//		add(Constants.SMSG_RRSPECIES, "RRResponseSpecies");
 
 //>>>>>>> Dong
-//=======
 		add(Constants.SMSG_RRPOSITION, "ResponseRRPostion");
 		add(Constants.SMSG_RRSPECIES, "ResponseRRSpecies");
 		add(Constants.SMSG_RRSTARTGAME, "ResponseRRStartGame");

@@ -9,7 +9,7 @@ public class EcosystemScore : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
-		NetworkManager.Listen(
+		Game.networkManager.Listen(
 			NetworkCode.UPDATE_ENV_SCORE,
 			ProcessUpdateEcoScore
 		);
@@ -23,7 +23,7 @@ public class EcosystemScore : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		NetworkManager.Ignore(
+		Game.networkManager.Ignore(
 			NetworkCode.UPDATE_ENV_SCORE,
 			ProcessUpdateEcoScore
 		);
@@ -31,7 +31,7 @@ public class EcosystemScore : MonoBehaviour {
 	
 	void OnGUI() {
 		//GUI.Label (new Rect(300, 0, 200, 50), "Environment Score: " + score );
-		GUI.BeginGroup(new Rect(Screen.width / 2 - 100, 60, 200, 100));
+		GUI.BeginGroup(new Rect(Screen.width / 2 - 200, 500, 300, 100));
 			GUIStyle style = new GUIStyle();
 			style.font = skin.font;
 			style.fontSize = 20;
@@ -39,12 +39,12 @@ public class EcosystemScore : MonoBehaviour {
 			
 			Color color = new Color(1.0f, 0.93f, 0.73f, 1.0f);
 	
-			GUIExtended.Label(new Rect(0, 0, 200, 50), "Ecosystem Score", style, Color.black, color);
+			GUIExtended.Label(new Rect(-100, 0, 400, 0), "Ecosystem Score", style, Color.black, color);
 	
 			style.fontSize = 24;
 			style.alignment = TextAnchor.UpperCenter;
 	
-			GUIExtended.Label(new Rect(0, 25, 200, 50), score.ToString("n0"), style, Color.black, Color.white);
+			GUIExtended.Label(new Rect(100, -3, 240, 50), score.ToString("n0"), style, Color.black, Color.white);
 		GUI.EndGroup();
 	}
 

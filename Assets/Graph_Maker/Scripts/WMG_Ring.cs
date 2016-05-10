@@ -55,8 +55,12 @@ public class WMG_Ring : WMG_GUI_Functions {
 	public void updateRingPoint(int ringNum) {
 		float ringRadius = graph.getRingRadius(ringNum);
 		// label points
-		changeSpritePositionToY(labelPoint, -(ringRadius - graph.RingWidthFactor * graph.ringWidth / 2));
-		//changeSpritePositionToY(labelPoint, -(ringRadius - graph.bandPadding / 2 - graph.RingWidthFactor * graph.ringWidth / 2));
+		if (graph.bandMode && graph.ringColor.a == 0) { // center on bands
+			float nextRingRadius = graph.getRingRadius(ringNum+1);
+			changeSpritePositionToY (labelPoint, -(ringRadius + (nextRingRadius - ringRadius) / 2 - graph.RingWidthFactor * graph.ringWidth / 2));
+		} else { // center on rings
+			changeSpritePositionToY (labelPoint, -(ringRadius - graph.RingWidthFactor * graph.ringWidth / 2));
+		}
 		int pointWidthHeight = Mathf.RoundToInt (graph.RingWidthFactor * graph.ringWidth + graph.RingWidthFactor * graph.ringPointWidthFactor);
 		changeSpriteSize (labelPoint, pointWidthHeight, pointWidthHeight);
 	}

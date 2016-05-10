@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 public class WorldMouse : MonoBehaviour {
 	
@@ -22,9 +23,11 @@ public class WorldMouse : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
+		
 		RaycastHit hit = new RaycastHit();
 
-		if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit)) {
+		if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit)&& (!EventSystem.current.IsPointerOverGameObject ())) {
+			
 			if (hit.transform.gameObject.tag == "Zone") {
 				currentTile = hit.transform.gameObject.GetComponent<Zone>();
 
@@ -72,10 +75,12 @@ public class WorldMouse : MonoBehaviour {
 //					mapCamera.isLeaving = mapCamera.isZooming = true;
 //				}
 				break;
-			case 2: // Double Click
-				if (currentTile.player_id == GameState.player.GetID() && !Shop.gInshop) {
-					mapCamera.Move(currentTile.transform.position);
+		case 2: // Double Click
+			if (!EventSystem.current.IsPointerOverGameObject ()) {
+				if (currentTile.player_id == GameState.player.GetID () && !Shop.gInshop) {
+					mapCamera.Move (currentTile.transform.position);
 				}
+			}
 				break;
 		}
 	}

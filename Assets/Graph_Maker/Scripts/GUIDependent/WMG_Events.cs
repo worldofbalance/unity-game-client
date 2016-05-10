@@ -102,6 +102,24 @@ public class WMG_Events : WMG_GUI_Functions {
 		}
 	}
 
+	// Pie Slice
+	public delegate void WMG_Pie_Slice_Click_H(WMG_Pie_Graph pieGraph, WMG_Pie_Graph_Slice aSlice);
+	public event WMG_Pie_Slice_Click_H WMG_Pie_Slice_Click;
+	
+	public void addPieSliceClickEvent(GameObject go) {
+		AddEventTrigger(WMG_Pie_Slice_Click_2, EventTriggerType.PointerClick, go);
+	}
+	
+	private void WMG_Pie_Slice_Click_2(GameObject go) {
+		if (WMG_Pie_Slice_Click != null) {
+			WMG_Pie_Graph_Slice pieSlice = go.transform.parent.GetComponent<WMG_Pie_Graph_Slice>();
+			if (pieSlice == null) {
+				pieSlice = go.transform.parent.parent.GetComponent<WMG_Pie_Graph_Slice>();
+			}
+			WMG_Pie_Slice_Click(pieSlice.pieRef, pieSlice);
+		}
+	}
+
 	#endregion
 
 	#region GraphHoverEvents
@@ -168,6 +186,25 @@ public class WMG_Events : WMG_GUI_Functions {
 		if (WMG_Link_MouseEnter_Leg != null) {
 			WMG_Series aSeries = go.transform.parent.GetComponent<WMG_Legend_Entry>().seriesRef;
 			WMG_Link_MouseEnter_Leg(aSeries, go.GetComponent<WMG_Link>(), state);
+		}
+	}
+
+	// Pie Slice
+	public delegate void WMG_Pie_Slice_MouseEnter_H(WMG_Pie_Graph pieGraph, WMG_Pie_Graph_Slice aSlice, bool state);
+	public event WMG_Pie_Slice_MouseEnter_H WMG_Pie_Slice_MouseEnter;
+	
+	public void addPieSliceMouseEnterEvent(GameObject go) {
+		AddEventTrigger(WMG_Pie_Slice_MouseEnter_2, EventTriggerType.PointerEnter, go, true);
+		AddEventTrigger(WMG_Pie_Slice_MouseEnter_2, EventTriggerType.PointerExit, go, false);
+	}
+	
+	private void WMG_Pie_Slice_MouseEnter_2(GameObject go, bool state) {
+		if (WMG_Pie_Slice_MouseEnter != null) {
+			WMG_Pie_Graph_Slice pieSlice = go.transform.parent.GetComponent<WMG_Pie_Graph_Slice>();
+			if (pieSlice == null) {
+				pieSlice = go.transform.parent.parent.GetComponent<WMG_Pie_Graph_Slice>();
+			}
+			WMG_Pie_Slice_MouseEnter(pieSlice.pieRef, pieSlice, state);
 		}
 	}
 

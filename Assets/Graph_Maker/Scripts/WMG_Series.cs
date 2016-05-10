@@ -78,10 +78,10 @@ public class WMG_Series : MonoBehaviour {
 			}
 		}
 	}
-	public bool AutoUpdateXDistBetween { get {return _AutoUpdateXDistBetween;} 
+	public bool ManuallySetXDistBetween { get {return _ManuallySetXDistBetween;} 
 		set {
-			if (_AutoUpdateXDistBetween != value) {
-				_AutoUpdateXDistBetween = value;
+			if (_ManuallySetXDistBetween != value) {
+				_ManuallySetXDistBetween = value;
 				pointValuesC.Changed();
 			}
 		}
@@ -210,6 +210,17 @@ public class WMG_Series : MonoBehaviour {
 			}
 		}
 	}
+
+	[System.Obsolete("This parameter is no longer used. Use ManuallySetXDistBetween if needed.")]
+	public bool AutoUpdateXDistBetween { get {return _AutoUpdateXDistBetween;} 
+		set {
+			if (_AutoUpdateXDistBetween != value) {
+				_AutoUpdateXDistBetween = value;
+				pointValuesC.Changed();
+			}
+		}
+	}
+	[SerializeField] private bool _AutoUpdateXDistBetween;
 	
 	// Public variables without change tracking
 	public UnityEngine.Object dataLabelPrefab;
@@ -238,7 +249,7 @@ public class WMG_Series : MonoBehaviour {
 	[SerializeField] private bool _usePointColors;
 	[SerializeField] private Color _lineColor;
 	[SerializeField] private bool _UseXDistBetweenToSpace;
-	[SerializeField] private bool _AutoUpdateXDistBetween;
+	[SerializeField] private bool _ManuallySetXDistBetween;
 	[SerializeField] private float _xDistBetweenPoints;
 	[SerializeField] private float _extraXSpace;
 	[SerializeField] private bool _hidePoints;
@@ -1086,7 +1097,7 @@ public class WMG_Series : MonoBehaviour {
 
 	public void updateXdistBetween() {
 		// Auto set xDistBetween based on the axis length and point count
-		if (AutoUpdateXDistBetween) {
+		if (!ManuallySetXDistBetween) {
 			_xDistBetweenPoints = theGraph.getDistBetween(points.Count, (theGraph.orientationType == WMG_Axis_Graph.orientationTypes.horizontal ? theGraph.yAxisLength : theGraph.xAxisLength));
 		}
 	}

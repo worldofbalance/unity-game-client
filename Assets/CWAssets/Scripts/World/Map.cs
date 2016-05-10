@@ -26,12 +26,12 @@ public class Map : MonoBehaviour {
 	void Awake() {
 		playerList = new Dictionary<int, Player>();
 
-		NetworkManager.Send(
+		CWGame.networkManager.Send(
 			ZoneListProtocol.Prepare(),
 			ProcessZoneList
 		);
 
-		NetworkManager.Listen(
+		CWGame.networkManager.Listen(
 			NetworkCode.ZONE_UPDATE,
 			ProcessZoneUpdate
 		);
@@ -48,7 +48,7 @@ public class Map : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		NetworkManager.Ignore(
+		CWGame.networkManager.Ignore(
 			NetworkCode.ZONE_UPDATE,
 			ProcessZoneUpdate
 		);
@@ -144,7 +144,7 @@ public class Map : MonoBehaviour {
 
 		transform.position = Vector3.zero;
 	}
-
+ 
 	public GameObject FindPlayerOwnedTile(int player_id){
 		foreach (GameObject zoneObject in zoneList.Values) {
 			if (zoneObject.GetComponent<Zone>().player_id == player_id) {

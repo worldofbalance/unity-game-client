@@ -9,13 +9,13 @@ public class Game : MonoBehaviour
     private static int isFading = 0;
     private static float alphaFadeValue;
     private static string nextScene;
-		private NetworkManager networkManager;
+		public static NetworkManager networkManager;
 
     void Awake ()
     {
 				networkManager = new NetworkManager(
 					this,
-					new ConnectionManager(Config.REMOTE_HOST, Constants.REMOTE_PORT)
+					new ConnectionManager(Config.GetHost(), Constants.REMOTE_PORT)
 				);
         scene = "Login";
         DontDestroyOnLoad (gameObject);
@@ -31,7 +31,7 @@ public class Game : MonoBehaviour
         //     speciesListProtocol.Prepare(),
         //     ProcessSpeciesList
         // );
-
+        Debug.Log("started...");
         if (scene != "") {
             // Application.LoadLevel(scene);
             Game.SwitchScene (scene);
@@ -99,7 +99,7 @@ public class Game : MonoBehaviour
                 break;
                 case "World":
                 Debug.Log("The client is requesting for quiting...");
-                NetworkManager.Send (BackToLobbyProtocol.Prepare ());
+                networkManager.Send (BackToLobbyProtocol.Prepare ());
                 break;
                 case "Ecosystem":
                 break;
@@ -142,6 +142,7 @@ public class Game : MonoBehaviour
 
     public void ProcessSpeciesList (NetworkResponse response)
     {
+    Debug.Log ("ProcessSpeciesList");
         ResponseSpeciesList args = response as ResponseSpeciesList;
         // SpeciesTable.Update(args.speciesList);
         // SpeciesTable.speciesList = args.speciesList;
