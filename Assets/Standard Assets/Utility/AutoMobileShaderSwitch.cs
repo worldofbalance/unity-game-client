@@ -16,7 +16,6 @@ namespace UnityStandardAssets.Utility
         {
 #if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
 			var renderers = FindObjectsOfType<Renderer>();
-			Debug.Log (renderers.Length+" renderers");
 			var oldMaterials = new List<Material>();
 			var newMaterials = new List<Material>();
 
@@ -56,8 +55,6 @@ namespace UnityStandardAssets.Utility
 					}
 				}
 			}
-			Debug.Log (materialInstancesReplaced+" material instances replaced");
-			Debug.Log (materialsReplaced+" materials replaced");
 			for(int n=0; n<oldMaterials.Count; ++n)
 			{
 				Debug.Log (oldMaterials[n].name+" ("+oldMaterials[n].shader.name+")"+" replaced with "+newMaterials[n].name+" ("+newMaterials[n].shader.name+")");

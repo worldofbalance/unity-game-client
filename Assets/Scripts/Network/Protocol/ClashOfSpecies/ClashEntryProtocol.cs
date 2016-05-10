@@ -30,7 +30,7 @@ public class ClashEntryProtocol {
             response.config = new Dictionary<int, List<Vector2>>();
 
 			int count = DataReader.ReadInt(dataStream);
-//            Debug.Log(count);
+//          Debug.Log(count);
 			for (int i = 0; i < count; i++) {
 				int id = DataReader.ReadInt(dataStream);
 				int instanceCount = DataReader.ReadInt(dataStream);

@@ -25,7 +25,6 @@ namespace SD {
         // Destroys the attached object upon a collison with the player
         void OnTriggerEnter(Collider other) {
             if (other.tag == "Player") {
-                Debug.Log ("Touched");
                 int npcFishId = gameObject.GetComponentInParent<NPCFishData> ().getNPCFishData ().id;
                 Debug.Log ("Consumed prey with ID: " + npcFishId);
                 if (GameManager.getInstance().getConnectionManager()) {

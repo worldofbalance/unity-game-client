@@ -48,7 +48,6 @@ function Start(){
 	}
 	
 	this.enabled = false;
-	Debug.Log(gameObject + " found no school to swim in: " + this + " disabled... Standalone fish not supported, please use the SchoolController"); 
 }
 
 function Update() {

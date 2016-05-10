@@ -16,7 +16,6 @@ namespace SD {
             set {
                 this._isPlayerReady = value;
                 if (this._isPlayerReady && this.isOpponentReady) {
-                    Debug.Log ("Loading the Game Scene..");
                     SceneManager.LoadScene ("SDGameMain");
                 }
             }
@@ -28,7 +27,6 @@ namespace SD {
             set {
                 this._isOpponentReady = value;
                 if (this._isPlayerReady && this._isOpponentReady) {
-                    Debug.Log ("Loading the Game Scene..");
                     SceneManager.LoadScene ("SDGameMain");
                 }
             }
@@ -84,7 +82,7 @@ namespace SD {
                 cManager.Send (request);
                 Debug.Log ("Waiting for opponent to respond..");
             } else {
-                Debug.Log ("Encountered an error in starting the game.");
+                Debug.LogError ("Encountered an error in starting the game.");
             }
         }
 

@@ -42,8 +42,6 @@ namespace SD {
                 player.transform.position = new Vector3 (player.transform.position.x + (5 * xDirection),
                     player.transform.position.y + (5 * yDirection),
                     player.transform.position.z);
-
-               // Debug.Log (xDirection + "" + yDirection);
             }
         }
 
