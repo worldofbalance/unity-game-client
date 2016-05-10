@@ -10,9 +10,10 @@ public class Constants {
 
 	// Constants
 	public static readonly string CLIENT_VERSION = "1.00";
-    public static readonly string REMOTE_HOST =  "thecity.sfsu.edu"; // "localhost"; //"localhost";  "smurf.sfsu.edu";
-	public static readonly int REMOTE_PORT = 9260;  	// update from 9255
-//	public static readonly int REMOTE_PORT = 9255;
+    public static readonly string REMOTE_HOST =  "localhost";//"thecity.sfsu.edu"; // "localhost"; //"localhost";  "smurf.sfsu.edu";
+    //public static readonly string REMOTE_HOST =  "thecity.sfsu.edu";
+	public static readonly int REMOTE_PORT = 9260;  	// for thecity
+	//public static readonly int REMOTE_PORT = 20038;     // for localhost
 	public static readonly float HEARTBEAT_RATE = 1f;
 	
 	// Other

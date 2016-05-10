@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;UNITY_5_3_2;UNITY_5_3;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_LOG_MIXED_STACKTRACE;ENABLE_UNITYWEBREQUEST;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_2;UNITY_5_3;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_LOG_MIXED_STACKTRACE;ENABLE_UNITYWEBREQUEST;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
@@ -326,17 +326,24 @@
      <Compile Include="Assets\Scripts\AI.cs" />
      <Compile Include="Assets\Scripts\AnimalAI.cs" />
      <Compile Include="Assets\Scripts\Camera\BasicCamera.cs" />
+     <Compile Include="Assets\Scripts\Camera\TouchCamera.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashBattleController.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashBattleControllerBckUpCpy.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashBattleToggle.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashBattleUnit.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashHealthBar.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClashReticle.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\ClickToMove.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\GameOverManager.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\SpeciesClickController.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Battle\animController.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\COSTouchInputControler.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\ClashBattleCamera.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\ClashBattleSpawner.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\ClashCameraControl.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\ClashDefenseSpawner.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\DetectTouchMovement.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\Camera\TouchCameraControl.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\ClashGameManager.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\ClashGetActiveToggle.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\ClashSplash.cs" />
@@ -345,12 +352,14 @@
      <Compile Include="Assets\Scripts\ClashOfSpecies\Defense\ClashUnitListItem.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Main\ClashMainMenu.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Main\ClashPreviewController.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\PinchZoom.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\ResultMenu.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Shop\ClashAttackShop.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Shop\ClashDefenseShop.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Shop\ClashSelectedUnit.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Shop\ClashShopItem.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Shop\ClashTabControl.cs" />
+     <Compile Include="Assets\Scripts\ClashOfSpecies\TerrainGrid.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Unit\ClashNavMeshAI.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Unit\ClashUnitAI.cs" />
      <Compile Include="Assets\Scripts\ClashOfSpecies\Unit\ClashUnitAttributes.cs" />
@@ -433,9 +442,13 @@
      <Compile Include="Assets\Scripts\Network\ConnectionManager.cs" />
      <Compile Include="Assets\Scripts\Network\DataReader.cs" />
      <Compile Include="Assets\Scripts\Network\GamePacketStream.cs" />
+     <Compile Include="Assets\Scripts\Network\NetworkAbstractManager.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkCode.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkManager.cs" />
+     <Compile Include="Assets\Scripts\Network\NetworkManagerCOS.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkProtocolTable.cs" />
+     <Compile Include="Assets\Scripts\Network\NetworkProtocolTableBase.cs" />
+     <Compile Include="Assets\Scripts\Network\NetworkProtocolTableCOS.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkRequest.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkResponse.cs" />
      <Compile Include="Assets\Scripts\Network\Protocol\BackToLobbyProtocol.cs" />
@@ -530,19 +543,28 @@
      <Compile Include="Assets\Scripts\WorldMenu.cs" />
      <None Include="Assets\RRAssets\Resources\Prefabs\map\ItemLocationFiles\1.txt" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween43.xml" />
+     <None Include="Assets\Shaders\Outlined-Silhouette Only.shader" />
+     <None Include="Assets\Shaders\Outline_Diffuse.shader" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween46.xml" />
      <None Include="Assets\CWAssets\Resources\Prefabs\Battle\$Alpha-Selective.shader" />
      <None Include="Assets\Graph_Maker\Shaders\AreaShading.shader" />
+     <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Simple.shader" />
      <None Include="Assets\CWAssets\Resources\Prefabs\Battle\$3DTextOneSided.shader" />
      <None Include="Assets\Graph_Maker\Shaders\AreaShading_SF.shader" />
      <None Include="Assets\SDAssets\3DModels\Fish School\Shaders\BumpSpecNoCull.shader" />
+     <None Include="Assets\Standard Assets\Environment\Water (Basic)\Shaders\FXWaterBasic.shader" />
      <None Include="Assets\SDAssets\3DModels\Fish School\Shaders\ReflectBumpRimSpecVertex.shader" />
+     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
      <None Include="Assets\Graph_Maker\ReadMe-1.5.4.txt" />
+     <None Include="Assets\Standard Assets\Environment\Water\Water\Shaders\FXWaterPro.shader" />
      <None Include="Assets\CWAssets\Resources\Images\Battle\$Alpha-Selective.shader" />
      <None Include="Assets\SDAssets\3DModels\Fish School\Shaders\BumpSpecRim.shader" />
      <None Include="Assets\Graph_Maker\DOTween\DOTween50.xml" />
      <None Include="Assets\CWAssets\Resources\Images\3DText.shader" />
+     <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\WaterInclude.cginc" />
      <None Include="Assets\SDAssets\3DModels\Fish School\Shaders\BumpSpecRimVertex.shader" />
+     <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Advanced.shader" />
+     <None Include="Assets\Shaders\OutlineShader.shader" />
      <None Include="Assets\RRAssets\Resources\ItemLocationFiles\1.txt" />
      <None Include="Assets\CWAssets\Resources\Images\Battle\$3DTextOneSided.shader" />
  <Reference Include="UnityEngine.UI">
@@ -566,6 +588,10 @@
  <Reference Include="Mono.Data.Sqlite">
  <HintPath>C:/Users/David/Documents/Unity/unity-game-client/Assets/Plugins/Mono.Data.Sqlite.dll</HintPath>
  </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{26E390B2-DF74-9F6C-26E8-4C3790200C5B}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

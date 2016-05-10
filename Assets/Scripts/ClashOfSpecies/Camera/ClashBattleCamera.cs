@@ -1,15 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ClashBattleCamera : MonoBehaviour {
+public class ClashBattleCamera : MonoBehaviour
+{
 
     private SphereCollider reticle = null;
-    private Terrain surface = null;
+
+    //    [SerializeField]
+    public Terrain surface = null;
+
     private Bounds bounds;
     private Vector3 offset;
 
-    public Terrain target {
-        set {
+
+    public Terrain target
+    {
+        set
+        {
             surface = value;
             reticle = new GameObject("Reticle", typeof(SphereCollider), typeof(ClashReticle)).GetComponent<SphereCollider>();
             reticle.GetComponent<SphereCollider>().isTrigger = true;
@@ -38,15 +45,43 @@ public class ClashBattleCamera : MonoBehaviour {
     public float moveSpeed = 5.0f;
     public float zoomLevel = 100.0f;
 
-	// Update is called once per frame
-    void OnDrawGizmosSelected() {
+    public float minFOV = 10f;
+    public float maxFOV = 79.9f;
+    private float minX, maxX, minZ, maxZ, minY = 35.0f, maxY = 80.0f;
+    public float terrainCameraPadding = 40;
+
+    Camera _camera;
+
+    // Update is called once per frame
+    void OnDrawGizmosSelected()
+    {
         Gizmos.DrawCube(bounds.center, bounds.size);
     }
 
-	void Update() {
-        if (!reticle) return;
+    public void setDraging(bool isDragging)
+    {
+        dragging = isDragging;
+        lastMouse = Input.mousePosition;
+    }
 
-        if (Input.GetMouseButtonDown(1)) {
+    public void Start()
+    {
+        target = surface;
+
+        _camera = Camera.main;
+        minX = terrainCameraPadding;
+        maxX = Terrain.activeTerrain.terrainData.size.x - terrainCameraPadding;
+        minZ = terrainCameraPadding;
+        maxZ = Terrain.activeTerrain.terrainData.size.z - terrainCameraPadding;
+    }
+
+    public void Update()
+    {
+        if (!reticle)
+            return;
+
+        if (Input.GetMouseButtonDown(1))
+        {
             dragging = true;
             lastMouse = Input.mousePosition;
         }
@@ -61,22 +96,35 @@ public class ClashBattleCamera : MonoBehaviour {
         Debug.DrawRay(reticle.transform.position, tempX, Color.red);
         Debug.DrawRay(reticle.transform.position, tempZ, Color.blue);
 
-        if (dragging) {
+        if (dragging)
+        {
             var delta = Input.mousePosition - lastMouse;
             transform.RotateAround(reticle.transform.position, Vector3.up, yawSpeed * delta.x);
             transform.RotateAround(reticle.transform.position, tempX, -pitchSpeed * delta.y);
+//            if (transform.position.y >= minY && transform.position.y <= maxY)
+//                transform.RotateAround(reticle.transform.position, tempX, -pitchSpeed * delta.y);
+//            else
+//                transform.position = new Vector3(transform.position.x,
+//                    Mathf.Clamp(_camera.fieldOfView, minY, maxY),
+//                    transform.position.z);
 
             // Counter-rotate to offset overpitch.
-            if (transform.rotation.eulerAngles.x > 80.0f) {
-                if (transform.position.y > 0.0f) {
+            if (transform.rotation.eulerAngles.x > 80.0f)
+            {
+                if (transform.position.y > 35.0f)
+                {
                     transform.RotateAround(reticle.transform.position, tempX, -1.0f * (transform.rotation.eulerAngles.x - 85.0f));
-                } else {
+                }
+                else
+                {
                     transform.RotateAround(reticle.transform.position, tempX, 360.0f - transform.rotation.eulerAngles.x);
                 }
             }
             transform.LookAt(reticle.transform, Vector3.up);
             lastMouse = Input.mousePosition;
-        } else {
+        }
+        else
+        {
             dragging = false;
         }
 
@@ -89,23 +137,49 @@ public class ClashBattleCamera : MonoBehaviour {
 
         attempt.y = height - reticle.transform.position.y;
 
-        if (!valid) return;
+        if (!valid)
+            return;
 
         // If succesful, translate both the camera transform and the reticle by the same amount.
         reticle.transform.Translate(attempt);
         transform.Translate(attempt, Space.World);
 
+        CheckZoom();
+
+    }
+
+    void LateUpdate()
+    {
+        Vector3 pos = new Vector3(
+                          Mathf.Clamp(_camera.transform.position.x, minX, maxX),
+                          _camera.transform.position.y,
+                          Mathf.Clamp(_camera.transform.position.z, minZ, maxZ));
+        _camera.transform.position = pos;
+    }
+
+    public void CheckZoom()
+    {
+        
+
         // Handle zoom.
         var zoomAxis = (transform.position - reticle.transform.position).normalized;
-        if (Input.GetKey(KeyCode.Q)) {
-            zoomLevel = Mathf.Max(20.0f, zoomLevel - 10.0f);
+        if (Input.GetKey(KeyCode.Q))
+        {
+//            zoomLevel = Mathf.Max(20.0f, zoomLevel - 2.0f);
+            _camera.fieldOfView -= 1.0f;
         }
 
-        if (Input.GetKey(KeyCode.Z)) {
-            zoomLevel = Mathf.Min(100.0f, zoomLevel + 10.0f);
+        if (Input.GetKey(KeyCode.Z))
+        {
+//            zoomLevel = Mathf.Min(50.0f, zoomLevel + 2.0f);
+            _camera.fieldOfView += 1.0f;
         }
+        // Clamp the field of view to make sure it's between minFOV and maxFOV.
+        _camera.fieldOfView = Mathf.Clamp(_camera.fieldOfView, minFOV, maxFOV);
 
-        transform.position = reticle.transform.position + (zoomAxis * zoomLevel);
-        transform.LookAt(reticle.transform);
-	}
+
+
+//        transform.position = reticle.transform.position + (zoomAxis * zoomLevel);
+//        transform.LookAt(reticle.transform);
+    }
 }

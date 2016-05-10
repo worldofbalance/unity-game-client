@@ -34,10 +34,10 @@ public class Trees : MonoBehaviour {
 
         if (player.player1) { //Your name is pink
             //transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
-            transform.Find ("NameText").GetComponent<Renderer> ().material.SetColor("_Color", Color.red);
+                transform.Find ("NameText").GetComponent<Renderer> ().material.SetColor("_Color", Color.cyan);
         } else { //Enemy name is redateria
             //transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
-            transform.Find("NameText").GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
+            transform.Find("NameText").GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
         }
         //Set dmg text
         transform.Find("DamageText").GetComponent<TextMesh>().text = "";
@@ -269,6 +269,7 @@ public class Trees : MonoBehaviour {
         // Call quitmatch protocol -- notify oponent that player is quitting
         // return player to lobby
         GameManager.protocols.sendQuitMatch(player.playerID);
+        removeAfterDelay = true;
     }
     
 }

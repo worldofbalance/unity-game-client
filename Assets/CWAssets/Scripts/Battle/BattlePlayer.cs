@@ -189,7 +189,7 @@ namespace CW
         }
 		
 		public void applyFoodBuff(AbstractCard target, int deltaAttack, int deltaHealth){
-            //DebugConsole.Log("in applyfood buff");
+            
 			target.applyFood (target, deltaAttack, deltaHealth);
 		}
 		
