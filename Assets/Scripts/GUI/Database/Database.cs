@@ -105,6 +105,7 @@ public class Database : MonoBehaviour
 
 	void OnGUI ()
 	{
+		bool openWindowButton = false;
 		if (!styleExists) {
 			style = new GUIStyle (GUI.skin.label);
 			style.alignment = TextAnchor.UpperCenter;
@@ -113,19 +114,22 @@ public class Database : MonoBehaviour
 
 			styleExists = true;
 		}
-
-		windowRect = GUI.Window (window_id, windowRect, MakeWindow, "", GUIStyle.none);
-
-		if (windowRect.x <= hideX) {
-			GUIStyle style = new GUIStyle (GUI.skin.box);
-			style.alignment = TextAnchor.MiddleCenter;
-			style.font = font;
-			
-			float textWidth = style.CalcSize (new GUIContent (title)).x;
-			GUI.Label (new Rect (windowRect.x + windowRect.width, (windowRect.height - 30) / 2, textWidth + 10, 30), title, style);
+		
+		if (isActive) {
+			windowRect = GUI.Window (window_id, (new Rect (0, 0, 700, 1000)), MakeWindow, "Window", GUIStyle.none);
+			openWindowButton = GUI.Button ((new Rect (620, 250, 15, 100)), "");
+		} else {
+			openWindowButton = GUI.Button ((new Rect (10, 250, 15, 100)), "");
 		}
 
-		// "Collision" Detection for Cards
+		if (openWindowButton || (activatedBySpeciesClick && closedDetails)) {
+			SetActive (!isActive, null);
+			activatedBySpeciesClick = false;
+			closedDetails = false;
+			openedDetails = false;
+		}
+		
+//		 "Collision" Detection for Cards
 		if (mouseOverList.Count > 0) {
 			// Clear "Collisions"
 			mouseOverList.Clear ();
@@ -174,6 +178,7 @@ public class Database : MonoBehaviour
 			scrollStyle [0], 
 			scrollStyle [1]
 		);
+
 		for (int i = 0; i < viewList.Count; i++) {
 			Page page = viewList [i];
 
@@ -243,13 +248,6 @@ public class Database : MonoBehaviour
 		GUI.color = Color.white;
 		GUI.EndGroup ();
 		GUI.EndGroup ();
-
-		if (GUI.Button (rect ["btn"], "") || (activatedBySpeciesClick && closedDetails)) {
-			SetActive (!isActive, null);
-			activatedBySpeciesClick = false;
-			closedDetails = false;
-			openedDetails = false;
-		}
 	}
 
 	public void DrawCard (Card card)
@@ -271,13 +269,6 @@ public class Database : MonoBehaviour
 			card.color = color;
 		}
 
-		//jtc - override with info from manager
-		Debug.Log(manager);
-		string name = manager.MatchSeriesLabel (card.name);
-		if (name != null) {
-			color = manager.seriesColors [name];
-			card.color = color;		
-		}
 		card.Draw ();
 
 		// Selection
@@ -319,11 +310,6 @@ public class Database : MonoBehaviour
 
 		startX = windowRect.x;
 		winDT = 0;
-
-		if (active) {
-			GUI.BringWindowToFront (window_id);
-		}
-
 	}
 
 	public void Switch (int view)
@@ -332,8 +318,9 @@ public class Database : MonoBehaviour
 		case 0:  //Constants.MODE_ECOSYSTEM:
 		case 2:  //Constants.MODE_CONVERGE_GAME:
 			List<string> contents = new List<string> ();
-			GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
-				
+			GameObject globalObject = GameObject.Find("Global Object");
+			GameState gs = globalObject.GetComponent<GameState> ();
+
 			foreach (Species species in gs.speciesList.Values) {
 				contents.Add (species.name);
 			}
