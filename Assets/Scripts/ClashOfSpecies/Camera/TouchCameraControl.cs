@@ -38,26 +38,26 @@ public class TouchCameraControl : MonoBehaviour
     UnityEngine.UI.Text txtPinchDistance, txtPinchDistanceDelta, txtTurnAngle, txtTurnAngleDelta, txtDeltaMagDiff;
     COSTouchInputControler cosInController;
 
-    void Start()
+    void Start ()
     {
-        Debug.Log(NavMesh.GetAreaFromName("Walkable") + " " + NavMesh.GetAreaFromName("Not Walkable") + " " +
-            NavMesh.GetAreaFromName("Water"));
+        Debug.Log (NavMesh.GetAreaFromName ("Walkable") + " " + NavMesh.GetAreaFromName ("Not Walkable") + " " +
+        NavMesh.GetAreaFromName ("Water"));
         _camera = Camera.main;
         minX = terrainCameraPadding;
         maxX = Terrain.activeTerrain.terrainData.size.x - terrainCameraPadding;
         minZ = terrainCameraPadding;
         maxZ = Terrain.activeTerrain.terrainData.size.z - terrainCameraPadding;
 
-        var objTxtPinchDistance = GameObject.Find("txtPinchDistance");
-        txtPinchDistance = objTxtPinchDistance.GetComponent<UnityEngine.UI.Text>();
-        var q = GameObject.Find("txtPinchDistanceDelta");
-        txtPinchDistanceDelta = q.GetComponent<UnityEngine.UI.Text>();
-        var w = GameObject.Find("txtTurnAngle");
-        txtTurnAngle = w.GetComponent<UnityEngine.UI.Text>();
-        var e = GameObject.Find("txtTurnAngleDelta");
-        txtTurnAngleDelta = e.GetComponent<UnityEngine.UI.Text>();
-        var r = GameObject.Find("deltaMagDiff");
-        txtDeltaMagDiff = r.GetComponent<UnityEngine.UI.Text>();
+        var objTxtPinchDistance = GameObject.Find ("txtPinchDistance");
+        txtPinchDistance = objTxtPinchDistance.GetComponent<UnityEngine.UI.Text> ();
+        var q = GameObject.Find ("txtPinchDistanceDelta");
+        txtPinchDistanceDelta = q.GetComponent<UnityEngine.UI.Text> ();
+        var w = GameObject.Find ("txtTurnAngle");
+        txtTurnAngle = w.GetComponent<UnityEngine.UI.Text> ();
+        var e = GameObject.Find ("txtTurnAngleDelta");
+        txtTurnAngleDelta = e.GetComponent<UnityEngine.UI.Text> ();
+        var r = GameObject.Find ("deltaMagDiff");
+        txtDeltaMagDiff = r.GetComponent<UnityEngine.UI.Text> ();
 
 //        maxZoom = 0.5f * (mapWidth / _camera.aspect);
 //
@@ -68,14 +68,14 @@ public class TouchCameraControl : MonoBehaviour
 //            _camera.orthographicSize = maxZoom;
 
 //        CalculateLevelBounds();
-        cosInController = new COSTouchInputControler();
+        cosInController = new COSTouchInputControler ();
     }
 
-    COSTouchInputControler.COSTouchState eTouchRes = COSTouchInputControler.COSTouchState.None;
+    COSTouchState eTouchRes = COSTouchState.None;
 
-    void Update()
+    void Update ()
     {
-        RaycastHit hit = cosInController.TouchUpdate(_camera);
+        RaycastHit hit = cosInController.InputUpdate (_camera);
 
 //        if (updateZoomSensitivity)
 //        {
@@ -233,12 +233,12 @@ public class TouchCameraControl : MonoBehaviour
 
 
 
-    void LateUpdate()
+    void LateUpdate ()
     {
-        Vector3 pos = new Vector3(
-                          Mathf.Clamp(_camera.transform.position.x, minX, maxX),
+        Vector3 pos = new Vector3 (
+                          Mathf.Clamp (_camera.transform.position.x, minX, maxX),
                           _camera.transform.position.y, 
-                          Mathf.Clamp(_camera.transform.position.z, minZ, maxZ));
+                          Mathf.Clamp (_camera.transform.position.z, minZ, maxZ));
         _camera.transform.position = pos;
     }
 
