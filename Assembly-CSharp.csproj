@@ -284,9 +284,11 @@
      <Compile Include="Assets\SDAssets\Scripts\Network\Protocols\SDHeartbeatProtocol.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Network\Protocols\SDKeyboardProtocol.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Network\Protocols\SDLoginProtocol.cs" />
+     <Compile Include="Assets\SDAssets\Scripts\Network\Protocols\SDNpcPositionProtocol.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Network\Protocols\SDPlayInitProtocol.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Network\Protocols\SDPlayerPositionProtocol.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Network\Protocols\SDPreyProtocol.cs" />
+     <Compile Include="Assets\SDAssets\Scripts\Network\Protocols\SDRespawnNpcProtocol.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Network\Protocols\SDScoreProtocol.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Network\Protocols\SDStartGameProtocol.cs" />
      <Compile Include="Assets\SDAssets\Scripts\Network\SDMain.cs" />
