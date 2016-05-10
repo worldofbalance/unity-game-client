@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class WorldMouse : MonoBehaviour {
 	
@@ -10,8 +11,12 @@ public class WorldMouse : MonoBehaviour {
 	public Zone currentTile { get; set; }
 
 	public TileInfoGUI tileInfoGUI;
-	
-	private int prevPlayerID;
+    private string[] terrain = new string[] { "Desert", "Jungle", "Grasslands", "Arctic" };
+
+    GameObject tileUi;
+
+
+    private int prevPlayerID;
 
 	private MapCamera mapCamera;
 
@@ -19,7 +24,14 @@ public class WorldMouse : MonoBehaviour {
 	void Start() {
 		tileInfoGUI = gameObject.AddComponent<TileInfoGUI>();
 		mapCamera = GameObject.Find("MapCamera").GetComponent<MapCamera>();
-	}
+        tileUi = GameObject.Find("Canvas/Tilepurchasedialog") as GameObject;
+        tileUi.SetActive(false);
+
+    }
+    void Awake()
+    {
+        
+    }
 	
 	// Update is called once per frame
 	void Update() {
@@ -66,22 +78,60 @@ public class WorldMouse : MonoBehaviour {
 			currentTile = null;
 		}
 
+        //used for tile purchasing 
 		switch (InputExtended.GetMouseNumClick(0)) {
 			case 1: // Single Click
-//				mouseDownPos = Input.mousePosition;
-//				oldCameraPos = transform.position;
-//				if (currentTile != null && currentTile.player_id > 0) {
-//					mapCamera.Center(currentTile.player_id);
-//					mapCamera.isLeaving = mapCamera.isZooming = true;
-//				}
+                    //modifies which tile you are currently selecting 
+                {
+                    if (!EventSystem.current.IsPointerOverGameObject())
+                    {
+                        //Check to make sure they are not currently using shop (Raycasting issues) 
+                        if (!Shop.gInshop)
+                        {
+                            if(tileUi.activeSelf && currentTile.player_id == 0)
+                            {
+                                Debug.Log(tileUi.name);
+                                tileUi.transform.GetChild(2).GetComponent<Text>().text = terrain[currentTile.terrain_type - 1];
+                                tileUi.transform.GetChild(3).GetComponent<Text>().text = currentTile.v_capacity.ToString();
+                            }
+                        }
+                    }
+                 }
 				break;
-		case 2: // Double Click
+
+		    case 2: // Double Click
+                // This case is being used for purchasing tiles, and accessing your ecosystem 
 			if (!EventSystem.current.IsPointerOverGameObject ()) {
-				if (currentTile.player_id == GameState.player.GetID () && !Shop.gInshop) {
-					mapCamera.Move (currentTile.transform.position);
-				}
-			}
-				break;
-		}
+                    //Check to make sure they are not currently using shop (Raycasting issues) 
+                if (!Shop.gInshop)
+                    {
+                        //Launch the ecosystem if they are clicking on owned tiles 
+                        if (currentTile.player_id == GameState.player.GetID())
+                        {
+                            mapCamera.Move(currentTile.transform.position);
+
+                        } else if (currentTile.player_id == 0 && !tileUi.activeSelf) // check to see if tile can be purchased 
+                            // **NOTE** if the tile's owner is "NULL" in the db, player_id = 0
+                        {
+                            Debug.Log(tileUi.name);
+                            tileUi.transform.GetChild(2).GetComponent<Text>().text = terrain[currentTile.terrain_type -1 ] ;
+                            tileUi.transform.GetChild(3).GetComponent<Text>().text = currentTile.v_capacity.ToString();
+                            // set the price using Request/REsponse 
+                            // tileUi.transform.GetChild(4).GetComponent<Text>().text = "XXXX";
+                            tileUi.SetActive(true);
+
+
+                        }
+                          //View other player's ecosystem (Future )
+                          else
+                        {
+                            //content 
+                        }
+                    }
+	         }
+                Debug.Log("double click event success");
+                //Exit the case
+                break;       
+	   }
 	}
 }

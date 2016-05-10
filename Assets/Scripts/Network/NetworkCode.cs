@@ -21,6 +21,9 @@
 	
 	public static readonly short SHOP = 116;
 	public static readonly short SHOP_ACTION = 117;
+    //tile purchase 
+    public static readonly short TILE_PURCHASE = 301;
+
 	public static readonly short PARAMS = 118;
 	public static readonly short CHANGE_PARAMETERS = 119;
 	public static readonly short GET_FUNCTIONAL_PARAMETERS = 120;
@@ -112,4 +115,6 @@
 	public static readonly short RETURN_LOBBY = 213;
 	public static readonly short APPLY_FOOD = 214;
 	public static readonly short APPLY_WEATHER = 215;
+
+
 }
