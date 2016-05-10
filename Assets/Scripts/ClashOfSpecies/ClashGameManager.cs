@@ -24,32 +24,28 @@ public class ClashSpecies
     public float moveSpeed;
     public SpeciesType type;
 
-    public string Stats()
+    public string Stats ()
     {
         string stats = "Stats:\n\n" + name;
         stats += "\nType: " + type; 
         stats += "\nCost: " + cost; 
         stats += "\nHealth: " + hp; 
 		
-        if (type == SpeciesType.PLANT)
-        {
-            switch (name)
-            {
-                case "Big Tree":	//hp buff
-                    stats += "\nHP Buff: 100";
-                    break;
-                case "Baobab":	//damage buff
-                    stats += "\nDamage Buff: 8";
-                    break;
-                case "Trees and Shrubs":	//movement speed buff
-                    stats += "\nSpeed Buff: 5";
-                    break;
-                default:
-                    break;
+        if (type == SpeciesType.PLANT) {
+            switch (name) {
+            case "Big Tree":	//hp buff
+                stats += "\nHP Buff: 100";
+                break;
+            case "Baobab":	//damage buff
+                stats += "\nDamage Buff: 8";
+                break;
+            case "Trees and Shrubs":	//movement speed buff
+                stats += "\nSpeed Buff: 5";
+                break;
+            default:
+                break;
             }
-        }
-        else
-        {
+        } else {
             stats += "\nAttack: " + attack; 
             stats += "\nAttack Speed: " + attackSpeed; 
             stats += "\nMovement Speed: " + moveSpeed;
@@ -64,7 +60,7 @@ public class ClashDefenseConfig
 {
     public Player owner;
     public string terrain;
-    public Dictionary<ClashSpecies, List<Vector2>> layout = new Dictionary<ClashSpecies, List<Vector2>>();
+    public Dictionary<ClashSpecies, List<Vector2>> layout = new Dictionary<ClashSpecies, List<Vector2>> ();
 }
 
 [System.Serializable]
@@ -81,16 +77,17 @@ public class ClashGameManager : MonoBehaviour
     public ClashDefenseConfig defenseConfig;
     public ClashDefenseConfig pendingDefenseConfig;
     public List<ClashSpecies> availableSpecies;
+    public bool isRunningOnMobile = false;
 
     public ClashDefenseConfig currentTarget;
 
-    void Awake()
+    void Awake ()
     {
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad (this);
 
     }
 
-    void Start()
+    void Start ()
     {
     }
 }
