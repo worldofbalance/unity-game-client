@@ -285,15 +285,16 @@ public class DemTile : MonoBehaviour
                 else if (SpeciesConstants.SpeciesType(info.name) == 2)
                     healthLevel = "Hunger: " + (info as PredatorInfo).GetHunger().ToString();
 
-                //panelObject.transform.GetChild(0).GetComponent<Image>().sprite = resident.GetComponent<SpriteRenderer>().sprite;
+                // Creates tooltip when mouse is over a resident on the board and keeps tooltip in the view of the screen
                 if (resident.transform.position.x < 2)
                     panelObject.transform.position = new Vector3(Input.mousePosition.x + 150, Input.mousePosition.y);
                 else
                     panelObject.transform.position = new Vector3(Input.mousePosition.x, Input.mousePosition.y);
+
                 panelObject.SetActive(true);
                 panelObject.transform.GetChild(1).GetComponent<Text>().text = resident.name;
                 panelObject.transform.GetChild(2).GetComponent<Text>().text = healthLevel;
-                //panelObject.transform.GetChild(0).gameObject.SetActive(true);
+
                 panelObject.transform.GetChild(1).gameObject.SetActive(true);
                 panelObject.transform.GetChild(2).gameObject.SetActive(true);
             }
@@ -335,7 +336,8 @@ public class DemTile : MonoBehaviour
             SignalPulse(false);
             this.GetComponent<Renderer>().material.color = currentColor;
         }
-        //panelObject.transform.GetChild(0).gameObject.SetActive(false);
+        
+        // Sets tooltip as inactive
         panelObject.SetActive(false);
         panelObject.transform.GetChild(1).gameObject.SetActive(false);
         panelObject.transform.GetChild(2).gameObject.SetActive(false);

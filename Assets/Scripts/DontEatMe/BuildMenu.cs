@@ -12,29 +12,29 @@ public class BuildMenu : MonoBehaviour
     // Access to DemButton script for button creation
     public DemButton demButton;
 
-	//Access to DemRectUI script for RectUI creation
-	public DemRectUI demRectUI;
-	private GameObject quitUI;	//instance of UI for after pressed quit button
+    //Access to DemRectUI script for RectUI creation
+    public DemRectUI demRectUI;
+    private GameObject quitUI;	//instance of UI for after pressed quit button
     private GameObject gameOverUI;  //instance of UI for after pressed quit button
-	private float qBX; //quit button width
-	private float qBY; //quit button height
+    private float qBX; //quit button width
+    private float qBY; //quit button height
 
     // Toggle counter
     int toggleCount = 0;
 
     // Currently building...
-    public  BuildInfo currentlyBuilding;
+    public BuildInfo currentlyBuilding;
 
-    public  DemAnimalFactory currentAnimalFactory;
+    public DemAnimalFactory currentAnimalFactory;
 
     // Currently about to delete?
-    public  bool currentlyDeleting = false;
+    public bool currentlyDeleting = false;
 
     // Player's current resource amount
-    public  int currentResources = 250;
+    public int currentResources = 250;
 
     // Player's current score amount
-    public  int score = 0;
+    public int score = 0;
 
     // Plant prefabs
     public DemAnimalFactory[] plants;
@@ -45,7 +45,7 @@ public class BuildMenu : MonoBehaviour
     // Menu buttons
     public GameObject[] menuButtons;
 
-    private  GameObject mainObject;
+    private GameObject mainObject;
 
     private DemTurnSystem turnSystem;
 
@@ -63,12 +63,12 @@ public class BuildMenu : MonoBehaviour
 
     private Font fontFamily;
 
-  private Sprite popupBackground;
-  private Sprite infoWidget;
+    private Sprite popupBackground;
+    private Sprite infoWidget;
 
-	//mainUI
-	public GameObject mainUIObject;
-	public GameObject canvasObject;
+    //mainUI
+    public GameObject mainUIObject;
+    public GameObject canvasObject;
 
     // this method increases score every 2s
     void increaseResources()
@@ -80,76 +80,76 @@ public class BuildMenu : MonoBehaviour
     //Loading Resources
     void Awake()
     {
-    infoWidget = Resources.Load<Sprite> ("DontEatMe/Sprites/infoWidget");
-    popupBackground = Resources.Load<Sprite> ("DontEatMe/Sprites/popup");
-       fontFamily = Resources.Load<Font>("Fonts/Chalkboard");
-      
-      backgroundMaterial = Resources.Load<Material>("DontEatMe/Materials/DontEatMeBg");  
+        infoWidget = Resources.Load<Sprite>("DontEatMe/Sprites/infoWidget");
+        popupBackground = Resources.Load<Sprite>("DontEatMe/Sprites/popup");
+        fontFamily = Resources.Load<Font>("Fonts/Chalkboard");
 
-      mainObject = GameObject.Find ("MainObject");
+        backgroundMaterial = Resources.Load<Material>("DontEatMe/Materials/DontEatMeBg");
 
-      main = mainObject.GetComponent<DemMain> ();
+        mainObject = GameObject.Find("MainObject");
 
-      turnSystem = mainObject.GetComponent<DemTurnSystem> ();
+        main = mainObject.GetComponent<DemMain>();
 
-	  //mainUI add here
-	  canvasObject = GameObject.Find ("Canvas");
-	  mainUIObject = GameObject.Find ("Canvas/mainUI");
-	  mainUIObject.transform.SetParent (canvasObject.transform);
-		mainUIObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-    mainUIObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
-    mainUIObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
-    mainUIObject.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
-    mainUIObject.GetComponent<RectTransform>().offsetMin = new Vector2(0, 0);
-		
-      panelObject = GameObject.Find("Canvas/Panel");
-	  //panelObject = GameObject.Find("Canvas/mainUI/Panel");
-    menuPanel = GameObject.Find("Canvas/mainUI/MenuPanel");
-    scoreText = GameObject.Find("Canvas/mainUI/CreditsWidget/CreditWidgetText");
-    livesText = GameObject.Find("Canvas/mainUI/LivesWidget/LivesWidgetText");
-    turnSystemText = GameObject.Find("Canvas/mainUI/TurnWidget/TurnWidgetText");
+        turnSystem = mainObject.GetComponent<DemTurnSystem>();
+
+        //mainUI add here
+        canvasObject = GameObject.Find("Canvas");
+        mainUIObject = GameObject.Find("Canvas/mainUI");
+        mainUIObject.transform.SetParent(canvasObject.transform);
+        mainUIObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+        mainUIObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+        mainUIObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+        mainUIObject.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
+        mainUIObject.GetComponent<RectTransform>().offsetMin = new Vector2(0, 0);
+
+        panelObject = GameObject.Find("Canvas/Panel");
+        //panelObject = GameObject.Find("Canvas/mainUI/Panel");
+        menuPanel = GameObject.Find("Canvas/mainUI/MenuPanel");
+        scoreText = GameObject.Find("Canvas/mainUI/CreditsWidget/CreditWidgetText");
+        livesText = GameObject.Find("Canvas/mainUI/LivesWidget/LivesWidgetText");
+        turnSystemText = GameObject.Find("Canvas/mainUI/TurnWidget/TurnWidgetText");
 
 
-    /*
-    panelObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
-    panelObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 0);
-    panelObject.GetComponent<RectTransform>().offsetMax = new Vector2(-100, 50);
-    panelObject.GetComponent<RectTransform>().offsetMin = new Vector2(100, 0);
+        /*
+        panelObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+        panelObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 0);
+        panelObject.GetComponent<RectTransform>().offsetMax = new Vector2(-100, 50);
+        panelObject.GetComponent<RectTransform>().offsetMin = new Vector2(100, 0);
+        */
+        panelObject.GetComponent<Image>().sprite = infoWidget;
+
+        /*
+            scoreText.GetComponent<Text> ().font = fontFamily;
+            //scoreText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
+            scoreText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
+            scoreText.GetComponent<RectTransform> ().localPosition = new Vector3 (90,0,0);
+            scoreText.GetComponent<RectTransform>().anchorMin = new Vector2(0.0f, 0.5f);
+            scoreText.GetComponent<RectTransform>().anchorMax = new Vector2(0.0f, 0.5f);
+            scoreText.GetComponent<Text> ().color = Color.white;
+            scoreText.GetComponent<Text> ().text = "Score: 0";
+
+            livesText.GetComponent<Text> ().font = fontFamily;
+            livesText.GetComponent<Text> ().color = Color.white;
+            livesText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
+            livesText.GetComponent<RectTransform> ().localPosition = new Vector3 (-90,0,0);
+            livesText.GetComponent<Text> ().text = "Lives: 3";
+
+            turnSystemText.GetComponent<Text> ().font = fontFamily;
+            turnSystemText.GetComponent<Text> ().color = Color.white;
+            turnSystemText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
+            turnSystemText.GetComponent<RectTransform> ().localPosition = new Vector3 (90,0,0);
+            turnSystemText.GetComponent<Text> ().text = "Your Turn!";
     */
-    panelObject.GetComponent<Image> ().sprite = infoWidget;
-
-    /*
-        scoreText.GetComponent<Text> ().font = fontFamily;
-        //scoreText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
-        scoreText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
-        scoreText.GetComponent<RectTransform> ().localPosition = new Vector3 (90,0,0);
-        scoreText.GetComponent<RectTransform>().anchorMin = new Vector2(0.0f, 0.5f);
-        scoreText.GetComponent<RectTransform>().anchorMax = new Vector2(0.0f, 0.5f);
-        scoreText.GetComponent<Text> ().color = Color.white;
-        scoreText.GetComponent<Text> ().text = "Score: 0";
-
-        livesText.GetComponent<Text> ().font = fontFamily;
-        livesText.GetComponent<Text> ().color = Color.white;
-        livesText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
-        livesText.GetComponent<RectTransform> ().localPosition = new Vector3 (-90,0,0);
-        livesText.GetComponent<Text> ().text = "Lives: 3";
-
-        turnSystemText.GetComponent<Text> ().font = fontFamily;
-        turnSystemText.GetComponent<Text> ().color = Color.white;
-        turnSystemText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
-        turnSystemText.GetComponent<RectTransform> ().localPosition = new Vector3 (90,0,0);
-        turnSystemText.GetComponent<Text> ().text = "Your Turn!";
-*/
-		    quitUI = null;
+        quitUI = null;
     }
 
- 
+
 
     // Use this for initialization
     void Start()
     {
         turnSystem.IsTurnLocked();
-        turnSystemText.GetComponent<Text> ().text = "Your Turn!";
+        turnSystemText.GetComponent<Text>().text = "Your Turn!";
 
         currentAnimalFactory = null;
         currentlyBuilding = null;
@@ -197,25 +197,25 @@ public class BuildMenu : MonoBehaviour
 
         // NEW BUTTON CREATION STARTS HERE
         // To use old buttons comment out the following lines (until line 287) and uncomment OnGUI()
-        
-        
+
+
         // Building the buttons
         gameObject.AddComponent<DemButton>();
         demButton = gameObject.GetComponent<DemButton>();
 
-		    // building the RectUI
-		    gameObject.AddComponent<DemRectUI>();
-		    demRectUI = gameObject.GetComponent<DemRectUI> ();
+        // building the RectUI
+        gameObject.AddComponent<DemRectUI>();
+        demRectUI = gameObject.GetComponent<DemRectUI>();
 
-        
+
         // Toggle button to switch between plant and prey menu
-        demButton.setSize(Screen.width * 0.1f, Screen.height/14);
+        demButton.setSize(Screen.width * 0.1f, Screen.height / 14);
         GameObject toggleButton = demButton.CreateButton(0, 0, "Toggle");
         demButton.SetButtonText(toggleButton, "Plants");
 
 
         // Creates a buttons for plant/prey menu
-        demButton.setSize(Screen.width * 0.1f, Screen.height/7);
+        demButton.setSize(Screen.width * 0.1f, Screen.height / 7);
         menuButtons = new GameObject[6];
         for (int i = 0; i < 6; i++)
         {
@@ -225,7 +225,7 @@ public class BuildMenu : MonoBehaviour
             // Set the button images
             demButton.SetButtonImage(plants[i], button);
             demButton.SetButtonImage(prey[i], button);
-            
+
             // Set the images of the untoggled menu to inactive
             button.transform.Find(prey[i].GetName()).gameObject.SetActive(false);
 
@@ -239,25 +239,25 @@ public class BuildMenu : MonoBehaviour
         // Add an onClick listener to dectect button clicks
         toggleButton.GetComponent<Button>().onClick.AddListener(() => { selectMenu(toggleButton, menuButtons); });
 
-		//quit button 
-		float qBX = Screen.width / 10.0f;
-		float qBY = Screen.height / 10.0f;
-		demButton.setSize (qBX, qBY);
-		GameObject quitButton = demButton.CreateButton (Screen.width - qBX, 0, "Quit");
-		demButton.SetButtonText (quitButton, "Quit");
-		quitButton.GetComponent<Button> ().onClick.AddListener (() => {selectQuit();});
-       // quitButton.transform.SetParent(menuPanel.transform); 
+        //quit button 
+        float qBX = Screen.width / 10.0f;
+        float qBY = Screen.height / 10.0f;
+        demButton.setSize(qBX, qBY);
+        GameObject quitButton = demButton.CreateButton(Screen.width - qBX, 0, "Quit");
+        demButton.SetButtonText(quitButton, "Quit");
+        quitButton.GetComponent<Button>().onClick.AddListener(() => { selectQuit(); });
+        // quitButton.transform.SetParent(menuPanel.transform); 
 
-    quitButton.GetComponent<RectTransform>().pivot = new Vector2 (0.5f, 0.5f);
+        quitButton.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
         quitButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
         quitButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
-   
+
         quitButton.GetComponent<RectTransform>().offsetMax = new Vector2(-70, -25);
         quitButton.GetComponent<RectTransform>().offsetMin = new Vector2(-70, -45);
 
-    quitButton.GetComponent<RectTransform> ().sizeDelta =new Vector2(70, 45);
+        quitButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 45);
 
-        
+
     }
 
 
@@ -296,6 +296,7 @@ public class BuildMenu : MonoBehaviour
         Debug.Log("Clicked " + button.name);
         turnSystem.IsTurnLocked();
 
+        //Sets button menu b/t plants and prey
         DemAnimalFactory[] species;
         short speciesType = 0;
 
@@ -303,16 +304,16 @@ public class BuildMenu : MonoBehaviour
         {
             species = plants;
             speciesType = 0;
-        }   
-            
-        
+        }
+
+
         else
         {
             species = prey;
             speciesType = 1;
-        }  
-            
-        
+        }
+
+
 
         DemAudioManager.audioClick.Play();
 
@@ -327,7 +328,7 @@ public class BuildMenu : MonoBehaviour
                 Destroy(main.currentSelection);
 
             main.boardController.ClearAvailableTiles();
-                
+
         }
         // Set / reset currentlyBuilding
 
@@ -354,78 +355,82 @@ public class BuildMenu : MonoBehaviour
         main.boardController.SetAvailableTiles();
     }
 
-	//click on quit button
-	void selectQuit(){
-		DemAudioManager.audioClick.Play();
-		Debug.Log (Screen.width);
+    //click on quit button
+    void selectQuit()
+    {
+        DemAudioManager.audioClick.Play();
+        Debug.Log(Screen.width);
 
-		if (main.currentSelection) {
-			Destroy(main.currentSelection);
-			main.boardController.ClearAvailableTiles();
-		}
+        if (main.currentSelection)
+        {
+            Destroy(main.currentSelection);
+            main.boardController.ClearAvailableTiles();
+        }
 
-		if (quitUI == null) {
-			quitUI = demRectUI.createRectUI ("quitUI", 0, 0, Screen.width / 2.0f, Screen.height / 2.0f);
-      quitUI.GetComponent<Image> ().sprite = popupBackground;
-			demRectUI.setUIText (quitUI, "Are you sure you want to quit?");
+        if (quitUI == null)
+        {
+            quitUI = demRectUI.createRectUI("quitUI", 0, 0, Screen.width / 2.0f, Screen.height / 2.0f);
+            quitUI.GetComponent<Image>().sprite = popupBackground;
+            demRectUI.setUIText(quitUI, "Are you sure you want to quit?");
 
-			//Quit Button on Quit UI
-			GameObject yesButton = demButton.CreateButton (0, 0, "Yes");
-			yesButton.transform.SetParent (quitUI.transform);
-			yesButton.GetComponent<RectTransform> ().anchoredPosition = 
-				new Vector2 (quitUI.GetComponent<RectTransform> ().sizeDelta.x/5.0f,
-							-quitUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f);
-			demButton.SetButtonText (yesButton, "Quit");
-			yesButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); Game.SwitchScene("World");});
+            //Quit Button on Quit UI
+            GameObject yesButton = demButton.CreateButton(0, 0, "Yes");
+            yesButton.transform.SetParent(quitUI.transform);
+            yesButton.GetComponent<RectTransform>().anchoredPosition =
+                new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f,
+                            -quitUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
+            demButton.SetButtonText(yesButton, "Quit");
+            yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("World"); });
 
-			//back button on Quit UI
-			GameObject noButton = demButton.CreateButton (0, 0, "No");
-			noButton.transform.SetParent (quitUI.transform);
-			noButton.GetComponent<RectTransform> ().anchoredPosition = 
-				new Vector2 (quitUI.GetComponent<RectTransform> ().sizeDelta.x/5.0f*3.0f,
-					-quitUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f);
-			demButton.SetButtonText (noButton, "Back");
-			//noButton.GetComponent<Button> ().onClick.AddListener (()=>{quitUI.SetActive(false);});
-			noButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); quitUI.SetActive(false); mainUIObject.SetActive(true);});
+            //back button on Quit UI
+            GameObject noButton = demButton.CreateButton(0, 0, "No");
+            noButton.transform.SetParent(quitUI.transform);
+            noButton.GetComponent<RectTransform>().anchoredPosition =
+                new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f * 3.0f,
+                    -quitUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
+            demButton.SetButtonText(noButton, "Back");
+            //noButton.GetComponent<Button> ().onClick.AddListener (()=>{quitUI.SetActive(false);});
+            noButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); quitUI.SetActive(false); mainUIObject.SetActive(true); });
 
-			mainUIObject.SetActive (false);
+            mainUIObject.SetActive(false);
 
-			return;
-		}
+            return;
+        }
 
-		if (!quitUI.activeInHierarchy) {
-			quitUI.SetActive (true);
-			mainUIObject.SetActive (false);
-		}
-	}
+        if (!quitUI.activeInHierarchy)
+        {
+            quitUI.SetActive(true);
+            mainUIObject.SetActive(false);
+        }
+    }
 
 
 
     public void endGame()
     {
-        gameOverUI = demRectUI.createRectUI ("quitUI", 0, 0, Screen.width / 2.0f, Screen.height / 2.0f);
-        demRectUI.setUIText (quitUI, "Game Over! Play Again?");
+        gameOverUI = demRectUI.createRectUI("quitUI", 0, 0, Screen.width / 2.0f, Screen.height / 2.0f);
+        demRectUI.setUIText(quitUI, "Game Over! Play Again?");
 
         //Quit Button on Quit UI
-        GameObject yesButton = demButton.CreateButton (0, 0, "Yes");
-        yesButton.transform.SetParent (quitUI.transform);
-        yesButton.GetComponent<RectTransform> ().anchoredPosition = 
-            new Vector2 (quitUI.GetComponent<RectTransform> ().sizeDelta.x/5.0f,
-                -quitUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f);
-        demButton.SetButtonText (yesButton, "Quit");
-        yesButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); Game.SwitchScene("World");});
+        GameObject yesButton = demButton.CreateButton(0, 0, "Yes");
+        yesButton.transform.SetParent(quitUI.transform);
+        yesButton.GetComponent<RectTransform>().anchoredPosition =
+            new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f,
+                -quitUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
+        demButton.SetButtonText(yesButton, "Quit");
+        yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("World"); });
 
         //back button on Quit UI
-        GameObject noButton = demButton.CreateButton (0, 0, "No");
-        noButton.transform.SetParent (quitUI.transform);
-        noButton.GetComponent<RectTransform> ().anchoredPosition = 
-            new Vector2 (quitUI.GetComponent<RectTransform> ().sizeDelta.x/5.0f*3.0f,
-                -quitUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f);
-        demButton.SetButtonText (noButton, "Back");
+        GameObject noButton = demButton.CreateButton(0, 0, "No");
+        noButton.transform.SetParent(quitUI.transform);
+        noButton.GetComponent<RectTransform>().anchoredPosition =
+            new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f * 3.0f,
+                -quitUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
+        demButton.SetButtonText(noButton, "Back");
         //noButton.GetComponent<Button> ().onClick.AddListener (()=>{quitUI.SetActive(false);});
-        noButton.GetComponent<Button> ().onClick.AddListener (()=>{DemAudioManager.audioClick.Play(); Game.SwitchScene("World");});
+        noButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("World"); });
 
-        mainUIObject.SetActive (false);
+        mainUIObject.SetActive(false);
     }
 
 
@@ -449,47 +454,59 @@ public class BuildMenu : MonoBehaviour
 
     }
 
-  public DemAnimalFactory GetCurrentAnimalFactory(){
-    return currentAnimalFactory;
-  }
-
-  public void SetCurrentAnimalFactory(DemAnimalFactory newAnimalFactory){
-    currentAnimalFactory = newAnimalFactory;
-  }
-
-  public void ToggleButtonLocks(){
-    turnSystemText.GetComponent<Text> ().text = "Your Turn!";
-    if (turnSystem.IsTurnLocked ()) {
-      for (int i = 0; i < 6; i++) {
-        menuButtons [i].GetComponent<Button> ().interactable = true;
-        foreach(Image image in menuButtons [i].GetComponentsInChildren<Image>()){
-          image.color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
-        }
-      }
-    } else {
-      turnSystemText.GetComponent<Text> ().text = "Predator Turn!";
-      for (int i = 0; i < 6; i++) {
-        menuButtons [i].GetComponent<Button> ().interactable = false;
-        foreach(Image image in menuButtons [i].GetComponentsInChildren<Image>()){
-          image.color = new Color(1.0F, 1.0F, 1.0F, 0.8F);
-        }
-      }
+    public DemAnimalFactory GetCurrentAnimalFactory()
+    {
+        return currentAnimalFactory;
     }
 
-  }
-
-
-    public void UpdateLives(int lives){
-        
-    livesText.GetComponent<Text> ().text =  lives.ToString();
-        
+    public void SetCurrentAnimalFactory(DemAnimalFactory newAnimalFactory)
+    {
+        currentAnimalFactory = newAnimalFactory;
     }
-        
 
-  public void UpdateCredits(int credits){
+    public void ToggleButtonLocks()
+    {
+        turnSystemText.GetComponent<Text>().text = "Your Turn!";
+        if (turnSystem.IsTurnLocked())
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                menuButtons[i].GetComponent<Button>().interactable = true;
+                foreach (Image image in menuButtons[i].GetComponentsInChildren<Image>())
+                {
+                    image.color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
+                }
+            }
+        }
+        else
+        {
+            turnSystemText.GetComponent<Text>().text = "Predator Turn!";
+            for (int i = 0; i < 6; i++)
+            {
+                menuButtons[i].GetComponent<Button>().interactable = false;
+                foreach (Image image in menuButtons[i].GetComponentsInChildren<Image>())
+                {
+                    image.color = new Color(1.0F, 1.0F, 1.0F, 0.8F);
+                }
+            }
+        }
 
-    scoreText.GetComponent<Text> ().text =  credits.ToString();
+    }
 
-  }
+
+    public void UpdateLives(int lives)
+    {
+
+        livesText.GetComponent<Text>().text = lives.ToString();
+
+    }
+
+
+    public void UpdateCredits(int credits)
+    {
+
+        scoreText.GetComponent<Text>().text = credits.ToString();
+
+    }
 
 }
