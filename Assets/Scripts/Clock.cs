@@ -64,9 +64,9 @@ public class Clock : MonoBehaviour {
 			second = (int) currentTime;
 
 			year = second / Constants.MONTH_DURATION / 12 + 1;
-			month = second / Constants.MONTH_DURATION + 1;
+			month = ((second / Constants.MONTH_DURATION) + 1) % 13;
 			day = second / (Constants.MONTH_DURATION / 30) % 30 + 1; 
-			
+
 			if (ClockChange != null) {
 				ClockChange(this, new ClockEventArgs(year, month, day, second));
 			}
