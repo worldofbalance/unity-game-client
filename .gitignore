@@ -21,6 +21,14 @@ ExportedObj/
 *.booproj
 *.svd
 
+# Explicit files of the above formats somehow still being tracked
+unity-game-client.userprefs
+unity-game-client.sln
+
+
+Assembly-CSharp.csproj
+ProjectSettings/GraphicsSettings.asset
+ProjectSettings/ProjectSettings.asset
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -47,7 +55,7 @@ dist/
 nbdist/
 nbactions.xml
 .nb-gradle/
-projectsettings/ProjectVersion.txt
+[Pp]rojectsettings/ProjectVersion.txt
 
 
 # Editor-specific temporary files
@@ -69,3 +77,10 @@ Temporary Items
 .apdisk
 # DO NOT INSERT ANYTHING BELOW Icon? Special characters below
 Icon?
+Assets/Graph_Maker/Scripts/WMG_Path_Finding.cs.meta~HEAD.meta
+Assets/Graph_Maker/Scripts/WMG_Series.cs.meta~d63fba8d200977068878d956ed59c652b70741d8.meta
+Assets/Graph_Maker/Scripts/WMG_Series.cs.meta~HEAD.meta
+Assets/Graph_Maker/Scripts/GUIDependent/WMG_Events.cs.meta~d63fba8d200977068878d956ed59c652b70741d8.meta
+Assets/Graph_Maker/Scripts/GUIDependent/WMG_Events.cs.meta~HEAD.meta
+Assets/Graph_Maker/Scripts/GUIDependent/WMG_GUI_Functions.cs.meta~d63fba8d200977068878d956ed59c652b70741d8.meta
+Assets/Graph_Maker/Scripts/GUIDependent/WMG_GUI_Functions.cs.meta~HEAD.meta

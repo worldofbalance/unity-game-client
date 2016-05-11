@@ -113,6 +113,8 @@ namespace CW
 			player1.isActive = true;
 			player2.isActive = false;
 
+            
+
 			//Deal player 1 a card and set as current player
 			GameManager.curPlayer = player1;
             player1.cardsInPlayGlow();
@@ -122,7 +124,7 @@ namespace CW
 	
 		public static void endTurn ()
 		{
-	
+	       
 			// If two_player, only switch turns if player1 isActive
 			if (!Constants.SINGLE_PLAYER && player1.isActive) {
 				//Debug.Log ("End Turn");
@@ -130,7 +132,7 @@ namespace CW
 				//Player's endturn refreshes the player's minions so they can attack next turn.
 				player1.endTurn ();
 				// Not sure if this needs to be here
-				player2.endTurn ();
+				//player2.endTurn ();
 				player2.isActive = true;
 				player2.addMana ();
 				if (player2.hand.Count != 5) {
@@ -169,7 +171,7 @@ namespace CW
 
 				}
 			}// End if SinglePlayer
-		
+
 		}
 
 		//Wrapper for endturn function

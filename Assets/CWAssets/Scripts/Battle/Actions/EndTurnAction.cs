@@ -14,9 +14,33 @@ public class EndTurnAction : TurnAction {
 
 	}
 	
-	override public void execute(){
-		//Debug.Log ("Executing EndTurnA");
-		// This means the opponents turn as ended so start player1's turn
+	override public void execute ()
+        {
+            // means player2 played frozed card
+            if (GameManager.player2.playerFrozen && GameManager.player1.playerFrozen==true) 
+            {
+                GameManager.player1.playerFrozen = true;
+                GameManager.player2.playerFrozen = false;
+                for (int i = 0; i < GameManager.player1.cardsInPlay.Count; i++) {
+                    AbstractCard card = ((GameObject)GameManager.player1.cardsInPlay [i]).GetComponent<AbstractCard> ();
+                    card.freeze ();
+                }
+
+                for (int i = 0; i < GameManager.player2.cardsInPlay.Count; i++) {
+                    AbstractCard card = ((GameObject)GameManager.player2.cardsInPlay [i]).GetComponent<AbstractCard> ();
+                    card.unfreeze ();
+                }
+               
+            }
+            else
+            {
+                for (int i = 0; i < GameManager.player2.cardsInPlay.Count; i++) {
+                    AbstractCard card = ((GameObject)GameManager.player2.cardsInPlay [i]).GetComponent<AbstractCard> ();
+                    card.unfreeze ();
+                }
+
+            }
+
 		GameManager.manager.startTurn();
 	}
 }
