@@ -150,10 +150,10 @@ public class PlayerController : MonoBehaviour {
             }
 
             transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime); 
-            if (isMoving () == false) {
+         
                 speed = 40; 
                 currentStamina++;
-            }
+            
         }
     }
 

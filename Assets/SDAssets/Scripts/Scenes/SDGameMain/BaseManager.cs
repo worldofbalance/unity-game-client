@@ -49,6 +49,7 @@ namespace SD {
                 if (time <= 0) {
                     gameController.Score ();
                     gameController.ResetUnscored ();
+                    gameController.stamina = 100;
                 }
             }
         }
