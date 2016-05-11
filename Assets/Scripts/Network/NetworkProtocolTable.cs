@@ -106,7 +106,7 @@ public class NetworkProtocolTable {
 			if (!table.ContainsKey(protocol_id)) {
 				table.Add(protocol_id, type);
 			} else {
-				Debug.LogError("Protocol ID " + protocol_id + " already exists! Ignored " + name);
+				Debug.Log("Protocol ID " + protocol_id + " already exists! Ignored " + name);
 			}
 		} else {
 			Debug.LogError(name + " not found");
