@@ -11,7 +11,7 @@ namespace SD {
 
         void Start(){
             mainCamera = GameObject.FindGameObjectWithTag ("RadorCamera");
-            playerPosition = GameObject.FindGameObjectWithTag ("Player").transform.position;
+            //playerPosition = GameObject.FindGameObjectWithTag ("Player").transform.position; // causing a NullPointerException
             mainCamera.transform.position = playerPosition;
             mainCamera.transform.position = new Vector3(0f,0f,-35f);
         }

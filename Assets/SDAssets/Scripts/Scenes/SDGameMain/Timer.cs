@@ -38,7 +38,14 @@ namespace SD {
                 } else {
                     double secondsToGo = (sdPersistentData.getRoundStartTime () - TrimMilliseconds (DateTime.UtcNow)).TotalSeconds;
                     if (secondsToGo >= 0)
-                        countdownText.GetComponent<Text>().text = secondsToGo.ToString ();
+                        countdownText.GetComponent<Text> ().text = secondsToGo.ToString ();
+                    else {
+                        // Start the timer anyway since it has passed the scheduled start time.
+                        sdGameController.setIsGameTimeTicking (true);
+                        Debug.Log ("Starting the timer now at: " + DateTime.UtcNow);
+                        hasTimerStarted = true;
+                        sdGameController.countdownPanelCanvas.SetActive (false);
+                    }
                 }
             }
             if (sdGameController.getIsGameTimeTicking ()) {

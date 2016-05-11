@@ -23,6 +23,8 @@ namespace SD {
                 DontDestroyOnLoad (gameObject);
                 sdPersistentData = this;
             }
+            // The timer should run even if the application is in the background.
+            Application.runInBackground = true;
         }
 
         void Start() {
@@ -40,6 +42,11 @@ namespace SD {
 
         void Update () {
 
+        }
+
+        void OnDestroy() {
+            // Switching back to the default setting.
+            Application.runInBackground = false;
         }
 
         public void initializeData() {
