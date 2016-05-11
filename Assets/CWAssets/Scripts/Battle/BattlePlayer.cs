@@ -167,12 +167,20 @@ namespace CW
             manaBarr = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/ManaBarr", typeof(GameObject)));
             if (player1) {
                 manaObj.transform.position = new Vector3 (TreePos.x - 800, TreePos.y, TreePos.z);//org(tree +200, y, z)
-                manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
-                manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
+                //manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
+                //manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
             } else {
                 manaObj.transform.position = new Vector3 (TreePos.x + 800, TreePos.y, TreePos.z);//org(tree -200, y, z)
-                manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
-                manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
+                //manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
+                //manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
+                manaFaded.transform.Find("Image").GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
+                manaFaded.transform.Find("Image").GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+                manaFaded.transform.Find("Image").GetComponent<RectTransform>().anchoredPosition3D = new Vector3(-20, -115, 0);
+                
+                manaBarr.transform.Find("Image").GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
+                manaBarr.transform.Find("Image").GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+                manaBarr.transform.Find("Image").GetComponent<RectTransform>().anchoredPosition3D = new Vector3(-20, -115, 0);
+
                 manaBarr.transform.Find("Image").GetComponent<RectTransform>().localRotation = new Quaternion(0,1,0,0);
                 manaFaded.transform.Find("Image").GetComponent<RectTransform>().localRotation = new Quaternion(0,1,0,0);
             }

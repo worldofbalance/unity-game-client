@@ -62,6 +62,10 @@ namespace CW
 
 			// Poll for turn updates
 			//StartCoroutine(PollAction(Constants.UPDATE_RATE));
+			GameObject board = GameObject.Find("Plane");
+			PlaneReposition boardScript;
+			boardScript = board.AddComponent<PlaneReposition>();
+			boardScript.init(player1);
 		}
 
 		private void initMatch ()
