@@ -164,6 +164,7 @@ namespace SD {
             npcFishObjects [i].SetActive (true);
             // Associate the metadata of the prey with the gameobject.
             npcFishObjects[i].GetComponent<NPCFishController>().setNPCFishData(npcFishes[i]);
+            //-Devon ^the above code is confusing I doubt get what it does 
         }
 
         public void destroyPrey(int i) {

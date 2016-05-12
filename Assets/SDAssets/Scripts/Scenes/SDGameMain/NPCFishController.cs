@@ -8,36 +8,36 @@ namespace SD
 {
     public class NPCFishController : MonoBehaviour
     {
+
         public NPCFish[] npcFish;
 
-
+        NPCFishController() {
+           
+            Awake();
+        }
         public NPCFish[] getNPCFishData() {
             return npcFish;
         }
 
-        public void setNPCFishData() {
-         
-        NPCFish= GameObject.FindGameObjectsWithTag("NpcFish");
-        
+         void Awake()
+        {
         }
+        public void setNPCFishData(NPCFish newFish )
+        {
+
+            npcFish[newFish.id] =newFish;
+        }
+    
 
         void Update()
         {
-			if(constants.playernumber=1)
-            for(int i=0;i<npcFish.sizeof();i++){
-            if(npcFish[i].isAlive==true) SetTarget(npcFish[i]);
-            }
-            
-            
-            
+			         
         }
 
         public void SetTarget(NPCFish Fish)
         {
             Fish.target = new Vector2(Fish.xPosition + UnityEngine.Random.Range(-2.0f, 2.0f), Fish.yPosition + UnityEngine.Random.Range(-2.0f, 2.0f));
         }
-
-        
     }
 }
 

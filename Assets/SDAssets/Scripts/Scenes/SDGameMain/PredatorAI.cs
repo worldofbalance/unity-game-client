@@ -7,14 +7,30 @@ public class PredatorAI : MonoBehaviour
 
     public List<Transform> prey;
     public Transform Target;
+    
 
     void Start()
     {
         Target = null;
         var rb = GetComponent<Rigidbody>();
         prey = new List<Transform>();
-        GameObject[] ItemsInList = GameObject.FindGameObjectsWithTag("NpcFish");
-        foreach (GameObject _prey in ItemsInList)
+
+        GameObject[] fish = GameObject.FindGameObjectsWithTag("NpcFish");
+        GameObject[] player = GameObject.FindGameObjectsWithTag("Player");
+        GameObject[] opponent = GameObject.FindGameObjectsWithTag("Opponent");
+        // calculate the resulting array size:
+        var size = fish.Length + player.Length + opponent.Length;
+        GameObject[] ItemsInList = new GameObject[size];
+ 
+        foreach (GameObject _prey in fish)
+        {
+            prey.Add(_prey.transform);
+        }
+        foreach (GameObject _prey in player)
+        {
+            prey.Add(_prey.transform);
+        }
+        foreach (GameObject _prey in opponent)
         {
             prey.Add(_prey.transform);
         }
