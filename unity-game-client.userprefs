@@ -1,34 +1,15 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\HUD\TopPlayers.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Config.cs">
     <Files>
-      <File FileName="Assets\Scripts\HUD\TopPlayers.cs" Line="39" Column="37" />
-      <File FileName="Assets\Lobby\EcoGraphScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GUI\Chat\Chat.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\HUD\CurrentlyOnline.cs" Line="1" Column="1" />
-      <File FileName="Assets\Lobby\MenuScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Constants.cs" Line="1" Column="1" />
-      <File FileName="Assets\CWAssets\Scripts\Constants.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\World\WorldController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\World\WorldMouse.cs" Line="1" Column="1" />
       <File FileName="Assets\Game.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\DontEatMe\DemAnimalFactory.cs" Line="1" Column="1" />
-      <File FileName="Assets\CWAssets\CWGame.cs" Line="1" Column="1" />
-      <File FileName="Assets\CWAssets\Scripts\Battle\Actions\EndTurnAction.cs" Line="1" Column="1" />
-      <File FileName="Assets\CWAssets\Scripts\Battle\Cards\Handler\InHand.cs" Line="1" Column="1" />
-      <File FileName="Assets\CWAssets\Scripts\Battle\BattlePlayer.cs" Line="1" Column="1" />
-      <File FileName="Assets\CWAssets\Scripts\Battle\Trees\Trees.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\World\MapCamera.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\World\Map.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ecosystem\EcosystemController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ecosystem\EcosystemMouse.cs" Line="1" Column="1" />
-      <File FileName="Assets\CWAssets\Scripts\Network\Protocol\EcosystemProtocol.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Network\Protocol\EcosystemProtocol.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\HUD\EcosystemScore.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Config.cs" Line="1" Column="1" />
-      <File FileName="Assets\SDAssets\Scripts\Network\SDConnectionManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Clock.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Login.cs" Line="93" Column="21" />
+      <File FileName="Assets\Scripts\Network\NetworkCode.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Network\NetworkProtocolTable.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\MultiplayerGames.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GUI\Bar Graph\BarGraph.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Network\NetworkManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Constants.cs" Line="17" Column="5" />
+      <File FileName="Assets\Scripts\Config.cs" Line="7" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
