@@ -116,4 +116,20 @@
 	public static readonly short RETURN_LOBBY = 213;
 	public static readonly short APPLY_FOOD = 214;
 	public static readonly short APPLY_WEATHER = 215;
+
+    // Sea Divided
+    public static readonly short SD_GAME_LOGIN = 300;
+    public static readonly short SD_PLAY_INIT = 301;
+    public static readonly short SD_START_GAME = 302;
+    public static readonly short SD_END_GAME = 303;
+    public static readonly short SD_KEYBOARD = 304;
+    public static readonly short SD_PLAYER_POSITION = 305;
+    public static readonly short SD_PREY = 306;
+    public static readonly short SD_EAT_PREY = 307;
+    public static readonly short SD_SCORE = 308;
+    public static readonly short SD_DISCONNECT = 309;
+    public static readonly short SD_RECONNECT = 310;
+    public static readonly short SD_HEARTBEAT = 311;
+    public static readonly short SD_NPCPOSITION = 312;
+    public static readonly short SD_RESPAWN = 313;
 }
