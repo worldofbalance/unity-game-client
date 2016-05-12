@@ -1,15 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using System.IO;
 
 namespace SD
 {
     public class SDNpcPositionProtocol {
-        public static NetworkRequest Prepare (int numNpc)
+
+        public static NetworkRequest Prepare (int numNpc, ArrayList npcFish)
         {
             NetworkRequest request = new NetworkRequest (NetworkCode.SD_NPCPOSITION);
             request.AddInt32 (numNpc);
+            foreach (NPCFish item in npcFish) {
+                request.AddInt32 (item.id);
+                request.AddInt32 (item.speciesId);
+                request.AddFloat (item.xPosition);
+                request.AddFloat (item.yPosition);
+                request.AddFloat (item.xRotationAngle);
+            }
             return request;
         }
 
@@ -22,6 +31,24 @@ namespace SD
                 response.xPosition = DataReader.ReadFloat (dataStream);
                 response.yPosition = DataReader.ReadFloat (dataStream);
                 response.rotation = DataReader.ReadFloat (dataStream);
+
+                // Set the required parameters to the NPCFish objects.
+                if (GameController.getInstance ().getNpcFishes ().ContainsKey (response.preyId)) {
+                    // The species already exists, simply adjust the position/rotation.
+                    NPCFish npcFish = GameController.getInstance ().getNpcFishes ()[response.preyId];
+                    npcFish.xPosition = response.xPosition;
+                    npcFish.yPosition = response.yPosition;
+                    npcFish.xRotationAngle = response.rotation;
+                } else {
+                    // This object needs to be created.
+                    NPCFish npcFish = new NPCFish(response.preyId);
+                    npcFish.xPosition = response.xPosition;
+                    npcFish.yPosition = response.yPosition;
+                    npcFish.xRotationAngle = response.rotation;
+                    npcFish.speciesId = response.speciesId;
+                    npcFish.toBeCreated = true;
+                }
+
             }
             return response;
         }

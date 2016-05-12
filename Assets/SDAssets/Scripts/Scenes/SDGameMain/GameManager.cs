@@ -2,7 +2,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
-
+using System.Collections.Generic;
 /* Description: Manages client communication with the server during the game.
  * 
  */ 
@@ -189,6 +189,37 @@ namespace SD {
             ResponseSDRespawnNpc response = r as ResponseSDRespawnNpc;
             Debug.Log ("Received a request to spawn: Species: " + response.speciesId + ", Count: " + response.numNpc);
             gameController.spawnNpcSet (response.speciesId, response.numNpc);
+        }
+
+        public void SendNpcFishPositions(int num) {
+            // num is the batch size. 
+            Dictionary <int, NPCFish> npcs = gameController.getNpcFishes();
+            ArrayList al = new ArrayList ();
+            int count = 0;
+            foreach (KeyValuePair<int, NPCFish> entry in npcs) {
+                // Send request with a maximum of num elements in a batch.
+                if (entry.Value.isAlive) {
+                    al.Add (entry);
+                    count++;
+                    if (count == num) {
+                        // Send the request.
+                        SDMain.networkManager.Send(SDNpcPositionProtocol.Prepare(num, al));
+                        // Reset the counter.
+                        count = 0;
+                        al = new ArrayList ();
+                    }
+                }
+            }
+
+            // If the arraylist still has some elements, send the remainder.
+            if (al.Count > 0) {
+                // Send a request with the remainder.
+                SDMain.networkManager.Send(SDNpcPositionProtocol.Prepare(al.Count, al));
+            }
+        }
+
+        public void ResponseNpcFishPositions(NetworkResponse r) {
+            ResponseSDNpcPosition response = r as ResponseSDNpcPosition;
         }
     }
 }

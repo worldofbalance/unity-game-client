@@ -14,7 +14,8 @@ namespace SD
         public float xRotationAngle { get; set; }
         public Vector2 current { get; set; }
         public Vector2 target { get; set; }
-
+        public bool toBeCreated { get; set; }
+ 
         public NPCFish (int id)
         {
             this.id = id;
@@ -24,6 +25,7 @@ namespace SD
             this.xRotationAngle = 0.0f;
             this.isAlive = true;
             this.current=new Vector2(xPosition,yPosition);
+            this.toBeCreated = false;
         }
         void Update() {
             current = new Vector2(xPosition, yPosition);

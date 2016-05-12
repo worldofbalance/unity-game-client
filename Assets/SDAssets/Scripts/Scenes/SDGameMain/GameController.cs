@@ -122,11 +122,25 @@ namespace SD {
                 UpdateUnscoredPoint ();
                 UpdateOpponentScore ();
                 UpdateHealth ();
+                MirrorNpcFish ();
             }
         }
 
         public static GameController getInstance() {
             return gameController;
+        }
+
+        private void MirrorNpcFish() {
+            if (SD.Constants.PLAYER_NUMBER == 2) {
+                foreach (KeyValuePair<int, NPCFish> item in getNpcFishes()) {
+                    NPCFish currentFish = item.Value; // get reference of existing NPCFish
+                    if (currentFish.toBeCreated == true) { 
+                        // Spawn the species.
+                        spawnPrey (currentFish.id, currentFish.speciesId);
+                        currentFish.toBeCreated = false;
+                    }
+                }
+            }
         }
 
         // Swaps the positions and rotations of the players and bases for the opponent's view.
@@ -188,6 +202,7 @@ namespace SD {
                 npcFish.speciesId = speciesId;
                 spawnPrey (i, speciesId);
             }
+            sdGameManager.SendNpcFishPositions (5);  // Player 1 will send its positions to Player 2
         }
         // Increases the current score value, and pass the info to scoreText
         // by calling UpdateScore().
