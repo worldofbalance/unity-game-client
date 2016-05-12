@@ -36,10 +36,8 @@ public class Login : MonoBehaviour
         bgTexture = Resources.Load<Texture2D> (Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
         font = Resources.Load<Font> ("Fonts/" + "Chalkboard");
 
-        RR.RRMessageQueue.getInstance ().AddCallback (RR.Constants.SMSG_AUTH, RR_ResponseLogin);
-
-        SD.SDMessageQueue.getInstance ().AddCallback (SD.Constants.SMSG_AUTH, SD_ResponseLogin);
-    }
+		RR.RRMessageQueue.getInstance ().AddCallback (RR.Constants.SMSG_AUTH, RR_ResponseLogin);
+	}
 	
     // Use this for initialization
     void Start ()
@@ -160,8 +158,7 @@ public class Login : MonoBehaviour
             RR.RRConnectionManager cManager = RR.RRConnectionManager.getInstance ();
             cManager.Send (RR_RequestLogin (user_id, password));
 
-            SD.SDConnectionManager sManager = SD.SDConnectionManager.getInstance ();
-            sManager.Send (SD_RequestLogin (user_id, password));
+            SD.SDMain.networkManager.Send (SD.SDLoginProtocol.Prepare (user_id, password), SD_ResponseLogin);
         }
     }
 
@@ -286,22 +283,15 @@ public class Login : MonoBehaviour
         }
     }
 
-    public SD.RequestLogin SD_RequestLogin (string username, string password)
+    public void SD_ResponseLogin(NetworkResponse r)
     {
-        SD.RequestLogin request = new SD.RequestLogin ();
-        request.send (username, password);
-        return request;
-    }
-
-    public void SD_ResponseLogin (SD.ExtendedEventArgs eventArgs)
-    {
-
-        SD.ResponseLoginEventArgs args = eventArgs as SD.ResponseLoginEventArgs;
-
-        if (args.status == 0) {
-            SD.Constants.USER_ID = args.user_id;
-        } else {
-            Debug.Log ("SD: Login Failed");
+        SD.ResponseSDLogin response = r as SD.ResponseSDLogin;
+        if (response.status == 0)
+        {
+            SD.Constants.USER_ID = response.userId;
+        }
+        else {
+            Debug.Log("SD: Login Failed");
         }
     }
 }
