@@ -34,6 +34,7 @@ namespace SD {
                 SDMain.networkManager.Listen (NetworkCode.SD_EAT_PREY, ResponseSDDestroyPrey);
                 SDMain.networkManager.Listen (NetworkCode.SD_SCORE, ResponseSDChangeScore);
                 SDMain.networkManager.Listen (NetworkCode.SD_RESPAWN, ResponseSDSpawnNpc);
+                SDMain.networkManager.Listen (NetworkCode.SD_NPCPOSITION, ResponseNpcFishPositions);
                 isMultiplayer = true;
             } else {
                 Debug.LogWarning ("Could not establish a connection to Sea Divided Server. Falling back to offline mode.");
@@ -194,19 +195,19 @@ namespace SD {
         public void SendNpcFishPositions(int num) {
             // num is the batch size. 
             Dictionary <int, NPCFish> npcs = gameController.getNpcFishes();
-            ArrayList al = new ArrayList ();
+            List<NPCFish> al = new List<NPCFish> ();
             int count = 0;
             foreach (KeyValuePair<int, NPCFish> entry in npcs) {
                 // Send request with a maximum of num elements in a batch.
                 if (entry.Value.isAlive) {
-                    al.Add (entry);
+                    al.Add (entry.Value);
                     count++;
                     if (count == num) {
                         // Send the request.
                         SDMain.networkManager.Send(SDNpcPositionProtocol.Prepare(num, al));
                         // Reset the counter.
                         count = 0;
-                        al = new ArrayList ();
+                        al = new List<NPCFish> ();
                     }
                 }
             }

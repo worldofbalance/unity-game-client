@@ -8,17 +8,18 @@ namespace SD
 {
     public class SDNpcPositionProtocol {
 
-        public static NetworkRequest Prepare (int numNpc, ArrayList npcFish)
+        public static NetworkRequest Prepare (int numNpc, List<NPCFish> npcFish)
         {
             NetworkRequest request = new NetworkRequest (NetworkCode.SD_NPCPOSITION);
-            request.AddInt32 (numNpc);
+            request.AddString (numNpc.ToString()); // TODO: Have the server the change these into int/float.
             foreach (NPCFish item in npcFish) {
-                request.AddInt32 (item.id);
-                request.AddInt32 (item.speciesId);
-                request.AddFloat (item.xPosition);
-                request.AddFloat (item.yPosition);
-                request.AddFloat (item.xRotationAngle);
+                request.AddString (item.id.ToString());
+                request.AddString(item.speciesId.ToString());
+                request.AddString (item.xPosition.ToString());
+                request.AddString (item.yPosition.ToString());
+                request.AddString (item.xRotationAngle.ToString());
             }
+            Debug.Log ("Returning the request");
             return request;
         }
 
