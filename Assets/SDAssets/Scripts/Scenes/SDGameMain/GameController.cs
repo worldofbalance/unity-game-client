@@ -115,7 +115,7 @@ namespace SD {
             }
 
             //Display the food chain panel for 5 seconds upon game start
-            StartCoroutine(showFoodChainUponStart(5));
+            StartCoroutine(showFoodChainUponStart(10));
         }
 
       
@@ -239,7 +239,7 @@ namespace SD {
             UpdateUnscoredPointText ();
         }
 
-        // Updates UnscoreText UI.
+        // Updates UnsscoreText UI.
         void UpdateUnscoredPointText() {
             UnscoredPointText.text = "Unscored Point: " + unscoredPoint;
         }
