@@ -17,7 +17,7 @@ public class Constants
     // public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
     // IP address may be 130.212.3.51
 
-    public static readonly int REMOTE_PORT = 9255;
+    public static readonly int REMOTE_PORT = 9234;
     //20041;
     // public static readonly int REMOTE_PORT = 9257;    //9257 9255 for locahost, 9257 for Anu's server
 
