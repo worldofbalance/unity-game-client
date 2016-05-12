@@ -19,7 +19,6 @@ namespace SD
                 request.AddString (item.yPosition.ToString());
                 request.AddString (item.xRotationAngle.ToString());
             }
-            Debug.Log ("Returning the request");
             return request;
         }
 
@@ -32,7 +31,6 @@ namespace SD
                 response.xPosition = DataReader.ReadFloat (dataStream);
                 response.yPosition = DataReader.ReadFloat (dataStream);
                 response.rotation = DataReader.ReadFloat (dataStream);
-
                 // Set the required parameters to the NPCFish objects.
                 if (GameController.getInstance ().getNpcFishes ().ContainsKey (response.preyId)) {
                     // The species already exists, simply adjust the position/rotation.
@@ -47,7 +45,8 @@ namespace SD
                     npcFish.yPosition = response.yPosition;
                     npcFish.xRotationAngle = response.rotation;
                     npcFish.speciesId = response.speciesId;
-                    npcFish.toBeCreated = true;
+                    GameController.getInstance().setNpcFish(response.preyId, npcFish);
+                    GameController.getInstance().spawnPrey (npcFish.id, npcFish.speciesId);
                 }
 
             }
