@@ -41,7 +41,7 @@ public class Chat : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
         if (isHidden) {
-            windowRect = new Rect(Screen.width - width - 10, Screen.height - height - 10, width, height);
+            //windowRect = new Rect(Screen.width - width - 10, Screen.height - height - 10, width, height);
         }
 	}
 
