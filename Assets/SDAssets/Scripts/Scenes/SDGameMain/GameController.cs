@@ -60,6 +60,7 @@ namespace SD {
 
         public GameObject surrenderPanelCanvas;
         public GameObject countdownPanelCanvas;
+        public GameObject foodChainPanelCanvas;
 
 
         void Awake () {
@@ -112,6 +113,7 @@ namespace SD {
                 gameController.countdownPanelCanvas.SetActive (false);
             }
 
+            hideFoodChainPanel ();
         }
 
         // Automatically revovers stamina, and refreshs staminaText UI every frame.
@@ -304,6 +306,10 @@ namespace SD {
 
         public void hideSurrenderPanel(){
             surrenderPanelCanvas.SetActive(false);
+        }
+
+        public void hideFoodChainPanel(){
+            foodChainPanelCanvas.SetActive(false);
         }
 
         public int getPlayerScore() {
