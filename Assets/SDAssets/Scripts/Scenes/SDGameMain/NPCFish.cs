@@ -26,7 +26,10 @@ namespace SD
             this.current=new Vector2(xPosition,yPosition);
         }
         void Update() {
-            current = new Vector2(xPosition, yPosition);
+        
+            this.xRotationAngle = Vector2.Angle(this.current, this.target);
+            this.current = Vector2.MoveTowards(this.current, this.target, 35 * Time.deltaTime);
+
         }
     }
 }
