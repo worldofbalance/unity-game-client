@@ -31,6 +31,13 @@ namespace SD
 
         void Update()
         {
+            if (npcFish != null)
+            {
+                foreach (NPCFish _fish in npcFish)
+                {
+                    SetTarget(_fish);
+                }
+            }
 			         
         }
 
