@@ -162,15 +162,15 @@ namespace CW
         {
         
             //Instantiates the Graphic for the Mana and sets it's position
-            manaObj = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/Mana"));
+            //manaObj = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/Mana"));
             manaFaded = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/ManaFaded", typeof(GameObject)));
             manaBarr = (GameObject)Instantiate (Resources.Load ("Prefabs/Battle/ManaBarr", typeof(GameObject)));
             if (player1) {
-                manaObj.transform.position = new Vector3 (TreePos.x - 800, TreePos.y, TreePos.z);//org(tree +200, y, z)
+                //manaObj.transform.position = new Vector3 (TreePos.x - 800, TreePos.y, TreePos.z);//org(tree +200, y, z)
                 //manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
                 //manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (-940,-520,0);
             } else {
-                manaObj.transform.position = new Vector3 (TreePos.x + 800, TreePos.y, TreePos.z);//org(tree -200, y, z)
+                //manaObj.transform.position = new Vector3 (TreePos.x + 800, TreePos.y, TreePos.z);//org(tree -200, y, z)
                 //manaBarr.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
                 //manaFaded.transform.Find("Image").GetComponent<RectTransform>().localPosition = new Vector3 (860,440,0);
                 manaFaded.transform.Find("Image").GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
@@ -474,8 +474,8 @@ namespace CW
             showTurn--;
 			Texture2D manaTexture = (Texture2D)Resources.Load ("Images/Battle/mana" + (int)manaAnimate, typeof(Texture2D));
 			//Constantly sets the text for mana
-			manaObj.transform.Find ("ManaText").GetComponent<TextMesh> ().text = currentMana + " / " + maxMana;
-			manaObj.transform.GetComponent<MeshRenderer> ().material.mainTexture = manaTexture;
+			//manaObj.transform.Find ("ManaText").GetComponent<TextMesh> ().text = currentMana + " / " + maxMana;
+			//manaObj.transform.GetComponent<MeshRenderer> ().material.mainTexture = manaTexture;
 			manaAnimate += 0.05f;
 			if (manaAnimate > 4.9) {
 				manaAnimate = 1.0f;

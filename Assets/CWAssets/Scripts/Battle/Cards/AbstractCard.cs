@@ -155,7 +155,7 @@ namespace CW
                 newPosition = oriPosition;*/
             
                 //this.transform.localScale = new Vector3 (21, 2, 29); //About 1.4x size
-                this.transform.position = new Vector3(newPosition.x, 50, newPosition.z);
+                //this.transform.position = new Vector3(newPosition.x, 50, newPosition.z);
 
             
                 //if left-button clicked, set centered boolean true and move handpos
