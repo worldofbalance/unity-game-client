@@ -113,6 +113,11 @@ namespace SD {
                 gameController.countdownPanelCanvas.SetActive (false);
             }
 
+            StartCoroutine(showFoodChainUponStart(5));
+        }
+
+        IEnumerator showFoodChainUponStart(int seconds) {
+            yield return new WaitForSeconds (seconds);
             hideFoodChainPanel ();
         }
 
