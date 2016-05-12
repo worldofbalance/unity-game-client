@@ -64,9 +64,9 @@ public class Clock : MonoBehaviour {
 			second = (int) currentTime;
 
 			year = second / Constants.MONTH_DURATION / 12 + 1;
-			month = second / Constants.MONTH_DURATION + 1;
+			month = ((second / Constants.MONTH_DURATION) + 1) % 13;
 			day = second / (Constants.MONTH_DURATION / 30) % 30 + 1; 
-			
+
 			if (ClockChange != null) {
 				ClockChange(this, new ClockEventArgs(year, month, day, second));
 			}
@@ -87,7 +87,7 @@ public class Clock : MonoBehaviour {
 		style.alignment = TextAnchor.UpperCenter;
 		
 		GUI.BeginGroup(new Rect(Screen.width / 2 - 75, 10, 150, 150));
-			GUIExtended.Label(new Rect(0, 0, 150, 50), DateTimeFormatInfo.CurrentInfo.GetMonthName(month), style, Color.black, Color.white);
+			//GUIExtended.Label(new Rect(0, 0, 150, 50), DateTimeFormatInfo.CurrentInfo.GetMonthName(month), style, Color.black, Color.white);
 			GUIExtended.Label(new Rect(0, 25, 150, 50), "Day " + day, style, Color.black, Color.white);
 		GUI.EndGroup();
 	}
