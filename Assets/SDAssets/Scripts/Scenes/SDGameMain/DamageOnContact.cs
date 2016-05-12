@@ -1,6 +1,6 @@
 ﻿/* 
- * File Name: DestroyByContact.cs
- * Description: Destroys attached objects if they collide with the player.
+ * File Name: DamageOnContact.cs
+ * Description: The player takes a damage when contacting to non-prey objects or eating poisonous fish.
  */
 
 using UnityEngine;
@@ -22,8 +22,7 @@ namespace SD {
         void Update () {
 
         }
-
-        // Destroys the attached object upon a collison with the player
+            
         void OnTriggerEnter(Collider other) {
             if (other.tag == "Player") {
                 if (gameController.GetHealth() > 0) {

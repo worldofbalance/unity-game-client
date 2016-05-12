@@ -1,6 +1,6 @@
 ﻿/* 
- * File Name: DestroyByContact.cs
- * Description: Destroys attached objects if they collide with the player.
+ * File Name: RecoverHealthOnContact.cs
+ * Description: Recovers the player's health when the player consumes prey.
  */
 
 using UnityEngine;
@@ -22,8 +22,7 @@ namespace SD {
         void Update () {
 
         }
-
-        // Destroys the attached object upon a collison with the player
+            
         void OnTriggerEnter(Collider other) {
             if (other.tag == "Player") {
                 if (gameController.GetHealth() < 100) {

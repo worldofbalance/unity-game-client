@@ -114,9 +114,15 @@ namespace SD {
                 gameController.countdownPanelCanvas.SetActive (false);
             }
 
+            //Display the food chain panel for 5 seconds upon game start
             StartCoroutine(showFoodChainUponStart(5));
         }
 
+      
+        /// <summary>
+        /// Shows the food chain upon start.
+        /// </summary>
+        /// <param name="seconds">Duration to show the food chain panel</param>
         IEnumerator showFoodChainUponStart(int seconds) {
             yield return new WaitForSeconds (seconds);
             hideFoodChainPanel ();
@@ -139,6 +145,10 @@ namespace SD {
             }
         }
 
+        /// <summary>
+        /// This is invoked by Update() when the player's health gets 0
+        /// and automaticaly ends the game
+        /// </summary>
         IEnumerator goToResultScene(){
             yield return new WaitForSeconds (3);
             BtnSurrenderClick ();
@@ -229,7 +239,7 @@ namespace SD {
             UpdateUnscoredPointText ();
         }
 
-        // Updates scoreText UI.
+        // Updates UnscoreText UI.
         void UpdateUnscoredPointText() {
             UnscoredPointText.text = "Unscored Point: " + unscoredPoint;
         }
