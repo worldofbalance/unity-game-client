@@ -8,17 +8,20 @@ namespace SD {
         private SDPersistentData persistentObject;
         private Text txtResult;
         private Text txtScore;
+        private Text txtOpponentScore;
 
         // Use this for initialization
         void Start () {
             txtResult = GameObject.Find ("TxtResult").GetComponent<Text> ();
             txtScore = GameObject.Find ("TxtScore").GetComponent<Text> ();
+            txtOpponentScore = GameObject.Find ("TxtOpponentScore").GetComponent<Text> ();
             displayResult ();
         }
 
         void displayResult() {
             persistentObject = SDPersistentData.getInstance ();
             int finalScore = 0;
+            int opponentScore = GameController.getInstance().getOpponentScore();
             int winningScore = 0;
             int gameResult = 0;
             string result = null;
@@ -37,8 +40,8 @@ namespace SD {
                 result = "Congratulations ! You won this round !";
             } else if (gameResult == Constants.PLAYER_LOSE) {
                 result = "Sorry ! You lost this round. ";
-                if (GameController.getInstance ().getHasSurrendered ())
-                    result = "You surrendered before time. " + result;
+                if (GameController.getInstance ().getHasSurrendered ()) // TODO: Keeping it generic for now.
+                   result = "Your gamed ended before time. " + result;
             } else if (gameResult == Constants.PLAYER_DRAW) {
                 result = "A draw ! Your score is the same as your opponent's.";
             } else { 
@@ -46,6 +49,7 @@ namespace SD {
             }
 
             txtScore.text = "Your score: " + finalScore;
+            txtOpponentScore.text = "Your opponent's score: " + opponentScore;
             txtResult.text = result;
         }
     }
