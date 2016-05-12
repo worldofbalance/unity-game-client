@@ -61,7 +61,8 @@ namespace SD {
         public GameObject surrenderPanelCanvas;
         public GameObject countdownPanelCanvas;
         public GameObject foodChainPanelCanvas;
-
+        public GameObject deathPanelCanvas;
+        Rigidbody playerClone;
 
         void Awake () {
             gameController = this;
@@ -73,18 +74,18 @@ namespace SD {
             if (Constants.PLAYER_NUMBER == 2) {  // The player who joins the host will have a different position to start from.
                 swapPositions();
             }
-            Rigidbody playerClone = (Rigidbody)Instantiate (player, playerInitialPosition, playerInitialRotation);
+            playerClone = (Rigidbody)Instantiate (player, playerInitialPosition, playerInitialRotation);
             Rigidbody playerBaseClone = (Rigidbody)Instantiate (playerBase, playerBaseInitialPosition, playerBaseInitialRotation);
             Rigidbody opponentBaseClone = (Rigidbody)Instantiate (opponentBase, opponentBaseInitialPosition, opponentBaseInitialRotation);
             score = 0;
             hasSurrendered = false;
             opponentScore = 0;
             unscoredPoint = 0; 
-            UpdateScore ();
-            UpdateOpponentScore ();
-            UpdateStamina ();
-            UpdateUnscoredPoint ();
-            UpdateHealth ();
+            UpdateScoreText ();
+            UpdateOpponentScoreText ();
+            UpdateStaminaText ();
+            UpdateUnscoredPointText ();
+            UpdateHealthText ();
 
             sdGameManager = SD.GameManager.getInstance ();
             currentPlayer = new PlayTimePlayer ();
@@ -125,12 +126,24 @@ namespace SD {
         void Update() {
             if (getIsGameTimeTicking ()) {
                 RecoverStamina ();
-                UpdateStamina ();
-                UpdateUnscoredPoint ();
-                UpdateOpponentScore ();
-                UpdateHealth ();
+                UpdateStaminaText ();
+                UpdateUnscoredPointText ();
+                UpdateOpponentScoreText ();
+                UpdateHealthText ();
+                if (health <= 0) {
+                    deathPanelCanvas.SetActive (true);
+                    this.health = 0;
+                    StartCoroutine (goToResultScene ());
+                    playerClone.transform.localScale = new Vector3 (0, 0, 0);
+                }
             }
         }
+
+        IEnumerator goToResultScene(){
+            yield return new WaitForSeconds (3);
+            BtnSurrenderClick ();
+        }
+
 
         public static GameController getInstance() {
             return gameController;
@@ -201,27 +214,27 @@ namespace SD {
         // by calling UpdateScore().
         public void AddScore(int newScoreValue) {
             score += newScoreValue;
-            UpdateScore ();
+            UpdateScoreText ();
             // Send the score to the opponent.
             sdGameManager.SendScoreToOpponent(score);
         }
 
         // Updates scoreText UI.
-        void UpdateScore () {
+        void UpdateScoreText () {
             scoreText.text = "Score: " + score;
         }
 
         public void AddUnscoredPoint(int newScoreValue) {
             unscoredPoint += newScoreValue;
-            UpdateUnscoredPoint ();
+            UpdateUnscoredPointText ();
         }
 
         // Updates scoreText UI.
-        void UpdateUnscoredPoint() {
+        void UpdateUnscoredPointText() {
             UnscoredPointText.text = "Unscored Point: " + unscoredPoint;
         }
 
-        void UpdateOpponentScore() {
+        void UpdateOpponentScoreText() {
             opponentScoreText.text = "Opponent: " + opponentScore;
         }
 
@@ -234,7 +247,7 @@ namespace SD {
         }
 
         // Updates staminaText UI with no decimal place.
-        void UpdateStamina() {
+        void UpdateStaminaText() {
             staminaText.text = "Stamina: " + stamina.ToString("F0");
         }
 
@@ -263,7 +276,7 @@ namespace SD {
         // Adds unscored points to player's actual score
         public void Score(){
             this.score += this.unscoredPoint;
-            UpdateScore ();
+            UpdateScoreText ();
             // Send the score to the opponent.
             if (this.unscoredPoint != 0)  // to send the request only once.
                 sdGameManager.SendScoreToOpponent(score);
@@ -277,7 +290,11 @@ namespace SD {
             this.health = newHealth;
         }
 
-        void UpdateHealth(){
+        public void UpdateHealth(int value){
+            this.health = health + value;
+        }
+
+        public void UpdateHealthText(){
             healthText.text = "Health: " + health;
         }
 
