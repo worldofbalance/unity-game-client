@@ -11,7 +11,8 @@ Free Images
 
 
 Free Sound Effects and BGM
-1, bgm.mp3     - http://www.orangefreesounds.com/nature-music/
+1, SeaDivideBGM(Alexvnder Underwater).mp3 
+               - https://soundcloud.com/alexvnderofficial/ep-h2o-underwater?in=alexvnderofficial/sets/ep-h20
 2, consume.mp3 - http://www.flashkit.com/soundfx/Ambience/Woop-Ryan_Cur-8800/index.php
 3, damage.mp3  - http://soundbible.com/2069-Realistic-Punch.html
  */ 
