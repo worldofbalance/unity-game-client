@@ -22,7 +22,11 @@ public class NetworkProtocolTable {
 		Add(NetworkCode.SPECIES_CREATE, "SpeciesCreate");
 		Add(NetworkCode.ECOSYSTEM, "Ecosystem");
 		Add(NetworkCode.SHOP_ACTION, "ShopAction");
-		Add(NetworkCode.UPDATE_RESOURCES, "UpdateResources");
+        //tile purchase
+        Add(NetworkCode.TILE_PRICE, "TilePrice");
+        Add(NetworkCode.TILE_PURCHASE, "TilePurchase");
+
+        Add(NetworkCode.UPDATE_RESOURCES, "UpdateResources");
 		Add(NetworkCode.SPECIES_ACTION, "SpeciesAction");
 		Add(NetworkCode.PREDICTION, "Prediction");
 		Add(NetworkCode.UPDATE_TIME, "UpdateTime");
