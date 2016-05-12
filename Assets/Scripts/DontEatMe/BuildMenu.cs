@@ -15,12 +15,13 @@ public class BuildMenu : MonoBehaviour
     //Access to DemRectUI script for RectUI creation
     public DemRectUI demRectUI;
     private GameObject quitUI;	//instance of UI for after pressed quit button
+    private GameObject instructionUI; //instance of UI for after pressed how to play button
     private GameObject gameOverUI;  //instance of UI for after pressed quit button
     private float qBX; //quit button width
     private float qBY; //quit button height
 
     // Toggle counter
-    int toggleCount = 0;
+    int toggleCount;
 
     // Currently building...
     public BuildInfo currentlyBuilding;
@@ -257,7 +258,25 @@ public class BuildMenu : MonoBehaviour
 
         quitButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 45);
 
+        // Instructions button
+        float iBX = Screen.width / 5.0f;
+        float iBY = Screen.height / 10.0f;
+        demButton.setSize(iBX, iBY);
+        GameObject instructionButton = demButton.CreateButton(Screen.width - iBX, 10, "How to Play");
+        demButton.SetButtonText(instructionButton, "How to Play");
+        instructionButton.GetComponent<Button>().onClick.AddListener(() => { selectInstruction(); });
 
+        instructionButton.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
+        instructionButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
+        instructionButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+
+        instructionButton.GetComponent<RectTransform>().offsetMax = new Vector2(-170, -45);
+        instructionButton.GetComponent<RectTransform>().offsetMin = new Vector2(-170, -45);
+
+        instructionButton.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 75);
+
+        // Reset sizes for quit popup buttons
+        demButton.setSize(qBX, qBY);
     }
 
 
@@ -403,6 +422,45 @@ public class BuildMenu : MonoBehaviour
             mainUIObject.SetActive(false);
         }
     }
+
+    void selectInstruction()
+    {
+        DemAudioManager.audioClick.Play();
+
+        if (main.currentSelection)
+        {
+            Destroy(main.currentSelection);
+            main.boardController.ClearAvailableTiles();
+        }
+
+        if (instructionUI == null)
+        {
+            instructionUI = demRectUI.createRectUI("instructionUI", 0, 0, Screen.width / 1.5f, Screen.height / 1.5f);
+            instructionUI.GetComponent<Image>().sprite = popupBackground;
+            demRectUI.setUIText(instructionUI, "These are the instructions");
+
+            // OK button on Instruction UI
+            GameObject okButton = demButton.CreateButton(0, 0, "Continue");
+            okButton.transform.SetParent(instructionUI.transform);
+            okButton.GetComponent<RectTransform>().anchoredPosition =
+                new Vector2(instructionUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f * 3.4f,
+                    -instructionUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.3f);
+            demButton.SetButtonText(okButton, "Got it!");
+            okButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); instructionUI.SetActive(false); mainUIObject.SetActive(true); });
+
+            mainUIObject.SetActive(false);
+
+            return;
+        }
+
+        if (!instructionUI.activeInHierarchy)
+        {
+            instructionUI.SetActive(true);
+            mainUIObject.SetActive(false);
+        }
+
+    }
+
 
 
 
