@@ -44,7 +44,7 @@ namespace SD {
                     if (secondsToGo >= 0) {
                         if (secondsToGo > maxCountdownSeconds) { // use the timer threshold in case local system clock is incorrect.
                             if (offsetDateTime == null)
-                                offsetDateTime = TrimMilliseconds (DateTime.UtcNow);
+                                offsetDateTime = (TrimMilliseconds (DateTime.UtcNow)).AddSeconds(maxCountdownSeconds);
                             secondsToGo = (offsetDateTime - TrimMilliseconds (DateTime.UtcNow)).TotalSeconds;
                         }
                         countdownText.GetComponent<Text> ().text = secondsToGo.ToString ();
