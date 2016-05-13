@@ -108,7 +108,7 @@ namespace SD {
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
                 opponentPlayer.yRotation = opponentInitialRotation.eulerAngles.y;
                 isGameTimeTicking = false; // Wait for time sync if in multiplayer mode
-                gameController.countdownPanelCanvas.SetActive (false); // We do not need the countdownpanel anymore.
+                gameController.countdownPanelCanvas.SetActive (true);
             } else {
                 isGameTimeTicking = true; // Start the timer immediately if in offline mode
                 gameController.countdownPanelCanvas.SetActive (false);

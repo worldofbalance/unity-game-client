@@ -15,6 +15,10 @@ namespace SD {
         public Text timeText;
         public Text countdownText;
         public float time = 180f;
+        public GameObject panelTimesUp;
+
+        private int maxCountdownSeconds = 6;
+        private DateTime offsetDateTime;
         private static GameManager sdGameManager;
         private static GameController sdGameController;
         private static SDPersistentData sdPersistentData;
@@ -37,8 +41,14 @@ namespace SD {
                     sdGameController.countdownPanelCanvas.SetActive (false);
                 } else {
                     double secondsToGo = (sdPersistentData.getRoundStartTime () - TrimMilliseconds (DateTime.UtcNow)).TotalSeconds;
-                    if (secondsToGo >= 0)
+                    if (secondsToGo >= 0) {
+                        if (secondsToGo > maxCountdownSeconds) { // use the timer threshold in case local system clock is incorrect.
+                            if (offsetDateTime == null)
+                                offsetDateTime = TrimMilliseconds (DateTime.UtcNow);
+                            secondsToGo = (offsetDateTime - TrimMilliseconds (DateTime.UtcNow)).TotalSeconds;
+                        }
                         countdownText.GetComponent<Text> ().text = secondsToGo.ToString ();
+                    }
                     else {
                         // Start the timer anyway since it has passed the scheduled start time.
                         sdGameController.setIsGameTimeTicking (true);
@@ -53,11 +63,9 @@ namespace SD {
                 timeText.text = "Time: " + ((int)time).ToString ();
                 if (time <= 0) {
                     timeText.text = "Time's Up!";
-                    if (time <= -3) {
-                        sdGameManager.EndGame (true, sdGameController.getPlayerScore ());
-                        Debug.Log ("The player's final score is " + sdGameController.getPlayerScore ());
-                        Destroy (this);
-                    }
+                    panelTimesUp.SetActive (true);
+                    sdGameController.setIsGameTimeTicking (false);
+                    StartCoroutine (EndCurrentRound ());
                 }
             }
             
@@ -69,6 +77,13 @@ namespace SD {
         
         public static DateTime TrimMilliseconds(DateTime dt) {
             return new DateTime (dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0);
+        }
+
+        IEnumerator EndCurrentRound() {
+            yield return new WaitForSeconds(3);
+            sdGameManager.EndGame (true, sdGameController.getPlayerScore ());
+            Debug.Log ("The player's final score is " + sdGameController.getPlayerScore ());
+            Destroy (this);
         }
     }
 }
