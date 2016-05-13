@@ -9,7 +9,8 @@ namespace SD {
         private SDPersistentData persistentObject;
 
         public void BtnBackToLobbyClick() {
-            SceneManager.LoadScene ("World");
+            SD.Constants.PLAYER_NUMBER = -1;
+            Game.SwitchScene ("World");
         }
 
         public void BtnPlayAgainClick() {
