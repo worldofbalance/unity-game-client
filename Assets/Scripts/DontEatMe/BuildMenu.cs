@@ -52,6 +52,8 @@ public class BuildMenu : MonoBehaviour
 
     private DemMain main;
 
+  private int plantBiomass;
+
     public GameObject panelObject;
 
     public GameObject menuPanel;
@@ -59,6 +61,8 @@ public class BuildMenu : MonoBehaviour
     public GameObject scoreText;
 
     public GameObject livesText;
+
+  public GameObject plantBioText;
 
     public GameObject turnSystemText;
 
@@ -109,6 +113,7 @@ public class BuildMenu : MonoBehaviour
         scoreText = GameObject.Find("Canvas/mainUI/CreditsWidget/CreditWidgetText");
         livesText = GameObject.Find("Canvas/mainUI/LivesWidget/LivesWidgetText");
         turnSystemText = GameObject.Find("Canvas/mainUI/TurnWidget/TurnWidgetText");
+        plantBioText = GameObject.Find("Canvas/mainUI/PlantBioWidget/PlantBioWidgetText");
 
 
         /*
@@ -149,6 +154,7 @@ public class BuildMenu : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        plantBiomass = 12000;
         turnSystem.IsTurnLocked();
         turnSystemText.GetComponent<Text>().text = "Your Turn!";
 
@@ -253,30 +259,33 @@ public class BuildMenu : MonoBehaviour
         quitButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
         quitButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
 
-        quitButton.GetComponent<RectTransform>().offsetMax = new Vector2(-70, -25);
-        quitButton.GetComponent<RectTransform>().offsetMin = new Vector2(-70, -45);
+        quitButton.GetComponent<RectTransform>().offsetMax = new Vector2(-70, -22);
+        quitButton.GetComponent<RectTransform>().offsetMin = new Vector2(-70, -22);
 
-        quitButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 45);
+        quitButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 30);
 
         // Instructions button
         float iBX = Screen.width / 5.0f;
         float iBY = Screen.height / 10.0f;
         demButton.setSize(iBX, iBY);
         GameObject instructionButton = demButton.CreateButton(Screen.width - iBX, 10, "How to Play");
-        demButton.SetButtonText(instructionButton, "How to Play");
+        demButton.SetButtonText(instructionButton, "?");
+
+        instructionButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/buttonBackgroundRound");
         instructionButton.GetComponent<Button>().onClick.AddListener(() => { selectInstruction(); });
 
         instructionButton.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
         instructionButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
         instructionButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
 
-        instructionButton.GetComponent<RectTransform>().offsetMax = new Vector2(-170, -45);
-        instructionButton.GetComponent<RectTransform>().offsetMin = new Vector2(-170, -45);
+        instructionButton.GetComponent<RectTransform>().offsetMax = new Vector2(-154, -22);
+        instructionButton.GetComponent<RectTransform>().offsetMin = new Vector2(-145, -22);
 
-        instructionButton.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 75);
+        instructionButton.GetComponent<RectTransform>().sizeDelta = new Vector2(30, 30);
 
         // Reset sizes for quit popup buttons
         demButton.setSize(qBX, qBY);
+        UpdatePlantBiomass ();   
     }
 
 
@@ -565,6 +574,25 @@ public class BuildMenu : MonoBehaviour
     {
 
         scoreText.GetComponent<Text>().text = credits.ToString();
+
+    }
+
+    public void UpdatePlantBiomass()
+    {
+        plantBioText.GetComponent<Text> ().text = plantBiomass.ToString ();
+    }
+
+    public void UpdatePlantBiomass(int biomass)
+    {
+        plantBiomass = biomass;
+        UpdatePlantBiomass ();
+
+    }
+
+    public int getPlantBiomass()
+    {
+    
+        return plantBiomass;
 
     }
 

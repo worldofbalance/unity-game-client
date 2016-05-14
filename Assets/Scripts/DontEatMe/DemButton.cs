@@ -92,6 +92,8 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     }
 
 
+
+
     // Create text for the button
     public void SetButtonText(GameObject button, string text)
     {
@@ -106,7 +108,7 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Chalkboard");
         buttonText.GetComponent<Text>().fontSize = (int)(Screen.width / 42);
         buttonText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
-        buttonText.GetComponent<Text>().color = Color.black;
+        buttonText.GetComponent<Text>().color = Color.white;
         buttonText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
         buttonText.GetComponent<Text>().text = text;
