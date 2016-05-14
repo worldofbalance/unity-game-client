@@ -464,27 +464,28 @@ public class BuildMenu : MonoBehaviour
 
 
 
-    public void endGame()
+    public void EndGame()
     {
         gameOverUI = demRectUI.createRectUI("quitUI", 0, 0, Screen.width / 2.0f, Screen.height / 2.0f);
-        demRectUI.setUIText(quitUI, "Game Over! Play Again?");
+        gameOverUI.GetComponent<Image>().sprite = popupBackground;
+        demRectUI.setUIText(gameOverUI, "Game Over! Play Again?");
 
         //Quit Button on Quit UI
         GameObject yesButton = demButton.CreateButton(0, 0, "Yes");
-        yesButton.transform.SetParent(quitUI.transform);
+        yesButton.transform.SetParent(gameOverUI.transform);
         yesButton.GetComponent<RectTransform>().anchoredPosition =
-            new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f,
-                -quitUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
-        demButton.SetButtonText(yesButton, "Quit");
-        yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("World"); });
+          new Vector2(gameOverUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f,
+        -gameOverUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
+        demButton.SetButtonText(yesButton, "Yes");
+        yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("DontEatMe"); });
 
         //back button on Quit UI
         GameObject noButton = demButton.CreateButton(0, 0, "No");
-        noButton.transform.SetParent(quitUI.transform);
+        noButton.transform.SetParent(gameOverUI.transform);
         noButton.GetComponent<RectTransform>().anchoredPosition =
-            new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f * 3.0f,
-                -quitUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
-        demButton.SetButtonText(noButton, "Back");
+        new Vector2(gameOverUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f * 3.0f,
+        -gameOverUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
+        demButton.SetButtonText(noButton, "No");
         //noButton.GetComponent<Button> ().onClick.AddListener (()=>{quitUI.SetActive(false);});
         noButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("World"); });
 

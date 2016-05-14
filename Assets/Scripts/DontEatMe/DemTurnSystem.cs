@@ -140,7 +140,8 @@ public class DemTurnSystem : MonoBehaviour {
     buildMenu.UpdateLives (lives);
 
     if (lives == 0) {
-      
+      activePredators.Remove(finishedPredator.GetInstanceID());
+      tweenList.Clear();
       GameOver ();
     
     } else {
@@ -158,6 +159,7 @@ public class DemTurnSystem : MonoBehaviour {
     //For Testing
     int random = UnityEngine.Random.Range (0, 5);
 
+
     int randomPredator = UnityEngine.Random.Range (0, main.predators.Length);
 
     GameObject newPredator = main.predators [randomPredator].Create ();
@@ -166,6 +168,7 @@ public class DemTurnSystem : MonoBehaviour {
     //activePredators.Add (newPredator.GetInstanceID() , newPredator);
 
     board.AddNewPredator(0, random, newPredator );
+    //board.AddNewPredator(8, random, newPredator );
 
     tweenList.Enqueue(new DemPredatorEnterTween (newPredator, 700));
 
@@ -196,8 +199,9 @@ public class DemTurnSystem : MonoBehaviour {
 
 
   public void GameOver(){
-    turnLock = true;
+    //turnLock = true;
     Debug.Log ("game Over");
+    buildMenu.EndGame ();
   }
 
 
