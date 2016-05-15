@@ -113,7 +113,7 @@ public class BuildMenu : MonoBehaviour
         scoreText = GameObject.Find("Canvas/mainUI/CreditsWidget/CreditWidgetText");
         livesText = GameObject.Find("Canvas/mainUI/LivesWidget/LivesWidgetText");
         turnSystemText = GameObject.Find("Canvas/mainUI/TurnWidget/TurnWidgetText");
-        plantBioText = GameObject.Find("Canvas/mainUI/PlantBioWidget/PlantBioWidgetText");
+        plantBioText = GameObject.Find("Canvas/mainUI/Tier1Widget/PlantBioWidgetText");
 
 
         /*

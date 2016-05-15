@@ -365,22 +365,17 @@ public class DemTile : MonoBehaviour
 
                 DemAudioManager.audioUiLoad.Play ();
                 //resident = DemMain.currentSelection;
-
+                
                 //resident.transform.position = center;
                 AddAnimal(main.currentSelection);
-                // Subtract the appropriate resources for the build
-                //BuildMenu.currentResources -= BuildMenu.currentlyBuilding.price;
+                Debug.Log (SpeciesConstants.Biomass(main.currentSelection.name));
+                int currentBiomass = buildMenu.getPlantBiomass ();
+                int newBiomass = SpeciesConstants.Biomass (main.currentSelection.name);
+                buildMenu.UpdatePlantBiomass (currentBiomass - newBiomass);
+                
 
-                // Testing animation transition from IDLE to animated once placed on board
-                // NOTE: only supported species (i.e. those currently with animations) should call 'SetTrigger';
-                // unsupported species will cause unpredictable behavior
-                // TODO: implement animations for all species
-                /*
-                if (
-                    BuildMenu.currentlyBuilding.name == "BushHyrax" ||
-                    BuildMenu.currentlyBuilding.name == "TreeMouse")
-                    resident.GetComponent<Animator>().SetTrigger("initialized");
-                    */
+    
+
 
                 // Set BuildMenu.currentlyBuilding to null after successful placement
                 buildMenu.currentAnimalFactory = null;

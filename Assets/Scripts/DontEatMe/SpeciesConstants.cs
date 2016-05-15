@@ -23,6 +23,7 @@ public class SpeciesConstants
         GrainsAndSeeds      = 1004,
         GrassAndHerbs       = 1005,
         TreesAndShrubs      = 1001,
+        FruitsAndNectar     = 1003,
         // Prey
         Buffalo             = 7,
         BushHyrax           = 48,
@@ -226,7 +227,25 @@ public class SpeciesConstants
             // Lore
             "Special",
             40
-        )
+        ),
+
+        new Plant
+        (
+          "Fruits And Nectar",                 // Name
+          (int)SPECIES_ID.FruitsAndNectar,     // Species ID
+          new int[3][]                        // Effect range
+          {
+          // . . * 
+          // . O * 
+          // . . * 
+          new int[2]{1, 1},
+          new int[2]{-1, 0},
+          new int[2]{1, -1}
+          },
+          // Lore
+          "Special",
+          20
+          )
     };
 
 	// All available prey
