@@ -18,6 +18,14 @@ public class EcosystemController : MonoBehaviour {
     public Vector3 upperBound { get; set; }
 
     void Awake() {
+			Game.networkManager.Send(
+				EcosystemProtocol.Prepare(GameState.world.world_id, GameState.player.GetID())
+			);
+			
+			Game.networkManager.Send(
+				SpeciesCreateProtocol.Prepare()
+			);
+
 			Database.NewDatabase (
 				gameObject, 
 		    Constants.MODE_ECOSYSTEM,
@@ -29,17 +37,17 @@ public class EcosystemController : MonoBehaviour {
     void Start(){
         Game.StartEnterTransition();
         Camera.main.GetComponent<EcosystemCamera>().Setup();
+    }
 
+    // Update is called once per frame
+    void Update() {
+			if(ecosystem == null) {
         if (GameState.ecosystem != null) {
             ecosystem = GameState.ecosystem;
         }
 
         Generate(ecosystem.zones, ecosystem.player.color);
-    }
-
-    // Update is called once per frame
-    void Update() {
-
+			}
     }
 
     void OnGUI() {

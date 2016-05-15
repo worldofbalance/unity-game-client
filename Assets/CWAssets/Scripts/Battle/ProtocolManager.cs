@@ -90,8 +90,7 @@ public class ProtocolManager : MonoBehaviour{
 			                    " opponentIsReady " + GameManager.opponentIsReady );
 		} else {
 			Debug.Log("Failed to acquire Match Status");
-			// Could return to Lobby Here
-
+            setMatchStatus();
 		}
 
 	}
