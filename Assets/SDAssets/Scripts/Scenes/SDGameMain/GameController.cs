@@ -131,6 +131,10 @@ namespace SD {
         // Automatically revovers stamina, and refreshs staminaText UI every frame.
         void Update() {
             if (getIsGameTimeTicking ()) {
+                if (Constants.PLAYER_NUMBER == 1)
+                {  // The player who joins the host will have a different position to start from.
+                    RetargetFish();
+                }
                 RecoverStamina ();
                 UpdateStaminaText ();
                 UpdateUnscoredPointText ();
@@ -220,9 +224,26 @@ namespace SD {
             }
             sdGameManager.SendNpcFishPositions (5);  // Player 1 will send its positions to Player 2
         }
-        // Increases the current score value, and pass the info to scoreText
-        // by calling UpdateScore().
-        public void AddScore(int newScoreValue) {
+
+        IEnumerator RetargetFish()
+        {
+            yield return new WaitForSeconds(3);
+            targetFish();
+        }
+
+        public void targetFish()
+        {
+            List<GameObject> fish = new List<GameObject>(getNpcFishObjects().Values);
+            foreach (GameObject cur in fish)
+            {
+                 //cur.GetComponent<NPCFishController>().SetTarget(); 
+                //cur.GetComponent<NPCFishController>().SetTarget();
+            }
+        }
+
+    // Increases the current score value, and pass the info to scoreText
+    // by calling UpdateScore().
+    public void AddScore(int newScoreValue) {
             score += newScoreValue;
             UpdateScoreText ();
             // Send the score to the opponent.

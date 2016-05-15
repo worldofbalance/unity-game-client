@@ -75,8 +75,11 @@ public class PlayerController : MonoBehaviour {
 
             // Assigns the player's movement speed, and move the player object
             rb.velocity = movement * speed;
-
-            rb.position = new Vector3 (
+                transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+                speed = speed * 0.95f;// speed down after movement 
+                if (speed < 40) { speed = 40; }
+                currentStamina++;
+                rb.position = new Vector3 (
                 Mathf.Clamp (rb.position.x, boundary.xMin, boundary.xMax),
                 Mathf.Clamp (rb.position.y, boundary.yMin, boundary.yMax),
                 0.0f
@@ -104,12 +107,13 @@ public class PlayerController : MonoBehaviour {
                     rb.transform.Rotate (turn);
                 }
             }
-        // Flips the player object left or right
-        // depending on the direction the player is moving
-        // Moving to Right
+                // Flips the player object left or right
+                // depending on the direction the player is moving
+                // Moving to Right
 
-        //rb.rotation = Quaternion.Euler (0.0f, rb.velocity.z * -tilt,  0.0f);
-        }
+                //rb.rotation = Quaternion.Euler (0.0f, rb.velocity.z * -tilt,  0.0f);
+                
+            }
     }
         
     // So far, the Update function only manages temporally speed up of the player
@@ -141,20 +145,19 @@ public class PlayerController : MonoBehaviour {
            
                 //  transform.position = Vector3.MoveTowards(transform.position, mouse, speed * Time.deltaTime);
             }
-            if (Input.GetKey (KeyCode.Space) && currentStamina > 0) {
-                speed = speed * speedUpFactor;
-                if (speed > MaxSpeed) {
-                    speed = MaxSpeed;
+                if (Input.GetKey(KeyCode.Space) && currentStamina > 0)
+                {
+                    speed = speed * speedUpFactor;
+                    if (speed > MaxSpeed)
+                    {
+                        speed = MaxSpeed;
+                    }
+                    gameController.SetStamina(currentStamina - .25f);
                 }
-                gameController.SetStamina (currentStamina - .25f);
-            }
 
-            transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime); 
-         
-                speed = 40; 
-                currentStamina++;
-            
-        }
+               
+
+            }
     }
 
     // Returns true if the player is moving.
