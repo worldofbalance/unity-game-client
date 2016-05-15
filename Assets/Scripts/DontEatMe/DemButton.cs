@@ -152,13 +152,20 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         panelObject.transform.position = new Vector3(Input.mousePosition.x + 180, Input.mousePosition.y);
         if (this.gameObject.transform.GetChild(0).gameObject.activeSelf)
         {
-            panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(0).gameObject.name;
+      panelObject.transform.GetChild (1).GetComponent<Text> ().text = 
+        this.gameObject.transform.GetChild (0).gameObject.name;
             //panelObject.transform.GetChild(2).GetComponent<Text>().text = ;
+      panelObject.transform.GetChild (3).GetChild (0).GetComponent<Text> ().text = 
+        SpeciesConstants.Biomass (this.gameObject.transform.GetChild (0).gameObject.name).ToString();
         }
 
         else
         {
+            //panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(1).gameObject.name;
             panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(1).gameObject.name;
+
+            panelObject.transform.GetChild (3).GetChild (1).GetComponent<Text> ().text = 
+                SpeciesConstants.Biomass (this.gameObject.transform.GetChild(1).gameObject.name).ToString();
         }
 
         panelObject.transform.GetChild(1).gameObject.SetActive(true);

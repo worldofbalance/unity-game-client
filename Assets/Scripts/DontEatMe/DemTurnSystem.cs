@@ -20,6 +20,7 @@ public class DemTurnSystem : MonoBehaviour {
   private int lives;
   private BuildMenu buildMenu;
   private int credits;
+  private int turnNumber;
 
 
   void Awake()
@@ -32,6 +33,7 @@ public class DemTurnSystem : MonoBehaviour {
     buildMenu = mainObject.GetComponent<BuildMenu> ();
     lives = 3;
     credits = 0;
+    turnNumber = 0;
 
 
   }
@@ -44,7 +46,7 @@ public class DemTurnSystem : MonoBehaviour {
 
   public  void PredatorTurn()
   {
-
+    turnNumber++;
     turnLock = true;
     buildMenu.ToggleButtonLocks ();
     activePredators = board.GetPredators ();
@@ -79,7 +81,10 @@ public class DemTurnSystem : MonoBehaviour {
 
     }
 
-    GenerateNewPredators ();
+    if(turnNumber % 2 == 1){
+      GenerateNewPredators ();
+    }
+
     ProcessTweens ();
 
   }
