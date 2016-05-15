@@ -1,11 +1,17 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+<<<<<<< HEAD
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Game.cs">
+    <Files>
+      <File FileName="Assets/Game.cs" Line="78" Column="1" />
+=======
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/CWAssets/Scripts/Battle/BattlePlayer.cs">
     <Files>
       <File FileName="Assets/CWAssets/Scripts/Constants.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/Constants.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/Config.cs" Line="1" Column="1" />
       <File FileName="Assets/CWAssets/Scripts/Battle/BattlePlayer.cs" Line="553" Column="77" />
+>>>>>>> a0037fdc15ce027304e7794c3e6839e1568563c0
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
