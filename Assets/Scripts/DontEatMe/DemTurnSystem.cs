@@ -193,6 +193,7 @@ public class DemTurnSystem : MonoBehaviour {
       tweenList.Clear();
       turnLock = false;
       buildMenu.ToggleButtonLocks ();
+      buildMenu.UpdateMenuLocks ();
     }
 
   }

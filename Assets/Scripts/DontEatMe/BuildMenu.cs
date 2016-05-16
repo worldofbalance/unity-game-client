@@ -293,7 +293,8 @@ public class BuildMenu : MonoBehaviour
 
         // Reset sizes for quit popup buttons
         demButton.setSize(qBX, qBY);
-        UpdatePlantBiomass ();   
+        UpdatePlantBiomass (); 
+        UpdateBuildableAnimals ();
     }
 
 
@@ -302,9 +303,9 @@ public class BuildMenu : MonoBehaviour
     {
         Debug.Log("Clicked " + tButton.name);
 
-        toggleCount += 1;
+    toggleCount = (toggleCount + 1) % 2;
 
-        if (toggleCount % 2 == 0)
+        if (toggleCount == 0)
         {
             tButton.GetComponentInChildren<Text>().text = "Plants";
             for (int i = 0; i < 6; i++)
@@ -323,8 +324,37 @@ public class BuildMenu : MonoBehaviour
                 menuButtons[i].transform.Find(prey[i].GetName()).gameObject.SetActive(true);
             }
         }
+
+      UpdateMenuLocks ();
     }
 
+
+    /**
+     * Use this method To set animals that go over the resource limit to not be buildable
+     */
+
+  public void UpdateMenuLocks(){
+    UnlockAllMenuItems ();
+    UpdateBuildableAnimals ();
+  }
+
+    public void UpdateBuildableAnimals()
+    {
+      for (int i = 0; i < 6; i++)
+      {
+      if (toggleCount == 0) {
+        if(SpeciesConstants.Biomass (plants [i].GetName ()) > plantBiomass) {
+          LockMenuButton (i);
+        }
+
+        } else {
+          if(SpeciesConstants.Biomass (prey [i].GetName ()) > tier2Biomass) {
+          LockMenuButton (i);
+          }
+        }
+        
+      }
+    }
 
     // Specie selection based on the button clicked and setting down species on the gameboard
     void selectSpecies(GameObject button)
@@ -568,6 +598,28 @@ public class BuildMenu : MonoBehaviour
         }
 
     }
+
+    public void UnlockAllMenuItems()
+    {
+      for (int i = 0; i < 6; i++)
+      {
+        menuButtons[i].GetComponent<Button>().interactable = true;
+        foreach (Image image in menuButtons[i].GetComponentsInChildren<Image>())
+        {
+          image.color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
+        }
+      }
+    }
+
+
+  public void LockMenuButton(int buttonNum)
+  {
+    menuButtons[buttonNum].GetComponent<Button>().interactable = false;
+    foreach (Image image in menuButtons[buttonNum].GetComponentsInChildren<Image>())
+    {
+      image.color = new Color(1.0F, 1.0F, 1.0F, 0.8F);
+    }
+  }
 
 
     public void UpdateLives(int lives)
