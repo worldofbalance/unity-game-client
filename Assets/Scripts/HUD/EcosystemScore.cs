@@ -49,7 +49,7 @@ public class EcosystemScore : MonoBehaviour {
 			style.fontSize = 24;
 			style.alignment = TextAnchor.UpperCenter;
 	
-			GUIExtended.Label(new Rect(100, -3, 240, 50), score.ToString("n0"), style, Color.black, Color.white);
+			//GUIExtended.Label(new Rect(100, -3, 240, 50), score.ToString("n0"), style, Color.black, Color.white);
 		GUI.EndGroup();
 	}
 
