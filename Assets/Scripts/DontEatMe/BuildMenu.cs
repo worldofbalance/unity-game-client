@@ -52,7 +52,11 @@ public class BuildMenu : MonoBehaviour
 
     private DemMain main;
 
-  private int plantBiomass;
+    private int plantBiomass; 
+
+    private int tier2Biomass; 
+
+    private int tier3Biomass; 
 
     public GameObject panelObject;
 
@@ -62,7 +66,11 @@ public class BuildMenu : MonoBehaviour
 
     public GameObject livesText;
 
-  public GameObject plantBioText;
+    public GameObject plantBioText;
+
+    public GameObject tier2BioText;
+
+    public GameObject tier3BioText;
 
     public GameObject turnSystemText;
 
@@ -114,14 +122,11 @@ public class BuildMenu : MonoBehaviour
         livesText = GameObject.Find("Canvas/mainUI/LivesWidget/LivesWidgetText");
         turnSystemText = GameObject.Find("Canvas/mainUI/TurnWidget/TurnWidgetText");
         plantBioText = GameObject.Find("Canvas/mainUI/Tier1Widget/PlantBioWidgetText");
+        tier2BioText = GameObject.Find("Canvas/mainUI/Tier2Widget/WidgetText");
+        tier3BioText = GameObject.Find("Canvas/mainUI/Tier3Widget/WidgetText");
 
 
-        /*
-        panelObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
-        panelObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 0);
-        panelObject.GetComponent<RectTransform>().offsetMax = new Vector2(-100, 50);
-        panelObject.GetComponent<RectTransform>().offsetMin = new Vector2(100, 0);
-        */
+ 
         panelObject.GetComponent<Image>().sprite = infoWidget;
 
         /*
@@ -155,6 +160,9 @@ public class BuildMenu : MonoBehaviour
     void Start()
     {
         plantBiomass = 12000;
+        tier2Biomass = 0;
+        tier3Biomass = 0;
+
         turnSystem.IsTurnLocked();
         turnSystemText.GetComponent<Text>().text = "Your Turn!";
 
@@ -593,6 +601,81 @@ public class BuildMenu : MonoBehaviour
     {
     
         return plantBiomass;
+
+    }
+
+    public int GetTier2Biomass()
+    {
+    
+    return tier2Biomass;
+
+    }
+
+    public int GetTier3Biomass(){
+
+    return tier3Biomass;
+      
+    }
+
+    public void UpdateTier2Biomass(){
+
+      tier2BioText.GetComponent<Text> ().text = tier2Biomass.ToString (); 
+
+    }
+
+    public void UpdateTier2Biomass(int biomass)
+    {
+
+      tier2Biomass = biomass;
+      UpdateTier2Biomass ();
+      
+    }
+
+    public void AddTier2Biomass(int biomass)
+    {
+
+      tier2Biomass += biomass;
+      UpdateTier2Biomass ();
+
+    }
+
+
+    public void SubtractTier2Biomass(int biomass)
+    {
+
+      tier2Biomass -= biomass;
+      UpdateTier2Biomass ();
+
+    }
+
+    public void UpdateTier3Biomass(){
+
+      tier3BioText.GetComponent<Text> ().text = tier3Biomass.ToString (); 
+
+    }
+
+    public void UpdateTier3Biomass(int biomass)
+    {
+
+     tier3Biomass = biomass;
+     UpdateTier3Biomass ();
+
+    }
+
+    public void AddTier3Biomass(int biomass)
+    {
+
+      tier3Biomass += biomass;
+      UpdateTier3Biomass ();
+
+    }
+
+
+    public void SubtractTier3Biomass(int biomass)
+    {
+
+      tier3Biomass -= biomass;
+      UpdateTier3Biomass ();
 
     }
 

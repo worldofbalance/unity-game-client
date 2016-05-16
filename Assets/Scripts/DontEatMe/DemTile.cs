@@ -372,6 +372,8 @@ public class DemTile : MonoBehaviour
                 int currentBiomass = buildMenu.getPlantBiomass ();
                 int newBiomass = SpeciesConstants.Biomass (main.currentSelection.name);
                 buildMenu.UpdatePlantBiomass (currentBiomass - newBiomass);
+
+                buildMenu.AddTier2Biomass ((int)(newBiomass * 0.1));
                 
 
     
