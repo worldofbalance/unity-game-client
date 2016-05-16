@@ -368,12 +368,16 @@ public class DemTile : MonoBehaviour
                 
                 //resident.transform.position = center;
                 AddAnimal(main.currentSelection);
-                Debug.Log (SpeciesConstants.Biomass(main.currentSelection.name));
-                int currentBiomass = buildMenu.getPlantBiomass ();
-                int newBiomass = SpeciesConstants.Biomass (main.currentSelection.name);
-                buildMenu.UpdatePlantBiomass (currentBiomass - newBiomass);
+                
+                if(buildMenu.currentAnimalFactory.isPlant())
+                {
+                    int currentBiomass = buildMenu.getPlantBiomass ();
+                    int newBiomass = SpeciesConstants.Biomass (main.currentSelection.name);
+                    buildMenu.UpdatePlantBiomass (currentBiomass - newBiomass);
+                    buildMenu.AddTier2Biomass ((int)(newBiomass * 0.1));
 
-                buildMenu.AddTier2Biomass ((int)(newBiomass * 0.1));
+                }
+
                 
 
     

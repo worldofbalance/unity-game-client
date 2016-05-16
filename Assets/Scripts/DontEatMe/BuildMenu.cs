@@ -202,12 +202,12 @@ public class BuildMenu : MonoBehaviour
 
 
         prey = new DemAnimalFactory[6];
-        prey[0] = new DemAnimalFactory("Bohor Reedbuck");
+        prey[0] = new DemAnimalFactory("Tree Mouse");
         prey[1] = new DemAnimalFactory("Bat-Eared Fox");
         prey[2] = new DemAnimalFactory("Kori Buskard");
-        prey[3] = new DemAnimalFactory("Black Backed Jackal");
-        prey[4] = new DemAnimalFactory("Dwarf Mongoose");
-        prey[5] = new DemAnimalFactory("Dwarf Epauletted Bat");
+        prey[3] = new DemAnimalFactory("Crested Porcupine");
+        prey[4] = new DemAnimalFactory("Oribi");
+        prey[5] = new DemAnimalFactory("Buffalo");
 
 
         // NEW BUTTON CREATION STARTS HERE
