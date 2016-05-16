@@ -111,10 +111,14 @@ public class DemTurnSystem : MonoBehaviour {
       }
 
       if(nextAnimal.isPrey()){
+        buildMenu.AddTier2Biomass (SpeciesConstants.Biomass (nextAnimal.name));
         DemAudioManager.audioSelection.Play ();
         credits++;
         buildMenu.UpdateCredits (credits);
         markForDeletion = true;
+      }else if (nextAnimal.isPlant()){
+        buildMenu.AddPlantBiomass (SpeciesConstants.Biomass (nextAnimal.name));
+        buildMenu.SubtractTier2Biomass ((int)(SpeciesConstants.Biomass (nextAnimal.name) * 0.5));
       }
 
     }
@@ -124,12 +128,14 @@ public class DemTurnSystem : MonoBehaviour {
     predator.AdvanceTile ();
 
     if(markForDeletion){
-
+      buildMenu.SubtractTier3Biomass (SpeciesConstants.Biomass (predator.name));
       DemTile tempTile = predator.GetTile ();
       activePredators.Remove(finishedPredator.GetInstanceID());
       tempTile.RemoveAnimal ();
 
+
     }
+
       
     ProcessTweens ();
 
@@ -150,7 +156,7 @@ public class DemTurnSystem : MonoBehaviour {
       GameOver ();
     
     } else {
-
+      buildMenu.SubtractTier3Biomass (SpeciesConstants.Biomass (predator.name));
       activePredators.Remove(finishedPredator.GetInstanceID());
       ProcessTweens ();
 
@@ -176,7 +182,7 @@ public class DemTurnSystem : MonoBehaviour {
     //board.AddNewPredator(8, random, newPredator );
 
     tweenList.Enqueue(new DemPredatorEnterTween (newPredator, 700));
-
+    buildMenu.AddTier3Biomass (SpeciesConstants.Biomass (newPredator.GetComponent<BuildInfo> ().name));
     //tweenList.Clear ();
 
     //turnLock = false;

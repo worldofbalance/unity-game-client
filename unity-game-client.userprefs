@@ -1,13 +1,13 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/DontEatMe/DemTile.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/DontEatMe/DemTurnSystem.cs">
     <Files>
-      <File FileName="Assets/Scripts/DontEatMe/DemTurnSystem.cs" Line="198" Column="4" />
-      <File FileName="Assets/Scripts/DontEatMe/BuildMenu.cs" Line="607" Column="33" />
-      <File FileName="Assets/Scripts/DontEatMe/SpeciesConstants.cs" Line="418" Column="14" />
-      <File FileName="Assets/Scripts/DontEatMe/DemAnimalFactory.cs" Line="84" Column="37" />
-      <File FileName="Assets/Scripts/DontEatMe/DemMain.cs" Line="48" Column="41" />
-      <File FileName="Assets/Scripts/DontEatMe/DemTile.cs" Line="379" Column="21" />
+      <File FileName="Assets/Scripts/DontEatMe/DemTile.cs" Line="374" Column="62" />
+      <File FileName="Assets/Scripts/DontEatMe/DemTurnSystem.cs" Line="121" Column="1" />
+      <File FileName="Assets/Scripts/DontEatMe/BuildMenu.cs" Line="730" Column="5" />
+      <File FileName="Assets/Scripts/DontEatMe/SpeciesConstants.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/DontEatMe/DemAnimalFactory.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/DontEatMe/DemMain.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

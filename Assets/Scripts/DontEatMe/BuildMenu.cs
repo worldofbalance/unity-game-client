@@ -722,6 +722,14 @@ public class BuildMenu : MonoBehaviour
 
     }
 
+  public void AddPlantBiomass(int biomass)
+  {
+
+    plantBiomass += biomass;
+    UpdatePlantBiomass ();
+
+  }
+
 
     public void SubtractTier3Biomass(int biomass)
     {
@@ -730,5 +738,10 @@ public class BuildMenu : MonoBehaviour
       UpdateTier3Biomass ();
 
     }
+
+  public void SubtractPlantBiomass(int biomass){
+    plantBiomass -= biomass;
+    UpdatePlantBiomass ();
+  }
 
 }
