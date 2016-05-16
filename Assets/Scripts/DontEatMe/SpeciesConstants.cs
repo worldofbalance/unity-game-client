@@ -46,14 +46,17 @@ public class SpeciesConstants
         public string lore; // Lore (i.e. description) taken from 'http://smurf.sfsu.edu/~wob/guide/species.php'
         public int speciesID;
         public int[][] range; // Array of [x,y] offset pairs with [0,0] @ plant origin, denoting relative effect range
+        public int biomass;
 
         // Constructor
-        public Plant (string _name, int _speciesID, int[][] _range, string _lore = "")
+        public Plant (string _name, int _speciesID, int[][] _range, string _lore , int _biomass)
         {
             name = _name;
             speciesID = _speciesID;
             range = _range;
             lore = _lore;
+            biomass = _biomass;
+            
         }
     };
 
@@ -61,21 +64,23 @@ public class SpeciesConstants
 	private struct Prey
 	{
 		public string name;
-        public string lore; // Lore (i.e. description) taken from 'http://smurf.sfsu.edu/~wob/guide/species.php'
+    public string lore; // Lore (i.e. description) taken from 'http://smurf.sfsu.edu/~wob/guide/species.php'
 		public int speciesID;
 		public int health;
+    public int biomass;
 
         // public int[] preyIDLIst; // TODO: create prey list --> includes plants, but might include other prey (TBD)
         public int[] predatorIDList;
 
         // Constructor
-		public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList, string _lore = "")
+    public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList, string _lore, int _biomass)
 		{
 			name = _name;
 			speciesID = _speciesID;
 			health = _health;
-            predatorIDList = _predatorIDList;
-            lore = _lore;
+      predatorIDList = _predatorIDList;
+      lore = _lore;
+      biomass = _biomass;
 		}
 	};
 
@@ -87,19 +92,21 @@ public class SpeciesConstants
 		public int speciesID;
 		public int hunger;
 		public int voracity;
+    public int biomass;
 
         public int[] preyIDList;
         // public int[] predatorIDLIst; // TODO: create predator list --> includes larger predators (TBD)
 
         // Constructor
-		public Predator (string _name, int _speciesID, int _hunger, int _voracity, int[] _preyIDList, string _lore = "")
+    public Predator (string _name, int _speciesID, int _hunger, int _voracity, int[] _preyIDList, string _lore, int _biomass)
 		{
 			name = _name;
 			speciesID = _speciesID;
 			hunger = _hunger;
 			voracity = _voracity;
-            preyIDList = _preyIDList;
-            lore = _lore;
+      preyIDList = _preyIDList;
+      lore = _lore;
+      biomass = _biomass;
 		}
 	};
 
@@ -122,7 +129,8 @@ public class SpeciesConstants
             },
             // Lore
             "Acacia is a genus of shrubs and trees belonging to the subfamily Mimosoideae of the family Fabaceae, " +
-            "first described in Africa by the Swedish botanist Carl Linnaeus in 1773."
+            "first described in Africa by the Swedish botanist Carl Linnaeus in 1773.",
+            2400 // Biomass
         ),
         new Plant
         (
@@ -142,7 +150,8 @@ public class SpeciesConstants
             "Trees are an important component of the natural landscape because of their prevention of erosion " +
             "and the provision of a weather-sheltered ecosystem in and under their foliage. " +
             "They also play an important role in producing oxygen and reducing carbon dioxide in the atmosphere, " +
-            "as well as moderating ground temperatures."
+            "as well as moderating ground temperatures.",
+            3200
         ),
         new Plant
         (
@@ -165,7 +174,8 @@ public class SpeciesConstants
             // Lore
             "Baobab is a genus of eight species of tree, six native to Madagascar, one native to mainland Africa " +
             "and the Arabian Peninsula and one to Australia. The mainland African species also occurs on Madagascar, " +
-            "but it is not a native of that island."
+            "but it is not a native of that island.",
+            4400
         ),
         new Plant
         (
@@ -179,7 +189,8 @@ public class SpeciesConstants
                 new int[2]{-1, 0}
             },
             // Lore
-            "Special"
+            "Special",
+            20
         ),
         new Plant
         (
@@ -196,7 +207,8 @@ public class SpeciesConstants
             // Lore
             "Grasses are among the most versatile life forms. They became widespread toward the end of the " +
             "Cretaceous period, and fossilized dinosaur dung have been found containing phytoliths of a variety of " +
-            "grasses that include grasses that are related to modern rice and bamboo."
+            "grasses that include grasses that are related to modern rice and bamboo.",
+            40
         ),
         new Plant
         (
@@ -212,7 +224,8 @@ public class SpeciesConstants
                 new int[2]{-1, -1}
             },
             // Lore
-            "Special"
+            "Special",
+            40
         )
     };
 
@@ -232,7 +245,8 @@ public class SpeciesConstants
             "The African buffalo is a large African bovine. " +
             "It is not closely related to the slightly larger wild Asian water buffalo, but its ancestry remains unclear. " +
             "Owing to its unpredictable nature which makes it highly dangerous to humans, it has not been domesticated " +
-            "unlike its Asian counterpart the domestic Asian water buffalo."
+            "unlike its Asian counterpart the domestic Asian water buffalo.",
+            50000
         ),
 		new Prey
         (
@@ -249,7 +263,8 @@ public class SpeciesConstants
             },
             // Lore
             "Tree Mouse, Prionomys batesi, is a poorly understood climbing mouse from Central Africa. " +
-            "It is unique enough that it has been placed in a genus of its own, Prionomys, since its discovery in 1910."
+            "It is unique enough that it has been placed in a genus of its own, Prionomys, since its discovery in 1910.",
+            800
         ),
 		new Prey
         (
@@ -262,7 +277,8 @@ public class SpeciesConstants
                 (int)SPECIES_ID.Leopard
             },
             // Lore
-            "The yellow-spotted rock hyrax or bush hyrax is a species of mammal in the family Procaviidae."
+            "The yellow-spotted rock hyrax or bush hyrax is a species of mammal in the family Procaviidae.",
+            2000
         ),
         new Prey
         (
@@ -276,7 +292,8 @@ public class SpeciesConstants
             },
             // Lore
             "The Kori Bustard is a large bird native to Africa. It is a member of the bustard family. " +
-            "It may be the heaviest bird capable of flight."
+            "It may be the heaviest bird capable of flight.",
+            2000
         ),
         new Prey
         (
@@ -289,7 +306,8 @@ public class SpeciesConstants
                 (int)SPECIES_ID.Leopard
             },
             // Lore
-            "The crested porcupine is a species of rodent in the Hystricidae family."
+            "The crested porcupine is a species of rodent in the Hystricidae family.",
+            1500
         ),
         new Prey
         (
@@ -303,7 +321,8 @@ public class SpeciesConstants
                 (int)SPECIES_ID.Lion
             },
             // Lore
-            "Oribi are graceful slender-legged, long-necked small antelope found in grassland almost throughout Sub-Saharan Africa."
+            "Oribi are graceful slender-legged, long-necked small antelope found in grassland almost throughout Sub-Saharan Africa.",
+            25000
         )
 	}; 
 
@@ -322,7 +341,8 @@ public class SpeciesConstants
             },
             // Lore
             "The bat-eared fox is a canid of the African savanna, named for its large ears. " +
-            "Fossil records show this canid to first appear during the middle Pleistocene, about 800,000 years ago."
+            "Fossil records show this canid to first appear during the middle Pleistocene, about 800,000 years ago.",
+            10000
         ),
         new Predator
         (
@@ -338,7 +358,8 @@ public class SpeciesConstants
             },
             // Lore
             "The black mamba, also called the common black mamba or black-mouthed mamba, is the longest venomous snake in Africa, " +
-            "averaging around 2.5 to 3.2 m in length, and sometimes growing to lengths of 4.45 m."
+            "averaging around 2.5 to 3.2 m in length, and sometimes growing to lengths of 4.45 m.",
+            8000
         ),
         new Predator
         (
@@ -354,7 +375,8 @@ public class SpeciesConstants
             // Lore
             "The serval, Leptailurus serval or Caracal serval, known in Afrikaans as Tierboskat, \"tiger-forest-cat\", " +
             "is a medium-sized African wild cat. DNA studies have shown that the serval is closely related to the " +
-            "African golden cat and the caracal."
+            "African golden cat and the caracal.",
+            1500
         ),
         new Predator
         (
@@ -369,7 +391,8 @@ public class SpeciesConstants
                 (int)SPECIES_ID.CrestedPorcupine
             },
             // Lore
-            "African Wild Dog is a canid found only in Africa, especially in savannas and lightly wooded areas."
+            "African Wild Dog is a canid found only in Africa, especially in savannas and lightly wooded areas.",
+            25000
         ),
         new Predator
         (
@@ -384,7 +407,8 @@ public class SpeciesConstants
             },
             // Lore
             "The leopard, Panthera pardus, is a member of the Felidae family and the smallest of the four \"big cats\" " +
-            "in the genus Panthera, the other three being the tiger, lion, and jaguar."
+            "in the genus Panthera, the other three being the tiger, lion, and jaguar.",
+            30000
         ),
         new Predator
         (
@@ -400,7 +424,8 @@ public class SpeciesConstants
             },
             // Lore
             "The lion is one of the four big cats in the genus Panthera, and a member of the family Felidae. " +
-            "With some males exceeding 250 kg in weight, it is the second-largest living cat after the tiger."
+            "With some males exceeding 250 kg in weight, it is the second-largest living cat after the tiger.",
+            2500
         )
 	};
 
@@ -733,4 +758,27 @@ public class SpeciesConstants
         // Otherwise return default
         return DEFAULT_LORE;
     }
+
+  public static int Biomass(string name){
+
+    foreach (Plant plant in PLANTS)
+    {
+      if (plant.name == name)
+        return plant.biomass;
+    }
+
+    foreach (Prey prey in PREY)
+    {
+      if (prey.name == name)
+        return prey.biomass;
+    }
+    // Search predators
+    foreach (Predator predator in PREDATORS)
+    {
+      if (predator.name == name)
+        return predator.biomass;
+    }
+    // Otherwise return default
+    return 0;
+  }
 }

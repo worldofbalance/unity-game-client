@@ -32,7 +32,7 @@ public class EcoGraphScript : MonoBehaviour {
 
 		player3 = graph.addSeries ();
 		player3.pointValues.SetList (player3Data);
-		player3.lineColor = Color.green;
+        player3.lineColor= Color.green;
 		player3.lineScale = 2;
 
 		player2 = graph.addSeries ();

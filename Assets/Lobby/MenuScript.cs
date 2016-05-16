@@ -64,7 +64,7 @@ public class MenuScript : MonoBehaviour {
     public void OpenStatus(){
 		if (menuOpen) 
 			CloseAllMenus ();
-			Debug.Log ("You Pressed STATUS");
+			//Debug.Log ("You Pressed STATUS");
 			//Camera.main.GetComponent<MapCamera>().Move(GameState.player.GetID());
 			statusContainer.SetActive (true);
 			menuOpen = true;
@@ -100,7 +100,7 @@ public class MenuScript : MonoBehaviour {
 	public void OpenMultiplayerGames(){
 		Debug.Log("You Pressed Open Multiplayer Games");
 		gameObject.AddComponent <MultiplayerGames>();
-		menuOpen=true;
+		//menuOpen=true;
 	}
 
 

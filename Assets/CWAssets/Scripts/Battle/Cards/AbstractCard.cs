@@ -138,7 +138,7 @@ namespace CW
             if (!EventSystem.current.IsPointerOverGameObject())
             {
                 //DebugConsole.Log("on mouse down");
-                if (inMotion)
+                /*if (inMotion)
                 {
 
                     
@@ -152,15 +152,18 @@ namespace CW
 
                 }
             
-                newPosition = oriPosition;
+                newPosition = oriPosition;*/
             
                 //this.transform.localScale = new Vector3 (21, 2, 29); //About 1.4x size
+                //this.transform.position = new Vector3(newPosition.x, 50, newPosition.z);
 
             
                 //if left-button clicked, set centered boolean true and move handpos
                 if (Input.GetMouseButtonDown(0) && !player.handCentered && player == player.player1 && isInHand)
                 {
                     //DebugConsole.Log("1st");
+                    //newPosition.z = oriPosition.z + 200;
+                    //this.transform.position = new Vector3(newPosition.x, 10.5f, newPosition.z);
                     clicked = true;
                     player.handCentered = true;
                     player.handPos = new Vector3(50, 400, -125);
@@ -194,14 +197,14 @@ namespace CW
                 
 
                 //if right-click is held down
-                if (Input.GetMouseButton(1))
+                /*if (Input.GetMouseButton(1))
                 { 
                     /*if (player.player1) { //player 1
                         newPosition.z = oriPosition.z + 200; //Move up from bottom of screen
                     } else if (!player.player1) { //player 2
                         newPosition.z = oriPosition.z - 200; //Move down from top of screen
-                    }*/
-                    //this.transform.position = newPosition;
+                    }
+                    this.transform.position = newPosition;*//*
                     this.transform.localScale = new Vector3(45, 10, 63); //3x size
                     this.transform.position = new Vector3(newPosition.x, 50, newPosition.z + 200);
                 }
@@ -214,11 +217,11 @@ namespace CW
                         newPosition.z = oriPosition.z + 200; //Move up from bottom of screen
                     } else if (!player.player1) { //player 2
                         newPosition.z = oriPosition.z - 200; //Move down from top of screen
-                    }*/
-                    //this.transform.position = newPosition;
+                    }
+                    this.transform.position = newPosition;*//*
                     this.transform.localScale = new Vector3(15, 1, 21); //3x size
                     this.transform.position = newPosition;
-                }
+                }*/
             
             }
         }
@@ -454,10 +457,11 @@ namespace CW
 			//Moving
 			moving ();
 
-            if(Input.GetMouseButtonDown(0) && player.handCentered)
+            /*if(Input.GetMouseButtonDown(0) && player.handCentered)
                 {
                     Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
                     RaycastHit hit;
+                    //player.reposition();
                     if(Physics.Raycast(ray, out hit))
                     {
 
@@ -471,7 +475,7 @@ namespace CW
 
                         }
                     }
-                }
+                }*/
 		}
 
 		//For wrapping long text

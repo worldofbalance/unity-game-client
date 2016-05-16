@@ -8,7 +8,7 @@ public class DemPredatorExitTween :DemTween{
     
     oldPosition = objectTransform.position;
     newPosition = _tweenObject.GetComponent<BuildInfo> ().GetTile ().GetCenter ();
-    newPosition.x -= 20;
+    newPosition.x -= 10;
     Debug.Log (oldPosition);
     Debug.Log (newPosition);
 

@@ -7,27 +7,38 @@ namespace SD {
         private GameManager sdGameManager;
         private GameController sdGameController;
         private Rigidbody rbOpponent;
-        float xPosition;
-        float yPosition;
+        private float xPosition;
+        private float yPosition;
+        private float xRotation;
+        private float yAngle;
+        private float yRotation;
+        private float turnSpeed = 10f;
+        private Vector3 turn;
 
         // Use this for initialization
         void Start () {
-            GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
-            if (gameControllerObject != null) {
-                sdGameController = gameControllerObject.GetComponent<GameController> ();
-            } else {
-                Debug.Log ("Game Controller not found");
-            }
+            sdGameController = GameController.getInstance ();
             sdGameManager = GameManager.getInstance ();
             rbOpponent = sdGameController.getOpponent ().GetComponent<Rigidbody> ();
             xPosition = yPosition = 0.0f;
+            yAngle = yRotation = -90;
+            turn = new Vector3 (0f, turnSpeed, 0f);
         }
 
         void FixedUpdate() {
             if (sdGameManager.getIsMultiplayer ()) {
                 xPosition = sdGameController.getOpponentPlayer ().xPosition;
                 yPosition = sdGameController.getOpponentPlayer ().yPosition;
+                yRotation = sdGameController.getOpponentPlayer ().yRotation;
                 rbOpponent.MovePosition (new Vector3(xPosition, yPosition, 0));
+
+                xRotation = sdGameController.getOpponentPlayer ().xRotation;
+                yAngle = -90;
+                if (xRotation >= -90 && xRotation <= 90) {
+                    xRotation = 180 - xRotation;
+                    yAngle = 90;
+                }
+                rbOpponent.MoveRotation (Quaternion.Euler (xRotation - 180, yAngle, 0));
             }
         }
 
