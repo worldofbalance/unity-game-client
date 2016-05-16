@@ -32,34 +32,27 @@ public class ClashBattleController : MonoBehaviour
 
     private Boolean finished = false;
 
-    public float moveSensitivityX = 1.0f;
-    public float moveSensitivityY = 1.0f;
-    public bool updateZoomSensitivity = true;
-    public float zoomSpeed = 0.05f;
-    public float minZoom = 1.0f;
-    public float maxZoom = 20.0f;
-    public bool invertMoveX = true;
-    public bool invertMoveY = false;
+    //    public float moveSensitivityX = 1.0f;
+    //    public float moveSensitivityY = 1.0f;
+    //    public bool updateZoomSensitivity = true;
+    //    public float zoomSpeed = 0.05f;
+    //    public float minZoom = 1.0f;
+    //    public float maxZoom = 20.0f;
+    //    public bool invertMoveX = true;
+    //    public bool invertMoveY = false;
 
     public bool enemyAIEnabled = false;
 
     public bool allyAIEnabled = false;
 
-    //    public float mapWidth = 60.0f;
-    //    public float mapHeight = 40.0f;
+    //    public float minFOV = 10f;
+    //    public float maxFOV = 79.9f;
 
-    /// <summary>
-    /// Touch controler fields
-    /// </summary>
+    //    float minPanDistance = 2;
 
-    public float minFOV = 10f;
-    public float maxFOV = 79.9f;
+    //    bool isPanning;
 
-    float minPanDistance = 2;
-
-    bool isPanning;
-
-    public float inertiaDuration = 1.0f;
+    //    public float inertiaDuration = 1.0f;
 
     private Camera _camera;
 
@@ -68,13 +61,9 @@ public class ClashBattleController : MonoBehaviour
     private float minX, maxX, minZ, maxZ;
     private float horizontalExtent, verticalExtent;
 
-    private float scrollVelocity = 0.0f;
+    //    private float scrollVelocity = 0.0f;
     private float timeTouchPhaseEnded;
-    //    private Vector3 scrollDirection = Vector3.zero;
     private Vector3 oldTouchPos;
-    //    private int walkableArea = -1;
-    //    private int waterArea = -1;
-    //    private int notWalkableArea = -1;
 
     InputControllerBase cosInController;
 

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class ClashDefenseSetup : MonoBehaviour
 {
@@ -24,15 +25,24 @@ public class ClashDefenseSetup : MonoBehaviour
 
     void Awake ()
     {
-        manager = GameObject.Find ("MainObject").GetComponent<ClashGameManager> ();
+        try {
+            manager = GameObject.Find ("MainObject").GetComponent<ClashGameManager> ();    
+        } catch (Exception ex) {
+            manager = GetComponent<ClashGameManager> ();
+        }
+
         toggleGroup = unitList.GetComponent<ToggleGroup> ();
     }
     
     // Use this for initialization
     void Start ()
     {
-        var terrainObject = Resources.Load<GameObject> ("Prefabs/ClashOfSpecies/Terrains/" + manager.pendingDefenseConfig.terrain);
-        terrain = (Instantiate (terrainObject, Vector3.zero, Quaternion.identity) as GameObject).GetComponent<Terrain> ();
+        try {
+            var terrainObject = Resources.Load<GameObject> ("Prefabs/ClashOfSpecies/Terrains/" + manager.pendingDefenseConfig.terrain);
+            terrain = (Instantiate (terrainObject, Vector3.zero, Quaternion.identity) as GameObject).GetComponent<Terrain> ();
+        } catch (Exception ex) {
+            terrain = Terrain.activeTerrain;
+        }
         terrain.transform.position = Vector3.zero;
         terrain.transform.localScale = Vector3.one;
 
@@ -74,6 +84,10 @@ public class ClashDefenseSetup : MonoBehaviour
     void Update ()
     {
         RaycastHit hit = cosInController.InputUpdate (Camera.main);
+        if (Input.GetKey (KeyCode.P)) {
+            Application.CaptureScreenshot ("/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/Screenshot.png");
+            Debug.Log ("screenshot taken!!");
+        }
         if (selected == null)
             return;
 
@@ -93,6 +107,7 @@ public class ClashDefenseSetup : MonoBehaviour
                     selected = null;
             }
         }
+
     }
 
     public void ReturnToShop ()
