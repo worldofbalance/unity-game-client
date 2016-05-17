@@ -44,6 +44,14 @@ namespace SD
             if (Constants.PLAYER_NUMBER != 2) {
                 npcFish.xPosition = transform.position.x;
                 npcFish.yPosition = transform.position.y;
+            } else { // we are not relying on collision for changing direction of the second player. 
+                if (npcFish.target.x < transform.position.x) { // moving towards the left
+                    npcFish.targetOffset = -20;
+                    transform.rotation = Quaternion.Euler (0, 270, 0);
+                } else {
+                    npcFish.targetOffset = 20;
+                    transform.rotation = Quaternion.Euler (0, 90, 0);
+                }
             }
 
             //npcFish.current = Vector2.MoveTowards(npcFish.current, npcFish.target, 35 * Time.deltaTime);

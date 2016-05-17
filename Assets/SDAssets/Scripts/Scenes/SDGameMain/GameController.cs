@@ -228,8 +228,10 @@ namespace SD {
         IEnumerator RetargetFish()
         {
             targetFish();
-            sdGameManager.SendNpcFishPositions (5);
+            if (SD.SDMain.networkManager != null)
+                sdGameManager.SendNpcFishPositions (5);
             yield return new WaitForSeconds(2);
+            yield return null; // prevents it from hanging ?
         }
 
         public void targetFish()
