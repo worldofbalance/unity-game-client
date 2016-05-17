@@ -531,6 +531,10 @@ public class BuildMenu : MonoBehaviour
             GameObject closeButton = demButton.CreateButton(0, 0, "Close");
             closeButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/closeButton");
             closeButton.transform.SetParent(instructionUI.transform);
+            closeButton.GetComponent<Button>().onClick.AddListener(() => { CloseInstructionWindow(); });
+            closeButton.GetComponent<RectTransform> ().anchorMax = new Vector2 (1 , 1);
+            closeButton.GetComponent<RectTransform> ().anchorMin = new Vector2 (1 , 1);
+            //closeButton.GetComponent<RectTransform> ().pivot = new Vector2 (0.5, 0.5);
 
             mainUIObject.SetActive(false);
 

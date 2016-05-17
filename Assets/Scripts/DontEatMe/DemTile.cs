@@ -294,6 +294,8 @@ public class DemTile : MonoBehaviour
                 panelObject.SetActive(true);
                 panelObject.transform.GetChild(1).GetComponent<Text>().text = resident.name;
                 panelObject.transform.GetChild(2).GetComponent<Text>().text = healthLevel;
+                panelObject.transform.GetChild (3).GetChild (0).GetComponent<Text> ().text = "Biomass : " +
+                    SpeciesConstants.Biomass (resident.name).ToString();
 
                 panelObject.transform.GetChild(1).gameObject.SetActive(true);
                 panelObject.transform.GetChild(2).gameObject.SetActive(true);
