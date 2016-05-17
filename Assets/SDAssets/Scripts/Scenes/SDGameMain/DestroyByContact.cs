@@ -11,7 +11,7 @@ namespace SD {
 
         private GameController gameController;
         private const int newScoreValue = 10; // Score to be recieved by eating prey
-
+        private GameObject mainCamera;
         private AudioSource audioSource;
         public AudioClip audioClip;
 
@@ -19,6 +19,9 @@ namespace SD {
         void Start () {
             gameController = GameController.getInstance ();
             audioSource = GetComponent<AudioSource> ();
+            mainCamera = GameObject.FindGameObjectWithTag ("MainCamera");
+            audioSource.clip = audioClip;
+
         }
             
         
@@ -30,14 +33,13 @@ namespace SD {
         // Destroys the attached object upon a collison with the player
         void OnTriggerEnter(Collider other) {
             if (other.tag == "Player") {
-                //audioSource.volume = 1;
-                //audioSource.Play ();
                 int npcFishId = gameObject.GetComponentInParent<NPCFishController>().getNPCFishData().id;
                 int npcFishSpeciesId = gameObject.GetComponentInParent<NPCFishController> ().getNPCFishData().speciesId;
                 Debug.Log ("Consumed prey with ID: " + npcFishId);
                 if (SDMain.networkManager != null) {
                     GameManager.getInstance ().DestroyNPCFish (npcFishId, npcFishSpeciesId);
                 }
+                AudioSource.PlayClipAtPoint (audioClip, mainCamera.transform.position);
                 gameController.destroyPrey (npcFishId);
                 gameController.AddUnscoredPoint (newScoreValue);
             }
