@@ -294,6 +294,8 @@ public class DemTile : MonoBehaviour
                 panelObject.SetActive(true);
                 panelObject.transform.GetChild(1).GetComponent<Text>().text = resident.name;
                 panelObject.transform.GetChild(2).GetComponent<Text>().text = healthLevel;
+                panelObject.transform.GetChild (3).GetChild (0).GetComponent<Text> ().text = "Biomass : " +
+                    SpeciesConstants.Biomass (resident.name).ToString();
 
                 panelObject.transform.GetChild(1).gameObject.SetActive(true);
                 panelObject.transform.GetChild(2).gameObject.SetActive(true);
@@ -365,22 +367,25 @@ public class DemTile : MonoBehaviour
 
                 DemAudioManager.audioUiLoad.Play ();
                 //resident = DemMain.currentSelection;
-
+                
                 //resident.transform.position = center;
                 AddAnimal(main.currentSelection);
-                // Subtract the appropriate resources for the build
-                //BuildMenu.currentResources -= BuildMenu.currentlyBuilding.price;
+                
+                if (buildMenu.currentAnimalFactory.isPlant ()) {
+                    int currentBiomass = buildMenu.getPlantBiomass ();
+                    int newBiomass = SpeciesConstants.Biomass (main.currentSelection.name);
+                    buildMenu.UpdatePlantBiomass (currentBiomass - newBiomass);
+                    buildMenu.AddTier2Biomass ((int)(newBiomass * 0.5));
 
-                // Testing animation transition from IDLE to animated once placed on board
-                // NOTE: only supported species (i.e. those currently with animations) should call 'SetTrigger';
-                // unsupported species will cause unpredictable behavior
-                // TODO: implement animations for all species
-                /*
-                if (
-                    BuildMenu.currentlyBuilding.name == "BushHyrax" ||
-                    BuildMenu.currentlyBuilding.name == "TreeMouse")
-                    resident.GetComponent<Animator>().SetTrigger("initialized");
-                    */
+                } else { //Else it is prey
+                    int currentBiomass = buildMenu.GetTier2Biomass();
+                    buildMenu.SubtractTier2Biomass (SpeciesConstants.Biomass (main.currentSelection.name));
+                }
+
+                
+
+    
+
 
                 // Set BuildMenu.currentlyBuilding to null after successful placement
                 buildMenu.currentAnimalFactory = null;
@@ -442,6 +447,14 @@ public class DemTile : MonoBehaviour
 
     this.resident.transform.position = this.center;
 
+		//add statistic to tree place down, and prey place down
+		if (this.resident.GetComponent<BuildInfo> ().isPlant ()) {
+			buildMenu.statistic.setTreeDown (1);
+		} else if (this.resident.GetComponent<BuildInfo> ().isPrey ()) {
+			buildMenu.statistic.setPreyDown (1);
+		}
+
+
   }
 
 
@@ -466,6 +479,13 @@ public class DemTile : MonoBehaviour
   }
 
   public void RemoveAnimal(){
+
+		//add statistic to tree destroy, and prey eaten
+		if (this.resident.GetComponent<BuildInfo> ().isPlant ()) {
+			buildMenu.statistic.setTreeDestroy (1);
+		} else if (this.resident.GetComponent<BuildInfo> ().isPrey ()) {
+			buildMenu.statistic.setPreyEaten (1);
+		}
     
     Destroy (resident);
     this.resident = null;

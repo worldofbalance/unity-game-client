@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using System;
@@ -23,6 +24,7 @@ public class SpeciesConstants
         GrainsAndSeeds      = 1004,
         GrassAndHerbs       = 1005,
         TreesAndShrubs      = 1001,
+        FruitsAndNectar     = 1003,
         // Prey
         Buffalo             = 7,
         BushHyrax           = 48,
@@ -68,9 +70,10 @@ public class SpeciesConstants
 		public int speciesID;
 		public int health;
     public int biomass;
+    
 
         // public int[] preyIDLIst; // TODO: create prey list --> includes plants, but might include other prey (TBD)
-        public int[] predatorIDList;
+    public int[] predatorIDList;
 
         // Constructor
     public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList, string _lore, int _biomass)
@@ -81,6 +84,8 @@ public class SpeciesConstants
       predatorIDList = _predatorIDList;
       lore = _lore;
       biomass = _biomass;
+  
+
 		}
 	};
 
@@ -117,15 +122,14 @@ public class SpeciesConstants
         (
             "Acacia",                           // Name
             (int)SPECIES_ID.Acacia,             // Species ID
-            new int[4][]                        // Effect range
+            new int[1][]                        // Effect range
             {
                 // . * .
                 // * O *
                 // . * .
-                new int[2]{0, 1},
-                new int[2]{0, -1},
-                new int[2]{1, 0},
-                new int[2]{-1, 0}
+          
+                new int[2]{0, -1}
+
             },
             // Lore
             "Acacia is a genus of shrubs and trees belonging to the subfamily Mimosoideae of the family Fabaceae, " +
@@ -136,15 +140,13 @@ public class SpeciesConstants
         (
             "Big Tree",                         // Name
             (int)SPECIES_ID.BigTree,            // Species ID
-            new int[4][]                        // Effect range
+            new int[1][]                        // Effect range
             {
                 // * . *
                 // . O .
                 // * . *
-                new int[2]{1, 1},
-                new int[2]{-1, 1},
-                new int[2]{1, -1},
-                new int[2]{-1, -1}
+                new int[2]{0, 1},
+
             },
             // Lore
             "Trees are an important component of the natural landscape because of their prevention of erosion " +
@@ -157,19 +159,16 @@ public class SpeciesConstants
         (
             "Baobab",                           // Name
             (int)SPECIES_ID.Boabab,             // Species ID
-            new int[8][]                        // Effect range
+            new int[3][]                        // Effect range
             {
                 // * * *
                 // * O *
                 // * * *
                 new int[2]{1, 1},
-                new int[2]{0, 1},
                 new int[2]{-1, 1},
-                new int[2]{1, 0},
                 new int[2]{-1, 0},
-                new int[2]{1, -1},
-                new int[2]{0, -1},
-                new int[2]{-1, -1}
+    
+
             },
             // Lore
             "Baobab is a genus of eight species of tree, six native to Madagascar, one native to mainland Africa " +
@@ -181,12 +180,20 @@ public class SpeciesConstants
         (
             "Grains And Seeds",                 // Name
             (int)SPECIES_ID.GrainsAndSeeds,     // Species ID
-            new int[1][]                        // Effect range
+            new int[8][]                        // Effect range
             {
                 // . . .
                 // . O *
                 // . . .
-                new int[2]{-1, 0}
+                new int[2]{-1, 0},
+                new int[2]{-1, 1},
+                new int[2]{-1, 2},
+                new int[2]{-1, 3},
+                new int[2]{1, 0},
+                new int[2]{1, 1},
+                new int[2]{1, 2},
+                new int[2]{1, 3},
+
             },
             // Lore
             "Special",
@@ -196,13 +203,21 @@ public class SpeciesConstants
         (
             "Grass And Herbs",                  // Name
             (int)SPECIES_ID.GrassAndHerbs,      // Species ID
-            new int[2][]                        // Effect range
+            new int[10][]                        // Effect range
             {
                 // . * .
                 // . O .
                 // . * .
                 new int[2]{0, 1},
-                new int[2]{0, -1}
+                new int[2]{0, -1},
+                new int[2]{1, 1},
+                new int[2]{1, -1},
+                new int[2]{0, 2},
+                new int[2]{0, -2},
+                new int[2]{1, 2},
+                new int[2]{1, -2},
+                new int[2]{1, 3},
+                new int[2]{1, -3}
             },
             // Lore
             "Grasses are among the most versatile life forms. They became widespread toward the end of the " +
@@ -214,19 +229,44 @@ public class SpeciesConstants
         (
             "Trees And Shrubs",                 // Name
             (int)SPECIES_ID.TreesAndShrubs,     // Species ID
-            new int[3][]                        // Effect range
+            new int[6][]                        // Effect range
             {
                 // . . * 
                 // . O * 
                 // . . * 
                 new int[2]{-1, 1},
                 new int[2]{-1, 0},
-                new int[2]{-1, -1}
+                new int[2]{-1, -1},
+                new int[2]{-2, 1},
+                new int[2]{-2, 0},
+                new int[2]{-2, -1}
             },
             // Lore
             "Special",
             40
-        )
+        ),
+
+        new Plant
+        (
+          "Fruits And Nectar",                 // Name
+          (int)SPECIES_ID.FruitsAndNectar,     // Species ID
+          new int[6][]                        // Effect range
+          {
+          // . . * 
+          // . O * 
+          // . . * 
+          new int[2]{1, 1},
+          new int[2]{-1, 0},
+          new int[2]{1, -1},
+          new int[2]{1, 3},
+          new int[2]{-3, 0},
+          new int[2]{1, -3},
+          },
+          // Lore
+          "Special",
+          20
+          ),
+
     };
 
 	// All available prey
@@ -781,4 +821,47 @@ public class SpeciesConstants
     // Otherwise return default
     return 0;
   }
+
+  public bool EatenBy(string _prey, string _predator)
+  {
+    int predatorID = SpeciesID ( _predator);
+    foreach (Prey prey in PREY)
+    {
+      
+      if (prey.name == _prey) {
+
+        for(int i = 0; i< prey.predatorIDList.Count(); i++){
+          if (prey.predatorIDList [i] == predatorID)
+            return true;
+        }
+      
+      }
+        
+        
+    }
+
+    return false;
+  }
+
+  public bool Eats(string _predator, string _prey){
+    
+    int predatorID = SpeciesID ( _predator);
+    foreach (Prey prey in PREY)
+    {
+
+      if (prey.name == _prey) {
+
+        for(int i = 0; i< prey.predatorIDList.Count(); i++){
+          if (prey.predatorIDList [i] == predatorID)
+            return true;
+        }
+
+      }
+
+
+    }
+
+    return false;
+  }
+
 }

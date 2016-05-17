@@ -45,9 +45,13 @@ public class DemMain : MonoBehaviour
     
     	currentSelection = null;
 
-      predators = new DemAnimalFactory[2];
-      predators [0] = new DemAnimalFactory ("Aardvark"); 
-      predators [1] =  new DemAnimalFactory ("African Marsh Owl"); 
+      predators = new DemAnimalFactory[6];
+      predators [0] = new DemAnimalFactory ("Bat-Eared Fox"); 
+      predators [1] =  new DemAnimalFactory ("Black Mamba"); 
+      predators [2] =  new DemAnimalFactory ("Serval Cat"); 
+      predators [3] =  new DemAnimalFactory ("African Wild Dog"); 
+      predators [4] =  new DemAnimalFactory ("Leopard"); 
+      predators [5] =  new DemAnimalFactory ("Lion"); 
         
 
  
