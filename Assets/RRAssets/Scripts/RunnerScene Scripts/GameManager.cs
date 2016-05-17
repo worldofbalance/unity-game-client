@@ -132,17 +132,27 @@ namespace RR
                 DebugConsole.Log("Not receive map seed!! Will use random number!!");
             }
 
+			float myScale = .1f;
+			float myScale2 = .1f;
             for (int i = 0; i < mapLength; i++)
             {
                 // Instantiate(map, new Vector3((float)(20 + (i * 62.9)), 0.507454f, 0), Quaternion.identity);
                 //map = Instantiate(Resources.Load("Box")) as GameObject;
 
-                if (i == 0)
+                if (i == 0){
                     map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
-                else if (i == mapLength - 1)
+					// map.transform.localScale = new Vector3(myScale2, myScale, 0);
+				}
+                else if (i == mapLength - 1){
                     map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
-                else
+					
+					// map.transform.localScale = new Vector3(myScale2, myScale, 0);
+				}
+                else{
                     map = Instantiate(Resources.Load("Prefabs/Maps/MapVar_" + Random.Range(0, 6)), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
+					
+					// map.transform.localScale = new Vector3(myScale2, myScale, 0);
+				}
 
                 //map.name = map.name + " " + i;
                 map.name = "aMap" + i;
