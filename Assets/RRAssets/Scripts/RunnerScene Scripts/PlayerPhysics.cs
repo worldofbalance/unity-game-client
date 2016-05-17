@@ -72,10 +72,12 @@ namespace RR
 
             transform.Translate(finalTransform);
 
-            clouds.transform.Translate(new Vector3(deltaX * 9 * Time.deltaTime, 0, 0));
+            clouds.transform.Translate(new Vector3(deltaX * 11 * Time.deltaTime, 0, 0));
 
             if (camera.transform.position.x - 50 > clouds.transform.position.x) {
-                clouds.transform.Translate(new Vector3(65, -1 * Random.Range (0, 9) - clouds.transform.position.y, 0));
+                // The clouds may vary in their y position like this
+                // -1 * Random.Range (0, 9) - clouds.transform.position.y
+                clouds.transform.Translate(new Vector3(65, 0, 0));
             }
 
             bushes.transform.Translate(new Vector3(deltaX * 20 * Time.deltaTime, 0, 0));
