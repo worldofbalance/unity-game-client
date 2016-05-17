@@ -37,12 +37,14 @@ namespace SD
                     NPCFish npcFish = GameController.getInstance ().getNpcFishes ()[response.preyId];
                     npcFish.xPosition = response.xPosition;
                     npcFish.yPosition = response.yPosition;
+                    npcFish.target = new Vector2 (npcFish.xPosition, npcFish.yPosition);
                     npcFish.xRotationAngle = response.rotation;
                 } else {
                     // This object needs to be created.
                     NPCFish npcFish = new NPCFish(response.preyId);
                     npcFish.xPosition = response.xPosition;
                     npcFish.yPosition = response.yPosition;
+                    npcFish.target = new Vector2 (npcFish.xPosition, npcFish.yPosition);
                     npcFish.xRotationAngle = response.rotation;
                     npcFish.speciesId = response.speciesId;
                     GameController.getInstance().setNpcFish(response.preyId, npcFish);
