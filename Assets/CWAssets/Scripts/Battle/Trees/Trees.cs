@@ -22,6 +22,7 @@ public class Trees : MonoBehaviour {
     GameObject noButton;
     GameObject optionCanvas;
     GameObject confirmCanvas;
+    GameObject closeButton;
     // Use this for initialization
     void Start () {
         
@@ -34,10 +35,10 @@ public class Trees : MonoBehaviour {
 
         if (player.player1) { //Your name is pink
             //transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
-                transform.Find ("NameText").GetComponent<Renderer> ().material.SetColor("_Color", Color.cyan);
+                transform.Find ("NameText").GetComponent<Renderer> ().material.SetColor("_Color", Color.red);
         } else { //Enemy name is redateria
             //transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
-            transform.Find("NameText").GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+            transform.Find("NameText").GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
         }
         //Set dmg text
         transform.Find("DamageText").GetComponent<TextMesh>().text = "";
@@ -57,9 +58,11 @@ public class Trees : MonoBehaviour {
         noButton = GameObject.Find("/ConfirmCanvas/ConfirmPanel/NoButton");
         optionCanvas = GameObject.Find ("OptionsCanvas");
         confirmCanvas = GameObject.Find ("ConfirmCanvas");
+        closeButton = GameObject.Find("OptionsCanvas/OptionsPanel/CloseOptions");
 
         //adding listeners for buttons
         optionsButton.GetComponent<Button> ().onClick.AddListener (() => {toggleSurrender();});
+        closeButton.GetComponent<Button> ().onClick.AddListener (() => {toggleSurrender();});
         surrenderButton.GetComponent<Button>().onClick.AddListener (() => {surrenderConfirm();});
         yesButton.GetComponent<Button>().onClick.AddListener(() => {surrenderOn();});
         noButton.GetComponent<Button>().onClick.AddListener(() => {surrenderConfirm();});
