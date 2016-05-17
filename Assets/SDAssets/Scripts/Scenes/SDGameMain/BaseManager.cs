@@ -19,10 +19,17 @@ namespace SD {
         private float time;
         private float secondsToScore = 3f;
         private float staminaRevoverRate = 0.1f;
+        public GameObject countdownPanel;
+        public bool inBase = false;
+        private AudioSource audioSource;
+        public AudioClip scoringClip;
 
         // Use this for initialization
         void Start () {
             gameController = GameController.getInstance ();
+            audioSource = GetComponent<AudioSource> ();
+            audioSource.clip = scoringClip;
+            audioSource.volume = 0.2f;
         }
 
         // Update is called once per frame
@@ -34,15 +41,20 @@ namespace SD {
         void OnTriggerEnter(Collider other) {
             if (other.tag == "Player") {
                 time = secondsToScore;
-               
+                if (gameController.GetUnscored() > 0) {
+                    audioSource.Play ();
+                    gameController.showCountdownPanel ();
+                }
             }
         }
 
         // Runs while the player is staying in the base
         void OnTriggerStay(Collider other) {
             if (other.tag == "Player") {
+                
                 if (gameController)
                     gameController.stamina += staminaRevoverRate;
+
 
                 // After couplse seconds that is defined by timeToScore, 
                 // add unscored points to the actual score
@@ -51,6 +63,7 @@ namespace SD {
                     gameController.Score ();
                     gameController.ResetUnscored ();
                     gameController.stamina = 100;
+                    gameController.hideCountdownPanel ();
                 }
             }
         }

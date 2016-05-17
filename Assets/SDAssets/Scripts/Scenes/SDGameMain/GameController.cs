@@ -61,6 +61,7 @@ namespace SD {
         public GameObject surrenderPanelCanvas;
         public GameObject countdownPanelCanvas;
         public GameObject foodChainPanelCanvas;
+        private int foodChainPanelVisibleSeconds = 7;
         public GameObject deathPanelCanvas;
 
         Rigidbody playerClone;
@@ -71,7 +72,6 @@ namespace SD {
         // Initializes the player's score, and UI texts.
         // Also spawns numbers of prey at random positions.
         void Start () {
-
             if (Constants.PLAYER_NUMBER == 2) {  // The player who joins the host will have a different position to start from.
                 swapPositions();
             }
@@ -109,14 +109,14 @@ namespace SD {
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
                 opponentPlayer.yRotation = opponentInitialRotation.eulerAngles.y;
                 isGameTimeTicking = false; // Wait for time sync if in multiplayer mode
-                gameController.countdownPanelCanvas.SetActive (true);
+                //gameController.countdownPanelCanvas.SetActive (true);
             } else {
                 isGameTimeTicking = true; // Start the timer immediately if in offline mode
-                gameController.countdownPanelCanvas.SetActive (false);
+                //gameController.countdownPanelCanvas.SetActive (false);
             }
 
-            //Display the food chain panel for 5 seconds upon game start
-            StartCoroutine(showFoodChainUponStart(10));
+            //Display the food chain panel for n seconds upon game start
+            StartCoroutine(showFoodChainUponStart(foodChainPanelVisibleSeconds));
         }
 
       
@@ -365,6 +365,14 @@ namespace SD {
 
         public Dictionary<int, GameObject> getNpcFishObjects() {
             return npcFishObjects;
+        }
+
+        public void showCountdownPanel(){
+            countdownPanelCanvas.SetActive (true);
+        }
+
+        public void hideCountdownPanel(){
+            countdownPanelCanvas.SetActive (false);
         }
 
         public void hideSurrenderPanel(){
