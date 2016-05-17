@@ -39,10 +39,12 @@ namespace SD
 
         public void MoveToTarget()
         {
-            // Move to wherever it is told to. //UnityEngine.Random.Range(10f, 100f) 
+            // Move to wherever it is told to.
             transform.position = Vector2.MoveTowards(transform.position, npcFish.target, 20 * Time.deltaTime);
-            npcFish.xPosition = transform.position.x;
-            npcFish.yPosition = transform.position.y;
+            if (Constants.PLAYER_NUMBER != 2) {
+                npcFish.xPosition = transform.position.x;
+                npcFish.yPosition = transform.position.y;
+            }
 
             //npcFish.current = Vector2.MoveTowards(npcFish.current, npcFish.target, 35 * Time.deltaTime);
             //  npcFish.xPosition = npcFish.current.x;
@@ -62,15 +64,17 @@ namespace SD
         }
 
         void OnTriggerEnter(Collider other) {
-            if (other.CompareTag ("Player") || other.CompareTag ("Opponent"))
-                return;
-            npcFish.targetOffset = -npcFish.targetOffset;  // begin to move in the opposite direction.
-            if (npcFish.targetOffset < 0) {
-                // moving towards the left.
-                transform.rotation = Quaternion.Euler(0, 270, 0);
-            } else {
-                // moving towards the right.
-                transform.rotation = Quaternion.Euler(0, 90, 0);
+            if (Constants.PLAYER_NUMBER != 2) {
+                if (other.CompareTag ("Player") || other.CompareTag ("Opponent"))
+                    return;
+                npcFish.targetOffset = -npcFish.targetOffset;  // begin to move in the opposite direction.
+                if (npcFish.targetOffset < 0) {
+                    // moving towards the left.
+                    transform.rotation = Quaternion.Euler (0, 270, 0);
+                } else {
+                    // moving towards the right.
+                    transform.rotation = Quaternion.Euler (0, 90, 0);
+                }
             }
         }
     }

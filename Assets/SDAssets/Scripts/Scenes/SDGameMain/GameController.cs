@@ -132,7 +132,7 @@ namespace SD {
             if (getIsGameTimeTicking ()) {
                 if (Constants.PLAYER_NUMBER != 2)
                 {  // The player who joins the host will have a different position to start from.
-                    StartCoroutine(RetargetFish());
+                    StartCoroutine(RetargetFish()); // TODO: Move coroutine out of Update() into a while loop
                 }
                 RecoverStamina ();
                 UpdateStaminaText ();
@@ -228,6 +228,7 @@ namespace SD {
         IEnumerator RetargetFish()
         {
             targetFish();
+            sdGameManager.SendNpcFishPositions (5);
             yield return new WaitForSeconds(2);
         }
 
