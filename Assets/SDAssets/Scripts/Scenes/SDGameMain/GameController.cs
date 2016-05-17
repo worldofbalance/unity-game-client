@@ -127,13 +127,12 @@ namespace SD {
             yield return new WaitForSeconds (seconds);
             hideFoodChainPanel ();
         }
-
         // Automatically revovers stamina, and refreshs staminaText UI every frame.
         void Update() {
             if (getIsGameTimeTicking ()) {
-                if (Constants.PLAYER_NUMBER == 1)
+                if (Constants.PLAYER_NUMBER != 2)
                 {  // The player who joins the host will have a different position to start from.
-                    RetargetFish();
+                    StartCoroutine(RetargetFish());
                 }
                 RecoverStamina ();
                 UpdateStaminaText ();
@@ -219,6 +218,7 @@ namespace SD {
                 // set the attributes of the npc fish to spawn.
                 npcFish.xPosition = spawnPosition.x;
                 npcFish.yPosition = spawnPosition.y;
+                npcFish.target = new Vector2 (npcFish.xPosition, npcFish.yPosition);
                 npcFish.speciesId = speciesId;
                 spawnPrey (i, speciesId);
             }
@@ -227,12 +227,18 @@ namespace SD {
 
         IEnumerator RetargetFish()
         {
-            yield return new WaitForSeconds(3);
             targetFish();
+            yield return new WaitForSeconds(2);
         }
 
         public void targetFish()
         {
+            Dictionary <int, NPCFish> npcs = getNpcFishes();
+            foreach (KeyValuePair<int, NPCFish> entry in npcs) {
+                getNpcFishes()[entry.Key].target = new Vector2(entry.Value.xPosition + entry.Value.targetOffset, entry.Value.yPosition);
+            }
+
+            // set the next fish position 
             List<GameObject> fish = new List<GameObject>(getNpcFishObjects().Values);
             foreach (GameObject cur in fish)
             {

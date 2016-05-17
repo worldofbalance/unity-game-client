@@ -220,7 +220,6 @@ namespace SD {
         }
 
         public void ResponseNpcFishPositions(NetworkResponse r) {
-            Debug.Log ("Coming here");
             ResponseSDNpcPosition response = r as ResponseSDNpcPosition;
         }
     }
