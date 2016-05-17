@@ -167,7 +167,7 @@ namespace RR
         private void PlaceItem(int speciesId, float x) 
         {
             //DebugConsole.Log("Prefabs/Items/item" + speciesId.ToString());
-            GameObject aItem = Instantiate (Resources.Load("Prefabs/Items/item" + speciesId.ToString()), new Vector3(x, 10f, 0f), Quaternion.identity) as GameObject;
+            GameObject aItem = Instantiate (Resources.Load("Prefabs/Items/item" + speciesId.ToString()), new Vector3(x, 100f, 0f), Quaternion.identity) as GameObject;
             aItem.name = "animal" + speciesId + "id" + itemCounter;
             itemCounter++;
         }
