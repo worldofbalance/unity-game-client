@@ -14,6 +14,7 @@ namespace SD {
 
         public GameObject Prey;
         public Vector3 spawnValue;
+        public GameObject[] preyArray;
 
         // Number of prey spawn at a game start
         public int numPrey;
@@ -30,31 +31,38 @@ namespace SD {
         public float stamina;       // Player's stamina
         public int health;
         private const float MaxStamina = 100;
-        private float staminaRecoveryRate = 0.02f;
+        private float staminaRecoveryRate = 0.08f;
 
         public Boundary boundary;
         public Rigidbody player;
         public Rigidbody opponent;
         public Rigidbody playerBase;
         public Rigidbody opponentBase;
-        private Vector3 playerInitialPosition = new Vector3(0,0,0);
+        private Vector3 playerInitialPosition = new Vector3(-100,0,0);
         private Quaternion playerInitialRotation = Quaternion.Euler(0,90,0);
-        private Vector3 playerBaseInitialPosition = new Vector3(-125,0,0);
+        private Vector3 opponentInitialPosition = new Vector3 (100, 0, 0);
+        private Quaternion opponentInitialRotation = Quaternion.Euler (0, -90, 0);
+        private Vector3 playerBaseInitialPosition = new Vector3(-260,0,0);
         private Quaternion playerBaseInitialRotation = Quaternion.Euler(0,0,0);
-        private Vector3 opponentBaseInitialPosition = new Vector3(125,0,0);
+        private Vector3 opponentBaseInitialPosition = new Vector3(260,0,0);
         private Quaternion opponentBaseInitialRotation = Quaternion.Euler(0,0,0);
 
         private static GameController gameController;
         private static GameManager sdGameManager;
+        private PlayTimePlayer currentPlayer;
         private PlayTimePlayer opponentPlayer;
         private Rigidbody rbOpponent;
         private Dictionary <int, NPCFish> npcFishes = new Dictionary<int, NPCFish>();
         private Dictionary <int, GameObject> npcFishObjects = new Dictionary<int, GameObject>();
+        private int maxPreyId;
         private bool hasSurrendered;
+        private bool isGameTimeTicking = false;
 
         public GameObject surrenderPanelCanvas;
-
-
+        public GameObject countdownPanelCanvas;
+        public GameObject foodChainPanelCanvas;
+        public GameObject deathPanelCanvas;
+        Rigidbody playerClone;
 
         void Awake () {
             gameController = this;
@@ -62,69 +70,130 @@ namespace SD {
         // Initializes the player's score, and UI texts.
         // Also spawns numbers of prey at random positions.
         void Start () {
-            Rigidbody playerClone = (Rigidbody)Instantiate (player, playerInitialPosition, playerInitialRotation);
+
+            if (Constants.PLAYER_NUMBER == 2) {  // The player who joins the host will have a different position to start from.
+                swapPositions();
+            }
+            playerClone = (Rigidbody)Instantiate (player, playerInitialPosition, playerInitialRotation);
             Rigidbody playerBaseClone = (Rigidbody)Instantiate (playerBase, playerBaseInitialPosition, playerBaseInitialRotation);
             Rigidbody opponentBaseClone = (Rigidbody)Instantiate (opponentBase, opponentBaseInitialPosition, opponentBaseInitialRotation);
             score = 0;
             hasSurrendered = false;
             opponentScore = 0;
             unscoredPoint = 0; 
-            UpdateScore ();
-            UpdateOpponentScore ();
-            UpdateStamina ();
-            UpdateUnscoredPoint ();
-            UpdateHealth ();
+            UpdateScoreText ();
+            UpdateOpponentScoreText ();
+            UpdateStaminaText ();
+            UpdateUnscoredPointText ();
+            UpdateHealthText ();
 
             sdGameManager = SD.GameManager.getInstance ();
+            currentPlayer = new PlayTimePlayer ();
 
             for (int i = 1; i <= numPrey; i++) {
                 NPCFish npcFish = new NPCFish (i);
                 npcFishes [i] = npcFish;
-                if (sdGameManager.getConnectionManager ()) {
+                maxPreyId = i;
+                if (SDMain.networkManager != null) {
                     sdGameManager.FindNPCFishPosition (i); // Finds and spawns prey at the returned location.
                 } else {
-                    spawnPrey (i);
+                    spawnPrey (i, Random.Range(0, preyArray.Length-1));
                 }
             }
 
-            if (sdGameManager.getConnectionManager ()) {  // We are playing multiplayer
-                rbOpponent = (Rigidbody)Instantiate (opponent, playerInitialPosition, playerInitialRotation);
+            if (SDMain.networkManager != null) {  // We are playing multiplayer
+                rbOpponent = (Rigidbody)Instantiate (opponent, opponentInitialPosition, opponentInitialRotation);
                 rbOpponent.gameObject.SetActive (true);
                 opponentPlayer = new PlayTimePlayer ();
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
+                opponentPlayer.yRotation = opponentInitialRotation.eulerAngles.y;
+                isGameTimeTicking = false; // Wait for time sync if in multiplayer mode
+                gameController.countdownPanelCanvas.SetActive (false); // We do not need the countdownpanel anymore.
+            } else {
+                isGameTimeTicking = true; // Start the timer immediately if in offline mode
+                gameController.countdownPanelCanvas.SetActive (false);
             }
 
+            //Display the food chain panel for 5 seconds upon game start
+            StartCoroutine(showFoodChainUponStart(10));
+        }
+
+      
+        /// <summary>
+        /// Shows the food chain upon start.
+        /// </summary>
+        /// <param name="seconds">Duration to show the food chain panel</param>
+        IEnumerator showFoodChainUponStart(int seconds) {
+            yield return new WaitForSeconds (seconds);
+            hideFoodChainPanel ();
         }
 
         // Automatically revovers stamina, and refreshs staminaText UI every frame.
         void Update() {
-            RecoverStamina ();
-            UpdateStamina ();
-            UpdateUnscoredPoint ();
-            UpdateOpponentScore ();
-            UpdateHealth ();
+            if (getIsGameTimeTicking ()) {
+                RecoverStamina ();
+                UpdateStaminaText ();
+                UpdateUnscoredPointText ();
+                UpdateOpponentScoreText ();
+                UpdateHealthText ();
+                if (health <= 0) {
+                    deathPanelCanvas.SetActive (true);
+                    this.health = 0;
+                    StartCoroutine (goToResultScene ());
+                    playerClone.transform.localScale = new Vector3 (0, 0, 0);
+                }
+            }
         }
+
+        /// <summary>
+        /// This is invoked by Update() when the player's health gets 0
+        /// and automaticaly ends the game
+        /// </summary>
+        IEnumerator goToResultScene(){
+            yield return new WaitForSeconds (3);
+            BtnSurrenderClick ();
+        }
+
 
         public static GameController getInstance() {
             return gameController;
         }
 
+        // Swaps the positions and rotations of the players and bases for the opponent's view.
+        private void swapPositions() {
+            Vector3 tempV = playerInitialPosition;
+            playerInitialPosition = opponentInitialPosition;
+            opponentInitialPosition = tempV;
+
+            tempV = playerBaseInitialPosition;
+            playerBaseInitialPosition = opponentBaseInitialPosition;
+            opponentBaseInitialPosition = tempV;
+
+            Quaternion tempQ = playerInitialRotation;
+            playerInitialRotation = opponentInitialRotation;
+            opponentInitialRotation = tempQ;
+
+            tempQ = playerBaseInitialRotation;
+            playerBaseInitialRotation = opponentBaseInitialRotation;
+            opponentBaseInitialRotation = playerBaseInitialRotation;
+        }
+
         // Spawns prey at a random position within the boundary
-        public void spawnPrey(int i){
+        public void spawnPrey(int i, int preyIndex){
             Vector3 spawnPosition;
             if (npcFishes [i].xPosition != 0 && npcFishes [i].yPosition != 0) {
-                spawnPosition = new Vector3 (npcFishes [i].xPosition, npcFishes [i].yPosition, 0);
-                Debug.Log ("Spawning Prey " + i + " from request result");
+                spawnPosition = new Vector3 (npcFishes [i].xPosition, npcFishes [i].yPosition, npcFishes[i].xRotationAngle);
+                Debug.Log ("Spawning NPCFish " + i + " from request result");
             } else {
                 spawnPosition = new Vector3 (Random.Range(boundary.xMin, boundary.xMax), Random.Range(boundary.yMin, boundary.yMax), 0);
-                Debug.Log ("Spawning Prey " + i + " from local random numbers");
+                Debug.Log ("Spawning NPCFish " + i + " from local random numbers");
             }
-            Quaternion spawnRotation = Quaternion.identity;
-            npcFishObjects [i] = Instantiate (Prey, spawnPosition, spawnRotation) as GameObject;
-            npcFishObjects [i].name = "Prey" + i;
+            Quaternion spawnRotation = Quaternion.Euler(0, 90,0);
+            npcFishObjects [i] = Instantiate (preyArray[preyIndex], spawnPosition, spawnRotation) as GameObject;
+            npcFishObjects [i].name = "NPCFish_" + preyIndex + "_" + i;
             npcFishObjects [i].SetActive (true);
             // Associate the metadata of the prey with the gameobject.
-            npcFishObjects[i].GetComponent<NPCFishData>().setNPCFishData(npcFishes[i]);
+            npcFishObjects[i].GetComponent<NPCFishController>().setNPCFishData(npcFishes[i]);
         }
 
         public void destroyPrey(int i) {
@@ -132,29 +201,50 @@ namespace SD {
                 Destroy (npcFishObjects [i]);
             }
         }
+
+        // Spawns 'num' Npc fish of type 'speciesId'
+        public void spawnNpcSet(int speciesId, int num) {
+            int startId = maxPreyId + 1;
+            for (int i = startId; i < (startId + num); i++) {
+                Vector3 spawnPosition;
+                NPCFish npcFish = new NPCFish (i);
+                npcFishes [i] = npcFish;
+                maxPreyId = i;
+                // TODO: Change random position to out-of-screen position once the movement is added.
+                spawnPosition = new Vector3 (Random.Range(boundary.xMin, boundary.xMax), Random.Range(boundary.yMin, boundary.yMax), 0);
+                // set the attributes of the npc fish to spawn.
+                npcFish.xPosition = spawnPosition.x;
+                npcFish.yPosition = spawnPosition.y;
+                npcFish.speciesId = speciesId;
+                spawnPrey (i, speciesId);
+            }
+            sdGameManager.SendNpcFishPositions (5);  // Player 1 will send its positions to Player 2
+        }
         // Increases the current score value, and pass the info to scoreText
         // by calling UpdateScore().
         public void AddScore(int newScoreValue) {
             score += newScoreValue;
-            UpdateScore ();
+            UpdateScoreText ();
+            // Send the score to the opponent.
+            sdGameManager.SendScoreToOpponent(score);
         }
 
         // Updates scoreText UI.
-        void UpdateScore () {
+        void UpdateScoreText () {
             scoreText.text = "Score: " + score;
         }
 
         public void AddUnscoredPoint(int newScoreValue) {
             unscoredPoint += newScoreValue;
-            UpdateUnscoredPoint ();
+            UpdateUnscoredPointText ();
         }
 
-        // Updates scoreText UI.
-        void UpdateUnscoredPoint() {
+        // Updates UnsscoreText UI.
+        void UpdateUnscoredPointText() {
             UnscoredPointText.text = "Unscored Point: " + unscoredPoint;
         }
 
-        void UpdateOpponentScore() {
+        void UpdateOpponentScoreText() {
             opponentScoreText.text = "Opponent: " + opponentScore;
         }
 
@@ -167,7 +257,7 @@ namespace SD {
         }
 
         // Updates staminaText UI with no decimal place.
-        void UpdateStamina() {
+        void UpdateStaminaText() {
             staminaText.text = "Stamina: " + stamina.ToString("F0");
         }
 
@@ -196,7 +286,10 @@ namespace SD {
         // Adds unscored points to player's actual score
         public void Score(){
             this.score += this.unscoredPoint;
-            UpdateScore ();
+            UpdateScoreText ();
+            // Send the score to the opponent.
+            if (this.unscoredPoint != 0)  // to send the request only once.
+                sdGameManager.SendScoreToOpponent(score);
         }
 
         public int GetHealth(){
@@ -207,21 +300,32 @@ namespace SD {
             this.health = newHealth;
         }
 
-        void UpdateHealth(){
+        public void UpdateHealth(int value){
+            this.health = health + value;
+        }
+
+        public void UpdateHealthText(){
             healthText.text = "Health: " + health;
         }
 
         public void BtnSurrenderClick() {
             hasSurrendered = true;
-            sdGameManager.EndGame (hasSurrendered, score);
+            sdGameManager.EndGame (false, score);
         }
 
         public Rigidbody getOpponent() {
                 return rbOpponent;
         }
-        
+
+        public PlayTimePlayer getCurrentPlayer() {
+            return currentPlayer;
+        }
         public PlayTimePlayer getOpponentPlayer() {
             return opponentPlayer;
+        }
+
+        public void setNpcFish(int i, NPCFish fish) {
+            npcFishes [i] = fish;
         }
 
         public Dictionary<int, NPCFish> getNpcFishes() {
@@ -236,12 +340,36 @@ namespace SD {
             surrenderPanelCanvas.SetActive(false);
         }
 
+        public void hideFoodChainPanel(){
+            foodChainPanelCanvas.SetActive(false);
+        }
+
         public int getPlayerScore() {
             return score;
         }
 
         public bool getHasSurrendered() {
             return hasSurrendered;
+        }
+
+        public void setOpponentScore(int opScore) {
+            opponentScore = opScore;
+        }
+
+        public int getOpponentScore() {
+            return opponentScore;
+        }
+
+        public bool getIsGameTimeTicking() {
+            return isGameTimeTicking;
+        }
+
+        public void setIsGameTimeTicking(bool isTicking) {
+            isGameTimeTicking = isTicking;
+        }
+
+        public int getMaxPreyId() {
+            return maxPreyId;
         }
     } 
 

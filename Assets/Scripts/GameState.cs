@@ -70,7 +70,6 @@ public class GameState : MonoBehaviour
 	public void ProcessEcosystem (NetworkResponse response)
 	{
 		ResponseEcosystem args = response as ResponseEcosystem;
-		
 		if (args.status == 0) {
 			GameState.ecosystem = args.ecosystem;
 		}
