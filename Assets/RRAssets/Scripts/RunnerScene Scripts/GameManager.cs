@@ -161,7 +161,7 @@ namespace RR
                 endPoint = tempEnd - 240;
             }
 
-            Instantiate(endFlag, new Vector3(endPoint, 12f, 0), Quaternion.identity);
+            Instantiate(endFlag, new Vector3(endPoint, -120f, 0), Quaternion.identity);
         }
 
         private void PlaceItem(int speciesId, float x) 
