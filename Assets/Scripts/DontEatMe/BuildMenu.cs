@@ -487,13 +487,18 @@ public class BuildMenu : MonoBehaviour
             demRectUI.setUIText(instructionUI, "These are the instructions");
 
             // OK button on Instruction UI
-            GameObject okButton = demButton.CreateButton(0, 0, "Continue");
+            GameObject okButton = demButton.CreateButton(0, 0, "Next");
             okButton.transform.SetParent(instructionUI.transform);
             okButton.GetComponent<RectTransform>().anchoredPosition =
                 new Vector2(instructionUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f * 3.4f,
-                    -instructionUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.3f);
-            demButton.SetButtonText(okButton, "Got it!");
-            okButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); instructionUI.SetActive(false); mainUIObject.SetActive(true); });
+                    - instructionUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.3f);
+            demButton.SetButtonText(okButton, "Next");
+            okButton.GetComponent<Button>().onClick.AddListener(() => { CloseInstructionWindow(); });
+
+
+            GameObject closeButton = demButton.CreateButton(0, 0, "Close");
+            closeButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/closeButton");
+            closeButton.transform.SetParent(instructionUI.transform);
 
             mainUIObject.SetActive(false);
 
@@ -506,6 +511,15 @@ public class BuildMenu : MonoBehaviour
             mainUIObject.SetActive(false);
         }
 
+    }
+
+    public void CloseInstructionWindow(){
+      DemAudioManager.audioClick.Play(); 
+      instructionUI.SetActive(false); 
+      mainUIObject.SetActive(true);
+    }
+
+    public void SetNextInstructionSlide(){
     }
 
 
