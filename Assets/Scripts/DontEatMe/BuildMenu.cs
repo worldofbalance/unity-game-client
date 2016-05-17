@@ -17,8 +17,16 @@ public class BuildMenu : MonoBehaviour
     private GameObject quitUI;	//instance of UI for after pressed quit button
     private GameObject instructionUI; //instance of UI for after pressed how to play button
     private GameObject gameOverUI;  //instance of UI for after pressed quit button
-    private float qBX; //quit button width
-    private float qBY; //quit button height
+
+	//statiUI
+	private GameObject statUI;
+	public Statistic statistic;
+	private GameObject t1;	//static text 1 to 6
+	private GameObject t2;
+	private GameObject t3;
+	private GameObject t4;
+	private GameObject t5;
+	private GameObject t6;
 
     // Toggle counter
     int toggleCount;
@@ -152,6 +160,8 @@ public class BuildMenu : MonoBehaviour
             turnSystemText.GetComponent<Text> ().text = "Your Turn!";
     */
         quitUI = null;
+		statUI = null;
+		statistic = new Statistic ();
     }
 
 
@@ -270,7 +280,27 @@ public class BuildMenu : MonoBehaviour
         quitButton.GetComponent<RectTransform>().offsetMax = new Vector2(-70, -22);
         quitButton.GetComponent<RectTransform>().offsetMin = new Vector2(-70, -22);
 
-        quitButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 30);
+		quitButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 30);
+
+
+		//statistic button 
+		float sBX = Screen.width / 10.0f;
+		float sBY = Screen.height / 10.0f;
+		demButton.setSize(sBX, sBY);
+		GameObject statButton = demButton.CreateButton(Screen.width - qBX*2, 0, "statistic");
+		demButton.SetButtonText(statButton, "Statistic");
+		statButton.GetComponent<Button>().onClick.AddListener(() => { selectStatistic(); });
+		// quitButton.transform.SetParent(menuPanel.transform); 
+
+		statButton.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
+		statButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
+		statButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+
+		statButton.GetComponent<RectTransform>().offsetMax = new Vector2(-70, -22*3);
+		statButton.GetComponent<RectTransform>().offsetMin = new Vector2(-70, -22*3);
+
+		statButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 30);
+
 
         // Instructions button
         float iBX = Screen.width / 5.0f;
@@ -508,7 +538,54 @@ public class BuildMenu : MonoBehaviour
 
     }
 
+	//click on statistic button
+	public void selectStatistic(){
+		DemAudioManager.audioClick.Play();
 
+		if (main.currentSelection) {
+			Destroy(main.currentSelection);
+			main.boardController.ClearAvailableTiles();
+		}
+
+		if (statUI == null) {
+			statUI = demRectUI.createRectUI ("statUI", 0, 0, Screen.width / 1.2f, Screen.height / 1.2f);
+			statUI.GetComponent<Image> ().sprite = popupBackground;
+			t1 = demRectUI.setUIText (statUI, "plant used: "+statistic.getTreeDown(),0,0);
+			t2 = demRectUI.setUIText (statUI, "prey used: "+statistic.getPreyDown(),0,1);
+			t3 = demRectUI.setUIText (statUI, "plant destroyed: "+ statistic.getTreeDestroy(),1,0);
+			t4 = demRectUI.setUIText (statUI, "prey eaten: "+ statistic.getPreyEaten(),1,1);
+			t5 = demRectUI.setUIText (statUI, "turns: "+ statistic.getTurnCount (),2,0);
+			t6 = demRectUI.setUIText (statUI, "",2,1);
+
+			GameObject backButton = demButton.CreateButton (0, 0, "back");
+			backButton.transform.SetParent (statUI.transform);
+			backButton.GetComponent<RectTransform> ().anchoredPosition = 
+				new Vector2 (statUI.GetComponent<RectTransform> ().sizeDelta.x/2.0f- backButton.GetComponent<RectTransform>().sizeDelta.x/2.0f,
+					-statUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f - backButton.GetComponent<RectTransform>().sizeDelta.y);
+			demButton.SetButtonText (backButton, "Back");
+			backButton.GetComponent<Button> ().onClick.AddListener (()=>{
+				DemAudioManager.audioClick.Play(); 
+				statUI.SetActive(false); 
+				mainUIObject.SetActive(true);
+			});
+
+			mainUIObject.SetActive (false);
+
+			return;
+		}
+
+		t1.GetComponent<Text> ().text = "plant used: " + statistic.getTreeDown ();
+		t2.GetComponent<Text> ().text = "prey used: " + statistic.getPreyDown ();
+		t3.GetComponent<Text> ().text = "plant destroyed: " + statistic.getTreeDestroy();
+		t4.GetComponent<Text> ().text = "prey eaten: " + statistic.getPreyEaten ();
+		t5.GetComponent<Text> ().text = "turns: " + statistic.getTurnCount ();
+
+		if (!statUI.activeInHierarchy) {
+			statUI.SetActive (true);
+			mainUIObject.SetActive (false);
+		}
+
+	}
 
 
     public void EndGame()
