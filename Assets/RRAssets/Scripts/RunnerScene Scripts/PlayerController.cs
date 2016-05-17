@@ -11,7 +11,7 @@ namespace RR
         public float gravity;
         // Cannot assign speed with other value here. Don't know why.
         public float speed;//Running.BASE_SPEED; // <- Doesn't work.
-        public float acceleration = 32;
+        public float acceleration;
         public float jumpHeight = 120;
 
         private Animator anim;
@@ -27,8 +27,10 @@ namespace RR
         {
             speed = Running.BASE_SPEED;
             // speed = 150;
-			gravity = 200;
+			gravity = 175;
+            acceleration = 64;
             DebugConsole.Log("!!!!!!!!!"+speed.ToString());
+            DebugConsole.Log("!!!!!!!!!"+acceleration.ToString());
 			DebugConsole.Log(gravity.ToString());
             playerPhysics = GetComponent<PlayerPhysics>();
             anim = GetComponent<Animator>();

@@ -26,7 +26,7 @@ namespace RR
 	
 		private const float SPEED_INCREASE = 50f;
 		private const float SPEED_DECREASE = -100f;
-		public const float BASE_SPEED = 150f;
+		public const float BASE_SPEED = 100f;
 		public const float HIGH_SPEED = 250f;
 		public const float MAX_SPEED = 300f;
 		public const float MIN_SPEED = 50f;
