@@ -537,7 +537,9 @@ public class BuildMenu : MonoBehaviour
                 new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f,
                             -quitUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
             demButton.SetButtonText(yesButton, "Quit");
-            yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("World"); });
+            yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play();
+                    Game.networkManager.Send(PlayGameProtocol.Prepare(1), ProcessEndGame);
+                    Game.SwitchScene("World"); });
 
             //back button on Quit UI
             GameObject noButton = demButton.CreateButton(0, 0, "No");
@@ -786,10 +788,12 @@ public class BuildMenu : MonoBehaviour
         if (args.status == 1)
         {
 
-            GameState.player.credits = args.creditDiff;
-            Debug.Log(args.creditDiff);
-
+            //GameState.player.credits = args.creditDiff;
+            //Debug.Log(args.creditDiff);
+            GameState.player.credits += 100;
+            Debug.Log("Credits: 100");
         }
+
     }
 
 

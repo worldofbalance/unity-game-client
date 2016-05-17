@@ -181,8 +181,8 @@ public class DemTurnSystem : MonoBehaviour {
 
     //activePredators.Add (newPredator.GetInstanceID() , newPredator);
 
-    board.AddNewPredator(0, random, newPredator );
-    //board.AddNewPredator(8, random, newPredator );
+    //board.AddNewPredator(0, random, newPredator );
+    board.AddNewPredator(8, random, newPredator );
 
     tweenList.Enqueue(new DemPredatorEnterTween (newPredator, 700));
     buildMenu.AddTier3Biomass (SpeciesConstants.Biomass (newPredator.GetComponent<BuildInfo> ().name));
