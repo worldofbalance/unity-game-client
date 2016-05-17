@@ -10,6 +10,7 @@
 
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 namespace SD {
     public class BaseManager : MonoBehaviour {
