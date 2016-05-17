@@ -160,7 +160,7 @@ public class Trees : MonoBehaviour {
         }
         if (this.player.isActive) {
             transform.Find ("NameText").GetComponent<TextMesh> ().text = ">>"+this.player.playerName+"<<";
-            transform.Find ("ActionText").GetComponent<TextMesh>().text = "Your Turn!";
+            transform.Find ("ActionText").GetComponent<TextMesh>().text = "Playing...";
             transform.Find ("ActionText").GetComponent<Renderer> ().material.SetColor("_Color", Color.yellow);
         } else { //Enemy name is red
             transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
