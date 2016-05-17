@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using System;
@@ -69,9 +70,10 @@ public class SpeciesConstants
 		public int speciesID;
 		public int health;
     public int biomass;
+    
 
         // public int[] preyIDLIst; // TODO: create prey list --> includes plants, but might include other prey (TBD)
-        public int[] predatorIDList;
+    public int[] predatorIDList;
 
         // Constructor
     public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList, string _lore, int _biomass)
@@ -82,6 +84,8 @@ public class SpeciesConstants
       predatorIDList = _predatorIDList;
       lore = _lore;
       biomass = _biomass;
+  
+
 		}
 	};
 
@@ -817,4 +821,47 @@ public class SpeciesConstants
     // Otherwise return default
     return 0;
   }
+
+  public bool EatenBy(string _prey, string _predator)
+  {
+    int predatorID = SpeciesID ( _predator);
+    foreach (Prey prey in PREY)
+    {
+      
+      if (prey.name == _prey) {
+
+        for(int i = 0; i< prey.predatorIDList.Count(); i++){
+          if (prey.predatorIDList [i] == predatorID)
+            return true;
+        }
+      
+      }
+        
+        
+    }
+
+    return false;
+  }
+
+  public bool Eats(string _predator, string _prey){
+    
+    int predatorID = SpeciesID ( _predator);
+    foreach (Prey prey in PREY)
+    {
+
+      if (prey.name == _prey) {
+
+        for(int i = 0; i< prey.predatorIDList.Count(); i++){
+          if (prey.predatorIDList [i] == predatorID)
+            return true;
+        }
+
+      }
+
+
+    }
+
+    return false;
+  }
+
 }
