@@ -30,7 +30,8 @@ public class NetworkManagerCOS : NetworkAbstractManager
     {
         instance = this;
         netProtTable = new NetworkProtocolTableCOS ();
-        cManager = new ConnectionManager (Constants.REMOTE_HOST, Constants.REMOTE_PORT_COS);
+//        cManager = new ConnectionManager (Constants.REMOTE_HOST, Constants.REMOTE_PORT_COS);
+        cManager = new ConnectionManager (Config.REMOTE_HOST, Constants.REMOTE_PORT_COS);
         Listen (NetworkCode.HEARTBEAT, ProcessHeartbeat);
     }
 	

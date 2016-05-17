@@ -31,6 +31,21 @@ public class DemAnimalFactory
         this.img = Resources.Load<Texture>("Textures/Species/" + this.speciesName);
     }
 
+    public bool isPlant(){
+      return speciesType == 0;
+    }
+
+    public bool isPrey(){
+      return speciesType == 1;
+    }
+
+    public bool isPredator(){
+
+      return speciesType == 2;
+
+    }
+
+
     /**
     	Returns a GameObject instance as defined by this factory.
     */
@@ -44,11 +59,11 @@ public class DemAnimalFactory
         switch (this.speciesType)
         {
         	// Prey
-        	case 1:
-				info = animal.AddComponent<PreyInfo>().Initialize(this.speciesId);
-				break;
+        case 1:
+				  info = animal.AddComponent<PreyInfo>().Initialize(this.speciesId);
+				  break;
         	// Predator
-        	case 2:
+        case 2:
         		info = animal.AddComponent<PredatorInfo>().Initialize(this.speciesId);
         		break;
         	// Plant --> case 0 --> may need a PlantInfo class later (?)

@@ -7,13 +7,14 @@ using System.Text;
 public class ConvergeHostConfigProtocol
 {
 
-    public static NetworkRequest Prepare(short numRounds, short timeWindow, short betAmount, short ecoNumber ) {
+	public static NetworkRequest Prepare(short numRounds, short timeWindow, short betAmount, short ecoNumber, short allowSliders ) {
 		NetworkRequest request = new NetworkRequest(NetworkCode.MC_HOST_CONFIG);
 
         request.AddShort16(numRounds);
         request.AddShort16(timeWindow);
         request.AddShort16(betAmount);
         request.AddShort16(ecoNumber);
+		request.AddShort16(allowSliders);
 
 		return request;
 	}
