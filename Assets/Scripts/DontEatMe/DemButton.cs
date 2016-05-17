@@ -106,10 +106,11 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         //Set text and its position on the button
         buttonText.AddComponent<Text>();
         buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Chalkboard");
-        buttonText.GetComponent<Text>().fontSize = (int)(Screen.width / 42);
+		buttonText.GetComponent<Text> ().fontSize = (int)(Screen.width/42);
         buttonText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
         buttonText.GetComponent<Text>().color = Color.white;
         buttonText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+		buttonText.GetComponent<RectTransform> ().sizeDelta = button.GetComponent<RectTransform> ().sizeDelta;
 
         buttonText.GetComponent<Text>().text = text;
     }
@@ -164,7 +165,7 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
             //panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(1).gameObject.name;
             panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(1).gameObject.name;
 
-            panelObject.transform.GetChild (3).GetChild (1).GetComponent<Text> ().text = 
+      panelObject.transform.GetChild (3).GetChild (0).GetComponent<Text> ().text =  "Biomass : " +
                 SpeciesConstants.Biomass (this.gameObject.transform.GetChild(1).gameObject.name).ToString();
         }
 
