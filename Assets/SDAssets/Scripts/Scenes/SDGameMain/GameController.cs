@@ -62,6 +62,7 @@ namespace SD {
         public GameObject countdownPanelCanvas;
         public GameObject foodChainPanelCanvas;
         public GameObject deathPanelCanvas;
+
         Rigidbody playerClone;
 
         void Awake () {
