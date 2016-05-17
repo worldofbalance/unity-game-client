@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.EventSystems;
+using System;
 
 public class BuildMenu : MonoBehaviour
 {
@@ -465,9 +466,10 @@ public class BuildMenu : MonoBehaviour
 
         if (quitUI == null)
         {
-            quitUI = demRectUI.createRectUI("quitUI", 0, 0, Screen.width / 2.0f, Screen.height / 2.0f);
+            quitUI = demRectUI.createRectUI("quitUI", 0, 0, Screen.width / 1.5f, Screen.height / 1.5f);
             quitUI.GetComponent<Image>().sprite = popupBackground;
-            demRectUI.setUIText(quitUI, "Are you sure you want to quit?");
+            demRectUI.setUIText(quitUI, GameState.player.GetName() + "\nAre you sure you want to quit? \nYou currently have " 
+                + GameState.player.credits);
 
             //Quit Button on Quit UI
             GameObject yesButton = demButton.CreateButton(0, 0, "Yes");
@@ -476,7 +478,7 @@ public class BuildMenu : MonoBehaviour
                 new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f,
                             -quitUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
             demButton.SetButtonText(yesButton, "Quit");
-            yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("World"); });
+            yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play();  Game.SwitchScene("World"); });
 
             //back button on Quit UI
             GameObject noButton = demButton.CreateButton(0, 0, "No");
@@ -627,6 +629,7 @@ public class BuildMenu : MonoBehaviour
 
             GameState.player.credits = args.creditDiff;
             Debug.Log(args.creditDiff);
+            
         }
     }
 
