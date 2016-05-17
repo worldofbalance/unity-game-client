@@ -8,11 +8,11 @@ namespace RR
     public class PlayerController : MonoBehaviour
     {
         // Player Handling
-        public float gravity = 20;
+        public float gravity;
         // Cannot assign speed with other value here. Don't know why.
-        public float speed = 8;//Running.BASE_SPEED; // <- Doesn't work.
+        public float speed;//Running.BASE_SPEED; // <- Doesn't work.
         public float acceleration = 32;
-        public float jumpHeight = 12;
+        public float jumpHeight = 120;
 
         private Animator anim;
         private float currentSpeed;
@@ -26,7 +26,10 @@ namespace RR
         void Start()
         {
             speed = Running.BASE_SPEED;
-            //Debug.Log("!!!!!!!!!"+speed.ToString());
+            // speed = 150;
+			gravity = 200;
+            DebugConsole.Log("!!!!!!!!!"+speed.ToString());
+			DebugConsole.Log(gravity.ToString());
             playerPhysics = GetComponent<PlayerPhysics>();
             anim = GetComponent<Animator>();
         }
