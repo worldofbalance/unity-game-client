@@ -87,6 +87,9 @@ public class DemTurnSystem : MonoBehaviour {
 
     ProcessTweens ();
 
+	// turn count 1++
+	buildMenu.statistic.setTurnCount (1);
+
   }
 
   public  bool IsTurnLocked(){

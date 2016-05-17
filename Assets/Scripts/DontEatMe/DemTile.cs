@@ -445,6 +445,14 @@ public class DemTile : MonoBehaviour
 
     this.resident.transform.position = this.center;
 
+		//add statistic to tree place down, and prey place down
+		if (this.resident.GetComponent<BuildInfo> ().isPlant ()) {
+			buildMenu.statistic.setTreeDown (1);
+		} else if (this.resident.GetComponent<BuildInfo> ().isPrey ()) {
+			buildMenu.statistic.setPreyDown (1);
+		}
+
+
   }
 
 
@@ -469,6 +477,13 @@ public class DemTile : MonoBehaviour
   }
 
   public void RemoveAnimal(){
+
+		//add statistic to tree destroy, and prey eaten
+		if (this.resident.GetComponent<BuildInfo> ().isPlant ()) {
+			buildMenu.statistic.setTreeDestroy (1);
+		} else if (this.resident.GetComponent<BuildInfo> ().isPrey ()) {
+			buildMenu.statistic.setPreyEaten (1);
+		}
     
     Destroy (resident);
     this.resident = null;
