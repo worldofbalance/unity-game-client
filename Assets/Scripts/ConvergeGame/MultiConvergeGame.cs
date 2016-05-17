@@ -124,6 +124,8 @@ public class MultiConvergeGame : MonoBehaviour
     private short ecoCount = 0;
     private short ecoNumber = 0;
     private string ecoNumberS = "";
+	private short allowSliders = 0;    // 1 = display *** above sliders
+	private string allowSlidersS = "";
     private DateTime tStamp;
     private DateTime tNow;
     private TimeSpan tDiff;
@@ -529,12 +531,12 @@ public class MultiConvergeGame : MonoBehaviour
         style.font = font;
         style.fontSize = 16;
 
-        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.05f, hdr1P, 30), hdr1, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.10f, hdr2P, 30), hdr2, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.15f, hdr3P, 30), hdr3, style);
-        GUI.Label(new Rect((windowRectConfig.width - ftr1P) / 2, windowRectConfig.height * 0.93f, ftr1P, 30), ftr1, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.03f, hdr1P, 30), hdr1, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.08f, hdr2P, 30), hdr2, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.13f, hdr3P, 30), hdr3, style);
+        GUI.Label(new Rect((windowRectConfig.width - ftr1P) / 2, windowRectConfig.height * 0.95f, ftr1P, 30), ftr1, style);
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.25f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.24f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
@@ -544,7 +546,7 @@ public class MultiConvergeGame : MonoBehaviour
         }
         GUI.EndGroup();
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.40f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.35f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
@@ -554,7 +556,7 @@ public class MultiConvergeGame : MonoBehaviour
         }
         GUI.EndGroup();
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.55f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.46f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
@@ -564,7 +566,7 @@ public class MultiConvergeGame : MonoBehaviour
         }
         GUI.EndGroup();
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.70f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.57f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
@@ -574,12 +576,22 @@ public class MultiConvergeGame : MonoBehaviour
         }
         GUI.EndGroup();
 
+		GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.68f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+		{
+			style.alignment = TextAnchor.UpperLeft;
+			style.fontSize = 14;
+			GUI.Label(new Rect(0, 0, windowRectConfig.width * 0.85f, 30), "Enter 'Y' to see Slider Help *'s", style);
+			GUI.SetNextControlName("allow_slider");
+			allowSlidersS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 25), allowSlidersS, 5);
+		}
+		GUI.EndGroup();
+
         if (isInitial) {  // && GUI.GetNameOfFocusedControl() == "") {
             GUI.FocusControl("number_of_rounds");
             isInitial = false;
         }
 
-        if (GUI.Button(new Rect((windowRectConfig.width - 100) / 2,  windowRectConfig.height * 0.85f, 100, 30), "Submit")) {
+        if (GUI.Button(new Rect((windowRectConfig.width - 100) / 2,  windowRectConfig.height * 0.87f, 100, 30), "Submit")) {
             SubmitHostConfig();
         }
     }
@@ -599,6 +611,7 @@ public class MultiConvergeGame : MonoBehaviour
         timeWindow = Int16.TryParse (timeWindowS, out tempConvert) ? tempConvert : neg1;
         betAmount = Int16.TryParse (betAmountS, out tempConvert) ? tempConvert : neg1;
         ecoNumber = Int16.TryParse (ecoNumberS, out tempConvert) ? tempConvert : neg1;
+		allowSliders = (short) (((allowSlidersS.Length > 0) && (allowSlidersS.ToUpper().Substring(0, 1)) == "Y") ? 1 : 0);
 
         if ((numRounds < 5) || (numRounds > 50)) {
             GUI.FocusControl ("number_of_rounds");
@@ -610,11 +623,11 @@ public class MultiConvergeGame : MonoBehaviour
             GUI.FocusControl ("ecosystem_number");
         } else {
             Game.networkManager.Send (
-                ConvergeHostConfigProtocol.Prepare (numRounds, timeWindow, betAmount, ecoNumber), 
+                ConvergeHostConfigProtocol.Prepare (numRounds, timeWindow, betAmount, ecoNumber, allowSliders), 
                 ProcessConvergeHostConfig);
             Debug.Log("Sent ConvergeHostConfig");
-            Debug.Log("numRounds, timeWindow, betAmount, ecoNumber");
-            Debug.Log (numRounds + " " + timeWindow + " " + betAmount + " " + ecoNumber);
+            Debug.Log("numRounds, timeWindow, betAmount, ecoNumber, allowSlliders");
+            Debug.Log (numRounds + " " + timeWindow + " " + betAmount + " " + ecoNumber + " " + allowSliders);
             ftr1 = "Entries Submitted. Please wait for game configuration";
             ftr1P = ftr1.Length * pixelPerChar;
 
@@ -711,11 +724,12 @@ public class MultiConvergeGame : MonoBehaviour
         Debug.Log ("In responseconvergenonhostconfg - received values. NumRounds = " + numRounds);
         if (numRounds > 0) {
             bet = args.betAmount;
+			allowSliders = args.allowSliders;
             ecosystem_idx = args.ecoNumber;   // implement when new ecosystems ready
             ecosystem_id = GetEcosystemId (ecosystem_idx);
             NoPriorAttempts();
             InitializeBarGraph();
-            Debug.Log("bet/ecosystem_idx: " + bet + " " + ecosystem_idx);
+            Debug.Log("bet/ecosystem_idx/allowSliders: " + bet + " " + ecosystem_idx + " " + allowSliders);
             Debug.Log("numRounds / time window: " + numRounds + " " + args.timeWindow); 
             ftr1 = "Game Configuration information received";
             ftr1P = ftr1.Length * pixelPerChar;
@@ -815,7 +829,7 @@ public class MultiConvergeGame : MonoBehaviour
                     // Add slider markers. First read slider range values
                     highRange = param.highRange;
                     lowRange = param.lowRange;
-                    if (host && param.markerEnabled && ((highRange != -1) || (lowRange != -1))) {
+					if ((allowSliders == 1) && param.markerEnabled && ((highRange != -1) || (lowRange != -1))) {
                         if (lowRange == -1) {
                             startRange = 0;
                             lowRange = min;

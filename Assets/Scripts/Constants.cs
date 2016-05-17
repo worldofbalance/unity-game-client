@@ -19,7 +19,7 @@ public class Constants
 
     //public static readonly int REMOTE_PORT = 9234;
     //20041;
-    public static readonly int REMOTE_PORT = 9257;    //9257 9255 for locahost, 9257 for Anu's server
+    public static readonly int REMOTE_PORT = 9255;    //9257 9255 for locahost, 9257 for Anu's server
     //public static readonly int REMOTE_PORT = 9255;
     public static readonly float HEARTBEAT_RATE = 1f;
 	

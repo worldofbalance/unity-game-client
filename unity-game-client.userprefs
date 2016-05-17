@@ -1,22 +1,24 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
 <<<<<<< HEAD
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/DontEatMe/DemTurnSystem.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\ConvergeGame\MultiConvergeGame.cs">
     <Files>
-      <File FileName="Assets/Scripts/DontEatMe/DemTile.cs" Line="374" Column="62" />
-      <File FileName="Assets/Scripts/DontEatMe/DemTurnSystem.cs" Line="121" Column="1" />
-      <File FileName="Assets/Scripts/DontEatMe/BuildMenu.cs" Line="730" Column="5" />
-      <File FileName="Assets/Scripts/DontEatMe/SpeciesConstants.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/DontEatMe/DemAnimalFactory.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/DontEatMe/DemMain.cs" Line="1" Column="1" />
-=======
+      <File FileName="Assets\Scripts\Network\NetworkCode.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Network\NetworkProtocolTable.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\MultiplayerGames.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GUI\Bar Graph\BarGraph.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Network\NetworkManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Constants.cs" Line="20" Column="50" />
+      <File FileName="Assets\Scripts\Config.cs" Line="5" Column="60" />
+      <File FileName="Assets\Scripts\ConvergeGame\MultiConvergeGame.cs" Line="579" Column="61" />
+      <File FileName="Assets\Scripts\Network\Protocol\ConvergeHostConfigProtocol.cs" Line="18" Column="3" />
+      <File FileName="Assets\Scripts\Network\Protocol\ConvergeNonHostConfigProtocol.cs" Line="44" Column="2" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/CWAssets/Scripts/Constants.cs">
     <Files>
       <File FileName="Assets/Scripts/Constants.cs" Line="23" Column="50" />
       <File FileName="Assets/Scripts/Config.cs" Line="1" Column="1" />
       <File FileName="Assets/Game.cs" Line="1" Column="1" />
       <File FileName="Assets/CWAssets/Scripts/Constants.cs" Line="14" Column="5" />
->>>>>>> 5157b5f06bed92a2011d15689b16b019646578cd
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
