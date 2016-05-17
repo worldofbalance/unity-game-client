@@ -51,8 +51,8 @@ namespace CW
                     GameObject.Destroy(removeCard);
                     player.currentMana -= card.getManaCost ();
 
-                    player.applyWeather(card.cardID, true);
-                    GameManager.player2.applyWeather(card.cardID,true);
+					player.applyWeather(card.cardID, true);
+					GameManager.player2.applyWeather(card.cardID,true);
 
                     player.getProtocolManager().sendWeatherCard(player.playerID, card.cardID);
                 }
