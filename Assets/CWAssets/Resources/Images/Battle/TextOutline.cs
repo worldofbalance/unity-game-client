@@ -41,6 +41,7 @@ public class TextOutline : MonoBehaviour {
 		for (int i = 0; i < transform.childCount; i++) {
 			
 			TextMesh other = transform.GetChild(i).GetComponent<TextMesh>();
+			transform.GetChild(i).GetComponent<Renderer>().material.SetColor("_Color", outlineColor);
 			other.color = outlineColor;
 			other.text = textMesh.text;
 			other.alignment = textMesh.alignment;
