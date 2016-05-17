@@ -14,6 +14,7 @@ namespace SD {
         private GameObject mainCamera;
         private AudioSource audioSource;
         public AudioClip audioClip;
+        public GameObject bleeding;
 
         // Use this for initialization
         void Start () {
@@ -31,12 +32,19 @@ namespace SD {
             
         void OnTriggerEnter(Collider other) {
             if (other.tag == "Player") {
+                Instantiate (bleeding, other.transform.position, Quaternion.identity);
+                StartCoroutine (destroyBleeding ());
                 Debug.Log (mainCamera.transform.position);
                 AudioSource.PlayClipAtPoint (audioClip, mainCamera.transform.position);
                 if (gameController.GetHealth() > 0) {
                     gameController.UpdateHealth (damage);
                 }
             }
-            }
+        }
+
+        IEnumerator destroyBleeding(){
+            yield return new WaitForSeconds (5);
+            Destroy (GameObject.FindGameObjectWithTag ("Bubbles"));
+        }
         }
     }

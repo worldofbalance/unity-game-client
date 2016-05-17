@@ -212,8 +212,6 @@ namespace SD {
             if (npcFishObjects [i] != null) {
                 Destroy (npcFishObjects [i]);
             }
-
-
         }
 
         /// <summary>
