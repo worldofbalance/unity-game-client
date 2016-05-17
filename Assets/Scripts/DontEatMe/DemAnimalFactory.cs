@@ -63,8 +63,8 @@ public class DemAnimalFactory
 				  info = animal.AddComponent<PreyInfo>().Initialize(this.speciesId);
 				  break;
         	// Predator
-        case 2:
-        		info = animal.AddComponent<PredatorInfo>().Initialize(this.speciesId);
+		case 2:
+				info = animal.AddComponent<PredatorInfo> ().Initialize (this.speciesId);
         		break;
         	// Plant --> case 0 --> may need a PlantInfo class later (?)
         	// Omnivore --> case ? --> some prey may also be predators, so an OmnivoreInfo class would accommodate this (?)
@@ -85,6 +85,21 @@ public class DemAnimalFactory
         renderer.transform.parent = animal.transform;
         animal.transform.localScale = new Vector3(0.4f, 0.4f, 0);
 
+
+		//predator indicator
+		//start
+		if (this.speciesType == 2) { // if predator
+			Sprite predatorRage = Resources.Load<Sprite>("DontEatMe/PredatorRage");
+			GameObject predatorIndicate = new GameObject ("predatorRage");
+			predatorIndicate.AddComponent<SpriteRenderer> ();
+			predatorIndicate.GetComponent<SpriteRenderer> ().sprite = predatorRage;
+			predatorIndicate.transform.SetParent(animal.transform);
+			predatorIndicate.transform.localScale = new Vector3(1.6f, 1.6f, 0);
+			predatorIndicate.transform.localPosition = new Vector3 (-0.8f, 0.8f, 0);
+			predatorIndicate.GetComponent<SpriteRenderer>().sortingOrder = 1;
+			Debug.Log (predatorRage);
+		}
+		//end
         return animal;
     }
 
