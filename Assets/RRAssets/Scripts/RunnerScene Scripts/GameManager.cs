@@ -157,8 +157,8 @@ namespace RR
                 //map.name = map.name + " " + i;
                 map.name = "aMap" + i;
                 //(float)(20 + (i * 62.9))
-                tempEnd += 50f;
-                endPoint = tempEnd - 24;
+                tempEnd += 500f;
+                endPoint = tempEnd - 240;
             }
 
             Instantiate(endFlag, new Vector3(endPoint, -8.5f, 0), Quaternion.identity);
