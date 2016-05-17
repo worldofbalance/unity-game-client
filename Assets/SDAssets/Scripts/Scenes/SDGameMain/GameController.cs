@@ -15,6 +15,7 @@ namespace SD {
         public GameObject Prey;
         public Vector3 spawnValue;
         public GameObject[] preyArray;
+        public GameObject bubbles;
 
         // Number of prey spawn at a game start
         public int numPrey;
@@ -72,6 +73,7 @@ namespace SD {
         // Initializes the player's score, and UI texts.
         // Also spawns numbers of prey at random positions.
         void Start () {
+            
             if (Constants.PLAYER_NUMBER == 2) {  // The player who joins the host will have a different position to start from.
                 swapPositions();
             }
@@ -201,9 +203,26 @@ namespace SD {
         }
 
         public void destroyPrey(int i) {
+
+            // Displays bubbles when destroying prey
+            Instantiate (bubbles, playerClone.transform.position, Quaternion.identity);
+            StartCoroutine( destroyBubbles() );
+
+            // Modify the clone to your heart's content
             if (npcFishObjects [i] != null) {
                 Destroy (npcFishObjects [i]);
             }
+
+
+        }
+
+        /// <summary>
+        /// Destroies the bubbles invoked by destroyPrey()
+        /// </summary
+        /// <returns>Destroys bubbles after 5 seconds</returns>
+        IEnumerator destroyBubbles(){
+            yield return new WaitForSeconds (5);
+            Destroy (GameObject.FindGameObjectWithTag("Bubbles"));
         }
 
         // Spawns 'num' Npc fish of type 'speciesId'
