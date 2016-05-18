@@ -158,18 +158,22 @@ public class Trees : MonoBehaviour {
             GetComponent<Renderer>().material.mainTexture = tree1Texture;
             transform.Find ("HealthText").GetComponent<TextMesh> ().color = Color.green;
         }
-        if (this.player.isActive) {
+        if (this.player.isActive) 
+        {
             transform.Find ("NameText").GetComponent<TextMesh> ().text = ">>"+this.player.playerName+"<<";
             transform.Find ("ActionText").GetComponent<TextMesh>().text = "Playing...";
             transform.Find ("ActionText").GetComponent<Renderer> ().material.SetColor("_Color", Color.yellow);
-        } else { //Enemy name is red
+        } 
+        else { //Enemy name is red
             transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
             transform.Find ("ActionText").GetComponent<TextMesh>().text = "Waiting...";
             transform.Find ("ActionText").GetComponent<Renderer> ().material.SetColor("_Color", Color.grey);
         }
         if (dmgTimer > 0) {
             dmgTimer--;
-        } else {
+        } 
+        else 
+        {
             transform.Find("DamageText").GetComponent<TextMesh>().text = "";
         }
     }

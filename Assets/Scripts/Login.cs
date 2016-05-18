@@ -186,7 +186,7 @@ public class Login : MonoBehaviour
                 ProcessTopList
             );
             Game.networkManager.Send (
-                PlayerSelectProtocol.Prepare (0),
+                PlayerSelectProtocol.Prepare (args.playerId),
                 ProcessPlayerSelect
             );
 
