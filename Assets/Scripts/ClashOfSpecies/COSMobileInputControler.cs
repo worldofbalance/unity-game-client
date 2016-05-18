@@ -82,7 +82,8 @@ public class COSMobileInputControler:COSAbstractInputController
 
         if (touches.Length < 1)
         {
-            DetectTouchMovement.rotating = false;
+//            DetectTouchMovement.rotating = false;
+            eTouchRes = COSTouchState.None;
             //if the camera is currently scrolling
             if (scrollVelocity != 0.0f)
             {
@@ -104,7 +105,9 @@ public class COSMobileInputControler:COSAbstractInputController
             //Single touch (move)
             if (touches.Length == 1)
             {
-                DetectTouchMovement.rotating = false;
+//                DetectTouchMovement.rotating = false;
+//                DetectTouchMovement.
+                eTouchRes = COSTouchState.None;
                 Ray ray = Camera.main.ScreenPointToRay(touches[0].position);
 //                RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, 1000))
@@ -151,6 +154,8 @@ public class COSMobileInputControler:COSAbstractInputController
                             }
                             else
                                 eTouchRes = COSTouchState.None;
+//                            DetectTouchMovement.rotating = false;
+//                            DetectTouchMovement.zooming = false;
                         }
                     }
                 }
@@ -164,7 +169,7 @@ public class COSMobileInputControler:COSAbstractInputController
                 Touch touchOne = touches[0];
                 Touch touchTwo = touches[1];
 
-                DetectTouchMovement.Calculate();
+                eTouchRes = DetectTouchMovement.Calculate(eTouchRes);
 
                 Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
                 Vector2 touchTwoPrevPos = touchTwo.position - touchTwo.deltaPosition;
@@ -174,19 +179,21 @@ public class COSMobileInputControler:COSAbstractInputController
 
                 float deltaMagDiff = prevTouchDeltaMag - touchDeltaMag;
 
-                if (Mathf.Abs(DetectTouchMovement.pinchDistanceDelta) > 0)
+                if (eTouchRes == COSTouchState.IsZooming)
                 {
                     _camera.fieldOfView += -DetectTouchMovement.pinchDistanceDelta * zoomSpeed;
                     // Clamp the field of view to make sure it's between minFOV and maxFOV.
                     _camera.fieldOfView = Mathf.Clamp(_camera.fieldOfView, minFOV, maxFOV);
-                    eTouchRes = COSTouchState.IsZooming;
+//                    eTouchRes = COSTouchState.IsZooming;
                 }
-                else
+                else if (eTouchRes == COSTouchState.IsRotating)
                 {
                     _camera.transform.RotateAround(_camera.transform.position, Vector3.up, 
                         -DetectTouchMovement.turnAngleDelta);
-                    eTouchRes = COSTouchState.IsRotating;
+//                    eTouchRes = COSTouchState.IsRotating;
                 }
+                else
+                    eTouchRes = COSTouchState.None;
             }
         }
 

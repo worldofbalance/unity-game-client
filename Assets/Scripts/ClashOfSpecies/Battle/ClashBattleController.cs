@@ -305,7 +305,7 @@ public class ClashBattleController : MonoBehaviour
         int seconds = (int)intTime % 60;
         int min = intTime / 60;
 
-        if (timeLeft < 0)
+        if (timeLeft < 0 && !finished)
         {
             ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.LOSS);
         }
@@ -359,7 +359,7 @@ public class ClashBattleController : MonoBehaviour
             }
         }
 
-        if (Time.timeSinceLevelLoad > 5.0f && totalEnemyHealth == 0 && enemiesList.Count() > 0)
+        if (Time.timeSinceLevelLoad > 5.0f && totalEnemyHealth == 0 && enemiesList.Count() > 0 && !finished)
         {
             // ALLIES HAVE WON!
             ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.WIN);
@@ -403,7 +403,7 @@ public class ClashBattleController : MonoBehaviour
             }
         }
 
-        if (Time.timeSinceLevelLoad > 5.0f && totalAllyHealth <= 0 && alliesList.Count() == 25)
+        if (Time.timeSinceLevelLoad > 5.0f && totalAllyHealth <= 0 && alliesList.Count() == 25 && !finished)
         {//            || Time.timeSinceLevelLoad > 75.0f)
             // ENEMIES HAVE WON!
             ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.LOSS);
@@ -523,6 +523,7 @@ public class ClashBattleController : MonoBehaviour
             messageCanvas.SetActive(true);
             messageText.text = "You Lost!\n\nTry again next time!";
         }
+        finished = true;
         var request = ClashEndBattleProtocol.Prepare(outcome);
         NetworkManagerCOS.getInstance().Send(request, (res) =>
             {
