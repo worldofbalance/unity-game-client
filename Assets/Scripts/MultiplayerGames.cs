@@ -246,8 +246,10 @@ public class MultiplayerGames : MonoBehaviour {
 
 	public RR.RequestRaceInit RR_RequestRaceInit ()
 	{
+		// room number is '0', must be this.room_id but the server is experiencing
+		// issues with games that are already in the database
 		RR.RequestRaceInit request = new RR.RequestRaceInit ();
-		request.Send (RR.Constants.USER_ID, this.room_id);
+		request.Send (RR.Constants.USER_ID, 0);
 		return request;
 	}
     public SD.RequestPlayInit SD_RequestPlayInit()
