@@ -39,9 +39,9 @@ public class COSDesktopInputController : COSAbstractInputController
 
     public bool dragging = false;
     public Vector3 lastMouse;
-    public float yawSpeed = 5.0f;
-    public float pitchSpeed = 5.0f;
-    public float moveSpeed = 5.0f;
+    public float yawSpeed = 1.0f;
+    public float pitchSpeed = 1.0f;
+    public float moveSpeed = 2.0f;
     public float zoomLevel = 100.0f;
 
     public float minFOV = 10f;
