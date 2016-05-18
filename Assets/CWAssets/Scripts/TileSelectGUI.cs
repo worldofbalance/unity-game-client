@@ -23,7 +23,7 @@ public class TileSelectGUI : MonoBehaviour {
 		mainObject = GameObject.Find("MainObject");
 		mapCamera = GameObject.Find("MapCamera").GetComponent<MapCamera>();
 
-		NetworkManager.Listen(
+		CWGame.networkManager.Listen(
 			NetworkCode.ZONE,
 			ProcessZone
 		);
@@ -40,7 +40,7 @@ public class TileSelectGUI : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		NetworkManager.Ignore(
+		CWGame.networkManager.Ignore(
 			NetworkCode.ZONE,
 			ProcessZone
 		);
@@ -84,7 +84,7 @@ public class TileSelectGUI : MonoBehaviour {
 		//gameObject.AddComponent<Battle>();
 //		gameObject.AddComponent<Season>();
 
-//		NetworkManager.Send(
+//		CWGame.networkManager.Send(
 //			ZoneProtocol.Prepare(tile_id, GameState.player.GetID()),
 //			ProcessZone
 //		);

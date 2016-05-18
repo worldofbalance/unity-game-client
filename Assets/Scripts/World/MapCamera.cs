@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class MapCamera : MonoBehaviour {
-
+    public MenuScript menuScript;
 	bool dragging = false;
 	Vector3 mouseDownPos;
 	Vector3 oldCameraPos;
@@ -75,10 +75,12 @@ public class MapCamera : MonoBehaviour {
 			isPanning = false;
 		}
 		
-		if (Input.GetMouseButtonDown(0)) {
-			dragging = true;
-			mouseDownPos = Input.mousePosition;
-			oldCameraPos = transform.position;
+        if (Input.GetMouseButtonDown(0) ) {
+            if (menuScript.menuOpen == false) {
+                dragging = true;
+                mouseDownPos = Input.mousePosition;
+                oldCameraPos = transform.position;
+            }
 		}
 		
 		if (Input.GetMouseButtonUp(0)) {

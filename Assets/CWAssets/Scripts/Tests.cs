@@ -54,7 +54,7 @@ public class Tests : MonoBehaviour {
 	public void TestGameOver(){
 		int wonGame = 1;
 		int matchID = GameState.matchID;
-		NetworkManager.Send ( MatchOverProtocol.Prepare (matchID, wonGame), 
+		CWGame.networkManager.Send ( MatchOverProtocol.Prepare (matchID, wonGame), 
 		                     ProcessGameOver);	
 	}
 
@@ -77,7 +77,7 @@ public class Tests : MonoBehaviour {
 
 
 	public void TestDealCard(){
-		NetworkManager.Send ( DealCardProtocol.Prepare (playerID1, 5), 
+		CWGame.networkManager.Send ( DealCardProtocol.Prepare (playerID1, 5), 
 		                     ProcessDealCard);	
 	}
 
@@ -93,7 +93,7 @@ public class Tests : MonoBehaviour {
 	public void TestGetDeck () {
 		
 		Debug.Log ("TestDeck");
-		NetworkManager.Send ( GetDeckProtocol.Prepare (GameState.player.GetID()), 
+		CWGame.networkManager.Send ( GetDeckProtocol.Prepare (GameState.player.GetID()), 
 		                     ProcessGetDeck);
 	}
 
@@ -113,7 +113,7 @@ public class Tests : MonoBehaviour {
 
 
 	public void TestQuitMatch (){
-		NetworkManager.Send ( QuitMatchProtocol.Prepare (matchID), 
+		CWGame.networkManager.Send ( QuitMatchProtocol.Prepare (matchID), 
 		                     ProcessQuitMatch);
 	}
 
@@ -124,7 +124,7 @@ public class Tests : MonoBehaviour {
 	}
 
 	public void TestEndTurn (){
-		NetworkManager.Send ( EndTurnProtocol.Prepare (matchID), 
+		CWGame.networkManager.Send ( EndTurnProtocol.Prepare (matchID), 
 			ProcessEndTurn);
 	}
 
@@ -133,12 +133,12 @@ public class Tests : MonoBehaviour {
 	public void ProcessEndTurn(NetworkResponse response){
 		ResponseEndTurn args = response as ResponseEndTurn;
 		bool activeResponse = false;
-		Debug.Log ("End Turn Response: isActive :" + activeResponse);
+		//Debug.Log ("End Turn Response: isActive :" + activeResponse);
 	}
 
 
 	public void TestTreeAttack(){
-		NetworkManager.Send (
+		CWGame.networkManager.Send (
 			TreeAttackProtocol.Prepare (matchID, attack), 
 			ProcessTreeAttack);
 	}
@@ -151,7 +151,7 @@ public class Tests : MonoBehaviour {
 	}
 
 	public void TestAttack(){
-		NetworkManager.Send (
+		CWGame.networkManager.Send (
 			CardAttackProtocol.Prepare (matchID, attack, fieldPosition), 
 			ProcessCardAttack);
 	}
@@ -165,7 +165,7 @@ public class Tests : MonoBehaviour {
 
 
 	public void TestSummon(){
-	//	NetworkManager.Send (
+	//	CWGame.networkManager.Send (
 	//		SummonCardProtocol.Prepare (), 
 	//		ProcessSummonCard);
 	}
@@ -177,7 +177,7 @@ public class Tests : MonoBehaviour {
 	}
 
 	public void TestMatch() {
-		NetworkManager.Send (
+		CWGame.networkManager.Send (
 			MatchStatusProtocol.Prepare (playerID1, "testName"), 
 			ProcessMatchStatus);
 	}
@@ -193,7 +193,7 @@ public class Tests : MonoBehaviour {
 
 	public void TestInit (){
 		playerID1 = GameState.player.GetID();
-		NetworkManager.Send (
+		CWGame.networkManager.Send (
 			MatchInitProtocol.Prepare (GameState.player.GetID (), playerID2), ProcessMatchInit);
 			Debug.Log("Init for player: " + playerID1);
 	}
