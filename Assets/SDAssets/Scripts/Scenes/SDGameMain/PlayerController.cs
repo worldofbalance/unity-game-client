@@ -76,6 +76,8 @@ public class PlayerController : MonoBehaviour {
             // Assigns the player's movement speed, and move the player object
             rb.velocity = movement * speed;
                 transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+                gameController.getCurrentPlayer ().xPosition = transform.position.x;
+                gameController.getCurrentPlayer ().yPosition = transform.position.y;
                 speed = speed * 0.95f;// speed down after movement 
                 if (speed < 40) { speed = 40; }
                 currentStamina++;
@@ -154,8 +156,6 @@ public class PlayerController : MonoBehaviour {
                     }
                     gameController.SetStamina(currentStamina - .25f);
                 }
-
-               
 
             }
     }

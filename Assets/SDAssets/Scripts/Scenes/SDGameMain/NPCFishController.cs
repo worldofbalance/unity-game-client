@@ -41,10 +41,24 @@ namespace SD
         {
             // Move to wherever it is told to.
             transform.position = Vector2.MoveTowards(transform.position, npcFish.target, 20 * Time.deltaTime);
+
+            if (npcFish.isAttacking) {
+                Vector3 relativePos = new Vector3 (GameController.getInstance ().getCurrentPlayer ().xPosition, GameController.getInstance ().getCurrentPlayer ().yPosition, 0);
+                Quaternion rotation = Quaternion.LookRotation (relativePos); // face the player to be attacked
+                transform.rotation = rotation;
+                if (npcFish.target.x < transform.position.x) {  // swim in the right direction.
+                    npcFish.targetOffset = -20;
+                    transform.rotation = Quaternion.Euler (transform.rotation.eulerAngles.x, 270, transform.rotation.eulerAngles.z);
+                } else {
+                    npcFish.targetOffset = 20;
+                    transform.rotation = Quaternion.Euler (transform.rotation.eulerAngles.x, 90, transform.rotation.eulerAngles.z);
+                }
+            }
+
             if (Constants.PLAYER_NUMBER != 2) {
                 npcFish.xPosition = transform.position.x;
                 npcFish.yPosition = transform.position.y;
-            } else { // we are not relying on collision for changing direction of the second player. 
+            } else { // we are not relying on collision for changing direction of the fishes for the second player. 
                 if (npcFish.target.x < transform.position.x) { // moving towards the left
                     npcFish.targetOffset = -20;
                     transform.rotation = Quaternion.Euler (0, 270, 0);

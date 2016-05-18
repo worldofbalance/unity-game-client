@@ -20,6 +20,7 @@ namespace SD
         public static readonly int PLAYER_DRAW = 3;
 
         public static readonly float HEARTBEAT_SECONDS = 3f;
+        public static readonly float PREDATOR_SAFE_DISTANCE = 100f;
     }
 }
 

@@ -117,6 +117,8 @@ namespace SD {
                 //gameController.countdownPanelCanvas.SetActive (false);
             }
 
+            // Spawn the predator: 1 of type 8
+            spawnNpcSet(8, 1);
             //Display the food chain panel for n seconds upon game start
             StartCoroutine(showFoodChainUponStart(foodChainPanelVisibleSeconds));
         }
@@ -211,6 +213,7 @@ namespace SD {
             // Modify the clone to your heart's content
             if (npcFishObjects [i] != null) {
                 Destroy (npcFishObjects [i]);
+                npcFishes [i].isAlive = false;
             }
         }
 
@@ -240,7 +243,8 @@ namespace SD {
                 npcFish.speciesId = speciesId;
                 spawnPrey (i, speciesId);
             }
-            sdGameManager.SendNpcFishPositions (5);  // Player 1 will send its positions to Player 2
+            if (SDMain.networkManager != null) 
+                sdGameManager.SendNpcFishPositions (5);  // Player 1 will send its positions to Player 2
         }
 
         IEnumerator RetargetFish()
@@ -256,18 +260,29 @@ namespace SD {
         {
             Dictionary <int, NPCFish> npcs = getNpcFishes();
             foreach (KeyValuePair<int, NPCFish> entry in npcs) {
-                getNpcFishes()[entry.Key].target = new Vector2(entry.Value.xPosition + entry.Value.targetOffset, entry.Value.yPosition);
-            }
+                if (entry.Value.isAlive && getNpcFishObjects()[entry.Key].tag == "Predator") {
+                    // calculate the distance to check if the player lies within the danger zone.
+                    float distanceFromPlayer = Vector2.Distance (new Vector2 (getCurrentPlayer ().xPosition, getCurrentPlayer ().yPosition), new Vector2 (entry.Value.xPosition, entry.Value.yPosition));
+                    float distanceFromOpponent = float.MaxValue;
+                    if (sdGameManager.getIsMultiplayer ()) {
+                        distanceFromOpponent = Vector2.Distance (new Vector2 (getOpponentPlayer ().xPosition, getOpponentPlayer ().yPosition), new Vector2 (entry.Value.xPosition, entry.Value.yPosition));
+                    }
 
-            // set the next fish position 
-            List<GameObject> fish = new List<GameObject>(getNpcFishObjects().Values);
-            foreach (GameObject cur in fish)
-            {
-                 //cur.GetComponent<NPCFishController>().SetTarget(); 
-                //cur.GetComponent<NPCFishController>().SetTarget();
+                    if (distanceFromPlayer < SD.Constants.PREDATOR_SAFE_DISTANCE || distanceFromOpponent < SD.Constants.PREDATOR_SAFE_DISTANCE) {
+                        if (distanceFromPlayer > distanceFromOpponent)
+                            getNpcFishes () [entry.Key].target =  new Vector2 (getOpponentPlayer ().xPosition, getOpponentPlayer ().yPosition);
+                        else
+                            getNpcFishes () [entry.Key].target =  new Vector2 (getCurrentPlayer ().xPosition, getCurrentPlayer ().yPosition);
+                        getNpcFishes () [entry.Key].isAttacking = true;
+                    } else {
+                        getNpcFishes () [entry.Key].target = new Vector2 (entry.Value.xPosition + entry.Value.targetOffset, entry.Value.yPosition);
+                        getNpcFishes () [entry.Key].isAttacking = false;
+                    }
+                } else {
+                    getNpcFishes () [entry.Key].target = new Vector2 (entry.Value.xPosition + entry.Value.targetOffset, entry.Value.yPosition);
+                }
             }
         }
-
     // Increases the current score value, and pass the info to scoreText
     // by calling UpdateScore().
     public void AddScore(int newScoreValue) {
