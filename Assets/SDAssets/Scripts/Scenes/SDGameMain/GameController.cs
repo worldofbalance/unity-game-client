@@ -63,6 +63,7 @@ namespace SD {
         public GameObject countdownPanelCanvas;
         public GameObject foodChainPanelCanvas;
         private int foodChainPanelVisibleSeconds = 7;
+        private PlayTimePlayer targetPlayer;
         public GameObject deathPanelCanvas;
 
         Rigidbody playerClone;
@@ -269,10 +270,13 @@ namespace SD {
                     }
 
                     if (distanceFromPlayer < SD.Constants.PREDATOR_SAFE_DISTANCE || distanceFromOpponent < SD.Constants.PREDATOR_SAFE_DISTANCE) {
-                        if (distanceFromPlayer > distanceFromOpponent)
-                            getNpcFishes () [entry.Key].target =  new Vector2 (getOpponentPlayer ().xPosition, getOpponentPlayer ().yPosition);
-                        else
-                            getNpcFishes () [entry.Key].target =  new Vector2 (getCurrentPlayer ().xPosition, getCurrentPlayer ().yPosition);
+                        if (distanceFromPlayer > distanceFromOpponent) {
+                            getNpcFishes () [entry.Key].target = new Vector2 (getOpponentPlayer ().xPosition, getOpponentPlayer ().yPosition);
+                            targetPlayer = getOpponentPlayer ();
+                        } else {
+                            getNpcFishes () [entry.Key].target = new Vector2 (getCurrentPlayer ().xPosition, getCurrentPlayer ().yPosition);
+                            targetPlayer = getCurrentPlayer ();
+                        }
                         getNpcFishes () [entry.Key].isAttacking = true;
                     } else {
                         getNpcFishes () [entry.Key].target = new Vector2 (entry.Value.xPosition + entry.Value.targetOffset, entry.Value.yPosition);
@@ -441,6 +445,14 @@ namespace SD {
 
         public int getMaxPreyId() {
             return maxPreyId;
+        }
+
+        public void setTargetPlayer(PlayTimePlayer p) {
+            targetPlayer = p;
+        }
+
+        public PlayTimePlayer getTargetPlayer() {
+            return targetPlayer;
         }
     } 
 

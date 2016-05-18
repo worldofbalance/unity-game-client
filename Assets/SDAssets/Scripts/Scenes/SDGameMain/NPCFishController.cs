@@ -43,7 +43,7 @@ namespace SD
             transform.position = Vector2.MoveTowards(transform.position, npcFish.target, 20 * Time.deltaTime);
 
             if (npcFish.isAttacking) {
-                Vector3 relativePos = new Vector3 (GameController.getInstance ().getCurrentPlayer ().xPosition, GameController.getInstance ().getCurrentPlayer ().yPosition, 0);
+                Vector3 relativePos = new Vector3 (GameController.getInstance ().getTargetPlayer ().xPosition, GameController.getInstance ().getTargetPlayer ().yPosition, 0);
                 Quaternion rotation = Quaternion.LookRotation (relativePos); // face the player to be attacked
                 transform.rotation = rotation;
                 if (npcFish.target.x < transform.position.x) {  // swim in the right direction.
