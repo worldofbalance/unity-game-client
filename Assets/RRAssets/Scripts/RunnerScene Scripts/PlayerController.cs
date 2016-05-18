@@ -38,7 +38,6 @@ namespace RR
         void Start()
         {
             speed = Running.BASE_SPEED;
-            //Debug.Log("!!!!!!!!!"+speed.ToString());
             playerPhysics = GetComponent<PlayerPhysics>();
             anim = GetComponent<Animator>();
         }
@@ -89,8 +88,7 @@ namespace RR
 
             currentSpeed = IncrementTowards(currentSpeed, targetSpeed, acceleration);
 
-          
-            barDisplay =  (speed) / Running.MAX_SPEED;
+            barDisplay =  speed / Running.MAX_SPEED;
 
             //Animation code
             anim.SetFloat("speed", currentSpeed);
