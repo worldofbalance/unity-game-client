@@ -1,0 +1,97 @@
+fileFormatVersion: 2
+guid: cd9089732369a4f1588d0f18d28e11b8
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: b1
+    100002: b2
+    100004: b3
+    100006: b4
+    100008: b5
+    100010: b6
+    100012: //RootNode
+    100014: Head
+    100016: Jaw
+    100018: Lip
+    100020: Root
+    100022: SalmonMesh
+    400000: b1
+    400002: b2
+    400004: b3
+    400006: b4
+    400008: b5
+    400010: b6
+    400012: //RootNode
+    400014: Head
+    400016: Jaw
+    400018: Lip
+    400020: Root
+    400022: SalmonMesh
+    4300000: SalmonMesh
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: SalmonMesh
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 128
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

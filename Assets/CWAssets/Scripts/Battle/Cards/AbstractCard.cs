@@ -1,21 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using UnityEngine.EventSystems;
 namespace CW
 {
 	public class AbstractCard : MonoBehaviour
 	{
 		public int cardID, fieldIndex;
-		public int maxHP, hp, dmg, naturalDmg, manaCost, level, dietNum, dmgTimer = 0;
+        public int maxHP, hp, dmg, naturalDmg, manaCost, level, dmgTimer = 0, frozenTurns = 0;
 		private Font font;
 		private BattlePlayer player;
-		public string name, type = " ", description = " ";
+		public string name, type = " ", description = " ", dietChar= " ";
 		public DIET diet;
 		private bool canAttackNow, inMotion, moveBack;
 		private Vector3 oriPosition;
 		private Vector3 newPosition;
 		private bool zoomed = false;
-		private bool clicked = false, removeAfterDelay;
+        private bool clicked = false, removeAfterDelay;
+        public bool frozen = false;
 		//VELOCITY
 		private Vector3 targetPosition, startPosition;
 		private float velocity, terminalVelocity, angle, distance;
@@ -25,36 +26,66 @@ namespace CW
 		{
 			OMNIVORE,
 			CARNIVORE,
-			HERBIVORE, 
+			HERBIVORE,
+			WEATHER,
+			FOOD
 		}
-	
+        //byPedro
+        private AudioSource audioSource;
 		public AbstractCardHandler handler;
-	
+        private float raised = 50f;
+        public bool isInHand = true;
+        public bool isInPlay = false;
 		//Initialization for a card and sets it's position to (1000, 1000, 1000)
-		public void init (BattlePlayer player, int cardID, int diet, int level, int attack, int health, string species_name, string type, string description)
-		{
-			this.player = player;
-			this.cardID = cardID;
-			this.manaCost = level;
-			this.transform.position = new Vector3 (player.DeckPos.x, player.DeckPos.y, player.DeckPos.z);
-			canAttackNow = true;
-			velocity = 0;
-			terminalVelocity = 6000;
-			distance = 0;
-			delayTimer = 0;
-			name = species_name;
-			this.diet = getDietType (diet);
-			this.dietNum = diet;
-			this.level = level;
-			maxHP = hp = health;
-			naturalDmg = dmg = attack;
-			//this.type = type; //hide temporarily
-			//this.description = description; //hide temporarily
+		public void init(BattlePlayer player, int cardID, string diet, int level, int attack, int health, string species_name, string type, string description)
+        {
+            this.player = player;
+            this.cardID = cardID;
+            this.manaCost = level;
+            this.transform.position = new Vector3(player.DeckPos.x, player.DeckPos.y, player.DeckPos.z);
+            canAttackNow = true;
+            velocity = 0;
+            terminalVelocity = 6000;
+            distance = 0;
+            delayTimer = 0;
+            name = species_name;
+            this.diet = getDietType(diet);
+            this.dietChar = diet;
+            this.level = level;
+            maxHP = hp = health;
+            naturalDmg = dmg = attack;
+            //this.type = type; //hide temporarily
+            //this.description = description; //hide temporarily
 		
-			Debug.Log ("diet" + diet);
-			//0-omnivore, 1-carnivore, 2-herbivore, 3-spell
-			Texture2D cardTexture = (Texture2D)Resources.Load ("Images/Battle/cardfront" + (int)this.diet, typeof(Texture2D));
-			Texture2D speciesTexture = (Texture2D)Resources.Load ("Images/" + this.name, typeof(Texture2D));
+			
+            Texture2D cardTexture;
+            Texture2D speciesTexture;
+            //o-omnivore, c-carnivore, h-herbivore, f-food, w-weather
+            if (!this.dietChar.Equals("w"))
+            {
+                cardTexture = (Texture2D)Resources.Load("Images/Battle/cardfront_" + this.dietChar, typeof(Texture2D));
+                speciesTexture = (Texture2D)Resources.Load("Images/" + this.name, typeof(Texture2D));
+            }
+            else // for weather, its blue similar to food card
+            {
+                cardTexture = (Texture2D)Resources.Load("Images/Battle/cardfront_f", typeof(Texture2D));
+                if (this.name.Equals("Acacia"))
+                {
+                    speciesTexture = (Texture2D)Resources.Load("Images/Battle/fire", typeof(Texture2D));
+                    this.name="Fire";
+                }
+                else if(this.name.Equals("Big Tree"))
+                {
+                    speciesTexture = (Texture2D)Resources.Load("Images/Battle/freez", typeof(Texture2D));
+                    this.name="Freez";
+                }
+                else
+                {
+                    speciesTexture = (Texture2D)Resources.Load("Images/Battle/rain", typeof(Texture2D));
+                    this.name="Rain";
+                }
+                    
+            }
 
 			//Changing cardfront texture
 			GetComponent<Renderer>().material.mainTexture = cardTexture;
@@ -74,68 +105,126 @@ namespace CW
 			transform.Find ("DamageText").GetComponent<MeshRenderer> ().material.color = Color.red;
 
 			//Initializes off screen
-			transform.position = new Vector3 (1000, 1000, 1000);
+			transform.position = new Vector3 (9999, 9999, 9999);
 
 			//rotate facedown if player 2
 			if (!player.player1 && !Constants.SINGLE_PLAYER) {
 				transform.rotation = new Quaternion (180, 0, 0, 0); 
 			}
 
-
+            //by Pedro
+            audioSource = gameObject.AddComponent<AudioSource> ();
 		}
 	
 		//Returns the enum for the animal's diet. Herbivore, Omnivore, Carnivore
-		DIET getDietType (int diet)
+		DIET getDietType (string diet)
 		{
-			if (diet == 0) {
+			if (diet == "o") {
 				return DIET.OMNIVORE;	
-			} else if (diet == 1) {
+			} else if (diet == "c") {
 				return DIET.CARNIVORE;	
-			}
+			} else if (diet == "h") {
+				return DIET.HERBIVORE;
+			} else if (diet == "f") {
+				return DIET.FOOD;
+			} else 
+				return DIET.WEATHER;
 			//else diet == 2
-			return DIET.HERBIVORE;
 		}
 	
-		void OnMouseOver ()
-		{
-		
-			if (inMotion)
-				return;
-		
-			//
-			if (!zoomed) {
-				oriPosition = this.transform.position;
-				zoomed = true;
+        //OnMouseDown also checks for touch events
+        void OnMouseDown()
+        {
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                //DebugConsole.Log("on mouse down");
+                /*if (inMotion)
+                {
 
-			}
-		
-			newPosition = oriPosition;
-		
-			this.transform.localScale = new Vector3 (21, 2, 29); //About 1.4x size
-		
+                    
+                    return;
+                }    
+                //keeping original position for Zoom
+                if (!zoomed)
+                {
+                    oriPosition = this.transform.position;
+                    zoomed = true;  
 
-			
-		
-			//if left-button clicked
-			if (Input.GetMouseButtonDown (0)) {
-				clicked = true;
-				if (handler != null)
-					handler.clicked ();
-			}
-		
+                }
+            
+                newPosition = oriPosition;*/
+            
+                //this.transform.localScale = new Vector3 (21, 2, 29); //About 1.4x size
+                //this.transform.position = new Vector3(newPosition.x, 50, newPosition.z);
 
-			//if right-click is held down
-			if (Input.GetMouseButton (1)) { 
-				if (player.player1) { //player 1
-					newPosition.z = oriPosition.z + 200; //Move up from bottom of screen
-				} else if (!player.player1) { //player 2
-					newPosition.z = oriPosition.z - 200; //Move down from top of screen
-				}
-				this.transform.position = newPosition;
-				this.transform.localScale = new Vector3 (45, 10, 63); //3x size
-			}
-		
-		}
+            
+                //if left-button clicked, set centered boolean true and move handpos
+                if (Input.GetMouseButtonDown(0) && !player.handCentered && player == player.player1 && isInHand)
+                {
+                    //DebugConsole.Log("1st");
+                    //newPosition.z = oriPosition.z + 200;
+                    //this.transform.position = new Vector3(newPosition.x, 10.5f, newPosition.z);
+                    clicked = true;
+                    player.handCentered = true;
+                    player.handPos = new Vector3(50, 400, -125);
+                    player.reposition();
+                    
+                }//check if it is centered then do handler action
+                else if (Input.GetMouseButtonDown(0) && player.handCentered && player == player.player1 && isInHand)
+                {
+                    //DebugConsole.Log("2nd");
+                    player.handCentered = false;
+                    player.handPos = new Vector3(550, 10, -375);
+                    player.reposition();
+                    if (handler != null)
+                    {
+                        handler.clicked();
+                    }
+                    else
+                    {
+                        //DebugConsole.Log("handler is null");
+                    }
+                }
+
+                else if (!isInHand)
+                {
+                    //DebugConsole.Log("last");
+                    if (handler != null)
+                    {
+                        handler.clicked();
+                    }
+                }
+                
+
+                //if right-click is held down
+                /*if (Input.GetMouseButton(1))
+                { 
+                    /*if (player.player1) { //player 1
+                        newPosition.z = oriPosition.z + 200; //Move up from bottom of screen
+                    } else if (!player.player1) { //player 2
+                        newPosition.z = oriPosition.z - 200; //Move down from top of screen
+                    }
+                    this.transform.position = newPosition;*//*
+                    this.transform.localScale = new Vector3(45, 10, 63); //3x size
+                    this.transform.position = new Vector3(newPosition.x, 50, newPosition.z + 200);
+                }
+
+                //if right-click is up
+                //echan
+                if (Input.GetMouseButtonUp(1))
+                { 
+                    /*if (player.player1) { //player 1
+                        newPosition.z = oriPosition.z + 200; //Move up from bottom of screen
+                    } else if (!player.player1) { //player 2
+                        newPosition.z = oriPosition.z - 200; //Move down from top of screen
+                    }
+                    this.transform.position = newPosition;*//*
+                    this.transform.localScale = new Vector3(15, 1, 21); //3x size
+                    this.transform.position = newPosition;
+                }*/
+            
+            }
+        }
 
 		void OnMouseExit ()
 		{
@@ -143,9 +232,9 @@ namespace CW
 			this.transform.localScale = new Vector3 (15, 1, 21);
 		
 			//Moves back to normal position if not clicked
-			if (!clicked && !inMotion) {
+			/*if (!clicked && !inMotion) {
 				this.transform.position = oriPosition;
-			}
+			}*/
 			zoomed = false;
 			clicked = false;
 		}
@@ -162,34 +251,57 @@ namespace CW
 
 		public void setCanAttack (bool canAttackNow)
 		{
-			this.canAttackNow = canAttackNow;	
+            this.canAttackNow = canAttackNow;	
 		}
-	
+        public void freeze(){
+            
+            frozen = true;
+
+        }
+
+        public void unfreeze(){
+            
+            frozen = false;
+
+        }
 		public bool canAttack ()
 		{
-			return canAttackNow;	
+			return canAttackNow && !frozen;	
 		}
 	
-		public void attack (AbstractCard clicked, AbstractCard target, bool damageback)
+		public void attack(AbstractCard clicked, AbstractCard target, bool damageback)
 		{
+            
 			calculateDirection (target.transform.position, true);
 
 			//NetworkManager.Send (CardAttackProtocol.Prepare (GameManager.matchID, attack, fieldPosition), ProcessSummonCard);		
 			target.receiveAttack (dmg);
-
+            //by Pedro
+            audioSource.clip = Resources.Load ("Sounds/attack") as AudioClip;
+            //audioSource.PlayDelayed (1);
+            audioSource.Play ();
 			if (damageback) {
 
 				clicked.receiveAttack (target.dmg);
 			}
-			canAttackNow = false;
-		
-		
-		
+			canAttackNow = false;		
 		}
+
+		public void applyFood(AbstractCard target, int deltaAttack, int deltaHealth){
+			target.dmg += deltaAttack;
+			target.maxHP += deltaHealth;
+			target.hp += deltaHealth;
+		}
+
+
 	
 		public void attackTree (Trees tree)
 		{
 			tree.receiveAttack (dmg);
+            //by Pedro
+            audioSource.clip = Resources.Load ("Sounds/attack") as AudioClip;
+            //audioSource.PlayDelayed (1);
+            audioSource.Play ();
 			setCanAttack (false);
 			player.clickedCard = null;
 			calculateDirection (tree.transform.position, true);
@@ -200,15 +312,25 @@ namespace CW
 		//Set the card so it can attack again
 		public void endTurn ()
 		{
-			canAttackNow = true;
+            /*P1 freezes, P2 animals frozenTurns = 1
+             * P1 ends turn and animals unfrozen, P2 animals check frozenTurns, still frozen
+             * P2 animals frozenTurns--, frozenTurns = 0
+             * P2 animals still frozen, end turn, frozen = false
+             */
+            
+            canAttackNow = true;
+            frozen=false;
+            
 		}
-	
+        public void Remove(){
+            removeAfterDelay = true;
+        }
 		public void receiveAttack (int dmg)
 		{
 			dmgTimer = 120;
 			transform.Find ("DamageText").GetComponent<TextMesh> ().text = "-" + dmg;
 			hp -= dmg;
-			Debug.Log ("Was dealt " + dmg + " damage and is now at " + hp + " hp");
+			//Debug.Log ("Was dealt " + dmg + " damage and is now at " + hp + " hp");
 		
 			if (hp <= 0) {
 				Debug.Log ("DEAD");	
@@ -278,8 +400,8 @@ namespace CW
 		}
 	
 		void Update ()
-		{	
-			if (removeAfterDelay) {
+		{
+            if (removeAfterDelay) {
 				delayTimer += Time.deltaTime;
 
 				if (delayTimer > DELAY_CONSTANT) {
@@ -311,11 +433,21 @@ namespace CW
 			} else if (dmg == naturalDmg) {
 				transform.Find ("AttackText").GetComponent<MeshRenderer> ().material.color = Color.white;
 			}
-			if (canAttackNow) {
-				transform.Find ("DoneText").GetComponent<TextMesh> ().text = "";
-			} else if (!canAttackNow) {
-				transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Done";
-			}
+            if (canAttack()) {
+                transform.Find ("DoneText").GetComponent<TextMesh> ().text = "";
+            } 
+            else if (!canAttackNow) {
+                ((Behaviour)GetComponent("Halo")).enabled = false;
+                transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Done";
+            }
+            if(player.currentMana < getManaCost ())
+            {
+                ((Behaviour)GetComponent("Halo")).enabled = false;
+            }
+            if (frozen) {
+                ((Behaviour)GetComponent("Halo")).enabled = false;
+                transform.Find ("DoneText").GetComponent<TextMesh> ().text = "Frozen";
+            }
 			//If damaged
 			if (dmgTimer > 0) {
 				dmgTimer--;
@@ -324,6 +456,26 @@ namespace CW
 			}
 			//Moving
 			moving ();
+
+            /*if(Input.GetMouseButtonDown(0) && player.handCentered)
+                {
+                    Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+                    RaycastHit hit;
+                    //player.reposition();
+                    if(Physics.Raycast(ray, out hit))
+                    {
+
+                        Debug.Log(hit.transform.gameObject.name);
+                        if(hit.transform.gameObject.name != "Card(Clone)" && hit.transform.gameObject.name != "Cardback(Clone)")
+                        {
+                            Debug.Log("Plane Clicked");
+                            player.handCentered = false;
+                            player.handPos = new Vector3(550, 10, -375);
+                            player.reposition();
+
+                        }
+                    }
+                }*/
 		}
 
 		//For wrapping long text

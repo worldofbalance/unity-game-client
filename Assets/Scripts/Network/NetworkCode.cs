@@ -21,7 +21,11 @@
 	
 	public static readonly short SHOP = 116;
 	public static readonly short SHOP_ACTION = 117;
-	public static readonly short PARAMS = 118;
+    //tile purchase 
+    public static readonly short TILE_PURCHASE = 301;
+    public static readonly short TILE_PRICE = 302;
+
+    public static readonly short PARAMS = 118;
 	public static readonly short CHANGE_PARAMETERS = 119;
 	public static readonly short GET_FUNCTIONAL_PARAMETERS = 120;
 	public static readonly short CHANGE_FUNCTIONAL_PARAMETERS = 121;
@@ -61,6 +65,17 @@
 	public static readonly short CONVERGE_HINT_COUNT = 151;
 	public static readonly short CONVERGE_NEW_ATTEMPT_SCORE = 152;
 
+	// DH change
+	// Multiplayer Convergence
+	public static readonly short MC_MATCH_INIT = 180;
+	public static readonly short MC_GET_TIME = 181;
+	public static readonly short MC_BET_UPDATE = 182;
+	public static readonly short MC_GET_NAMES = 183;
+	public static readonly short MC_GET_OTHER_SCORE = 184;
+    public static readonly short MC_CHECK_PLAYERS = 185;
+    public static readonly short MC_HOST_CONFIG = 186;
+    public static readonly short MC_NONHOST_CONFIG = 187;
+
 	public static readonly short TOPLIST = 153;
 
 	public static readonly short WAITFORGAME = 154;
@@ -99,4 +114,22 @@
 	public static readonly short MATCH_ACTION = 211;
 	public static readonly short MATCH_START = 212;
 	public static readonly short RETURN_LOBBY = 213;
+	public static readonly short APPLY_FOOD = 214;
+	public static readonly short APPLY_WEATHER = 215;
+
+    // Sea Divided
+    public static readonly short SD_GAME_LOGIN = 300;
+    public static readonly short SD_PLAY_INIT = 301;
+    public static readonly short SD_START_GAME = 302;
+    public static readonly short SD_END_GAME = 303;
+    public static readonly short SD_KEYBOARD = 304;
+    public static readonly short SD_PLAYER_POSITION = 305;
+    public static readonly short SD_PREY = 306;
+    public static readonly short SD_EAT_PREY = 307;
+    public static readonly short SD_SCORE = 308;
+    public static readonly short SD_DISCONNECT = 309;
+    public static readonly short SD_RECONNECT = 310;
+    public static readonly short SD_HEARTBEAT = 311;
+    public static readonly short SD_NPCPOSITION = 312;
+    public static readonly short SD_RESPAWN = 313;
 }

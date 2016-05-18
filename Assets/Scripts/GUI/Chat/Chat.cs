@@ -25,7 +25,7 @@ public class Chat : MonoBehaviour {
 		bgTexture = Resources.Load<Texture2D>(Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
 		font = Resources.Load<Font>("Fonts/" + "Chalkboard");
 
-		NetworkManager.Listen(
+		Game.networkManager.Listen(
 			NetworkCode.MESSAGE,
 			ProcessMessage
 		);
@@ -33,23 +33,30 @@ public class Chat : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start() {
-		if (!isHidden) {
-			windowRect = new Rect(Screen.width - width - 10, Screen.height - height - 10, width, height);
-		}
+		
 
 		scrollViewVector = Vector2.zero;
 	}
 	
 	// Update is called once per frame
 	void Update() {
+        if (isHidden) {
+            //windowRect = new Rect(Screen.width - width - 10, Screen.height - height - 10, width, height);
+        }
 	}
 
 	void OnDestroy() {
-		NetworkManager.Ignore(
+		Game.networkManager.Ignore(
 			NetworkCode.MESSAGE,
 			ProcessMessage
 		);
 	}
+    public void toggleChat(){
+        if (!isHidden)
+            isHidden = true;
+        else
+            isHidden = false;
+    }
 
 	void OnGUI() {
 		GUI.skin = skin;
@@ -133,7 +140,7 @@ public class Chat : MonoBehaviour {
 				else message = "";
 
 				if (recipient.Length > 0 && message.Length > 0) {
-					NetworkManager.Send(
+					Game.networkManager.Send(
 						MessageProtocol.Prepare(2, message, recipient)
 					);
 
@@ -148,7 +155,7 @@ public class Chat : MonoBehaviour {
 				message = "";
 			}
 		} else {
-			NetworkManager.Send(
+			Game.networkManager.Send(
 				MessageProtocol.Prepare(0, message, "")
 			);
 

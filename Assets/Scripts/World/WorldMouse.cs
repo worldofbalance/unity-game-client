@@ -1,82 +1,222 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class WorldMouse : MonoBehaviour {
-	
-	public GameObject defenderCursor;
-	public GameObject roamingCursor;
-	public GameObject attackerCursor;
-	public Zone currentTile { get; set; }
+public class WorldMouse : MonoBehaviour
+{
 
-	public TileInfoGUI tileInfoGUI;
-	
-	private int prevPlayerID;
+    public GameObject defenderCursor;
+    public GameObject roamingCursor;
+    public GameObject attackerCursor;
+    public Zone currentTile { get; set; }
 
-	private MapCamera mapCamera;
+    public Zone currentSelectedTile { get; set; }
 
-	// Use this for initialization
-	void Start() {
-		tileInfoGUI = gameObject.AddComponent<TileInfoGUI>();
-		mapCamera = GameObject.Find("MapCamera").GetComponent<MapCamera>();
-	}
-	
-	// Update is called once per frame
-	void Update() {
-		RaycastHit hit = new RaycastHit();
+    public TileInfoGUI tileInfoGUI;
+    private string[] terrain = new string[] { "Desert", "Jungle", "Grasslands", "Arctic" };
 
-		if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit)) {
-			if (hit.transform.gameObject.tag == "Zone") {
-				currentTile = hit.transform.gameObject.GetComponent<Zone>();
+    GameObject tileUi;
+    GameObject purchaseCursor;
+    Button purchaseButton;
 
-				if (currentTile.player_id != prevPlayerID) {
-					if (prevPlayerID > 0) {
-						GameObject.Find("Map").GetComponent<Map>().SelectTerritory(prevPlayerID, false);
-					}
+    private int prevPlayerID;
 
-					GameObject.Find("Map").GetComponent<Map>().SelectTerritory(currentTile.player_id, true);
-					prevPlayerID = currentTile.player_id;
-				}
+    private MapCamera mapCamera;
 
-				string owner_name = "";
-	
-				if (currentTile.player_id > 0) {
-					owner_name = GameObject.Find("Map").GetComponent<Map>().playerList[currentTile.player_id].name;
+    // Use this for initialization
+    void Start()
+    {
+        tileInfoGUI = gameObject.AddComponent<TileInfoGUI>();
+        mapCamera = GameObject.Find("MapCamera").GetComponent<MapCamera>();
+        tileUi = GameObject.Find("Canvas/Tilepurchasedialog") as GameObject;
 
-					Color playerColor = GameObject.Find("Map").GetComponent<Map>().playerList[currentTile.player_id].color;;
-					tileInfoGUI.bgColor = new Color(playerColor.r, playerColor.g, playerColor.b, 0.8f);
-				} else {
-					tileInfoGUI.DefaultColor();
-				}
-	
-				tileInfoGUI.SetInformation(currentTile.terrain_type, currentTile.v_capacity, owner_name);
-				tileInfoGUI.position = Camera.main.WorldToScreenPoint(currentTile.transform.position);
+        purchaseCursor = GameObject.Find("PurchaseCursor") as GameObject;
+        purchaseCursor.SetActive(false);
+        tileUi.SetActive(false);
 
-				tileInfoGUI.SetActive(true);
+        purchaseButton = tileUi.transform.GetChild(6).GetComponent<Button>();
+        purchaseButton.interactable = false;
 
-				roamingCursor.SetActive(true);
-				roamingCursor.transform.position = currentTile.transform.position + new Vector3(0, 0.1f, 0);
-//				roamingCursor.renderer.material.color = new Color32(0, 181, 248, 255);
-			}
-		} else {
-			tileInfoGUI.SetActive(false);
-			roamingCursor.SetActive(false);
-			currentTile = null;
-		}
+    }
+    void Awake()
+    {
 
-		switch (InputExtended.GetMouseNumClick(0)) {
-			case 1: // Single Click
-//				mouseDownPos = Input.mousePosition;
-//				oldCameraPos = transform.position;
-//				if (currentTile != null && currentTile.player_id > 0) {
-//					mapCamera.Center(currentTile.player_id);
-//					mapCamera.isLeaving = mapCamera.isZooming = true;
-//				}
-				break;
-			case 2: // Double Click
-				if (currentTile.player_id == GameState.player.GetID() && !Shop.gInshop) {
-					mapCamera.Move(currentTile.transform.position);
-				}
-				break;
-		}
-	}
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        RaycastHit hit = new RaycastHit();
+
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit) && (!EventSystem.current.IsPointerOverGameObject()))
+        {
+
+            if (hit.transform.gameObject.tag == "Zone")
+            {
+                currentTile = hit.transform.gameObject.GetComponent<Zone>();
+
+                //  Debug.Log("zone Id: " + currentTile.zone_id);
+
+                if (currentTile.player_id != prevPlayerID)
+                {
+                    if (prevPlayerID > 0)
+                    {
+                        GameObject.Find("Map").GetComponent<Map>().SelectTerritory(prevPlayerID, false);
+                    }
+
+                    GameObject.Find("Map").GetComponent<Map>().SelectTerritory(currentTile.player_id, true);
+                    prevPlayerID = currentTile.player_id;
+                }
+
+                string owner_name = "";
+
+                if (currentTile.player_id > 0)
+                {
+                    owner_name = GameObject.Find("Map").GetComponent<Map>().playerList[currentTile.player_id].name;
+
+                    Color playerColor = GameObject.Find("Map").GetComponent<Map>().playerList[currentTile.player_id].color; ;
+                    tileInfoGUI.bgColor = new Color(playerColor.r, playerColor.g, playerColor.b, 0.8f);
+                }
+                else {
+                    tileInfoGUI.DefaultColor();
+                }
+
+                tileInfoGUI.SetInformation(currentTile.terrain_type, currentTile.v_capacity, owner_name);
+                tileInfoGUI.position = Camera.main.WorldToScreenPoint(currentTile.transform.position);
+
+                tileInfoGUI.SetActive(true);
+
+                roamingCursor.SetActive(true);
+                roamingCursor.transform.position = currentTile.transform.position + new Vector3(0, 0.1f, 0);
+                //				roamingCursor.renderer.material.color = new Color32(0, 181, 248, 255);
+            }
+        }
+        else {
+            tileInfoGUI.SetActive(false);
+            roamingCursor.SetActive(false);
+            currentTile = null;
+        }
+
+        //used for tile purchasing 
+        switch (InputExtended.GetMouseNumClick(0))
+        {
+            case 1: // Single Click
+                    //modifies which tile you are currently selecting 
+                {
+                    if (!EventSystem.current.IsPointerOverGameObject())
+                    {
+                        //Check to make sure they are not currently using shop (Raycasting issues) 
+                        if (!Shop.gInshop)
+                        {
+                            if (tileUi.activeSelf && currentTile.player_id == 0)
+                            {
+                                Debug.Log(tileUi.name);
+
+
+                                currentSelectedTile = currentTile;
+                                //  purchaseCursor.GetComponent<MeshRenderer>().material.color = new Color(0, 0, 0, 1);
+                                //locking the cursor on the tile 
+                                purchaseCursor.transform.position = currentTile.transform.position + new Vector3(0, 0.1f, 0);
+                                purchaseCursor.SetActive(true);
+
+                                // Get and compare the price of the tile with the user's credits
+                                Game.networkManager.Send(
+                                    TilePriceProtocol.Prepare(currentSelectedTile.zone_id), processPrice);
+
+                                tileUi.transform.GetChild(2).GetComponent<Text>().text = terrain[currentSelectedTile.terrain_type - 1];
+                                tileUi.transform.GetChild(3).GetComponent<Text>().text = currentSelectedTile.v_capacity.ToString();
+                            }
+                        }
+                    }
+                }
+                break;
+
+            case 2: // Double Click
+                    // This case is being used for purchasing tiles, and accessing your ecosystem 
+                if (!EventSystem.current.IsPointerOverGameObject())
+                {
+                    //Check to make sure they are not currently using shop (Raycasting issues) 
+                    if (!Shop.gInshop)
+                    {
+                        //Launch the ecosystem if they are clicking on owned tiles 
+                        if (currentTile.player_id == GameState.player.GetID())
+                        {
+                            mapCamera.Move(currentTile.transform.position);
+
+                        }
+                        else if (currentTile.player_id == 0 && !tileUi.activeSelf) // check to see if tile can be purchased 
+                                                                                   // **NOTE** if the tile's owner is "NULL" in the db, player_id = 0
+                        {
+                            Debug.Log(tileUi.name);
+                            currentSelectedTile = currentTile;
+                            //purchase cursor
+                            purchaseCursor.transform.position = currentTile.transform.position + new Vector3(0, 0.1f, 0);
+                            purchaseCursor.SetActive(true);
+
+                            // Get and compare the price of the tile with the user's credits
+                            Game.networkManager.Send(
+                                TilePriceProtocol.Prepare(currentSelectedTile.zone_id), processPrice);
+
+                            tileUi.transform.GetChild(2).GetComponent<Text>().text = terrain[currentSelectedTile.terrain_type - 1];
+                            tileUi.transform.GetChild(3).GetComponent<Text>().text = currentSelectedTile.v_capacity.ToString();
+                            // set the price using Request/REsponse 
+                            // tileUi.transform.GetChild(4).GetComponent<Text>().text = "XXXX";
+                            tileUi.SetActive(true);
+
+
+                        }
+                        //View other player's ecosystem (Future )
+                        else
+                        {
+                            //content 
+                        }
+                    }
+                }
+                Debug.Log("double click event success");
+                //Exit the case
+                break;
+        }
+    }
+
+    public void processPrice(NetworkResponse response)
+    {
+        TilePrice args = response as TilePrice;
+        Debug.Log("inside process TilePrice Process ");
+        if (args.status == 0)
+        {
+            // set price to free
+            if (args.price == 0)
+                tileUi.transform.GetChild(4).GetComponent<Text>().text = "Free";
+            else
+                //sets the price to calculated
+                tileUi.transform.GetChild(4).GetComponent<Text>().text = args.price.ToString();
+
+
+            //can purchase tile 
+            if (args.canBuy)
+            {
+                purchaseButton.interactable = true;
+                tileUi.GetComponent<RectTransform>().sizeDelta = new Vector2(300, 200);
+                tileUi.transform.GetChild(5).gameObject.SetActive(false);
+
+
+            }
+            else // cant purchase Tile 
+            {
+                purchaseButton.interactable = false;
+                tileUi.GetComponent<RectTransform>().sizeDelta = new Vector2(300, 210);
+                tileUi.transform.GetChild(5).gameObject.SetActive(true);
+
+            }
+        }
+        else
+        {
+            Debug.Log("Failed to send response");
+        }
+
+
+    }
+
 }

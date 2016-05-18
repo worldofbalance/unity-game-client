@@ -45,12 +45,12 @@ public class Clock : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
-		NetworkManager.Send(
+		CWGame.networkManager.Send(
 			UpdateTimeProtocol.Prepare(),
 			ProcessUpdateTime
 		);
 
-		NetworkManager.Listen(
+		CWGame.networkManager.Listen(
 			NetworkCode.UPDATE_TIME,
 			ProcessUpdateTime
 		);
@@ -74,7 +74,7 @@ public class Clock : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		NetworkManager.Ignore(
+		CWGame.networkManager.Ignore(
 			NetworkCode.UPDATE_TIME,
 			ProcessUpdateTime
 		);

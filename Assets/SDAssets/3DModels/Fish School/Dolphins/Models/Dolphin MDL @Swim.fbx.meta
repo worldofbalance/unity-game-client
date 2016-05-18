@@ -1,0 +1,162 @@
+fileFormatVersion: 2
+guid: b201a964ed142404697a9e89068e7c60
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Lip
+    100004: Head
+    100006: b3
+    100008: b1
+    100010: Root
+    100012: SalmonMesh
+    100014: b6
+    100016: Jaw
+    100018: b5
+    100020: b4
+    100022: b2
+    100024: DolphinMesh
+    100026: Flipper_L_1
+    100028: Flipper_L_2
+    100030: Flipper_L_3
+    100032: Flipper_R_1
+    100034: Flipper_R_2
+    100036: Flipper_R_3
+    100038: Head_1
+    100040: Head_2
+    100042: Head_3
+    100044: Head_4
+    100046: Head_5
+    100048: Tail_1
+    100050: Tail_2
+    100052: Tail_3
+    100054: Tail_4
+    100056: Tail_5
+    100058: Tail_6
+    100060: Tail_7
+    100062: Tail_8
+    400000: //RootNode
+    400002: Lip
+    400004: Head
+    400006: b3
+    400008: b1
+    400010: Root
+    400012: SalmonMesh
+    400014: b6
+    400016: Jaw
+    400018: b5
+    400020: b4
+    400022: b2
+    400024: DolphinMesh
+    400026: Flipper_L_1
+    400028: Flipper_L_2
+    400030: Flipper_L_3
+    400032: Flipper_R_1
+    400034: Flipper_R_2
+    400036: Flipper_R_3
+    400038: Head_1
+    400040: Head_2
+    400042: Head_3
+    400044: Head_4
+    400046: Head_5
+    400048: Tail_1
+    400050: Tail_2
+    400052: Tail_3
+    400054: Tail_4
+    400056: Tail_5
+    400058: Tail_6
+    400060: Tail_7
+    400062: Tail_8
+    4300000: polySurface1
+    4300002: SalmonMesh
+    4300004: DolphinMesh
+    7400000: Swim
+    7400002: DolphinSwim
+    11100000: //RootNode
+    13700000: Root
+    13700002: SalmonMesh
+    13700004: DolphinMesh
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 0
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 2
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: DolphinSwim
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 48
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .5
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 180
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

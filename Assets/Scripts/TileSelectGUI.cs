@@ -23,7 +23,7 @@ public class TileSelectGUI : MonoBehaviour {
 		mainObject = GameObject.Find("MainObject");
 		mapCamera = GameObject.Find("MapCamera").GetComponent<MapCamera>();
 
-		NetworkManager.Listen(
+		Game.networkManager.Listen(
 			NetworkCode.ZONE,
 			ProcessZone
 		);
@@ -40,7 +40,7 @@ public class TileSelectGUI : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		NetworkManager.Ignore(
+		Game.networkManager.Ignore(
 			NetworkCode.ZONE,
 			ProcessZone
 		);
