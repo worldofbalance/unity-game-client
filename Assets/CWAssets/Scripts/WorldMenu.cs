@@ -227,7 +227,7 @@ public class WorldMenu : MonoBehaviour {
 				Debug.Log(species_id + " " + biomass);
 			}
 
-			NetworkManager.Send(
+			CWGame.networkManager.Send(
 				SpeciesActionProtocol.Prepare(1, speciesList),
 				ProcessSpeciesAction
 			);

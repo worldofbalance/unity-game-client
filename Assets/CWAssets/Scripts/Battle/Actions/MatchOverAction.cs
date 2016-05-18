@@ -10,14 +10,18 @@ public class MatchOverAction : TurnAction{
 	base(intCount, stringCount, intList, stringList){}	
 		
 	override public void readData(){
-		wonGame = intList[0];
-			
-	}
-	
-	override public void execute(){
-		readData ();
-		Debug.Log ("Executing MatchOverAction");
-		// Do stuff
-	}
+        if (intCount > 0)
+        {
+            wonGame = intList[0];
+        }
+    }
+
+    override public void execute()
+    {
+        readData();
+        Debug.Log("Executing MatchOverAction");
+        // Do stuff
+        //GameManager.protocols.sendMatchOver(GameManager.player1.playerID, wonGame);
+    }
 }
 }

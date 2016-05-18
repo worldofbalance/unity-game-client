@@ -23,6 +23,18 @@ namespace RR
 
         private PlayerPhysics playerPhysics;
 
+
+
+
+        private float barDisplay = 0.0f;
+        private Vector2 pos = new Vector2(620,20);
+        private Vector2 size = new Vector2(300,30);
+        public Texture2D progressBarEmpty;
+        public Texture2D progressBarFull;
+
+
+
+
         void Start()
         {
             speed = Running.BASE_SPEED;
@@ -34,6 +46,30 @@ namespace RR
 			DebugConsole.Log(gravity.ToString());
             playerPhysics = GetComponent<PlayerPhysics>();
             anim = GetComponent<Animator>();
+        }
+
+        void OnGUI ()
+        {
+            GUIStyle myStyle = new GUIStyle ();
+            myStyle.normal.textColor = Color.black;
+            myStyle.fontSize = 20;
+            myStyle.alignment = TextAnchor.UpperCenter;
+
+
+            GUI.Label (new Rect (520, 25, 100, 20),
+                "Speed:",
+                myStyle);
+
+            GUI.BeginGroup (new Rect (pos.x, pos.y, size.x, size.y));
+            GUI.Box (new Rect (0, 0, size.x, size.y),"");
+
+            // draw the filled-in part:
+            GUI.BeginGroup (new Rect (0, 0, size.x * barDisplay, size.y));
+            GUI.Box (new Rect (0,0, size.x, size.y),"");
+            GUI.EndGroup ();
+
+            GUI.EndGroup ();
+            
         }
 
         void Update()
@@ -55,6 +91,8 @@ namespace RR
 
             targetSpeed = direction * speed;
             currentSpeed = IncrementTowards(currentSpeed, targetSpeed, acceleration);
+
+            barDisplay =  speed / Running.MAX_SPEED;
 
             //Animation code
             anim.SetFloat("speed", currentSpeed);

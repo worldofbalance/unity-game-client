@@ -1,0 +1,94 @@
+fileFormatVersion: 2
+guid: ac2194781a2bb224aba99202e41268da
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: b5
+    100002: b4
+    100004: //RootNode
+    100006: b3
+    100008: b2
+    100010: b1
+    100012: Lip
+    100014: Root
+    100016: AmberjackMesh
+    100018: b6
+    100020: Jaw
+    100022: Head
+    400000: b5
+    400002: b4
+    400004: //RootNode
+    400006: b3
+    400008: b2
+    400010: b1
+    400012: Lip
+    400014: Root
+    400016: AmberjackMesh
+    400018: b6
+    400020: Jaw
+    400022: Head
+    4300000: BassMesh3
+    4300002: BassMesh4
+    4300004: AmberjackMesh
+    7400002: Take 001
+    11100000: //RootNode
+    13700000: Root
+    13700002: AmberjackMesh
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 0
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 2
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 15
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

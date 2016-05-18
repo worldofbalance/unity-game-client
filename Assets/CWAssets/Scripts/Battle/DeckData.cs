@@ -53,12 +53,12 @@ public class CardData {
 	public int health {get; set;}
 	public int attack {get; set;}
 	public int level {get; set;}
-	public int dietType {get; set;}
+	public string dietType {get; set;}
 	public string speciesName {get; set;}
 	public string description {get; set;}
 	//public string type {get; set;}
 
-	public CardData(int cardID, int health, int attack, int level, int dietType,  
+	public CardData(int cardID, int health, int attack, int level, string dietType,  
 	            string speciesName, string description){
 		this.cardID = cardID;
 		this.health = health;
