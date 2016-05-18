@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -140,6 +140,7 @@ namespace RR
                 // Instantiate(map, new Vector3((float)(20 + (i * 62.9)), 0.507454f, 0), Quaternion.identity);
                 //map = Instantiate(Resources.Load("Box")) as GameObject;
 
+<<<<<<< HEAD
                 string mapResourcePath = (i == 0 || i == mapLength - 1)? "Prefabs/Maps/BaseMapVar" : "Prefabs/Maps/MapVar_" + Random.Range(0, 5);
 
                 map = Instantiate (
@@ -147,6 +148,22 @@ namespace RR
                     new Vector3 (tempEnd, -2.5f, 0),
                     Quaternion.identity
                 ) as GameObject;
+=======
+                if (i == 0){
+                    map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
+					// map.transform.localScale = new Vector3(myScale2, myScale, 0);
+				}
+                else if (i == mapLength - 1){
+                    map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
+					
+					// map.transform.localScale = new Vector3(myScale2, myScale, 0);
+				}
+                else{
+                    map = Instantiate(Resources.Load("Prefabs/Maps/MapVar_" + Random.Range(0, 6)), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
+					
+					// map.transform.localScale = new Vector3(myScale2, myScale, 0);
+				}
+>>>>>>> dev-rno-vector-final
 
                 map.name = "aMap" + i;
                 //(float)(20 + (i * 62.9))
