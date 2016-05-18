@@ -16,4 +16,11 @@ Free Sound Effects and BGM
 2, consume.mp3 - http://www.flashkit.com/soundfx/Ambience/Woop-Ryan_Cur-8800/index.php
 3, damage.mp3  - http://soundbible.com/2069-Realistic-Punch.html
 4, scoring.mp3 - http://taira-komori.jpn.org/freesounden.html
+
+
+Background 
+1, We used a paid Unity assets called "Fish Pack" by Deko
+   - https://www.assetstore.unity3d.com/en/#!/content/11254
+
  */ 
+
