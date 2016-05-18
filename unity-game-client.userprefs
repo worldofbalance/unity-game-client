@@ -1,22 +1,18 @@
-﻿<Properties StartupItem="Assembly-CSharp.csproj">
+﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-<<<<<<< HEAD
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/DontEatMe/DemTurnSystem.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/RRAssets/Scripts/SpeciesTable.cs">
     <Files>
-      <File FileName="Assets/Scripts/DontEatMe/DemTile.cs" Line="374" Column="62" />
-      <File FileName="Assets/Scripts/DontEatMe/DemTurnSystem.cs" Line="121" Column="1" />
-      <File FileName="Assets/Scripts/DontEatMe/BuildMenu.cs" Line="730" Column="5" />
-      <File FileName="Assets/Scripts/DontEatMe/SpeciesConstants.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/DontEatMe/DemAnimalFactory.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/DontEatMe/DemMain.cs" Line="1" Column="1" />
-=======
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/CWAssets/Scripts/Constants.cs">
-    <Files>
+      <File FileName="Assets/Scripts/Config.cs" Line="6" Column="67" />
       <File FileName="Assets/Scripts/Constants.cs" Line="23" Column="50" />
-      <File FileName="Assets/Scripts/Config.cs" Line="1" Column="1" />
-      <File FileName="Assets/Game.cs" Line="1" Column="1" />
-      <File FileName="Assets/CWAssets/Scripts/Constants.cs" Line="14" Column="5" />
->>>>>>> 5157b5f06bed92a2011d15689b16b019646578cd
+      <File FileName="Assets/Scripts/ClashOfSpecies/Defense/ClashDefenseSetup.cs" Line="89" Column="75" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Camera/COSDesktopInputController.cs" Line="159" Column="72" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/COSMobileInputControler.cs" Line="33" Column="25" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Camera/DetectTouchMovement.cs" Line="4" Column="25" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/SpeciesClickController.cs" Line="5" Column="20" />
+      <File FileName="Assets/Game.cs" Line="23" Column="38" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/COSAbstractInputController.cs" Line="38" Column="1" />
+      <File FileName="Assets/Scripts/DontEatMe/DemAnimalFactory.cs" Line="4" Column="30" />
+      <File FileName="Assets/RRAssets/Scripts/SpeciesTable.cs" Line="13" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

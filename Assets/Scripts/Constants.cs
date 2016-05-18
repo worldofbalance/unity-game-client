@@ -13,14 +13,14 @@ public class Constants
     // Constants
     public static readonly string CLIENT_VERSION = "1.00";
 
-       //public static readonly string REMOTE_HOST = "localhost";
+    //public static readonly string REMOTE_HOST = "localhost";
     public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
     // IP address may be 130.212.3.51
 
     //public static readonly int REMOTE_PORT = 9234;
     //20041;
-    public static readonly int REMOTE_PORT = 9257;    //9257 9255 for locahost, 9257 for Anu's server
-    //public static readonly int REMOTE_PORT = 9255;
+    //    public static readonly int REMOTE_PORT = 9257;    //9257 9255 for locahost, 9257 for Anu's server
+    public static readonly int REMOTE_PORT = 9255;
     public static readonly float HEARTBEAT_RATE = 1f;
 	
     // Other
@@ -31,8 +31,8 @@ public class Constants
 
     public static string ACTIVE_THEME = "Default";
 	
-    public static readonly Font FONT_01 = Resources.Load<Font> ("Fonts/" + "Chalkboard");
-    public static readonly Texture2D BG_TEXTURE_01 = Resources.Load<Texture2D> (Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
+    public static readonly Font FONT_01 = Resources.Load<Font>("Fonts/" + "Chalkboard");
+    public static readonly Texture2D BG_TEXTURE_01 = Resources.Load<Texture2D>(Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
 
     // Converge game
     public static readonly int ID_NOT_SET = -1;
@@ -77,7 +77,7 @@ public class Constants
 
     public static int unique_id = 1000;
 
-    public static int GetUniqueID ()
+    public static int GetUniqueID()
     {
         return unique_id++;
     }
@@ -86,7 +86,7 @@ public class Constants
 	
     public static int MONTH_DURATION = 180;
 	
-    public static Dictionary<int, SpeciesData> shopList = new Dictionary<int, SpeciesData> ();
+    public static Dictionary<int, SpeciesData> shopList = new Dictionary<int, SpeciesData>();
 
     // Mini games
     public static readonly int MINIGAME_RUNNING_RHINO = 1;
