@@ -16,16 +16,24 @@ public class TilePurchaseButton : MonoBehaviour, IPointerClickHandler
 
     // getting the current tile id 
     GameObject localObject;
+    GameObject map;
     Zone currentTile;
     GameObject purchaseCursor;
+    GameObject tilePurchaseSuccess;
+    GameObject welcome;
+
+    GameObject mapTileSelected;
+    
 
 
     void Awake()
     {
         // setting up gameobject via script
         tileUi = GameObject.Find("Tilepurchasedialog");
-       // button1 = tileUi.transform.GetChild(...).GetComponent<Button>();
-      //  text1 = button1.transform.GetChild(0).GetComponent<Text>();
+        tilePurchaseSuccess = GameObject.Find("Canvas/PurchaseSuccess") as GameObject;
+        welcome = GameObject.Find("Canvas/FirstWelcome") as GameObject;
+        // button1 = tileUi.transform.GetChild(...).GetComponent<Button>();
+        //  text1 = button1.transform.GetChild(0).GetComponent<Text>();
 
 
         // if script is attached to button in editor
@@ -37,8 +45,10 @@ public class TilePurchaseButton : MonoBehaviour, IPointerClickHandler
     void Start()
     {
         localObject = GameObject.Find("Local Object");
+        map = GameObject.Find("Map");
         currentTile = localObject.GetComponent<WorldMouse>().currentSelectedTile;
         purchaseCursor = GameObject.Find("PurchaseCursor") as GameObject;
+        mapTileSelected = GameObject.Find("Zone " + currentTile.row + "-" + currentTile.column) as GameObject;
     }
     void Update()
     {
@@ -67,6 +77,11 @@ public class TilePurchaseButton : MonoBehaviour, IPointerClickHandler
                                 TilePurchaseProtocol.Prepare(currentTile.zone_id), processTilePurchase);
 
             }
+            else if (currentText.text == "Close")
+            {
+                welcome.SetActive(false);
+                tilePurchaseSuccess.SetActive(false);
+            }
 
         }
         // does what you need when you click stuff
@@ -82,14 +97,41 @@ public class TilePurchaseButton : MonoBehaviour, IPointerClickHandler
 
         if (args.status == 0)
         {
+            //Setting the new player credits, and relaunching the map 
+            GameState.player.credits = args.credits; 
+
             tileUi.SetActive(false);
             purchaseCursor.SetActive(false);
+            //Updating the information just for the user..
+            //Note: the actual map will not reflect hte purchases of others until the user restarts their client
+            currentTile.player_id = GameState.player.GetID();
+            Color playerColor = GameState.player.color;
+            currentTile.transform.GetChild(0).GetComponent<Renderer>().material.color = playerColor;
+
+            //adding the player's new tile to their territory 
+            map.GetComponent<Map>().playerTiles[GameState.player.GetID()].Add(mapTileSelected);
+
+            //adding the territory ui to the map 
+            GameObject select = Instantiate(map.GetComponent<Map>().hexSelect) as GameObject;
+            select.transform.position = currentTile.transform.position + new Vector3(0, 0.1f, 0);
+            select.transform.parent = currentTile.transform.GetChild(0);
+            select.GetComponent<Renderer>().material.color = playerColor;
+            select.SetActive(false);
+
+            tilePurchaseSuccess.transform.GetChild(3).GetComponent<Text>().text = args.credits.ToString();
+            tilePurchaseSuccess.SetActive(true);
 
         }
         else
         {
             Debug.Log("Failed to send response");
         }
+
+
+    }
+
+    public void regenerateMap()
+    {
 
 
     }
