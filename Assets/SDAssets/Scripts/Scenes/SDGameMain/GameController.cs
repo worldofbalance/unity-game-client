@@ -32,7 +32,7 @@ namespace SD {
         public float stamina;       // Player's stamina
         public int health;
         private const float MaxStamina = 100;
-        private float staminaRecoveryRate = 0.08f;
+        private float staminaRecoveryRate = 0.115f;
 
         public Boundary boundary;
         public Rigidbody player;

@@ -17,7 +17,7 @@ namespace SD {
 
         private GameController gameController;
         private float time;
-        private float secondsToScore = 3f;
+        private float secondsToScore = 2.75f;
         private float staminaRevoverRate = 0.1f;
         public GameObject countdownPanel;
         public bool inBase = false;
@@ -41,10 +41,13 @@ namespace SD {
         void OnTriggerEnter(Collider other) {
             if (other.tag == "Player") {
                 time = secondsToScore;
-                if (gameController.GetUnscored() > 0) {
-                    audioSource.Play ();
-                    gameController.showCountdownPanel ();
+                if (gameController.GetUnscored() > 0)
+                {
+                    audioSource.Play();
+                    gameController.showCountdownPanel();
                 }
+                else gameController.hideCountdownPanel();
+
             }
         }
 
