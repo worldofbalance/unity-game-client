@@ -10,7 +10,7 @@ namespace SD {
     public class DestroyByContact : MonoBehaviour {
 
         private GameController gameController;
-        private const int newScoreValue = 10; // Score to be recieved by eating prey
+        private int newScoreValue = 10; // Score to be recieved by eating prey
         private GameObject mainCamera;
         private AudioSource audioSource;
         public AudioClip audioClip;
@@ -41,7 +41,9 @@ namespace SD {
                 }
                 AudioSource.PlayClipAtPoint (audioClip, mainCamera.transform.position);
                 gameController.destroyPrey (npcFishId);
-                gameController.AddUnscoredPoint (newScoreValue);
+                if(npcFishSpeciesId==5){gameController.AddUnscoredPoint (newScoreValue*2);
+                    //attempting to increase points based on food chain relationship
+				}else gameController.AddUnscoredPoint (newScoreValue);
             }
         }
     }

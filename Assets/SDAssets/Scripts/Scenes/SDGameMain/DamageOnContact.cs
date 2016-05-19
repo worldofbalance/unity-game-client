@@ -10,7 +10,7 @@ namespace SD {
     public class DamageOnContact : MonoBehaviour {
 
         private GameController gameController;
-        private const int damage = -10; // Score to be recieved by eating prey
+        private const int damage = -20; // Score to be recieved by eating prey
         private GameObject mainCamera;
         private AudioSource audioSource;
         public AudioClip audioClip;
@@ -43,7 +43,7 @@ namespace SD {
         }
 
         IEnumerator destroyBleeding(){
-            yield return new WaitForSeconds (5);
+            yield return new WaitForSeconds (3.85);
             Destroy (GameObject.FindGameObjectWithTag ("Bubbles"));
         }
         }
