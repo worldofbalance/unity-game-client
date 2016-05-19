@@ -32,23 +32,25 @@ namespace SD
                 response.yPosition = DataReader.ReadFloat (dataStream);
                 response.rotation = DataReader.ReadFloat (dataStream);
                 // Set the required parameters to the NPCFish objects.
-                if (GameController.getInstance ().getNpcFishes ().ContainsKey (response.preyId)) {
-                    // The species already exists, simply adjust the position/rotation.
-                    NPCFish npcFish = GameController.getInstance ().getNpcFishes ()[response.preyId];
-                    npcFish.xPosition = response.xPosition;
-                    npcFish.yPosition = response.yPosition;
-                    npcFish.target = new Vector2 (npcFish.xPosition, npcFish.yPosition);
-                    npcFish.xRotationAngle = response.rotation;
-                } else {
-                    // This object needs to be created.
-                    NPCFish npcFish = new NPCFish(response.preyId);
-                    npcFish.xPosition = response.xPosition;
-                    npcFish.yPosition = response.yPosition;
-                    npcFish.target = new Vector2 (npcFish.xPosition, npcFish.yPosition);
-                    npcFish.xRotationAngle = response.rotation;
-                    npcFish.speciesId = response.speciesId;
-                    GameController.getInstance().setNpcFish(response.preyId, npcFish);
-                    GameController.getInstance().spawnPrey (npcFish.id, npcFish.speciesId);
+                if (GameController.getInstance () != null) {
+                    if (GameController.getInstance ().getNpcFishes ().ContainsKey (response.preyId)) {
+                        // The species already exists, simply adjust the position/rotation.
+                        NPCFish npcFish = GameController.getInstance ().getNpcFishes () [response.preyId];
+                        npcFish.xPosition = response.xPosition;
+                        npcFish.yPosition = response.yPosition;
+                        npcFish.target = new Vector2 (npcFish.xPosition, npcFish.yPosition);
+                        npcFish.xRotationAngle = response.rotation;
+                    } else {
+                        // This object needs to be created.
+                        NPCFish npcFish = new NPCFish (response.preyId);
+                        npcFish.xPosition = response.xPosition;
+                        npcFish.yPosition = response.yPosition;
+                        npcFish.target = new Vector2 (npcFish.xPosition, npcFish.yPosition);
+                        npcFish.xRotationAngle = response.rotation;
+                        npcFish.speciesId = response.speciesId;
+                        GameController.getInstance ().setNpcFish (response.preyId, npcFish);
+                        GameController.getInstance ().spawnPrey (npcFish.id, npcFish.speciesId);
+                    }
                 }
 
             }

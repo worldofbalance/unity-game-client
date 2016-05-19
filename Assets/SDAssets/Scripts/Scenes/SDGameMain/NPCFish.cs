@@ -15,6 +15,8 @@ namespace SD
         public bool toBeCreated { get; set; }
         public Vector2 target { get; set; }
         public int targetOffset { get; set; }
+        public float speed { get; set;}
+        public bool isAttacking {get; set;}
 
         public NPCFish (int id)
         {

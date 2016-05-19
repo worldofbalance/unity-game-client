@@ -169,7 +169,9 @@ namespace SD {
                 // The NPC Fish destroyed on the server is still alive in the client, so destroy it.
                 Debug.Log("Opponent consumed prey with ID: " + response.preyId);
                 fish.isAlive = false;
-                gameController.destroyPrey (response.preyId);
+                if (gameController.getNpcFishes ().ContainsKey (response.preyId)) {
+                    gameController.destroyPrey (response.preyId);
+                }
             }
         }
 
