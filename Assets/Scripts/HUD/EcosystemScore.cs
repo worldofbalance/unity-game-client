@@ -44,12 +44,9 @@ public class EcosystemScore : MonoBehaviour {
 			
 			Color color = new Color(1.0f, 0.93f, 0.73f, 1.0f);
 	
-			//GUIExtended.Label(new Rect(-100, 0, 400, 0), "Ecosystem Score", style, Color.black, color);
-	
 			style.fontSize = 24;
 			style.alignment = TextAnchor.UpperCenter;
 	
-			//GUIExtended.Label(new Rect(100, -3, 240, 50), score.ToString("n0"), style, Color.black, Color.white);
 		GUI.EndGroup();
 	}
 

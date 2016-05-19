@@ -81,15 +81,7 @@ public class Clock : MonoBehaviour {
 	}
 	
 	void OnGUI() {
-		//GUIStyle style = new GUIStyle(skin.label);
-		//style.font = skin.font;
-		//style.fontSize = 20;
-		//style.alignment = TextAnchor.UpperCenter;
-		
-		//GUI.BeginGroup(new Rect(Screen.width / 2 - 75, 10, 150, 150));
-		//	//GUIExtended.Label(new Rect(0, 0, 150, 50), DateTimeFormatInfo.CurrentInfo.GetMonthName(month), style, Color.black, Color.white);
-		//	//GUIExtended.Label(new Rect(0, 25, 150, 50), "Day " + day, style, Color.black, Color.white);
-		//GUI.EndGroup();
+
 	}
 
 	public void ProcessUpdateTime(NetworkResponse response) {
