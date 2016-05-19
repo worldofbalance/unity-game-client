@@ -11,15 +11,19 @@ public class BarCharScript : MonoBehaviour {
 	public Bar barPrefab;
 	List<Bar> bars = new List<Bar>();
 	float chartHeight;
-	private int[] playerScores;
-	private string[] labels;
+	private int[] playerScores = new int[4];
+	private string[] labels = new string[4];
 	private Color[] colors = new Color[]{Color.red,  Color.green, Color.cyan, Color.white};
 	public delegate void Callback (String[] topPlayerNames, int[] topPlayerscores);
+	public Text player1Name, player2Name, player3Name, player4Name;
+
 
 	void Start () {
+		
 		requestTopPlayers ();
 		chartHeight = Screen.height + GetComponent<RectTransform>().sizeDelta.y;
-		//DisplayGraph (playerScores, labels);
+
+
 
 	}
 
@@ -27,29 +31,32 @@ public class BarCharScript : MonoBehaviour {
 	{
 		//passedInFunc = callback;
 
-		Game.networkManager.Send(
-			TopListProtocol.Prepare(),
-			ProcessTopList
-		);
+		Game.networkManager.Send(TopListProtocol.Prepare(), ProcessTopList);
 	}
 
 	private void ProcessTopList(NetworkResponse response)
 	{
-		Debug.Log ("PROCESSING TOP LIST");
+		
 		ResponseTopList args = response as ResponseTopList;
+	
 		labels[0] = args.name1;
 		labels[1] = args.name2;
 		labels[2] = args.name3;
+		labels [3] = "You";
 		playerScores[0] = args.score1;
 		playerScores[1] = args.score2;
 		playerScores[2] = args.score3;
-
-		Debug.Log("Top Guy: "+labels[0]+ "  Top Score: "+playerScores[0]);
-
+		playerScores [3] = 1800;
+		player1Name.text = "1) " + labels [0] + ": " + playerScores [0];
+		player2Name.text = "2) " + labels [1] + ": " + playerScores [1];
+		player3Name.text = "3) " + labels [2] + ": " + playerScores [2];
+		player4Name.text = "4) " + labels [3] + ": " + playerScores [3];
+		DisplayGraph (playerScores, labels);
 	}
 
 	void DisplayGraph(int[] vals, string[]labels){
 		//find largest value
+
 		int maxValue = vals.Max();
 
 		for (int i = 0; i < vals.Length; i++){
