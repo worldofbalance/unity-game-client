@@ -55,9 +55,15 @@ public class COSMobileInputControler:COSAbstractInputController
     private Vector3 scrollDirection = Vector3.zero;
     private Vector3 oldTouchPos;
 
+    ClashGameManager manager;
+
     public override void InputControllerAwake(Terrain t)
     {
-        
+        manager = GameObject.Find("MainObject").GetComponent<ClashGameManager>();
+        if (manager.zoomSpeed != 0)
+            DetectTouchMovement.pinchTurnRatio = manager.zoomSpeed;
+        if (manager.rotateSpeed != 0)
+            DetectTouchMovement.pinchTurnRatio = manager.rotateSpeed;
     }
 
     /// <summary>
@@ -69,42 +75,25 @@ public class COSMobileInputControler:COSAbstractInputController
     /// 
     public override RaycastHit InputUpdate(Camera _camera)
     {
-        if (updateZoomSensitivity)
-        {
-            moveSensitivityX = _camera.orthographicSize / 5.0f;
-            moveSensitivityY = _camera.orthographicSize / 5.0f;
-        }
+//        if (updateZoomSensitivity)
+//        {
+//            moveSensitivityX = _camera.orthographicSize / 5.0f;
+//            moveSensitivityY = _camera.orthographicSize / 5.0f;
+//        }
 
         Touch[] touches = Input.touches;
 
 //        eTouchRes = COSTouchState.None;
         RaycastHit hit = new RaycastHit();
 
-        if (touches.Length < 1)
-        {
-            DetectTouchMovement.rotating = false;
-            //if the camera is currently scrolling
-            if (scrollVelocity != 0.0f)
-            {
-                //slow down over time
-                float t = (Time.time - timeTouchPhaseEnded) / inertiaDuration;
-                float frameVelocity = Mathf.Lerp(scrollVelocity, 0.0f, t);
-                Vector3 currTransform = -(Vector3)scrollDirection.normalized * (frameVelocity * 0.05f) * Time.deltaTime;
-                currTransform.y = 0;
-                _camera.transform.position += currTransform;
-
-                if (t >= 1.0f)
-                    scrollVelocity = 0.0f;
-            }
-            eTouchRes = COSTouchState.None;
-        }
-
         if (touches.Length > 0)
         {
             //Single touch (move)
             if (touches.Length == 1)
             {
-                DetectTouchMovement.rotating = false;
+//                DetectTouchMovement.rotating = false;
+//                DetectTouchMovement.
+                eTouchRes = COSTouchState.None;
                 Ray ray = Camera.main.ScreenPointToRay(touches[0].position);
 //                RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, 1000))
@@ -151,43 +140,73 @@ public class COSMobileInputControler:COSAbstractInputController
                             }
                             else
                                 eTouchRes = COSTouchState.None;
+//                            DetectTouchMovement.rotating = false;
+//                            DetectTouchMovement.zooming = false;
                         }
                     }
                 }
             }
 
             //Double touch (zoom)
-            if (touches.Length == 2)
+            else if (touches.Length == 2)
             {
                 Vector2 cameraViewsize = new Vector2(_camera.pixelWidth, _camera.pixelHeight);
 
                 Touch touchOne = touches[0];
                 Touch touchTwo = touches[1];
 
-                DetectTouchMovement.Calculate();
+                eTouchRes = DetectTouchMovement.Calculate(eTouchRes);
 
-                Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
-                Vector2 touchTwoPrevPos = touchTwo.position - touchTwo.deltaPosition;
+//                Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
+//                Vector2 touchTwoPrevPos = touchTwo.position - touchTwo.deltaPosition;
+//
+//                float prevTouchDeltaMag = (touchOnePrevPos - touchTwoPrevPos).magnitude;
+//                float touchDeltaMag = (touchOne.position - touchTwo.position).magnitude;
+//
+//                float deltaMagDiff = prevTouchDeltaMag - touchDeltaMag;
 
-                float prevTouchDeltaMag = (touchOnePrevPos - touchTwoPrevPos).magnitude;
-                float touchDeltaMag = (touchOne.position - touchTwo.position).magnitude;
-
-                float deltaMagDiff = prevTouchDeltaMag - touchDeltaMag;
-
-                if (Mathf.Abs(DetectTouchMovement.pinchDistanceDelta) > 0)
+                if (eTouchRes == COSTouchState.IsZooming)
                 {
                     _camera.fieldOfView += -DetectTouchMovement.pinchDistanceDelta * zoomSpeed;
                     // Clamp the field of view to make sure it's between minFOV and maxFOV.
                     _camera.fieldOfView = Mathf.Clamp(_camera.fieldOfView, minFOV, maxFOV);
-                    eTouchRes = COSTouchState.IsZooming;
+//                    eTouchRes = COSTouchState.IsZooming;
                 }
-                else
+                else if (eTouchRes == COSTouchState.IsRotating)
                 {
                     _camera.transform.RotateAround(_camera.transform.position, Vector3.up, 
                         -DetectTouchMovement.turnAngleDelta);
-                    eTouchRes = COSTouchState.IsRotating;
+//                    eTouchRes = COSTouchState.IsRotating;
                 }
+                else
+                    eTouchRes = COSTouchState.None;
             }
+            else
+            {
+                DetectTouchMovement.pinchDistanceDeltaAccumulated = 0;
+                DetectTouchMovement.turnAngleDeltaAccumulated = 0;
+            }
+        }
+        else //(touches.Length < 1)
+        {
+            //            DetectTouchMovement.rotating = false;
+            eTouchRes = COSTouchState.None;
+            DetectTouchMovement.pinchDistanceDeltaAccumulated = 0;
+            DetectTouchMovement.turnAngleDeltaAccumulated = 0;
+            //if the camera is currently scrolling
+            if (scrollVelocity != 0.0f)
+            {
+                //slow down over time
+                float t = (Time.time - timeTouchPhaseEnded) / inertiaDuration;
+                float frameVelocity = Mathf.Lerp(scrollVelocity, 0.0f, t);
+                Vector3 currTransform = -(Vector3)scrollDirection.normalized * (frameVelocity * 0.05f) * Time.deltaTime;
+                currTransform.y = 0;
+                _camera.transform.position += currTransform;
+
+                if (t >= 1.0f)
+                    scrollVelocity = 0.0f;
+            }
+//            eTouchRes = COSTouchState.None;
         }
 
         return hit;

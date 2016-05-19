@@ -27,7 +27,7 @@ namespace SD {
             string result = null;
 
             if (persistentObject) {
-                finalScore = persistentObject.getPlayerFinalScore ();
+                finalScore = GameController.getInstance ().getPlayerScore ();
                 winningScore = persistentObject.getWinningScore ();
                 gameResult = persistentObject.getGameResult ();
             } else {

@@ -20,6 +20,7 @@ public class ClashBattleController : MonoBehaviour
     public GameObject attackItemPrefab;
     public GameObject healthBar;
 
+
     public List<ClashBattleUnit> enemiesList = new List<ClashBattleUnit>();
     public List<ClashBattleUnit> alliesList = new List<ClashBattleUnit>();
 
@@ -31,6 +32,12 @@ public class ClashBattleController : MonoBehaviour
     public Text spdBuffValue;
 
     private Boolean finished = false;
+    private bool isStarted = false;
+
+    public Text timer;
+    //    float mTime = 120f;
+
+    public float timeLeft = 120f;
 
     //    public float moveSensitivityX = 1.0f;
     //    public float moveSensitivityY = 1.0f;
@@ -122,11 +129,11 @@ public class ClashBattleController : MonoBehaviour
                     unit.species = species;
 
                     var trigger = speciesObject.AddComponent<SphereCollider>();
-                    trigger.radius = Constants.UnitColliderRadius;  //this should be a variable !!!!!! maybe const or public variable
+                    trigger.radius = Constants.UnitColliderRadius;  
 
                     var bar = Instantiate(healthBar, unit.transform.position, Quaternion.identity) as GameObject;
                     bar.transform.SetParent(unit.transform);
-                    bar.transform.localPosition = new Vector3(0.0f, 8.0f, 0.0f);
+                    bar.transform.localPosition = new Vector3(0.0f, 6.0f, 0.0f);
                     bar.SetActive(true);
                     bar.tag = Constants.TAG_HEALTH_BAR;
 
@@ -205,11 +212,9 @@ public class ClashBattleController : MonoBehaviour
     {
         RaycastHit hit = cosInController.InputUpdate(_camera);
 
-        if (alliesList.Count == 25)
-        {
-            allyAIEnabled = true;
-            enemyAIEnabled = true;
-        }
+        if (isStarted && !finished)
+            UpdateTimer();
+
 
         if (cosInController.TouchState == COSTouchState.TerrainTapped)
         {
@@ -233,6 +238,15 @@ public class ClashBattleController : MonoBehaviour
                 bar.transform.localPosition = new Vector3(0.0f, 8.0f, 0.0f);
                 bar.SetActive(false);
                 //                    bar.tag = Constants.TAG_HEALTH_BAR;
+
+                //check if all allies are spawned
+                if (alliesList.Count == 25)
+                {
+                    allyAIEnabled = true;
+                    enemyAIEnabled = true;
+                    isStarted = true;
+                }
+
                 GetBuffs(unit, allyObject.tag);
                 if (unit.species.type == UnitType.PLANT)
                 {
@@ -283,6 +297,22 @@ public class ClashBattleController : MonoBehaviour
         _camera.transform.position = pos;
     }
 
+    void UpdateTimer()
+    {
+        timeLeft -= Time.deltaTime;
+
+        int intTime = (int)timeLeft;
+        int seconds = (int)intTime % 60;
+        int min = intTime / 60;
+
+        if (timeLeft < 0 && !finished)
+        {
+            ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.LOSS);
+        }
+        else
+            timer.text = min + ":" + seconds;
+    }
+
     void FixedUpdate()
     {
 
@@ -329,7 +359,7 @@ public class ClashBattleController : MonoBehaviour
             }
         }
 
-        if (Time.timeSinceLevelLoad > 5.0f && totalEnemyHealth == 0 && enemiesList.Count() > 0)
+        if (Time.timeSinceLevelLoad > 5.0f && totalEnemyHealth == 0 && enemiesList.Count() > 0 && !finished)
         {
             // ALLIES HAVE WON!
             ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.WIN);
@@ -373,7 +403,7 @@ public class ClashBattleController : MonoBehaviour
             }
         }
 
-        if (Time.timeSinceLevelLoad > 5.0f && totalAllyHealth <= 0 && alliesList.Count() == 25)
+        if (Time.timeSinceLevelLoad > 5.0f && totalAllyHealth <= 0 && alliesList.Count() == 25 && !finished)
         {//            || Time.timeSinceLevelLoad > 75.0f)
             // ENEMIES HAVE WON!
             ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.LOSS);
@@ -493,6 +523,7 @@ public class ClashBattleController : MonoBehaviour
             messageCanvas.SetActive(true);
             messageText.text = "You Lost!\n\nTry again next time!";
         }
+        finished = true;
         var request = ClashEndBattleProtocol.Prepare(outcome);
         NetworkManagerCOS.getInstance().Send(request, (res) =>
             {
