@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 47a0c7f6050ce416e88f1a9ca11ebe37
+timeCreated: 1463684150
+licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: num0
@@ -25,14 +27,17 @@ TextureImporter:
   bumpmap:
     convertToNormalMap: 0
     externalNormalMap: 0
-    heightScale: .25
+    heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
   grayScaleToAlpha: 0
   generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
   textureFormat: -1
-  maxTextureSize: 1024
+  maxTextureSize: 4096
   textureSettings:
     filterMode: 0
     aniso: 16
@@ -40,12 +45,14 @@ TextureImporter:
     wrapMode: 1
   nPOTScale: 0
   lightmap: 0
+  rGBM: 0
   compressionQuality: 50
+  allowsAlphaSplitting: 0
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: .5, y: .5}
+  spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 30
   alphaIsTransparency: 1
@@ -58,100 +65,168 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 26
-        height: 38
+        width: 260
+        height: 380
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -51.5, y: 75}
+        - {x: -51.5, y: -69}
+        - {x: -45.5, y: -75}
+        - {x: 51.5, y: -75}
+        - {x: 51.5, y: 71}
+        - {x: 48.5, y: 75}
     - name: num1
       rect:
         serializedVersion: 2
-        x: 26
+        x: 260
         y: 0
-        width: 26
-        height: 38
+        width: 260
+        height: 380
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -51.1, y: -75}
+        - {x: -48.1, y: -75}
+        - {x: -48.1, y: 65}
+        - {x: -50.1, y: 67}
+        - {x: -51.1, y: 67}
+      - - {x: -37.1, y: 75}
+        - {x: -37.1, y: -70}
+        - {x: -32.1, y: -75}
+        - {x: 37.9, y: -75}
+        - {x: 37.9, y: 69}
+        - {x: 32.9, y: 75}
     - name: num2
       rect:
         serializedVersion: 2
-        x: 52
+        x: 520
         y: 0
-        width: 26
-        height: 38
+        width: 260
+        height: 380
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -51.199997, y: 75}
+        - {x: -51.199997, y: -71}
+        - {x: -47.199997, y: -75}
+        - {x: 52.800003, y: -75}
+        - {x: 52.800003, y: 75}
     - name: num3
       rect:
         serializedVersion: 2
-        x: 78
+        x: 780
         y: 0
-        width: 26
-        height: 38
+        width: 260
+        height: 380
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -51.299988, y: 75}
+        - {x: -51.299988, y: -69}
+        - {x: -45.299988, y: -75}
+        - {x: 51.700012, y: -75}
+        - {x: 51.700012, y: 75}
     - name: num4
       rect:
         serializedVersion: 2
-        x: 104
+        x: 1040
         y: 0
-        width: 26
-        height: 38
+        width: 260
+        height: 380
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 52.100006, y: 75}
+        - {x: -50.899994, y: 75}
+        - {x: -50.899994, y: -75}
+        - {x: 52.100006, y: -75}
     - name: num5
       rect:
         serializedVersion: 2
-        x: 130
+        x: 1300
         y: 0
-        width: 26
-        height: 38
+        width: 260
+        height: 380
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -51.5, y: 75}
+        - {x: -51.5, y: -69}
+        - {x: -45.5, y: -75}
+        - {x: 51.5, y: -75}
+        - {x: 51.5, y: 75}
     - name: num6
       rect:
         serializedVersion: 2
-        x: 156
+        x: 1560
         y: 0
-        width: 26
-        height: 38
+        width: 260
+        height: 380
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -51.099976, y: 75}
+        - {x: -51.099976, y: -75}
+        - {x: 51.900024, y: -75}
+        - {x: 51.900024, y: 70}
+        - {x: 46.900024, y: 75}
     - name: num7
       rect:
         serializedVersion: 2
-        x: 182
+        x: 1820
         y: 0
-        width: 26
-        height: 38
+        width: 260
+        height: 380
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 52.799988, y: 75}
+        - {x: -51.200012, y: 75}
+        - {x: -51.200012, y: -75}
+        - {x: 52.799988, y: -75}
     - name: num8
       rect:
         serializedVersion: 2
-        x: 208
+        x: 2080
         y: 0
-        width: 26
-        height: 38
+        width: 260
+        height: 380
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -51.299988, y: 75}
+        - {x: -51.299988, y: -69}
+        - {x: -45.299988, y: -75}
+        - {x: 51.700012, y: -75}
+        - {x: 51.700012, y: 75}
     - name: num9
       rect:
         serializedVersion: 2
-        x: 234
+        x: 2340
         y: 0
-        width: 26
-        height: 38
+        width: 260
+        height: 380
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -50.900024, y: 75}
+        - {x: -50.900024, y: -75}
+        - {x: 52.099976, y: -75}
+        - {x: 52.099976, y: 69}
+        - {x: 46.099976, y: 75}
+    outline: []
   spritePackingTag: 
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 
