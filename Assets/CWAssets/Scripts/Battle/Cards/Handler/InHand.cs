@@ -49,12 +49,12 @@ namespace CW
                 {
                     player.hand.Remove (removeCard);
                     GameObject.Destroy(removeCard);
-                    player.currentMana -= card.getManaCost ();
-
-					player.applyWeather(card.cardID, true);
-					GameManager.player2.applyWeather(card.cardID,true);
-
+                    player.applyWeather(card.cardID, true);
+                    GameManager.player2.applyWeather(card.cardID,true);
                     player.getProtocolManager().sendWeatherCard(player.playerID, card.cardID);
+
+                    player.currentMana -= card.getManaCost ();               
+
                 }
                 else if(card.diet == AbstractCard.DIET.FOOD){
                     //DebugConsole.Log("food card in hand");

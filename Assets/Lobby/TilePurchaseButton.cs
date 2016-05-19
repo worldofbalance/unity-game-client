@@ -48,11 +48,12 @@ public class TilePurchaseButton : MonoBehaviour, IPointerClickHandler
         map = GameObject.Find("Map");
         currentTile = localObject.GetComponent<WorldMouse>().currentSelectedTile;
         purchaseCursor = GameObject.Find("PurchaseCursor") as GameObject;
-        mapTileSelected = GameObject.Find("Zone " + currentTile.row + "-" + currentTile.column) as GameObject;
+
     }
     void Update()
     {
         currentTile = localObject.GetComponent<WorldMouse>().currentSelectedTile;
+        mapTileSelected = GameObject.Find("Zone " + currentTile.row + "-" + currentTile.column) as GameObject;
     }
 
     public void OnPointerClick(PointerEventData eventdata)

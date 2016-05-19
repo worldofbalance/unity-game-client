@@ -95,21 +95,27 @@ namespace CW
 		public void applyWeather(int card_id, bool currentPlayer){
 
 			//by Pedro
+           
 			AbstractCard card = ((GameObject)hand [0]).GetComponent<AbstractCard> ();
-			AudioSource audioSource = card.GetComponent<AudioSource> ();
-
+            
+            AudioSource audioSource=null;
+            if(card != null)
+            {
+                audioSource = card.GetComponent<AudioSource> ();
+            }
             switch (card_id) {
-                
-                //fire
-            case 89:
+            case 89://fire
 
 				if(cardsInPlay.Count>0)
 				{
 					isFiring=true;
 					//by Pedro
-					audioSource.clip = Resources.Load ("Sounds/burning_fire") as AudioClip;
-					//audioSource.PlayDelayed (1);
-					audioSource.Play ();
+                    if(audioSource!=null)
+                    {
+                        audioSource.clip = Resources.Load ("Sounds/burning_fire") as AudioClip;
+                        audioSource.Play ();
+                    }
+					
 					showWeatherEffect=CW.Constants.ANIMATE_RATE;
 				}    
                 
@@ -120,16 +126,19 @@ namespace CW
                 }
                 break;
                 
-                //freeze
-            case 90:
+               
+            case 90: //freeze
                 if(cardsInPlay.Count>0)
                 {
                     playerFrozen=true;// used to show frozen text
                     isFreezing=true;
-					//by Pedro
-					audioSource.clip = Resources.Load ("Sounds/ice_cracking") as AudioClip;
-					//audioSource.PlayDelayed (1);
-					audioSource.Play ();
+                    if(audioSource!=null)
+                    {
+                            //by Pedro
+                        audioSource.clip = Resources.Load ("Sounds/ice_cracking") as AudioClip;
+                        audioSource.Play ();
+                    }
+					
                     showWeatherEffect=CW.Constants.ANIMATE_RATE;
                 }
 
@@ -143,10 +152,14 @@ namespace CW
                 //rain
             case 91:
                 isRaining=true;
-				//by Pedro
-				audioSource.clip = Resources.Load ("Sounds/rain_thunder") as AudioClip;
-				//audioSource.PlayDelayed (1);
-				audioSource.Play ();
+                if(audioSource!=null)
+                {
+                    //by Pedro
+                    audioSource.clip = Resources.Load ("Sounds/rain_thunder") as AudioClip;
+                    //audioSource.PlayDelayed (1);
+                    audioSource.Play ();
+                }
+				
                 showWeatherEffect=CW.Constants.ANIMATE_RATE;
                 if(currentPlayer)
                     givePlayerFoodCard(2);
