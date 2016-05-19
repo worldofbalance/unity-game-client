@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -18,6 +19,7 @@ public class TilePurchaseButton : MonoBehaviour, IPointerClickHandler
     GameObject localObject;
     GameObject map;
     Zone currentTile;
+    Zone currentWorldMouseTile;
     GameObject purchaseCursor;
     GameObject tilePurchaseSuccess;
     GameObject welcome;
@@ -104,13 +106,25 @@ public class TilePurchaseButton : MonoBehaviour, IPointerClickHandler
             tileUi.SetActive(false);
             purchaseCursor.SetActive(false);
             //Updating the information just for the user..
-            //Note: the actual map will not reflect hte purchases of others until the user restarts their client
-            currentTile.player_id = GameState.player.GetID();
+            //Note: the actual map will not reflect the purchases of others until the user restarts their client
+            mapTileSelected.GetComponent<Zone>().player_id = GameState.player.GetID();
             Color playerColor = GameState.player.color;
             currentTile.transform.GetChild(0).GetComponent<Renderer>().material.color = playerColor;
 
             //adding the player's new tile to their territory 
+            if (!map.GetComponent<Map>().playerTiles.ContainsKey(GameState.player.GetID()))
+            {
+                map.GetComponent<Map>().playerTiles.Add(GameState.player.GetID(), new List<GameObject>());
+            }
+
+            if (!map.GetComponent<Map>().playerList.ContainsKey(GameState.player.GetID()))
+            {
+                map.GetComponent<Map>().playerList.Add(GameState.player.GetID(), GameState.player);
+            }
+
+            //Add the tile to the playerTile List 
             map.GetComponent<Map>().playerTiles[GameState.player.GetID()].Add(mapTileSelected);
+
 
             //adding the territory ui to the map 
             GameObject select = Instantiate(map.GetComponent<Map>().hexSelect) as GameObject;
