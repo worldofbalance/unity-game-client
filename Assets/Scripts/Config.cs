@@ -11,7 +11,6 @@ public class Config
     //public static readonly string REMOTE_HOST = "130.212.93.116";
     //public static readonly string REMOTE_HOST = "52.32.228.220";
 
-
     public static string GetHost()
     {
         string envHost = Environment.GetEnvironmentVariable("WOB_HOST");

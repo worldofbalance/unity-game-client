@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.EventSystems;
 
 public class COSDesktopInputController : COSAbstractInputController
 {
@@ -39,9 +40,9 @@ public class COSDesktopInputController : COSAbstractInputController
 
     public bool dragging = false;
     public Vector3 lastMouse;
-    public float yawSpeed = 5.0f;
-    public float pitchSpeed = 5.0f;
-    public float moveSpeed = 5.0f;
+    public float yawSpeed = 1.0f;
+    public float pitchSpeed = 1.0f;
+    public float moveSpeed = 2.0f;
     public float zoomLevel = 100.0f;
 
     public float minFOV = 10f;
@@ -103,7 +104,7 @@ public class COSDesktopInputController : COSAbstractInputController
             dragging = false;
             eTouchRes = COSTouchState.None;
         }
-        else if (Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             eTouchRes = COSTouchState.TerrainTapped;
             Debug.Log("clicked using mouse");

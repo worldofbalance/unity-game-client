@@ -23,6 +23,10 @@ public class ClashDefenseSetup : MonoBehaviour
 
     COSAbstractInputController cosInController;
 
+    public float terrainCameraPadding = 40;
+
+    private float minX, maxX, minZ, maxZ;
+
     void Awake()
     {
         try
@@ -51,6 +55,11 @@ public class ClashDefenseSetup : MonoBehaviour
         }
         terrain.transform.position = Vector3.zero;
         terrain.transform.localScale = Vector3.one;
+
+        minX = terrainCameraPadding;
+        maxX = Terrain.activeTerrain.terrainData.size.x - terrainCameraPadding;
+        minZ = terrainCameraPadding;
+        maxZ = Terrain.activeTerrain.terrainData.size.z - terrainCameraPadding;
 
 //        Camera.main.GetComponent<ClashBattleCamera>().target = terrain;
 
@@ -95,11 +104,7 @@ public class ClashDefenseSetup : MonoBehaviour
     void Update()
     {
         RaycastHit hit = cosInController.InputUpdate(Camera.main);
-        if (Input.GetKey(KeyCode.P))
-        {
-            Application.CaptureScreenshot("/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/Screenshot.png");
-            Debug.Log("screenshot taken!!");
-        }
+
         if (selected == null)
             return;
 
@@ -122,6 +127,15 @@ public class ClashDefenseSetup : MonoBehaviour
             }
         }
 
+    }
+
+    void LateUpdate()
+    {
+        Vector3 pos = new Vector3(
+                          Mathf.Clamp(Camera.main.transform.position.x, minX, maxX),
+                          Camera.main.transform.position.y, 
+                          Mathf.Clamp(Camera.main.transform.position.z, minZ, maxZ));
+        Camera.main.transform.position = pos;
     }
 
     public void ReturnToShop()
