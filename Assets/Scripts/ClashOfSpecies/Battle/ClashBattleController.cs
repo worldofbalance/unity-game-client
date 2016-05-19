@@ -133,7 +133,7 @@ public class ClashBattleController : MonoBehaviour
 
                     var bar = Instantiate(healthBar, unit.transform.position, Quaternion.identity) as GameObject;
                     bar.transform.SetParent(unit.transform);
-                    bar.transform.localPosition = new Vector3(0.0f, 8.0f, 0.0f);
+                    bar.transform.localPosition = new Vector3(0.0f, 6.0f, 0.0f);
                     bar.SetActive(true);
                     bar.tag = Constants.TAG_HEALTH_BAR;
 

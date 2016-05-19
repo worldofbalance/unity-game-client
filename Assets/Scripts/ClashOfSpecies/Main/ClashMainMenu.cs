@@ -101,9 +101,16 @@ public class ClashMainMenu : MonoBehaviour
 
     public void Attack()
     {
-        if (manager.currentTarget != null)
+        if (manager.currentTarget != null && manager.currentTarget.owner != null)
         {
             Game.LoadScene("ClashAttackShop");
         }
     }
+
+    public void GoToInputSetup()
+    {
+        Game.LoadScene("InputTestScene");
+    }
+
+
 }

@@ -3,11 +3,11 @@ using System.Collections;
 
 public class DetectTouchMovement : MonoBehaviour
 {
-    const float pinchTurnRatio = Mathf.PI / 2;
-    const float minTurnAngle = 10f;
+    public static float pinchTurnRatio = 8;
+    const float minTurnAngle = 1f;
 
-    const float pinchRatio = 1;
-    const float minPinchDistance = 50;
+    public static float pinchRatio = 5;
+    const float minPinchDistance = 2.6f;
 
     const float panRatio = 1;
     public const float minPanDistance = 1;
@@ -19,7 +19,7 @@ public class DetectTouchMovement : MonoBehaviour
     /// </summary>
     static public float turnAngleDelta;
 
-    static float turnAngleDeltaAccumulated = 0;
+    public static float turnAngleDeltaAccumulated = 0;
 
     /// <summary>
     ///   The angle between two touch points
@@ -31,7 +31,7 @@ public class DetectTouchMovement : MonoBehaviour
     /// </summary>
     static public float pinchDistanceDelta;
 
-    private static float pinchDistanceDeltaAccumulated = 0.0f;
+    public static float pinchDistanceDeltaAccumulated = 0.0f;
 
     /// <summary>
     ///   The distance between two touch points that were distancing from each other
@@ -48,73 +48,80 @@ public class DetectTouchMovement : MonoBehaviour
         turnAngle = turnAngleDelta = 0;
 
         // if two fingers are touching the screen at the same time ...
-        if (Input.touchCount == 2)
-        {
-            Touch touch1 = Input.touches[0];
-            Touch touch2 = Input.touches[1];
+//        if (Input.touchCount == 2)
+//        {
+        Touch touch1 = Input.touches[0];
+        Touch touch2 = Input.touches[1];
 
-            // ... if at least one of them moved ...
-            if (touch1.phase == TouchPhase.Moved || touch2.phase == TouchPhase.Moved)
-            {
+        // ... if at least one of them moved ...
+        if (touch1.phase == TouchPhase.Moved || touch2.phase == TouchPhase.Moved)
+        {
                 
 
-                // ... or check the delta angle between them ...
-                turnAngle = Angle(touch1.position, touch2.position);
-                float prevTurn = Angle(touch1.position - touch1.deltaPosition,
+            // ... or check the delta angle between them ...
+            turnAngle = Angle(touch1.position, touch2.position);
+            float prevTurn = Angle(touch1.position - touch1.deltaPosition,
+                                 touch2.position - touch2.deltaPosition);
+            turnAngleDelta = Mathf.DeltaAngle(prevTurn, turnAngle);
+            turnAngleDeltaAccumulated += turnAngleDelta;
+
+            // ... check the delta distance between them ...
+            pinchDistance = Vector2.Distance(touch1.position, touch2.position);
+            float prevDistance = Vector2.Distance(touch1.position - touch1.deltaPosition,
                                      touch2.position - touch2.deltaPosition);
-                turnAngleDelta = Mathf.DeltaAngle(prevTurn, turnAngle);
-                turnAngleDeltaAccumulated += turnAngleDelta;
+            pinchDistanceDelta = pinchDistance - prevDistance;
+            if (Mathf.Abs(turnAngleDeltaAccumulated) < minTurnAngle)
+                pinchDistanceDeltaAccumulated += pinchDistanceDelta;
+            else
+                pinchDistanceDeltaAccumulated = 0;
 
-                // ... check the delta distance between them ...
-                pinchDistance = Vector2.Distance(touch1.position, touch2.position);
-                float prevDistance = Vector2.Distance(touch1.position - touch1.deltaPosition,
-                                         touch2.position - touch2.deltaPosition);
-                pinchDistanceDelta = pinchDistance - prevDistance;
-                if (turnAngleDeltaAccumulated < 2.0f)
-                    pinchDistanceDeltaAccumulated += pinchDistanceDelta;
-
-                // ... if it's greater than a minimum threshold, it's a pinch!
-                if (touchState == COSTouchState.IsZooming)
-                {
-                    pinchDistanceDelta *= pinchRatio;
-                }
-                else if (Mathf.Abs(pinchDistanceDeltaAccumulated) > minPinchDistance
-                         && touchState != COSTouchState.IsRotating
-                         && Mathf.Abs(turnAngleDeltaAccumulated) < minTurnAngle)
-                {
+            // ... if it's greater than a minimum threshold, it's a pinch!
+            if (touchState == COSTouchState.IsZooming)
+            {
+                pinchDistanceDelta *= pinchRatio;
+            }
+            else if (Mathf.Abs(pinchDistanceDeltaAccumulated) > minPinchDistance
+                     && touchState != COSTouchState.IsRotating
+                     && Mathf.Abs(turnAngleDeltaAccumulated) < minTurnAngle)
+            {
 //                    pinchDistanceDelta *= pinchRatio;
-                    pinchDistanceDelta = 0;
-                    pinchDistanceDeltaAccumulated = 0f;
-                    touchState = COSTouchState.IsZooming;
+                pinchDistanceDelta = 0;
+                pinchDistanceDeltaAccumulated = 0f;
+                touchState = COSTouchState.IsZooming;
 //                    zooming = true;
-                    return touchState;
-                }
-                else
-                {
-                    pinchDistance = pinchDistanceDelta = 0;
-                }
+                return touchState;
+            }
+            else
+            {
+                pinchDistance = pinchDistanceDelta = 0;
+            }
 
 
 
-                // ... if it's greater than a minimum threshold, it's a turn!
-                if (touchState == COSTouchState.IsRotating)
-                {
-                    turnAngleDelta *= pinchTurnRatio;
-                }
-                else if (Mathf.Abs(turnAngleDeltaAccumulated) > minTurnAngle)
-                {
+            // ... if it's greater than a minimum threshold, it's a turn!
+            if (touchState == COSTouchState.IsRotating)
+            {
+                turnAngleDelta *= pinchTurnRatio;
+            }
+            else if (Mathf.Abs(turnAngleDeltaAccumulated) > minTurnAngle)
+            {
 //                    turnAngleDelta *= pinchTurnRatio;
-                    turnAngleDelta = 0;
-                    turnAngleDeltaAccumulated = 0;
+                turnAngleDelta = 0;
+                turnAngleDeltaAccumulated = 0;
 //                    rotating = true;
-                    touchState = COSTouchState.IsRotating;
-                }
-                else
-                {
-                    turnAngle = turnAngleDelta = 0;
-                }
+                touchState = COSTouchState.IsRotating;
+            }
+            else
+            {
+                turnAngle = turnAngleDelta = 0;
             }
         }
+//        }
+//        else
+//        {
+//            turnAngleDeltaAccumulated = 0;
+//            pinchDistanceDeltaAccumulated = 0f;
+//        }
 
         return touchState;
     }

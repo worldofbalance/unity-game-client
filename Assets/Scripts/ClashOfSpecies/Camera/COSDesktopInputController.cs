@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.EventSystems;
 
 public class COSDesktopInputController : COSAbstractInputController
 {
@@ -103,7 +104,7 @@ public class COSDesktopInputController : COSAbstractInputController
             dragging = false;
             eTouchRes = COSTouchState.None;
         }
-        else if (Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             eTouchRes = COSTouchState.TerrainTapped;
             Debug.Log("clicked using mouse");

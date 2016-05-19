@@ -2,21 +2,24 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/RRAssets/Scripts/SpeciesTable.cs">
     <Files>
-      <File FileName="Assets/Scripts/Config.cs" Line="6" Column="67" />
-      <File FileName="Assets/Scripts/Constants.cs" Line="23" Column="50" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/Defense/ClashDefenseSetup.cs" Line="89" Column="75" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/Camera/COSDesktopInputController.cs" Line="159" Column="72" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/COSMobileInputControler.cs" Line="33" Column="25" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/Camera/DetectTouchMovement.cs" Line="4" Column="25" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/SpeciesClickController.cs" Line="5" Column="20" />
-      <File FileName="Assets/Game.cs" Line="23" Column="38" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/COSAbstractInputController.cs" Line="38" Column="1" />
-      <File FileName="Assets/Scripts/DontEatMe/DemAnimalFactory.cs" Line="4" Column="30" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/COSMobileInputControler.cs" Line="203" Column="46" />
+      <File FileName="Assets/Scripts/Config.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleController.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Constants.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Defense/ClashDefenseSetup.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Camera/DetectTouchMovement.cs" Line="94" Column="17" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/IputTest.cs" Line="35" Column="83" />
       <File FileName="Assets/RRAssets/Scripts/SpeciesTable.cs" Line="13" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/ClashOfSpecies/Camera/DetectTouchMovement.cs" line="147" column="1" />
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/Network/NetworkManagerCOS.cs" line="32" column="1" />
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/Network/NetworkManagerCOS.cs" line="43" column="1" />
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/Network/NetworkManagerCOS.cs" line="60" column="1" />
+      <Breakpoint file="/Users/dusan_cvetkovic/Documents/SFSUdocs/Semester2/CSC831MultGameD/WOB_Github/unity-game-client/Assets/Scripts/Network/NetworkManagerCOS.cs" line="68" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>
