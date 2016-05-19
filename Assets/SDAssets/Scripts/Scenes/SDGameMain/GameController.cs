@@ -62,6 +62,7 @@ namespace SD {
         private bool isOpponentInBase = false;
 
         public GameObject surrenderPanelCanvas;
+        public GameObject baseScorePanelCanvas;
         public GameObject countdownPanelCanvas;
         public GameObject foodChainPanelCanvas;
         private int foodChainPanelVisibleSeconds = 7;
@@ -114,10 +115,10 @@ namespace SD {
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
                 opponentPlayer.yRotation = opponentInitialRotation.eulerAngles.y;
                 isGameTimeTicking = false; // Wait for time sync if in multiplayer mode
-                //gameController.countdownPanelCanvas.SetActive (true);
+                gameController.countdownPanelCanvas.SetActive (true);
             } else {
                 isGameTimeTicking = true; // Start the timer immediately if in offline mode
-                //gameController.countdownPanelCanvas.SetActive (false);
+                gameController.countdownPanelCanvas.SetActive (false);
             }
 
             // Spawn the predator: 1 of type 8
@@ -425,6 +426,14 @@ namespace SD {
 
         public void hideCountdownPanel(){
             countdownPanelCanvas.SetActive (false);
+        }
+
+        public void showBaseScorePanel(){
+            baseScorePanelCanvas.SetActive (true);
+        }
+
+        public void hideBaseScorePanel(){
+            baseScorePanelCanvas.SetActive (false);
         }
 
         public void hideSurrenderPanel(){

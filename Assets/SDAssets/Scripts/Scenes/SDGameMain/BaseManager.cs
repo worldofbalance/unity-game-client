@@ -19,7 +19,7 @@ namespace SD {
         private float time;
         private float secondsToScore = 2.75f;
         private float staminaRevoverRate = 0.1f;
-        public GameObject countdownPanel;
+        public GameObject baseScorePanel;
         public bool inBase = false;
         private AudioSource audioSource;
         public AudioClip scoringClip;
@@ -44,9 +44,9 @@ namespace SD {
                 if (gameController.GetUnscored() > 0)
                 {
                     audioSource.Play();
-                    gameController.showCountdownPanel();
+                    gameController.showBaseScorePanel();
                 }
-                else gameController.hideCountdownPanel();
+                else gameController.hideBaseScorePanel();
                 gameController.setIsPlayerInBase (true);
             }
         }
@@ -66,7 +66,7 @@ namespace SD {
                     gameController.Score ();
                     gameController.ResetUnscored ();
                     gameController.stamina = 100;
-                    gameController.hideCountdownPanel ();
+                    gameController.hideBaseScorePanel ();
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace SD {
         void OnTriggerExit(Collider other) {
             if (other.tag == "Player") {
                 gameController.setIsPlayerInBase (false);
-                gameController.hideCountdownPanel ();
+                gameController.hideBaseScorePanel ();
             }
         }
     }

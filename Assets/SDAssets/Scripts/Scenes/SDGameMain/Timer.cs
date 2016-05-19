@@ -47,7 +47,7 @@ namespace SD {
                                 offsetDateTime = (TrimMilliseconds (DateTime.UtcNow)).AddSeconds(maxCountdownSeconds);
                             secondsToGo = (offsetDateTime - TrimMilliseconds (DateTime.UtcNow)).TotalSeconds;
                         }
-                        //countdownText.GetComponent<Text> ().text = secondsToGo.ToString ();
+                        countdownText.GetComponent<Text> ().text = secondsToGo.ToString ();
                     }
                     else {
                         // Start the timer anyway since it has passed the scheduled start time.
