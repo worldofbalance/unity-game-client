@@ -156,7 +156,7 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
       panelObject.transform.GetChild (1).GetComponent<Text> ().text = 
         this.gameObject.transform.GetChild (0).gameObject.name;
             //panelObject.transform.GetChild(2).GetComponent<Text>().text = ;
-      panelObject.transform.GetChild (3).GetChild (0).GetComponent<Text> ().text = 
+      panelObject.transform.GetChild (3).GetChild (0).GetComponent<Text> ().text = "Biomass : " +
         SpeciesConstants.Biomass (this.gameObject.transform.GetChild (0).gameObject.name).ToString();
         }
 
