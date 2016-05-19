@@ -19,15 +19,15 @@ public class BuildMenu : MonoBehaviour
     private GameObject instructionUI; //instance of UI for after pressed how to play button
     private GameObject gameOverUI;  //instance of UI for after pressed quit button
 
-	//statiUI
-	private GameObject statUI;
-	public Statistic statistic;
-	private GameObject t1;	//static text 1 to 6
-	private GameObject t2;
-	private GameObject t3;
-	private GameObject t4;
-	private GameObject t5;
-	private GameObject t6;
+    //statiUI
+    private GameObject statUI;
+    public Statistic statistic;
+    private GameObject t1;  //static text 1 to 6
+    private GameObject t2;
+    private GameObject t3;
+    private GameObject t4;
+    private GameObject t5;
+    private GameObject t6;
 
     // Toggle counter
     int toggleCount;
@@ -61,11 +61,11 @@ public class BuildMenu : MonoBehaviour
 
     private DemMain main;
 
-    private int plantBiomass; 
+    private int plantBiomass;
 
-    private int tier2Biomass; 
+    private int tier2Biomass;
 
-    private int tier3Biomass; 
+    private int tier3Biomass;
 
     public GameObject panelObject;
 
@@ -91,6 +91,40 @@ public class BuildMenu : MonoBehaviour
     //mainUI
     public GameObject mainUIObject;
     public GameObject canvasObject;
+
+    // Instructions
+    public GameObject instructionPanelObj;
+    private Sprite page2, page3, page4, page5, page6, page7, page8, page9;
+    private Button continuePageButton;
+    private Sprite[] instructionPages = new Sprite[9];
+    //private int currentPage;
+
+
+    string[] headerText = new string[9]
+    {
+        "Welcome to Don't Eat Me!",
+        "How do we stop the predators?",
+        "",
+        "",
+        "What are Prey?",
+        "",
+        "",
+        "",
+        "Remember!"
+    };
+
+    string[] text = new string[9]
+    {
+        "The objective of this game is to prevent the predators from reaching the left of the screen. Once three predators make it to the left it's game over!",
+        "Before you can stop the predators, first you must place a plant on the board!",
+        "When you select a plant, certain tiles will flash blue to indicate that a plant can be placed.",
+        "Certain adjacent tiles will flash green to indicate that a prey can be placed. Different plants will have different adjacent tiles to choose from." ,
+        "Prey are animals that the predators feed on to satisfy their hunger.",
+        "Once the predator's hunger is satisfied they will leave the field and you will earn a point.",
+        "Tap on the Plant button to switch to the prey menu! Once you select a prey, certain tiles will flash blue to indicate a prey can be placed.",
+        "Tap on the Plant button to switch to the prey menu! Once you select a prey, certain tiles will flash blue to indicate a prey can be placed.",
+        "You can only place plants or prey when it's your turn!"
+    };
 
     // this method increases score every 2s
     void increaseResources()
@@ -135,8 +169,27 @@ public class BuildMenu : MonoBehaviour
         tier3BioText = GameObject.Find("Canvas/mainUI/Tier3Widget/WidgetText");
 
 
- 
+
         panelObject.GetComponent<Image>().sprite = infoWidget;
+
+        // Instruction Panel
+        instructionPanelObj = GameObject.Find("Canvas/InstructionPanel");
+        page2 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p2");
+        page3 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p3");
+        page4 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p4");
+        page5 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p5");
+        page6 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p6");
+        page7 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p7");
+        page8 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p8");
+
+        instructionPages[0] = page2;
+        instructionPages[1] = page3;
+        instructionPages[2] = page4;
+        instructionPages[3] = page5;
+        instructionPages[4] = page6;
+        instructionPages[5] = page7;
+        instructionPages[6] = page8;
+        instructionPages[7] = page9;
 
         /*
             scoreText.GetComponent<Text> ().font = fontFamily;
@@ -161,8 +214,8 @@ public class BuildMenu : MonoBehaviour
             turnSystemText.GetComponent<Text> ().text = "Your Turn!";
     */
         quitUI = null;
-		statUI = null;
-		statistic = new Statistic ();
+        statUI = null;
+        statistic = new Statistic();
     }
 
 
@@ -281,26 +334,26 @@ public class BuildMenu : MonoBehaviour
         quitButton.GetComponent<RectTransform>().offsetMax = new Vector2(-70, -22);
         quitButton.GetComponent<RectTransform>().offsetMin = new Vector2(-70, -22);
 
-		quitButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 30);
+        quitButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 30);
 
 
-		//statistic button 
-		float sBX = Screen.width / 10.0f;
-		float sBY = Screen.height / 10.0f;
-		demButton.setSize(sBX, sBY);
-		GameObject statButton = demButton.CreateButton(Screen.width - qBX*2, 0, "statistic");
-		demButton.SetButtonText(statButton, "Statistic");
-		statButton.GetComponent<Button>().onClick.AddListener(() => { selectStatistic(); });
-		// quitButton.transform.SetParent(menuPanel.transform); 
+        //statistic button 
+        float sBX = Screen.width / 10.0f;
+        float sBY = Screen.height / 10.0f;
+        demButton.setSize(sBX, sBY);
+        GameObject statButton = demButton.CreateButton(Screen.width - qBX * 2, 0, "statistic");
+        demButton.SetButtonText(statButton, "Statistic");
+        statButton.GetComponent<Button>().onClick.AddListener(() => { selectStatistic(); });
+        // quitButton.transform.SetParent(menuPanel.transform); 
 
-		statButton.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
-		statButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
-		statButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+        statButton.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
+        statButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
+        statButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
 
-		statButton.GetComponent<RectTransform>().offsetMax = new Vector2(-70, -22*3);
-		statButton.GetComponent<RectTransform>().offsetMin = new Vector2(-70, -22*3);
+        statButton.GetComponent<RectTransform>().offsetMax = new Vector2(-70, -22 * 3);
+        statButton.GetComponent<RectTransform>().offsetMin = new Vector2(-70, -22 * 3);
 
-		statButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 30);
+        statButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 30);
 
 
         // Instructions button
@@ -324,8 +377,8 @@ public class BuildMenu : MonoBehaviour
 
         // Reset sizes for quit popup buttons
         demButton.setSize(qBX, qBY);
-        UpdatePlantBiomass (); 
-        UpdateBuildableAnimals ();
+        UpdatePlantBiomass();
+        UpdateBuildableAnimals();
     }
 
 
@@ -334,7 +387,7 @@ public class BuildMenu : MonoBehaviour
     {
         Debug.Log("Clicked " + tButton.name);
 
-    toggleCount = (toggleCount + 1) % 2;
+        toggleCount = (toggleCount + 1) % 2;
 
         if (toggleCount == 0)
         {
@@ -356,7 +409,7 @@ public class BuildMenu : MonoBehaviour
             }
         }
 
-      UpdateMenuLocks ();
+        UpdateMenuLocks();
     }
 
 
@@ -364,27 +417,33 @@ public class BuildMenu : MonoBehaviour
      * Use this method To set animals that go over the resource limit to not be buildable
      */
 
-  public void UpdateMenuLocks(){
-    UnlockAllMenuItems ();
-    UpdateBuildableAnimals ();
-  }
+    public void UpdateMenuLocks()
+    {
+        UnlockAllMenuItems();
+        UpdateBuildableAnimals();
+    }
 
     public void UpdateBuildableAnimals()
     {
-      for (int i = 0; i < 6; i++)
-      {
-      if (toggleCount == 0) {
-        if(SpeciesConstants.Biomass (plants [i].GetName ()) > plantBiomass) {
-          LockMenuButton (i);
-        }
+        for (int i = 0; i < 6; i++)
+        {
+            if (toggleCount == 0)
+            {
+                if (SpeciesConstants.Biomass(plants[i].GetName()) > plantBiomass)
+                {
+                    LockMenuButton(i);
+                }
 
-        } else {
-          if(SpeciesConstants.Biomass (prey [i].GetName ()) > tier2Biomass) {
-          LockMenuButton (i);
-          }
+            }
+            else
+            {
+                if (SpeciesConstants.Biomass(prey[i].GetName()) > tier2Biomass)
+                {
+                    LockMenuButton(i);
+                }
+            }
+
         }
-        
-      }
     }
 
     // Specie selection based on the button clicked and setting down species on the gameboard
@@ -468,7 +527,7 @@ public class BuildMenu : MonoBehaviour
         {
             quitUI = demRectUI.createRectUI("quitUI", 0, 0, Screen.width / 1.5f, Screen.height / 1.5f);
             quitUI.GetComponent<Image>().sprite = popupBackground;
-            demRectUI.setUIText(quitUI, GameState.player.GetName() + "\nAre you sure you want to quit? \nYou currently have " 
+            demRectUI.setUIText(quitUI, GameState.player.GetName() + "\nAre you sure you want to quit? \nYou currently have "
                 + GameState.player.credits);
 
             //Quit Button on Quit UI
@@ -478,7 +537,7 @@ public class BuildMenu : MonoBehaviour
                 new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f,
                             -quitUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
             demButton.SetButtonText(yesButton, "Quit");
-            yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play();  Game.SwitchScene("World"); });
+            yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("World"); });
 
             //back button on Quit UI
             GameObject noButton = demButton.CreateButton(0, 0, "No");
@@ -502,6 +561,7 @@ public class BuildMenu : MonoBehaviour
         }
     }
 
+    // when instruction button is clicked
     void selectInstruction()
     {
         DemAudioManager.audioClick.Play();
@@ -512,6 +572,11 @@ public class BuildMenu : MonoBehaviour
             main.boardController.ClearAvailableTiles();
         }
 
+        mainUIObject.SetActive(false);
+        // set instruction page to the first page
+        int currentPage = 0;
+
+        /**
         if (instructionUI == null)
         {
             instructionUI = demRectUI.createRectUI("instructionUI", 0, 0, Screen.width / 1.5f, Screen.height / 1.5f);
@@ -540,75 +605,148 @@ public class BuildMenu : MonoBehaviour
 
             return;
         }
-
+        
         if (!instructionUI.activeInHierarchy)
         {
             instructionUI.SetActive(true);
             mainUIObject.SetActive(false);
         }
+        */
+        // Set size, instruction content, and move instruction panel to view
+        continuePageButton = instructionPanelObj.transform.GetChild(3).GetComponent<Button>();
+        instructionPanelObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+        instructionPanelObj.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, Screen.height);
+        instructionPanelObj.transform.GetChild(0).gameObject.GetComponent<Text>().fontSize = (int)(Screen.width / 30);
+        instructionPanelObj.transform.GetChild(1).gameObject.GetComponent<Text>().fontSize = (int)(Screen.width / 35);
+        continuePageButton.transform.GetChild(0).GetComponent<Text>().fontSize = (int)(Screen.width / 35);
+
+        instructionPanelObj.transform.GetChild(0).gameObject.GetComponent<RectTransform>().sizeDelta =
+            new Vector2(Screen.width * 0.85f, instructionPanelObj.transform.GetChild(1).gameObject.GetComponent<RectTransform>().sizeDelta.y);
+        instructionPanelObj.transform.GetChild(1).gameObject.GetComponent<RectTransform>().sizeDelta = 
+            new Vector2(Screen.width * 0.85f, instructionPanelObj.transform.GetChild(1).gameObject.GetComponent<RectTransform>().sizeDelta.y);
+        instructionPanelObj.transform.GetChild(2).gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width * 0.5f, Screen.height * 0.45f);
+        continuePageButton.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width * 0.13f, Screen.height * 0.075f);
+
+        instructionPanelObj.transform.GetChild(2).gameObject.GetComponent<RectTransform>().anchoredPosition = 
+            new Vector2(instructionPanelObj.transform.GetChild(2).gameObject.GetComponent<RectTransform>().anchoredPosition.x, Screen.height * 0.40f);
+        
+
+
+        instructionPanelObj.transform.GetChild(0).gameObject.GetComponent<Text>().text = headerText[currentPage];
+        instructionPanelObj.transform.GetChild(1).gameObject.GetComponent<Text>().text = text[currentPage];
+        instructionPanelObj.transform.GetChild(2).gameObject.SetActive(false);
+        continuePageButton.transform.GetChild(0).GetComponent<Text>().text = "Next!";
+        
+
+        continuePageButton.onClick.AddListener(() =>
+        {
+            // Increment page when button is clicked
+            currentPage++;
+            nextPage(currentPage);
+            // reset page to first page
+            if (currentPage == 9) currentPage = 0;
+        });
+
+        if (!instructionPanelObj.activeInHierarchy)
+        {
+            instructionPanelObj.SetActive(true);
+            mainUIObject.SetActive(false);
+        }
+
+    }
+
+    // moves on to the next instruction pages
+    void nextPage(int cPage)
+    {
+        // if not the last page
+        if (cPage < 9)
+        {
+            instructionPanelObj.transform.GetChild(2).gameObject.SetActive(true);
+            // change button text for last instruction page
+            if (cPage == 8)
+            {
+                instructionPanelObj.transform.GetChild(2).gameObject.SetActive(false);
+                continuePageButton.transform.GetChild(0).GetComponent<Text>().text = "Got It!";
+            }
+            instructionPanelObj.transform.GetChild(0).gameObject.GetComponent<Text>().text = headerText[cPage];
+            instructionPanelObj.transform.GetChild(1).gameObject.GetComponent<Text>().text = text[cPage];
+            instructionPanelObj.transform.GetChild(2).gameObject.GetComponent<Image>().sprite = instructionPages[cPage - 1];
+        }
+        else
+        {
+            instructionPanelObj.SetActive(false);
+            mainUIObject.SetActive(true);
+        }
 
     }
 
 
-    public void CloseInstructionWindow(){
-      DemAudioManager.audioClick.Play(); 
-      instructionUI.SetActive(false); 
-      mainUIObject.SetActive(true);
+    public void CloseInstructionWindow()
+    {
+        DemAudioManager.audioClick.Play();
+        instructionUI.SetActive(false);
+        mainUIObject.SetActive(true);
     }
 
-    public void SetNextInstructionSlide(){
+    public void SetNextInstructionSlide()
+    {
     }
 
 
 
-	//click on statistic button
-	public void selectStatistic(){
-		DemAudioManager.audioClick.Play();
+    //click on statistic button
+    public void selectStatistic()
+    {
+        DemAudioManager.audioClick.Play();
 
-		if (main.currentSelection) {
-			Destroy(main.currentSelection);
-			main.boardController.ClearAvailableTiles();
-		}
+        if (main.currentSelection)
+        {
+            Destroy(main.currentSelection);
+            main.boardController.ClearAvailableTiles();
+        }
 
-		if (statUI == null) {
-			statUI = demRectUI.createRectUI ("statUI", 0, 0, Screen.width / 1.2f, Screen.height / 1.2f);
-			statUI.GetComponent<Image> ().sprite = popupBackground;
-			t1 = demRectUI.setUIText (statUI, "plant used: "+statistic.getTreeDown(),0,0);
-			t2 = demRectUI.setUIText (statUI, "prey used: "+statistic.getPreyDown(),0,1);
-			t3 = demRectUI.setUIText (statUI, "plant destroyed: "+ statistic.getTreeDestroy(),1,0);
-			t4 = demRectUI.setUIText (statUI, "prey eaten: "+ statistic.getPreyEaten(),1,1);
-			t5 = demRectUI.setUIText (statUI, "turns: "+ statistic.getTurnCount (),2,0);
-			t6 = demRectUI.setUIText (statUI, "",2,1);
+        if (statUI == null)
+        {
+            statUI = demRectUI.createRectUI("statUI", 0, 0, Screen.width / 1.2f, Screen.height / 1.2f);
+            statUI.GetComponent<Image>().sprite = popupBackground;
+            t1 = demRectUI.setUIText(statUI, "plant used: " + statistic.getTreeDown(), 0, 0);
+            t2 = demRectUI.setUIText(statUI, "prey used: " + statistic.getPreyDown(), 0, 1);
+            t3 = demRectUI.setUIText(statUI, "plant destroyed: " + statistic.getTreeDestroy(), 1, 0);
+            t4 = demRectUI.setUIText(statUI, "prey eaten: " + statistic.getPreyEaten(), 1, 1);
+            t5 = demRectUI.setUIText(statUI, "turns: " + statistic.getTurnCount(), 2, 0);
+            t6 = demRectUI.setUIText(statUI, "", 2, 1);
 
-			GameObject backButton = demButton.CreateButton (0, 0, "back");
-			backButton.transform.SetParent (statUI.transform);
-			backButton.GetComponent<RectTransform> ().anchoredPosition = 
-				new Vector2 (statUI.GetComponent<RectTransform> ().sizeDelta.x/2.0f- backButton.GetComponent<RectTransform>().sizeDelta.x/2.0f,
-					-statUI.GetComponent<RectTransform> ().sizeDelta.y/5.0f*3.0f - backButton.GetComponent<RectTransform>().sizeDelta.y);
-			demButton.SetButtonText (backButton, "Back");
-			backButton.GetComponent<Button> ().onClick.AddListener (()=>{
-				DemAudioManager.audioClick.Play(); 
-				statUI.SetActive(false); 
-				mainUIObject.SetActive(true);
-			});
+            GameObject backButton = demButton.CreateButton(0, 0, "back");
+            backButton.transform.SetParent(statUI.transform);
+            backButton.GetComponent<RectTransform>().anchoredPosition =
+                new Vector2(statUI.GetComponent<RectTransform>().sizeDelta.x / 2.0f - backButton.GetComponent<RectTransform>().sizeDelta.x / 2.0f,
+                    -statUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f - backButton.GetComponent<RectTransform>().sizeDelta.y);
+            demButton.SetButtonText(backButton, "Back");
+            backButton.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                DemAudioManager.audioClick.Play();
+                statUI.SetActive(false);
+                mainUIObject.SetActive(true);
+            });
 
-			mainUIObject.SetActive (false);
+            mainUIObject.SetActive(false);
 
-			return;
-		}
+            return;
+        }
 
-		t1.GetComponent<Text> ().text = "plant used: " + statistic.getTreeDown ();
-		t2.GetComponent<Text> ().text = "prey used: " + statistic.getPreyDown ();
-		t3.GetComponent<Text> ().text = "plant destroyed: " + statistic.getTreeDestroy();
-		t4.GetComponent<Text> ().text = "prey eaten: " + statistic.getPreyEaten ();
-		t5.GetComponent<Text> ().text = "turns: " + statistic.getTurnCount ();
+        t1.GetComponent<Text>().text = "plant used: " + statistic.getTreeDown();
+        t2.GetComponent<Text>().text = "prey used: " + statistic.getPreyDown();
+        t3.GetComponent<Text>().text = "plant destroyed: " + statistic.getTreeDestroy();
+        t4.GetComponent<Text>().text = "prey eaten: " + statistic.getPreyEaten();
+        t5.GetComponent<Text>().text = "turns: " + statistic.getTurnCount();
 
-		if (!statUI.activeInHierarchy) {
-			statUI.SetActive (true);
-			mainUIObject.SetActive (false);
-		}
+        if (!statUI.activeInHierarchy)
+        {
+            statUI.SetActive(true);
+            mainUIObject.SetActive(false);
+        }
 
-	}
+    }
 
 
     public void EndGame()
@@ -650,7 +788,7 @@ public class BuildMenu : MonoBehaviour
 
             GameState.player.credits = args.creditDiff;
             Debug.Log(args.creditDiff);
-            
+
         }
     }
 
@@ -702,25 +840,25 @@ public class BuildMenu : MonoBehaviour
 
     public void UnlockAllMenuItems()
     {
-      for (int i = 0; i < 6; i++)
-      {
-        menuButtons[i].GetComponent<Button>().interactable = true;
-        foreach (Image image in menuButtons[i].GetComponentsInChildren<Image>())
+        for (int i = 0; i < 6; i++)
         {
-          image.color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
+            menuButtons[i].GetComponent<Button>().interactable = true;
+            foreach (Image image in menuButtons[i].GetComponentsInChildren<Image>())
+            {
+                image.color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
+            }
         }
-      }
     }
 
 
-  public void LockMenuButton(int buttonNum)
-  {
-    menuButtons[buttonNum].GetComponent<Button>().interactable = false;
-    foreach (Image image in menuButtons[buttonNum].GetComponentsInChildren<Image>())
+    public void LockMenuButton(int buttonNum)
     {
-      image.color = new Color(1.0F, 1.0F, 1.0F, 0.8F);
+        menuButtons[buttonNum].GetComponent<Button>().interactable = false;
+        foreach (Image image in menuButtons[buttonNum].GetComponentsInChildren<Image>())
+        {
+            image.color = new Color(1.0F, 1.0F, 1.0F, 0.8F);
+        }
     }
-  }
 
 
     public void UpdateLives(int lives)
@@ -740,55 +878,57 @@ public class BuildMenu : MonoBehaviour
 
     public void UpdatePlantBiomass()
     {
-        plantBioText.GetComponent<Text> ().text = plantBiomass.ToString ();
+        plantBioText.GetComponent<Text>().text = plantBiomass.ToString();
     }
 
     public void UpdatePlantBiomass(int biomass)
     {
         plantBiomass = biomass;
-        UpdatePlantBiomass ();
+        UpdatePlantBiomass();
 
     }
 
     public int getPlantBiomass()
     {
-    
+
         return plantBiomass;
 
     }
 
     public int GetTier2Biomass()
     {
-    
-    return tier2Biomass;
+
+        return tier2Biomass;
 
     }
 
-    public int GetTier3Biomass(){
+    public int GetTier3Biomass()
+    {
 
-    return tier3Biomass;
-      
+        return tier3Biomass;
+
     }
 
-    public void UpdateTier2Biomass(){
+    public void UpdateTier2Biomass()
+    {
 
-      tier2BioText.GetComponent<Text> ().text = tier2Biomass.ToString (); 
+        tier2BioText.GetComponent<Text>().text = tier2Biomass.ToString();
 
     }
 
     public void UpdateTier2Biomass(int biomass)
     {
 
-      tier2Biomass = biomass;
-      UpdateTier2Biomass ();
-      
+        tier2Biomass = biomass;
+        UpdateTier2Biomass();
+
     }
 
     public void AddTier2Biomass(int biomass)
     {
 
-      tier2Biomass += biomass;
-      UpdateTier2Biomass ();
+        tier2Biomass += biomass;
+        UpdateTier2Biomass();
 
     }
 
@@ -796,53 +936,55 @@ public class BuildMenu : MonoBehaviour
     public void SubtractTier2Biomass(int biomass)
     {
 
-      tier2Biomass -= biomass;
-      UpdateTier2Biomass ();
+        tier2Biomass -= biomass;
+        UpdateTier2Biomass();
 
     }
 
-    public void UpdateTier3Biomass(){
+    public void UpdateTier3Biomass()
+    {
 
-      tier3BioText.GetComponent<Text> ().text = tier3Biomass.ToString (); 
+        tier3BioText.GetComponent<Text>().text = tier3Biomass.ToString();
 
     }
 
     public void UpdateTier3Biomass(int biomass)
     {
 
-     tier3Biomass = biomass;
-     UpdateTier3Biomass ();
+        tier3Biomass = biomass;
+        UpdateTier3Biomass();
 
     }
 
     public void AddTier3Biomass(int biomass)
     {
 
-      tier3Biomass += biomass;
-      UpdateTier3Biomass ();
+        tier3Biomass += biomass;
+        UpdateTier3Biomass();
 
     }
 
-  public void AddPlantBiomass(int biomass)
-  {
+    public void AddPlantBiomass(int biomass)
+    {
 
-    plantBiomass += biomass;
-    UpdatePlantBiomass ();
+        plantBiomass += biomass;
+        UpdatePlantBiomass();
 
-  }
+    }
 
 
     public void SubtractTier3Biomass(int biomass)
     {
 
-      tier3Biomass -= biomass;
-      UpdateTier3Biomass ();
+        tier3Biomass -= biomass;
+        UpdateTier3Biomass();
 
     }
 
-  public void SubtractPlantBiomass(int biomass){
-    plantBiomass -= biomass;
-    UpdatePlantBiomass ();
-  }
+    public void SubtractPlantBiomass(int biomass)
+    {
+        plantBiomass -= biomass;
+        UpdatePlantBiomass();
+    }
 
 }

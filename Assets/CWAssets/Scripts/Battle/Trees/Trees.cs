@@ -23,6 +23,9 @@ public class Trees : MonoBehaviour {
     GameObject optionCanvas;
     GameObject confirmCanvas;
     GameObject closeButton;
+    GameObject helpButton;
+    GameObject helpCloseButton;
+    GameObject helpCanvas;
     // Use this for initialization
     void Start () {
         
@@ -59,6 +62,9 @@ public class Trees : MonoBehaviour {
         optionCanvas = GameObject.Find ("OptionsCanvas");
         confirmCanvas = GameObject.Find ("ConfirmCanvas");
         closeButton = GameObject.Find("OptionsCanvas/OptionsPanel/CloseOptions");
+        helpCanvas = GameObject.Find("HelpCanvas");
+        helpButton = GameObject.Find ("/OptionsCanvas/OptionsPanel/QuitButtons/HelpButton");
+        helpCloseButton = GameObject.Find("HelpCanvas/BG/Button");
 
         //adding listeners for buttons
         optionsButton.GetComponent<Button> ().onClick.AddListener (() => {toggleSurrender();});
@@ -66,6 +72,9 @@ public class Trees : MonoBehaviour {
         surrenderButton.GetComponent<Button>().onClick.AddListener (() => {surrenderConfirm();});
         yesButton.GetComponent<Button>().onClick.AddListener(() => {surrenderOn();});
         noButton.GetComponent<Button>().onClick.AddListener(() => {surrenderConfirm();});
+        helpButton.GetComponent<Button> ().onClick.AddListener (() => {toggleHelp();});
+        helpCloseButton.GetComponent<Button> ().onClick.AddListener (() => {toggleHelp();});
+
 
         Debug.Log("adding listeners");
     }
@@ -151,7 +160,7 @@ public class Trees : MonoBehaviour {
         }
         if (this.player.isActive) {
             transform.Find ("NameText").GetComponent<TextMesh> ().text = ">>"+this.player.playerName+"<<";
-            transform.Find ("ActionText").GetComponent<TextMesh>().text = "Your Turn!";
+            transform.Find ("ActionText").GetComponent<TextMesh>().text = "Playing...";
             transform.Find ("ActionText").GetComponent<Renderer> ().material.SetColor("_Color", Color.yellow);
         } else { //Enemy name is red
             transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
@@ -235,6 +244,32 @@ public class Trees : MonoBehaviour {
             confirmCanvas.GetComponent<CanvasGroup>().alpha = 0;
             confirmCanvas.GetComponent<CanvasGroup>().interactable = false;
             confirmCanvas.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        }
+    }
+
+    void toggleHelp()
+    {
+        if (helpCanvas.GetComponent<CanvasGroup>().alpha == 0 && player.player1)
+        {
+            //close options canvas
+            Debug.Log("options closed");
+            optionCanvas.GetComponent<CanvasGroup>().alpha = 0;
+            optionCanvas.GetComponent<CanvasGroup>().interactable = false;
+            optionCanvas.GetComponent<CanvasGroup>().blocksRaycasts = false;
+            confirmCanvas.GetComponent<CanvasGroup>().alpha = 0;
+            confirmCanvas.GetComponent<CanvasGroup>().interactable = false;
+            confirmCanvas.GetComponent<CanvasGroup>().blocksRaycasts = false;
+            //show help
+            Debug.Log("Help Overlay opened");
+            helpCanvas.GetComponent<CanvasGroup>().alpha = 1;
+            helpCanvas.GetComponent<CanvasGroup>().interactable = true;
+            helpCanvas.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        }
+        else if (helpCanvas.GetComponent<CanvasGroup>().alpha == 1 && player.player1)
+        {
+            helpCanvas.GetComponent<CanvasGroup>().alpha = 0;
+            helpCanvas.GetComponent<CanvasGroup>().interactable = false;
+            helpCanvas.GetComponent<CanvasGroup>().blocksRaycasts = false;
         }
     }
 
