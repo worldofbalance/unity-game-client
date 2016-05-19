@@ -17,8 +17,8 @@ public class WorldMouse : MonoBehaviour
     private string[] terrain = new string[] { "Desert", "Jungle", "Grasslands", "Arctic" };
 
     GameObject mapTileSelected;
-    GameObject tileUi;
-    GameObject purchaseCursor;
+    public GameObject tileUi;
+    public GameObject purchaseCursor;
     Button purchaseButton;
     GameObject tilePurchaseSuccess;
 
