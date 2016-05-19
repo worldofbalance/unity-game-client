@@ -6,7 +6,7 @@ public class Constants
 {
     public static readonly float UnitColliderRadius = 5.0f;
     //    public static readonly int REMOTE_PORT_COS = 9257;
-    public static readonly int REMOTE_PORT_COS = 16567;
+    public static readonly int REMOTE_PORT_COS = 9265;
     public static readonly string TAG_HEALTH_BAR = "HealthBar";
     public static string SESSION_ID_COS = "";
 
