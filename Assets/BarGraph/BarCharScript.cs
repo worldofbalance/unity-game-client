@@ -15,13 +15,13 @@ public class BarCharScript : MonoBehaviour {
 	private string[] labels = new string[4];
 	private Color[] colors = new Color[]{Color.red,  Color.green, Color.cyan, Color.white};
 	public delegate void Callback (String[] topPlayerNames, int[] topPlayerscores);
-	public Text player1Name, player2Name, player3Name, player4Name;
+	public Text playerName, playerScore, playerCredits, playerSpecies, playerDays;
 
 
 	void Start () {
 		
 		requestTopPlayers ();
-		chartHeight = Screen.height + GetComponent<RectTransform>().sizeDelta.y;
+		chartHeight = Screen.height + GetComponent<RectTransform>().sizeDelta.y - 200;
 
 
 
@@ -51,10 +51,12 @@ public class BarCharScript : MonoBehaviour {
 		playerScores[1] = args.score2;
 		playerScores[2] = args.score3;
 		playerScores [3] = 1800;
-		player1Name.text = "1) " + labels [0] + ": " + playerScores [0];
-		player2Name.text = "2) " + labels [1] + ": " + playerScores [1];
-		player3Name.text = "3) " + labels [2] + ": " + playerScores [2];
-		player4Name.text = "4) " + labels [3] + ": " + playerScores [3];
+		//These are the text fields to the right of the chatrt
+		playerName.text = "Welcome " + labels [3]+"!";
+		playerScore.text = "Your Score: " + playerScores [3];
+		playerCredits.text = "Credit balance: 2000";
+		playerSpecies.text = "Number Species: 27";
+		playerDays.text = "Days playing: 10";
 		DisplayGraph (playerScores, labels);
 	}
 
@@ -70,7 +72,7 @@ public class BarCharScript : MonoBehaviour {
 			//size bar
 			RectTransform rt = newBar.bar.GetComponent<RectTransform> ();
 			//normalize score based on highest score
-			float normalizedValue = (float)vals [i] / (float)maxValue * 0.85f;
+			float normalizedValue = (float)vals [i] / (float)maxValue * 1.00f;
 			rt.sizeDelta = new Vector2 (rt.sizeDelta.x, chartHeight * normalizedValue);
 			newBar.bar.color = colors [i % colors.Length];
 			//newBar.bar.color = Color.cyan;
@@ -85,6 +87,7 @@ public class BarCharScript : MonoBehaviour {
 			newBar.barValue.text = playerScores [i].ToString ();
 			//if height is too small, move value label to top of bar
 			if (rt.sizeDelta.y < 30f) {
+				newBar.barValue.color = Color.white;
 				newBar.barValue.GetComponent<RectTransform> ().pivot = new Vector2 (0.5f, 0f);
 				newBar.barValue.GetComponent<RectTransform> ().anchoredPosition = Vector2.zero;
 			}
