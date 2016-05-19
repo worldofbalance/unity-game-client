@@ -189,7 +189,7 @@ public class MultiplayerGames : MonoBehaviour {
                         SDProcessPlayInit
                     );
                 } else {
-                    Game.SwitchScene ("SDReadyScene");
+                    Game.SwitchScene("SDReadyScene");
                 }
             } else if (args.gameID == Constants.MINIGAME_MULTI_CONVERGENCE) {
                 // DH change
@@ -220,6 +220,7 @@ public class MultiplayerGames : MonoBehaviour {
             this.waiting = true;
 
             if (args.gameID == Constants.MINIGAME_SEA_DIVIDED) {
+                SD.Constants.PLAYER_NUMBER = 1; // The host player is player 1
                 // The host player has been allocated a room, send that request to the SD server.
                 SD.SDMain.networkManager.Send (
                     SD.SDPlayInitProtocol.Prepare (SD.Constants.USER_ID, room.id), 
@@ -265,13 +266,11 @@ public class MultiplayerGames : MonoBehaviour {
 
     public void SDProcessPlayInit(NetworkResponse response) {
         SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;
-        //if (args.playerId == SD.Constants.USER_ID) {
         SD.Constants.PLAYER_NUMBER = args.playerNumber;
-        Debug.Log ("The player number is " + args.playerNumber);
+        Debug.Log ("The SD player number is " + args.playerNumber);
         if (SD.Constants.PLAYER_NUMBER == 2) {
-            Game.SwitchScene ("SDReadyScene");
+            Game.SwitchScene("SDReadyScene");
         }
-        // }
     }
 
 }

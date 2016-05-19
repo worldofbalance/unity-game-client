@@ -15,6 +15,7 @@ namespace SD {
         public GameObject Prey;
         public Vector3 spawnValue;
         public GameObject[] preyArray;
+        public GameObject bubbles;
 
         // Number of prey spawn at a game start
         public int numPrey;
@@ -31,7 +32,7 @@ namespace SD {
         public float stamina;       // Player's stamina
         public int health;
         private const float MaxStamina = 100;
-        private float staminaRecoveryRate = 0.08f;
+        private float staminaRecoveryRate = 0.115f;
 
         public Boundary boundary;
         public Rigidbody player;
@@ -57,11 +58,17 @@ namespace SD {
         private int maxPreyId;
         private bool hasSurrendered;
         private bool isGameTimeTicking = false;
+        private bool isPlayerInBase = false;
+        private bool isOpponentInBase = false;
 
         public GameObject surrenderPanelCanvas;
+        public GameObject baseScorePanelCanvas;
         public GameObject countdownPanelCanvas;
         public GameObject foodChainPanelCanvas;
+        private int foodChainPanelVisibleSeconds = 7;
+        private PlayTimePlayer targetPlayer;
         public GameObject deathPanelCanvas;
+
         Rigidbody playerClone;
 
         void Awake () {
@@ -70,7 +77,7 @@ namespace SD {
         // Initializes the player's score, and UI texts.
         // Also spawns numbers of prey at random positions.
         void Start () {
-
+            
             if (Constants.PLAYER_NUMBER == 2) {  // The player who joins the host will have a different position to start from.
                 swapPositions();
             }
@@ -108,14 +115,16 @@ namespace SD {
                 opponentPlayer.speedUpFactor = playerClone.GetComponent<PlayerController> ().speedUpFactor;
                 opponentPlayer.yRotation = opponentInitialRotation.eulerAngles.y;
                 isGameTimeTicking = false; // Wait for time sync if in multiplayer mode
-                gameController.countdownPanelCanvas.SetActive (false); // We do not need the countdownpanel anymore.
+                gameController.countdownPanelCanvas.SetActive (true);
             } else {
                 isGameTimeTicking = true; // Start the timer immediately if in offline mode
                 gameController.countdownPanelCanvas.SetActive (false);
             }
 
-            //Display the food chain panel for 5 seconds upon game start
-            StartCoroutine(showFoodChainUponStart(10));
+            // Spawn the predator: 1 of type 8
+            spawnNpcSet(8, 1);
+            //Display the food chain panel for n seconds upon game start
+            StartCoroutine(showFoodChainUponStart(foodChainPanelVisibleSeconds));
         }
 
       
@@ -127,10 +136,13 @@ namespace SD {
             yield return new WaitForSeconds (seconds);
             hideFoodChainPanel ();
         }
-
         // Automatically revovers stamina, and refreshs staminaText UI every frame.
         void Update() {
             if (getIsGameTimeTicking ()) {
+                if (Constants.PLAYER_NUMBER != 2)
+                {  // The player who joins the host will have a different position to start from.
+                    StartCoroutine(RetargetFish()); // TODO: Move coroutine out of Update() into a while loop
+                }
                 RecoverStamina ();
                 UpdateStaminaText ();
                 UpdateUnscoredPointText ();
@@ -197,9 +209,25 @@ namespace SD {
         }
 
         public void destroyPrey(int i) {
+
+            // Displays bubbles when destroying prey
+            Instantiate (bubbles, playerClone.transform.position, Quaternion.identity);
+            StartCoroutine( destroyBubbles() );
+
+            // Modify the clone to your heart's content
             if (npcFishObjects [i] != null) {
                 Destroy (npcFishObjects [i]);
+                npcFishes [i].isAlive = false;
             }
+        }
+
+        /// <summary>
+        /// Destroies the bubbles invoked by destroyPrey()
+        /// </summary
+        /// <returns>Destroys bubbles after 5 seconds</returns>
+        IEnumerator destroyBubbles(){
+            yield return new WaitForSeconds (5);
+            Destroy (GameObject.FindGameObjectWithTag("Bubbles"));
         }
 
         // Spawns 'num' Npc fish of type 'speciesId'
@@ -215,14 +243,70 @@ namespace SD {
                 // set the attributes of the npc fish to spawn.
                 npcFish.xPosition = spawnPosition.x;
                 npcFish.yPosition = spawnPosition.y;
+                npcFish.target = new Vector2 (npcFish.xPosition, npcFish.yPosition);
                 npcFish.speciesId = speciesId;
                 spawnPrey (i, speciesId);
             }
-            sdGameManager.SendNpcFishPositions (5);  // Player 1 will send its positions to Player 2
+            if (SDMain.networkManager != null) 
+                sdGameManager.SendNpcFishPositions (5);  // Player 1 will send its positions to Player 2
         }
-        // Increases the current score value, and pass the info to scoreText
-        // by calling UpdateScore().
-        public void AddScore(int newScoreValue) {
+
+        IEnumerator RetargetFish()
+        {
+            targetFish();
+            if (SD.SDMain.networkManager != null)
+                sdGameManager.SendNpcFishPositions (5);
+            yield return new WaitForSeconds(2);
+            yield return null; // prevents it from hanging ?
+        }
+
+        public void targetFish()
+        {
+            Dictionary <int, NPCFish> npcs = getNpcFishes();
+            foreach (KeyValuePair<int, NPCFish> entry in npcs) {
+                if (!getNpcFishObjects ().ContainsKey (entry.Key))
+                    continue;
+                if (entry.Value.isAlive && getNpcFishObjects()[entry.Key].tag == "Predator") {
+                    // calculate the distance to check if the player lies within the danger zone.
+                    float distanceFromPlayer = Vector2.Distance (new Vector2 (getCurrentPlayer ().xPosition, getCurrentPlayer ().yPosition), new Vector2 (entry.Value.xPosition, entry.Value.yPosition));
+                    float distanceFromOpponent = float.MaxValue;
+                    if (sdGameManager.getIsMultiplayer ()) {
+                        distanceFromOpponent = Vector2.Distance (new Vector2 (getOpponentPlayer ().xPosition, getOpponentPlayer ().yPosition), new Vector2 (entry.Value.xPosition, entry.Value.yPosition));
+                    }
+   
+                    if (distanceFromPlayer < SD.Constants.PREDATOR_SAFE_DISTANCE || distanceFromOpponent < SD.Constants.PREDATOR_SAFE_DISTANCE) {
+                        if (distanceFromPlayer > distanceFromOpponent) {
+                            // If opponent is in base, do not follow it, otherwise continue to pursue.
+                            if (getIsOpponentInBase ()) {
+                                getNpcFishes () [entry.Key].target = new Vector2 (entry.Value.xPosition + entry.Value.targetOffset, entry.Value.yPosition);
+                                getNpcFishes () [entry.Key].isAttacking = false;
+                            } else {
+                                getNpcFishes () [entry.Key].target = new Vector2 (getOpponentPlayer ().xPosition, getOpponentPlayer ().yPosition);
+                                targetPlayer = getOpponentPlayer ();
+                            }
+                        } else {
+                            // If player is in base, do not follow it, otherwise continue to pursue.
+                            if (getIsPlayerInBase ()) {
+                                getNpcFishes () [entry.Key].target = new Vector2 (entry.Value.xPosition + entry.Value.targetOffset, entry.Value.yPosition);
+                                getNpcFishes () [entry.Key].isAttacking = false;
+                            } else {
+                                getNpcFishes () [entry.Key].target = new Vector2 (getCurrentPlayer ().xPosition, getCurrentPlayer ().yPosition);
+                                targetPlayer = getCurrentPlayer ();
+                            }
+                        }
+                        getNpcFishes () [entry.Key].isAttacking = true;
+                    } else {
+                        getNpcFishes () [entry.Key].target = new Vector2 (entry.Value.xPosition + entry.Value.targetOffset, entry.Value.yPosition);
+                        getNpcFishes () [entry.Key].isAttacking = false;
+                    }
+                } else {
+                    getNpcFishes () [entry.Key].target = new Vector2 (entry.Value.xPosition + entry.Value.targetOffset, entry.Value.yPosition);
+                }
+            }
+        }
+    // Increases the current score value, and pass the info to scoreText
+    // by calling UpdateScore().
+    public void AddScore(int newScoreValue) {
             score += newScoreValue;
             UpdateScoreText ();
             // Send the score to the opponent.
@@ -336,6 +420,22 @@ namespace SD {
             return npcFishObjects;
         }
 
+        public void showCountdownPanel(){
+            countdownPanelCanvas.SetActive (true);
+        }
+
+        public void hideCountdownPanel(){
+            countdownPanelCanvas.SetActive (false);
+        }
+
+        public void showBaseScorePanel(){
+            baseScorePanelCanvas.SetActive (true);
+        }
+
+        public void hideBaseScorePanel(){
+            baseScorePanelCanvas.SetActive (false);
+        }
+
         public void hideSurrenderPanel(){
             surrenderPanelCanvas.SetActive(false);
         }
@@ -370,6 +470,30 @@ namespace SD {
 
         public int getMaxPreyId() {
             return maxPreyId;
+        }
+
+        public void setTargetPlayer(PlayTimePlayer p) {
+            targetPlayer = p;
+        }
+
+        public PlayTimePlayer getTargetPlayer() {
+            return targetPlayer;
+        }
+
+        public void setIsPlayerInBase(bool isInBase) {
+            isPlayerInBase = isInBase;
+        }
+
+        public bool getIsPlayerInBase() {
+            return isPlayerInBase;
+        }
+
+        public void setIsOpponentInBase(bool isInBase) {
+            isOpponentInBase = isInBase;
+        }
+
+        public bool getIsOpponentInBase() {
+            return isOpponentInBase;
         }
     } 
 

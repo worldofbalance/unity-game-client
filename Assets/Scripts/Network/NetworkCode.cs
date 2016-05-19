@@ -118,18 +118,18 @@
 	public static readonly short APPLY_WEATHER = 215;
 
     // Sea Divided
-    public static readonly short SD_GAME_LOGIN = 300;
-    public static readonly short SD_PLAY_INIT = 301;
-    public static readonly short SD_START_GAME = 302;
-    public static readonly short SD_END_GAME = 303;
-    public static readonly short SD_KEYBOARD = 304;
-    public static readonly short SD_PLAYER_POSITION = 305;
-    public static readonly short SD_PREY = 306;
-    public static readonly short SD_EAT_PREY = 307;
-    public static readonly short SD_SCORE = 308;
-    public static readonly short SD_DISCONNECT = 309;
-    public static readonly short SD_RECONNECT = 310;
-    public static readonly short SD_HEARTBEAT = 311;
-    public static readonly short SD_NPCPOSITION = 312;
-    public static readonly short SD_RESPAWN = 313;
+    public static readonly short SD_GAME_LOGIN = 400;
+    public static readonly short SD_PLAY_INIT = 401;
+    public static readonly short SD_START_GAME = 402;
+    public static readonly short SD_END_GAME = 403;
+    public static readonly short SD_KEYBOARD = 404;
+    public static readonly short SD_PLAYER_POSITION = 405;
+    public static readonly short SD_PREY = 406;
+    public static readonly short SD_EAT_PREY = 407;
+    public static readonly short SD_SCORE = 408;
+    public static readonly short SD_DISCONNECT = 409;
+    public static readonly short SD_RECONNECT = 410;
+    public static readonly short SD_HEARTBEAT = 411;
+    public static readonly short SD_NPCPOSITION = 412;
+    public static readonly short SD_RESPAWN = 413;
 }

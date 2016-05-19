@@ -24,7 +24,7 @@ namespace SD
         // Use this for initialization
         void Start()
         {
-            StartCoroutine (RequestInGameHeartbeat()); 
+            //StartCoroutine (RequestInGameHeartbeat()); 
         }
 
         // Update is called once per frame
@@ -34,7 +34,6 @@ namespace SD
         }
 
         void OnDestroy() {
-            Debug.Log ("Thanks for playing Sea Divided.");
             StopCoroutine (RequestInGameHeartbeat());
         }
  
@@ -42,8 +41,7 @@ namespace SD
         {
             
             while(true) {
-                // Send a heartbeat request only if we are actually in a game.
-                if (SDPersistentData.getInstance () != null && networkManager != null) {
+                if (networkManager != null) {
                     networkManager.Send (SDHeartbeatProtocol.Prepare ());
                 }
                 yield return new WaitForSeconds(Constants.HEARTBEAT_SECONDS);
