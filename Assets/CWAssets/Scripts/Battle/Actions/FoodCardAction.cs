@@ -17,14 +17,17 @@ namespace CW{
 		
 		override public void execute(){
 			readData ();
-            //DebugConsole.Log("in execute of foodcard action");
+            
+
 			GameObject obj = (GameObject)GameManager.player2.cardsInPlay[attackersPosition];
+            //GameObject obj = (GameObject)GameManager.player2.cardsInPlay[attackedPosition];
 			AbstractCard target = obj.GetComponent<AbstractCard> ();
 			GameManager.player2.applyFoodBuff(target, 1, 1);
+
 			GameObject cardUsed = (GameObject)GameManager.player2.hand [0];
-			GameManager.player2.hand.RemoveAt (0);
+			GameManager.player2.hand.Remove(cardUsed);
 			GameObject.Destroy (cardUsed);
-			Debug.Log ("Executing CardAttackAction, attackedPosition:" + attackedPosition);
+
 			// initiate attack
 			
 		}
