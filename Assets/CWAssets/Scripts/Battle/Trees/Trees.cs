@@ -34,7 +34,7 @@ public class Trees : MonoBehaviour {
 
     public void init(BattlePlayer player){
         this.player = player;
-        maxHP =hp= 11; 
+        maxHP =hp= 30; 
 
         if (player.player1) { //Your name is pink
             //transform.Find ("NameText").GetComponent<TextMesh> ().text = this.player.playerName;
