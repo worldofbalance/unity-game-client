@@ -13,7 +13,7 @@ public class CurrentlyOnline : MonoBehaviour
     {
         passedInFunc = callback;
 
-        NetworkManager.Send(
+        Game.networkManager.Send(
             PlayersProtocol.Prepare(),
             ProcessOnlinePlayers
         );

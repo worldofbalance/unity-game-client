@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -11,6 +11,7 @@ namespace RR
         public GameObject map;
         public GameObject endFlag;
         public GameObject item1;
+        public GameObject clouds; // Another background layer
 
         public ArrayList items;
         private GameCamera cam;
@@ -139,22 +140,14 @@ namespace RR
                 // Instantiate(map, new Vector3((float)(20 + (i * 62.9)), 0.507454f, 0), Quaternion.identity);
                 //map = Instantiate(Resources.Load("Box")) as GameObject;
 
-                if (i == 0){
-                    map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
-					// map.transform.localScale = new Vector3(myScale2, myScale, 0);
-				}
-                else if (i == mapLength - 1){
-                    map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
-					
-					// map.transform.localScale = new Vector3(myScale2, myScale, 0);
-				}
-                else{
-                    map = Instantiate(Resources.Load("Prefabs/Maps/MapVar_" + Random.Range(0, 6)), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
-					
-					// map.transform.localScale = new Vector3(myScale2, myScale, 0);
-				}
+                string mapResourcePath = (i == 0 || i == mapLength - 1)? "Prefabs/Maps/BaseMapVar" : "Prefabs/Maps/MapVar_" + Random.Range(0, 5);
 
-                //map.name = map.name + " " + i;
+                map = Instantiate (
+                    Resources.Load (mapResourcePath),
+                    new Vector3 (tempEnd, -2.5f, 0),
+                    Quaternion.identity
+                ) as GameObject;
+
                 map.name = "aMap" + i;
                 //(float)(20 + (i * 62.9))
                 tempEnd += 500f;
@@ -163,6 +156,7 @@ namespace RR
 
             Instantiate(endFlag, new Vector3(endPoint, -120f, 0), Quaternion.identity);
         }
+       
 
         private void PlaceItem(int speciesId, float x) 
         {

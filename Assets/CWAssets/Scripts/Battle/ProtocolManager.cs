@@ -18,15 +18,15 @@ public class ProtocolManager : MonoBehaviour{
 
 
 	public void init() {
-		Debug.Log("init Protocol Manager");
+		
 		//StartCoroutine(PollAction(Constants.UPDATE_RATE));
 	}
 
 	private IEnumerator PollAction(float time) {
 		
 		while (true) {
-			Debug.Log ("PollAction ");
-			NetworkManager.Send(MatchActionProtocol.Prepare(GameManager.player1.playerID), processMatchAction );
+			
+			CWGame.networkManager.Send(MatchActionProtocol.Prepare(GameManager.player1.playerID), processMatchAction );
 			yield return new WaitForSeconds(time);
 		}
 	}
@@ -42,7 +42,7 @@ public class ProtocolManager : MonoBehaviour{
 			TurnAction action = args.action;
 			action.execute();
 		}
-		Debug.Log ("Match Action code:= " + args.actionID);
+
 	}
 
 
@@ -63,9 +63,9 @@ public class ProtocolManager : MonoBehaviour{
 	
 	// Let server know that you are logged into the game
 	public void setMatchStatus() {
-		Debug.Log("Setting match for playerID: " + GameManager.player1.playerID);
+		//Debug.Log("Setting match for playerID: " + GameManager.player1.playerID);
 		//Informs the Server we are ready for take off
-		NetworkManager.Send (
+		CWGame.networkManager.Send (
 			MatchStatusProtocol.Prepare (GameManager.player1.playerID, GameManager.player1.playerName), 
 			ProcessMatchStatus);
 	}
@@ -95,31 +95,31 @@ public class ProtocolManager : MonoBehaviour{
 		}
 
 	}
-
 	
-	public void sendSummon(int playerID, int cardID,  int diet, 
+	public void sendSummon(int playerID, int cardID,  string diet, 
 	                      int level, int attack, int health, 
 	                       string species_name,  string type, 
 	                      string description){
 
-			NetworkManager.Send (
-			SummonCardProtocol.Prepare ( playerID, cardID,  diet, 
+			CWGame.networkManager.Send (
+			SummonCardProtocol.Prepare (playerID, cardID,  diet, 
 		                             level, attack,  health, 
 		                            species_name,  type, 
 		                            description), 
 				ProcessSummonCard);
+
 	}
 	
 	public void ProcessSummonCard(NetworkResponse response) {
 		ResponseSummonCard args = response as ResponseSummonCard;
 		
-		Debug.Log("Summon Response MatchID:  " );
+
 	}
 
 	
 	public void GetDeck () {
 		
-		NetworkManager.Send ( GetDeckProtocol.Prepare (GameManager.player1.playerID), 
+		CWGame.networkManager.Send ( GetDeckProtocol.Prepare (GameManager.player1.playerID), 
 		                     ProcessGetDeck);
 	}
 
@@ -158,7 +158,7 @@ public class ProtocolManager : MonoBehaviour{
 	// Probably not needed -- can automatically set player2 cards dealt
 	// on turn switch
 		
-		NetworkManager.Send ( DealCardProtocol.Prepare (playerID, handPosition), 
+		CWGame.networkManager.Send ( DealCardProtocol.Prepare (playerID, handPosition), 
 		                     ProcessDealCard);	
 	}
 	
@@ -175,7 +175,7 @@ public class ProtocolManager : MonoBehaviour{
 
 
 	public void sendEndTurn (int playerID){
-		NetworkManager.Send ( EndTurnProtocol.Prepare (playerID), 
+		CWGame.networkManager.Send ( EndTurnProtocol.Prepare (playerID), 
 		                     ProcessEndTurn);
 		GameManager.player1.isActive = false;
 	}
@@ -184,13 +184,13 @@ public class ProtocolManager : MonoBehaviour{
 	public void ProcessEndTurn(NetworkResponse response){
 		ResponseEndTurn args = response as ResponseEndTurn;
 
-		Debug.Log ("End Turn Response: isActive :" + args.status);
+		//Debug.Log ("End Turn Response: isActive :" + args.status);
 	}
 
 
 	// Sent when attacking tree
 	public void sendTreeAttack(int playerID, int fieldPosition){
-		NetworkManager.Send (
+		CWGame.networkManager.Send (
 			TreeAttackProtocol.Prepare (playerID, fieldPosition), 
 			ProcessTreeAttack);
 	}
@@ -204,9 +204,19 @@ public class ProtocolManager : MonoBehaviour{
 	}
 
 
+	public void sendFoodBuff(int playerID, int targetPosition){
+			CWGame.networkManager.Send (
+				ApplyFoodBuffProtocol.Prepare(playerID, targetPosition),
+				ProcessFoodBuff);
+		}
+
+	public void ProcessFoodBuff(NetworkResponse response){
+				ResponseFoodBuff args = response as ResponseFoodBuff;
+
+		}
 	// Sent when attacking opponents cards
 	public void sendCardAttack(int playerID, int attackersPosition, int attackedPosition){
-		NetworkManager.Send (
+		CWGame.networkManager.Send (
 			CardAttackProtocol.Prepare (playerID, attackersPosition, attackedPosition), 
 			ProcessCardAttack);
 	}
@@ -214,27 +224,32 @@ public class ProtocolManager : MonoBehaviour{
 	public void ProcessCardAttack(NetworkResponse response) {
 		ResponseCardAttack args = response as ResponseCardAttack;
 		
-		Debug.Log("CardAttack MatchID:  " + args.status);
+
 		
 	}
+	
+	public void sendMatchOver (int playerID, int wonGame){
+        CWGame.networkManager.Send(MatchOverProtocol.Prepare(playerID, wonGame), ProcessQuitMatch);
+//		CWGame.networkManager.Send ( QuitMatchProtocol.Prepare (playerID), 
+//            ProcessQuitMatch);
+	}
 
-
-	// Send if "leave/quit match" button clicked
-	public void sendQuitMatch (int playerID){
-		NetworkManager.Send ( QuitMatchProtocol.Prepare (playerID), 
-		                     ProcessQuitMatch);
+    // Send if "leave/quit match" button clicked
+    public void sendQuitMatch (int playerID){
+		CWGame.networkManager.Send ( QuitMatchProtocol.Prepare (playerID), 
+            ProcessQuitMatch);
 	}
 	
 	public void ProcessQuitMatch(NetworkResponse response){
 		ResponseQuitMatch args = response as ResponseQuitMatch;
 		bool opponentReadyResponse = false;
-		Debug.Log ("Quit Match Response");
+
 	}
 
 	// Sent if player wins game
 	public void TestGameOver(int playerID){
 		int wonGame = 1;
-		NetworkManager.Send ( MatchOverProtocol.Prepare (playerID, wonGame), 
+		CWGame.networkManager.Send ( MatchOverProtocol.Prepare (playerID, wonGame), 
 		                     ProcessGameOver);	
 	}
 	
@@ -247,7 +262,7 @@ public class ProtocolManager : MonoBehaviour{
 	}
 
 	public void sendReturnToLobby(){
-	NetworkManager.Send ( ReturnLobbyProtocol.Prepare (), 
+	CWGame.networkManager.Send ( ReturnLobbyProtocol.Prepare (), 
 		                     ProcessReturnToLobby);	
 	}
 
@@ -255,7 +270,16 @@ public class ProtocolManager : MonoBehaviour{
 		ResponseReturnLobby args = response as ResponseReturnLobby;
 		Debug.Log ("Return To Lobby processed" + args.status );
 	}
+    public void sendWeatherCard(int playerID, int card_id){
+            CWGame.networkManager.Send (
+                ApplyWeatherProtocol.Prepare (playerID, card_id),
+                ProcessWeatherCard);
+        }
 
+    public void ProcessWeatherCard(NetworkResponse response){
+            ResponseWeatherCard args = response as ResponseWeatherCard;
+            Debug.Log ("Weather Card: " + args.status);
+        }
 
 }
 }
