@@ -46,5 +46,17 @@ namespace SD {
         void Update () {
             // Update the velocity of the opponent.      
         }
+
+        void OnTriggerEnter(Collider other) {
+            if (other.tag == "Opponent") {
+                sdGameController.setIsOpponentInBase (true);
+            }
+        }
+
+        void OnTriggerExit(Collider other) {
+            if (other.tag == "Opponent") {
+                sdGameController.setIsOpponentInBase (false);
+            }
+        }
     }
 }

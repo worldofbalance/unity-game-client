@@ -46,7 +46,7 @@ namespace SD
                 Vector3 relativePos = new Vector3 (GameController.getInstance ().getTargetPlayer ().xPosition, GameController.getInstance ().getTargetPlayer ().yPosition, 0);
                 Quaternion rotation = Quaternion.LookRotation (relativePos); // face the player to be attacked
                 transform.rotation = rotation;
-                if (npcFish.target.x < transform.position.x) {  // swim in the right direction.
+                if (npcFish.target.x <= transform.position.x) {  // swim in the right direction.
                     npcFish.targetOffset = -20;
                     transform.rotation = Quaternion.Euler (transform.rotation.eulerAngles.x, 270, transform.rotation.eulerAngles.z);
                 } else {

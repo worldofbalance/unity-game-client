@@ -58,6 +58,8 @@ namespace SD {
         private int maxPreyId;
         private bool hasSurrendered;
         private bool isGameTimeTicking = false;
+        private bool isPlayerInBase = false;
+        private bool isOpponentInBase = false;
 
         public GameObject surrenderPanelCanvas;
         public GameObject countdownPanelCanvas;
@@ -261,6 +263,8 @@ namespace SD {
         {
             Dictionary <int, NPCFish> npcs = getNpcFishes();
             foreach (KeyValuePair<int, NPCFish> entry in npcs) {
+                if (!getNpcFishObjects ().ContainsKey (entry.Key))
+                    continue;
                 if (entry.Value.isAlive && getNpcFishObjects()[entry.Key].tag == "Predator") {
                     // calculate the distance to check if the player lies within the danger zone.
                     float distanceFromPlayer = Vector2.Distance (new Vector2 (getCurrentPlayer ().xPosition, getCurrentPlayer ().yPosition), new Vector2 (entry.Value.xPosition, entry.Value.yPosition));
@@ -268,14 +272,26 @@ namespace SD {
                     if (sdGameManager.getIsMultiplayer ()) {
                         distanceFromOpponent = Vector2.Distance (new Vector2 (getOpponentPlayer ().xPosition, getOpponentPlayer ().yPosition), new Vector2 (entry.Value.xPosition, entry.Value.yPosition));
                     }
-
+   
                     if (distanceFromPlayer < SD.Constants.PREDATOR_SAFE_DISTANCE || distanceFromOpponent < SD.Constants.PREDATOR_SAFE_DISTANCE) {
                         if (distanceFromPlayer > distanceFromOpponent) {
-                            getNpcFishes () [entry.Key].target = new Vector2 (getOpponentPlayer ().xPosition, getOpponentPlayer ().yPosition);
-                            targetPlayer = getOpponentPlayer ();
+                            // If opponent is in base, do not follow it, otherwise continue to pursue.
+                            if (getIsOpponentInBase ()) {
+                                getNpcFishes () [entry.Key].target = new Vector2 (entry.Value.xPosition + entry.Value.targetOffset, entry.Value.yPosition);
+                                getNpcFishes () [entry.Key].isAttacking = false;
+                            } else {
+                                getNpcFishes () [entry.Key].target = new Vector2 (getOpponentPlayer ().xPosition, getOpponentPlayer ().yPosition);
+                                targetPlayer = getOpponentPlayer ();
+                            }
                         } else {
-                            getNpcFishes () [entry.Key].target = new Vector2 (getCurrentPlayer ().xPosition, getCurrentPlayer ().yPosition);
-                            targetPlayer = getCurrentPlayer ();
+                            // If player is in base, do not follow it, otherwise continue to pursue.
+                            if (getIsPlayerInBase ()) {
+                                getNpcFishes () [entry.Key].target = new Vector2 (entry.Value.xPosition + entry.Value.targetOffset, entry.Value.yPosition);
+                                getNpcFishes () [entry.Key].isAttacking = false;
+                            } else {
+                                getNpcFishes () [entry.Key].target = new Vector2 (getCurrentPlayer ().xPosition, getCurrentPlayer ().yPosition);
+                                targetPlayer = getCurrentPlayer ();
+                            }
                         }
                         getNpcFishes () [entry.Key].isAttacking = true;
                     } else {
@@ -453,6 +469,22 @@ namespace SD {
 
         public PlayTimePlayer getTargetPlayer() {
             return targetPlayer;
+        }
+
+        public void setIsPlayerInBase(bool isInBase) {
+            isPlayerInBase = isInBase;
+        }
+
+        public bool getIsPlayerInBase() {
+            return isPlayerInBase;
+        }
+
+        public void setIsOpponentInBase(bool isInBase) {
+            isOpponentInBase = isInBase;
+        }
+
+        public bool getIsOpponentInBase() {
+            return isOpponentInBase;
         }
     } 
 

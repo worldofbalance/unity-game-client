@@ -45,6 +45,7 @@ namespace SD {
                     audioSource.Play ();
                     gameController.showCountdownPanel ();
                 }
+                gameController.setIsPlayerInBase (true);
             }
         }
 
@@ -65,6 +66,13 @@ namespace SD {
                     gameController.stamina = 100;
                     gameController.hideCountdownPanel ();
                 }
+            }
+        }
+
+        void OnTriggerExit(Collider other) {
+            if (other.tag == "Player") {
+                gameController.setIsPlayerInBase (false);
+                gameController.hideCountdownPanel ();
             }
         }
     }
