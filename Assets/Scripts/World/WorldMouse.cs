@@ -16,8 +16,8 @@ public class WorldMouse : MonoBehaviour
     public TileInfoGUI tileInfoGUI;
     private string[] terrain = new string[] { "Desert", "Jungle", "Grasslands", "Arctic" };
 
-    GameObject tileUi;
-    GameObject purchaseCursor;
+    public GameObject tileUi;
+    public GameObject purchaseCursor;
     Button purchaseButton;
 
     private int prevPlayerID;
@@ -29,9 +29,9 @@ public class WorldMouse : MonoBehaviour
     {
         tileInfoGUI = gameObject.AddComponent<TileInfoGUI>();
         mapCamera = GameObject.Find("MapCamera").GetComponent<MapCamera>();
-        tileUi = GameObject.Find("Canvas/Tilepurchasedialog") as GameObject;
+        //tileUi = GameObject.Find("Canvas/Tilepurchasedialog") as GameObject;
 
-        purchaseCursor = GameObject.Find("PurchaseCursor") as GameObject;
+        //purchaseCursor = GameObject.Find("PurchaseCursor") as GameObject;
         purchaseCursor.SetActive(false);
         tileUi.SetActive(false);
 
