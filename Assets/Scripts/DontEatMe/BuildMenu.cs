@@ -714,7 +714,7 @@ public class BuildMenu : MonoBehaviour
             t3 = demRectUI.setUIText(statUI, "plant destroyed: " + statistic.getTreeDestroy(), 1, 0);
             t4 = demRectUI.setUIText(statUI, "prey eaten: " + statistic.getPreyEaten(), 1, 1);
             t5 = demRectUI.setUIText(statUI, "turns: " + statistic.getTurnCount(), 2, 0);
-            t6 = demRectUI.setUIText(statUI, "", 2, 1);
+			t6 = demRectUI.setUIText(statUI, "your total credits: " + GameState.player.credits , 2, 1);
 
             GameObject backButton = demButton.CreateButton(0, 0, "back");
             backButton.transform.SetParent(statUI.transform);
@@ -739,6 +739,7 @@ public class BuildMenu : MonoBehaviour
         t3.GetComponent<Text>().text = "plant destroyed: " + statistic.getTreeDestroy();
         t4.GetComponent<Text>().text = "prey eaten: " + statistic.getPreyEaten();
         t5.GetComponent<Text>().text = "turns: " + statistic.getTurnCount();
+		t6.GetComponent<Text> ().text = "your total credits: " + GameState.player.credits;
 
         if (!statUI.activeInHierarchy)
         {
