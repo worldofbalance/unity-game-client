@@ -43,13 +43,19 @@ namespace SD {
                     player.transform.position.y + (5 * yDirection),
                     player.transform.position.z);
 
-               // Debug.Log (xDirection + "" + yDirection);
+                // Debug.Log (xDirection + "" + yDirection);
+            } else if (other.tag == "Opponent") {
+                gameController.setIsOpponentInBase (true);
             }
         }
 
         void OnTriggerExit(Collider other) {
             if (other.tag == "Player") {
                 //player.isStatic = false;
+            }
+
+            if (other.tag == "Opponent") {
+                gameController.setIsOpponentInBase (false);
             }
         }
             

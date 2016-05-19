@@ -20,6 +20,8 @@ public class Map : MonoBehaviour {
 	public GameObject owned_tile;
 	public GameObject hexSelect;
 
+
+
 	//Holds mouse mode; Mode 0 = normal, Mode 1 = Attack tile selected, Mode 2 = Defender tile selected
 	int mode = 0;
 
@@ -40,7 +42,7 @@ public class Map : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 
-	}
+    }
 	
 	// Update is called once per frame
 	void Update() {

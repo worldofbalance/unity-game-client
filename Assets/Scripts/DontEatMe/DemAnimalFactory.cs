@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEditor; // Contains the PrefabUtility class.
+
+//using UnityEditor; // Contains the PrefabUtility class.
 using System;
 
 /**
@@ -9,9 +10,12 @@ using System;
 public class DemAnimalFactory
 {
     // private SpeciesData speciesData;
-    private string speciesName; // Species name
-    private int speciesId; // Unique species ID (consistent with database)
-    private short speciesType; // Species type (NOT consistent with database)
+    private string speciesName;
+    // Species name
+    private int speciesId;
+    // Unique species ID (consistent with database)
+    private short speciesType;
+    // Species type (NOT consistent with database)
 
     private Sprite[] image;
 
@@ -31,6 +35,24 @@ public class DemAnimalFactory
         this.img = Resources.Load<Texture>("Textures/Species/" + this.speciesName);
     }
 
+    public bool isPlant()
+    {
+        return speciesType == 0;
+    }
+
+    public bool isPrey()
+    {
+        return speciesType == 1;
+    }
+
+    public bool isPredator()
+    {
+
+        return speciesType == 2;
+
+    }
+
+
     /**
     	Returns a GameObject instance as defined by this factory.
     */
@@ -43,20 +65,20 @@ public class DemAnimalFactory
         BuildInfo info;
         switch (this.speciesType)
         {
-        	// Prey
-        	case 1:
-				info = animal.AddComponent<PreyInfo>().Initialize(this.speciesId);
-				break;
-        	// Predator
-        	case 2:
-        		info = animal.AddComponent<PredatorInfo>().Initialize(this.speciesId);
-        		break;
-        	// Plant --> case 0 --> may need a PlantInfo class later (?)
-        	// Omnivore --> case ? --> some prey may also be predators, so an OmnivoreInfo class would accommodate this (?)
-        	// Default
-        	default:
-        		info = animal.AddComponent<BuildInfo>();
-        		break;
+        // Prey
+            case 1:
+                info = animal.AddComponent<PreyInfo>().Initialize(this.speciesId);
+                break;
+        // Predator
+            case 2:
+                info = animal.AddComponent<PredatorInfo>().Initialize(this.speciesId);
+                break;
+        // Plant --> case 0 --> may need a PlantInfo class later (?)
+        // Omnivore --> case ? --> some prey may also be predators, so an OmnivoreInfo class would accommodate this (?)
+        // Default
+            default:
+                info = animal.AddComponent<BuildInfo>();
+                break;
         }
         info.SetParent(animal);
         info.previewImage = Resources.Load("Textures/Species/" + this.speciesName) as Texture;
@@ -86,16 +108,17 @@ public class DemAnimalFactory
     */
     public int GetId()
     {
-        return this.speciesId;;
+        return this.speciesId;
+        ;
     }
 
     /**
     	Returns the current species type.
     	1 = prey, 2 = predator.
     */
-    public short GetType ()
+    public short GetType()
     {
-    	return this.speciesType;
+        return this.speciesType;
     }
 
     /**

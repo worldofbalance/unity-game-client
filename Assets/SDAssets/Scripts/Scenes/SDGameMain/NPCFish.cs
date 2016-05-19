@@ -12,10 +12,12 @@ namespace SD
         public float yPosition { get; set; }
         public bool isAlive { get; set; }
         public float xRotationAngle { get; set; }
-        public Vector2 current { get; set; }
-        public Vector2 target { get; set; }
         public bool toBeCreated { get; set; }
- 
+        public Vector2 target { get; set; }
+        public int targetOffset { get; set; }
+        public float speed { get; set;}
+        public bool isAttacking {get; set;}
+
         public NPCFish (int id)
         {
             this.id = id;
@@ -24,11 +26,14 @@ namespace SD
             this.yPosition = 0.0f;
             this.xRotationAngle = 0.0f;
             this.isAlive = true;
-            this.current=new Vector2(xPosition,yPosition);
             this.toBeCreated = false;
+            this.target = new Vector2 (xPosition, yPosition);
+            this.targetOffset = 20;
         }
         void Update() {
-            current = new Vector2(xPosition, yPosition);
+
+
         }
+
     }
 }
