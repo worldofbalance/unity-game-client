@@ -21,6 +21,7 @@ public class TilePurchaseProtocol {
         if (response.status == 0)
         {
             response.zone_id = DataReader.ReadInt(dataStream);
+            response.credits = DataReader.ReadInt(dataStream);
             response.price = DataReader.ReadInt(dataStream);
         }
 
@@ -33,7 +34,9 @@ public class TilePurchase : NetworkResponse
 
     public int zone_id { get; set; }
     public int price { get; set; }
+    public int credits { get; set; }
     public short status { get; set; }
+   
 
     public TilePurchase()
     {

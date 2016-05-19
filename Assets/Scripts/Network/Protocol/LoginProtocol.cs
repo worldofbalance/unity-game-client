@@ -21,6 +21,7 @@ public class LoginProtocol {
 
 			Account account = new Account(account_id);
 			account.username = DataReader.ReadString(dataStream);
+            int playerId = DataReader.ReadInt(dataStream);
 			account.last_logout = DataReader.ReadString(dataStream);
 
 			response.account = account;
@@ -35,6 +36,7 @@ public class LoginProtocol {
 public class ResponseLogin : NetworkResponse {
 	
 	public short status { get; set; }
+    public int playerId { get; set; }
 	public Account account { get; set; }
 	
 	public ResponseLogin() {
