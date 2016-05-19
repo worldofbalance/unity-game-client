@@ -6,8 +6,8 @@ using System.Collections.Generic;
 public class Chat : MonoBehaviour {
 
 	// Window Properties
-	private float width = 400;
-	private float height = 200;
+	private float width = 200;
+	private float height = 100;
 	// Other
 	private Rect windowRect;
 	private Rect buttonRect;
@@ -41,7 +41,7 @@ public class Chat : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
         if (isHidden) {
-            //windowRect = new Rect(Screen.width - width - 10, Screen.height - height - 10, width, height);
+            windowRect = new Rect(Screen.width - width - 10, Screen.height - height - 10, width, height);
         }
 	}
 
