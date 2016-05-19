@@ -34,7 +34,6 @@ namespace SD
         }
 
         void OnDestroy() {
-            Debug.Log ("Thanks for playing Sea Divided.");
             StopCoroutine (RequestInGameHeartbeat());
         }
  
