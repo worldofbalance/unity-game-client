@@ -241,18 +241,26 @@ public class MultiplayerGames : MonoBehaviour {
     public void ProcessMatchInit(NetworkResponse response) {
         CW.ResponseMatchInit args = response as CW.ResponseMatchInit;
 
-	public RR.RequestRaceInit RR_RequestRaceInit ()
-	{
-		// room number is '0', must be this.room_id but the server is experiencing
-		// issues with games that are already in the database
-		RR.RequestRaceInit request = new RR.RequestRaceInit ();
-		request.Send (RR.Constants.USER_ID, 0);
-		return request;
-	}
-    public SD.RequestPlayInit SD_RequestPlayInit()
+        if (args.status == 0) {
+            Debug.Log("MatchID set to: " + args.matchID);
+            Game.SwitchScene ("CWBattle");
+        }
+    }
+
+    // DH change
+    public void MCProcessMatchInit(NetworkResponse response) {
+        ResponseMCMatchInit args = response as ResponseMCMatchInit;
+
+        if (args.status == 0) {
+            Debug.Log("MC MatchID set to: " + args.matchID + " Player id is: " + GameState.player.GetID ());
+            Game.SwitchScene ("MultiConverge");
+        }
+    }
+
+    public RR.RequestRaceInit RR_RequestRaceInit ()
     {
         RR.RequestRaceInit request = new RR.RequestRaceInit ();
-        request.Send (RR.Constants.USER_ID, this.room_id);
+        request.Send (RR.Constants.USER_ID, 0);
         return request;
     }
 
