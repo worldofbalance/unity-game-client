@@ -11,6 +11,9 @@ namespace RR
         public LayerMask collectableMask;
         public LayerMask endFlagMask;
         public LayerMask collectableMask2;
+        public GameObject clouds;
+        public GameObject bushes;
+        public GameObject camera;
 
         private BoxCollider collider;
         private Vector3 s;
@@ -34,6 +37,10 @@ namespace RR
             s = collider.size;
             c = collider.center;
             running = GameObject.Find("GameLogic").GetComponent<Running>();
+
+            clouds = GameObject.Find ("Clouds");
+            bushes = GameObject.Find ("Bushes");
+            camera = GameObject.Find ("Main Camera");
         }
 
         public void Move(Vector2 moveAmount)
@@ -64,6 +71,20 @@ namespace RR
             Vector2 finalTransform = new Vector2(deltaX, deltaY);
 
             transform.Translate(finalTransform);
+
+            clouds.transform.Translate(new Vector3(deltaX * 11 * Time.deltaTime, 0, 0));
+
+            if (camera.transform.position.x - 50 > clouds.transform.position.x) {
+                // The clouds may vary in their y position like this
+                // -1 * Random.Range (0, 9) - clouds.transform.position.y
+                clouds.transform.Translate(new Vector3(65, 0, 0));
+            }
+
+            bushes.transform.Translate(new Vector3(deltaX * 20 * Time.deltaTime, 0, 0));
+
+            if (camera.transform.position.x - 80 > bushes.transform.position.x) {
+                bushes.transform.Translate(new Vector3(80, 0, 0));
+            }
         }
 
         public float verticleCollisions(float deltaY, float deltaX, Vector2 p)
@@ -102,13 +123,13 @@ namespace RR
                 {
                     //
                     // // isHitItem return true if player1 eats the item
-                    // string name = hit.collider.gameObject.name.Substring(0,7);
-                    // //Debug.Log("!!!Try to pass name: " + name);
-                    // if (running.isHitItem(name)){
-                    // 	Animator animator = hit.collider.gameObject.GetComponent<Animator>();
-                    // 	animator.SetBool("eaten", true);
-                    // 	//GameObject.Destroy(hit.collider.gameObject);
-                    // }
+                    string name = hit.collider.gameObject.name.Substring(0,7);
+                    //Debug.Log("!!!Try to pass name: " + name);
+                    if (running.isHitItem(name)){
+                    	Animator animator = hit.collider.gameObject.GetComponent<Animator>();
+                    	animator.SetBool("eaten", true);
+                    	//GameObject.Destroy(hit.collider.gameObject);
+                    }
                 }
 
                 else if (Physics.Raycast(ray, out hit, Mathf.Abs(deltaY) + skin, endFlagMask))
@@ -157,13 +178,13 @@ namespace RR
                 else if (Physics.Raycast(ray, out hit, Mathf.Abs(deltaX) + skin, collectableMask))
                 {
                     //
-                    // string name = hit.collider.gameObject.name.Substring(0,7);
-                    // //Debug.Log("!!!Try to pass name: " + name);
-                    // if (running.isHitItem(name)){
-                    // 	Animator animator = hit.collider.gameObject.GetComponent<Animator>();
-                    // 	animator.SetBool("eaten", true);
-                    // 	//GameObject.Destroy(hit.collider.gameObject);
-                    // }
+                    string name = hit.collider.gameObject.name.Substring(0,7);
+                    //Debug.Log("!!!Try to pass name: " + name);
+                    if (running.isHitItem(name)){
+                    	Animator animator = hit.collider.gameObject.GetComponent<Animator>();
+                    	animator.SetBool("eaten", true);
+                    	//GameObject.Destroy(hit.collider.gameObject);
+                    }
                     //
                 }
 
