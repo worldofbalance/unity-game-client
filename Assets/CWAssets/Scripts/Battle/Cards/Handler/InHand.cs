@@ -47,11 +47,12 @@ namespace CW
                 }
                 else if(card.diet == AbstractCard.DIET.WEATHER)
                 {
+                    player.hand.Remove (removeCard);
+                    GameObject.Destroy(removeCard);
                     player.applyWeather(card.cardID, true);
                     GameManager.player2.applyWeather(card.cardID,true);
                     player.getProtocolManager().sendWeatherCard(player.playerID, card.cardID);
-                    player.hand.Remove (removeCard);
-                    GameObject.Destroy(removeCard);
+
                     player.currentMana -= card.getManaCost ();               
 
                 }
