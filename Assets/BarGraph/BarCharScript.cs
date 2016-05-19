@@ -42,7 +42,11 @@ public class BarCharScript : MonoBehaviour {
 		labels[0] = args.name1;
 		labels[1] = args.name2;
 		labels[2] = args.name3;
-		labels [3] = "You";
+		if (GameState.player != null)
+		{
+			labels [3] =GameState.player.name;
+		}
+		else labels [3] = "You";
 		playerScores[0] = args.score1;
 		playerScores[1] = args.score2;
 		playerScores[2] = args.score3;
