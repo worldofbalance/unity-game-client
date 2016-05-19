@@ -28,23 +28,31 @@ namespace CW
 			} 
             else if (currentPlayer.clickedCard != null) 
             {
-                //DebugConsole.Log("in affect of inplay, clicked card not null, diet="+currentPlayer.clickedCard.diet);
-				if (currentPlayer.clickedCard.diet == AbstractCard.DIET.FOOD) 
+                
+                if (currentPlayer.clickedCard.diet == AbstractCard.DIET.FOOD) 
                 {
-                   
-					currentPlayer.targetCard = card;
+                    if (player.isActive) {
+                      
+                        currentPlayer.targetCard = card;
 
-					player.applyFoodBuff(currentPlayer.targetCard, 1, 1);
+                        currentPlayer.applyFoodBuff (currentPlayer.targetCard, 1, 1);
 
-					//currentPlayer.clickedCard.applyFood(currentPlayer.targetCard, 1, 1);
-					currentPlayer.getProtocolManager().sendFoodBuff(currentPlayer.playerID, currentPlayer.targetCard.fieldIndex);
-					currentPlayer.hand.Remove(currentPlayer.clickedCard);
-					GameObject.Destroy(currentPlayer.clickedCard.gameObject);
-					currentPlayer.clickedCard = null;
-					currentPlayer.targetCard = null;
+                        //currentPlayer.clickedCard.applyFood(currentPlayer.targetCard, 1, 1);
+                        //currentPlayer.getProtocolManager ().sendFoodBuff (currentPlayer.cardID, currentPlayer.targetCard.fieldIndex);
+                        currentPlayer.getProtocolManager ().sendFoodBuff (currentPlayer.playerID, currentPlayer.targetCard.fieldIndex);
+                        currentPlayer.hand.Remove (currentPlayer.clickedCard.gameObject);
+                        GameObject.Destroy (currentPlayer.clickedCard.gameObject);
+                        currentPlayer.currentMana -= currentPlayer.clickedCard.getManaCost ();
+                        currentPlayer.clickedCard = null;
+                        currentPlayer.targetCard = null;
+                    } else {
+                        currentPlayer.clickedCard = null;
+                    }
+					
 				} 
                 
-                else if (currentPlayer != player && currentPlayer.clickedCard.diet != AbstractCard.DIET.HERBIVORE) 
+                //else if (currentPlayer != player && currentPlayer.clickedCard.diet != AbstractCard.DIET.HERBIVORE) 
+                else if (currentPlayer != player && (currentPlayer.clickedCard.diet == AbstractCard.DIET.CARNIVORE || currentPlayer.clickedCard.diet == AbstractCard.DIET.OMNIVORE))
                 {
                     
                     currentPlayer.targetCard = card;	

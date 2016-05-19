@@ -18,15 +18,15 @@ namespace CW{
         
         override public void execute(){
             readData ();
+            //removes card from opponents hand
 
-                GameManager.player1.applyWeather (card_id,GameManager.curPlayer==GameManager.player1);
+            GameManager.player1.applyWeather (card_id,GameManager.curPlayer==GameManager.player1);
             
             GameManager.player2.applyWeather (card_id,GameManager.curPlayer==GameManager.player2);
-
-            //removes card from opponents hand
             GameObject cardUsed = (GameObject)GameManager.player2.hand [0];
             GameManager.player2.hand.RemoveAt (0);
             GameObject.Destroy (cardUsed);
+           
             Debug.Log ("Executing WeatherCardAction: " + card_id);
             // initiate attack
             

@@ -16,9 +16,13 @@ public class WorldMouse : MonoBehaviour
     public TileInfoGUI tileInfoGUI;
     private string[] terrain = new string[] { "Desert", "Jungle", "Grasslands", "Arctic" };
 
+    GameObject mapTileSelected;
     GameObject tileUi;
     GameObject purchaseCursor;
     Button purchaseButton;
+    GameObject tilePurchaseSuccess;
+
+    GameObject firstPlayUi;
 
     private int prevPlayerID;
 
@@ -37,6 +41,17 @@ public class WorldMouse : MonoBehaviour
 
         purchaseButton = tileUi.transform.GetChild(6).GetComponent<Button>();
         purchaseButton.interactable = false;
+
+        tilePurchaseSuccess = GameObject.Find("Canvas/PurchaseSuccess") as GameObject;
+        tilePurchaseSuccess.SetActive(false);
+
+        firstPlayUi = GameObject.Find("Canvas/FirstWelcome") as GameObject;
+        firstPlayUi.SetActive(false);
+
+
+        tileUi.SetActive(false);
+        Game.networkManager.Send(
+        TilePriceProtocol.Prepare(1), processWelcome);
 
     }
     void Awake()
@@ -74,6 +89,7 @@ public class WorldMouse : MonoBehaviour
 
                 if (currentTile.player_id > 0)
                 {
+                    Debug.Log("Tile Owner Id: " + currentTile.player_id);
                     owner_name = GameObject.Find("Map").GetComponent<Map>().playerList[currentTile.player_id].name;
 
                     Color playerColor = GameObject.Find("Map").GetComponent<Map>().playerList[currentTile.player_id].color; ;
@@ -216,7 +232,17 @@ public class WorldMouse : MonoBehaviour
             Debug.Log("Failed to send response");
         }
 
-
     }
+    public void processWelcome(NetworkResponse response)
+    {
+        TilePrice args = response as TilePrice;
+        Debug.Log("Welome Screen if you dont own tiles!");
+        if (args.status == 0)
+        {
+            // set price to free
+            if (args.price == 0)
+                firstPlayUi.SetActive(true);
 
+        }
+    }
 }
