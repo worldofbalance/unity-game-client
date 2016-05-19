@@ -260,7 +260,7 @@ public class MultiplayerGames : MonoBehaviour {
     public RR.RequestRaceInit RR_RequestRaceInit ()
     {
         RR.RequestRaceInit request = new RR.RequestRaceInit ();
-        request.Send (RR.Constants.USER_ID, 0);
+        request.Send (RR.Constants.USER_ID, this.room_id);
         return request;
     }
 
