@@ -37,13 +37,14 @@ public class ConnectionManager
 		}
 
 		try {
+			Debug.Log(hostname + port);
 			mySocket = new TcpClient(hostname, port);
 			theStream = mySocket.GetStream();
 
 			Debug.Log("Connected to " + hostname + ":" + port);
 			return SUCCESS;
 		} catch (Exception e) {
-			Debug.Log("Connection Failed");
+			Debug.Log(e);
 		}
 
 		return FAILED;

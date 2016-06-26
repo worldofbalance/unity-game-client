@@ -80,8 +80,9 @@ public class ClashOfSpeciesGUI : MonoBehaviour
 
     public void StartGame ()
     {
+		Debug.Log ("Test");
         Game.networkManager.Send (
-            PlayGameProtocol.Prepare (2),
+            PlayGameProtocol.Prepare (1),
             ProcessPlayGame
         );
     }

@@ -194,7 +194,7 @@ namespace RR
         {
             RequestLogin request = new RequestLogin ();
             request.send (username, password);
-
+			Debug.Log("Test");
             return request;
         }
 

@@ -54,7 +54,7 @@ namespace RR
         /// </summary>
         void Start ()
         {
-            SetupSocket ();
+            //SetupSocket ();
         }
 
         /// <summary>

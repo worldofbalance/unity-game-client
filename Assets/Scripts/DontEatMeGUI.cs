@@ -72,6 +72,7 @@ public class DontEatMeGUI : MonoBehaviour {
 	}
 
 	public void StartGame() {
+		Debug.Log ("Test2");
 		Game.networkManager.Send(
 			PlayGameProtocol.Prepare(1),
 			ProcessPlayGame
