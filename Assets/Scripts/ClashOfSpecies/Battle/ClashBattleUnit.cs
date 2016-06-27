@@ -137,8 +137,8 @@ public class ClashBattleUnit : MonoBehaviour
 
                 switch (cs.name) {
                 case "Big Tree":	//hp buff
-//                    teammateAttribute.currentHealth -= 100;
-                    teammateAttribute.TakeDamage (100);
+                    teammateAttribute.currentHealth -= 100;
+                    //teammateAttribute.TakeDamage (100);
                     break;
                 case "Baobab":	//damage buff
                     teammateAttribute.damage -= 8;

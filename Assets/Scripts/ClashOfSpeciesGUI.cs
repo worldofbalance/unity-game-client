@@ -61,7 +61,8 @@ public class ClashOfSpeciesGUI : MonoBehaviour
 		
 		
         if (GUI.Button (new Rect (windowRect.width / 2 - 30, windowRect.height - 40, 100, 30), "Start Game")) {
-            StartGame ();
+			Debug.Log ("Pressed Start Game");
+			StartGame ();
         }
 		
         GUI.BringWindowToFront (window_id);

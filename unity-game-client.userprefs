@@ -1,18 +1,25 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Lobby/MenuScript.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Constants.cs">
     <Files>
+      <File FileName="Assets/Scripts/Constants.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Main/ClashMainMenu.cs" Line="1" Column="1" />
+      <File FileName="Assets/RRAssets/Scripts/EndScene/EndGameManager.cs" Line="1" Column="1" />
       <File FileName="Assets/Game.cs" Line="1" Column="1" />
-      <File FileName="Assets/Lobby/MenuScript.cs" Line="107" Column="34" />
-      <File FileName="Assets/Scripts/ClashOfSpeciesGUI.cs" Line="84" Column="33" />
+      <File FileName="Assets/Lobby/MenuScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpeciesGUI.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Network/Protocol/ClashOfSpecies/ClashPlayerListProtocol.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Network/Protocol/ClashOfSpecies/ClashPlayerViewProtocol.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Network/Protocol/BackToLobbyProtocol.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Network/NetworkRequest.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/DontEatMeGUI.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/DontEatMe/DemBoard.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/World/NavBar.cs" Line="1" Column="1" />
-      <File FileName="Assets/RRAssets/Scripts/SpeciesTable.cs" Line="13" Column="4" />
+      <File FileName="Assets/CWAssets/Scripts/Network/Protocol/BattleProtocols/ReturnLobbyProtocol.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/Users/Abhi/Documents/Game CSC 831/unity-game-client/Assets/Scripts/ClashOfSpeciesGUI.cs" line="64" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>
