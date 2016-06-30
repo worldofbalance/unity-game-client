@@ -91,7 +91,7 @@ public class ClashMainMenu : MonoBehaviour
 
     public void ReturnToLobby()
     {
-        Game.LoadScene("World");
+        Game.SwitchScene("World");
     }
 
     public void EditDefense()
