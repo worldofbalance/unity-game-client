@@ -99,6 +99,7 @@
 	public static readonly short CLASH_PLAYER_VIEW = 166;
 	public static readonly short CLASH_INITIATE_BATTLE = 167;
 	public static readonly short CLASH_END_BATTLE = 168;
+	public static readonly short CLASH_PLAYER_HISTORY = 169;
 
 	// Cards of the wild 
 	public static readonly short MATCH_INIT= 201;

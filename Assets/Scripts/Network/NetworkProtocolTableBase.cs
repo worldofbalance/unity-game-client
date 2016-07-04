@@ -18,8 +18,9 @@ public abstract class NetworkProtocolTableBase
 
     public void Add(short protocol_id, string name)
     {
+		Debug.Log ("protocol name: " + name);
         Type type = Type.GetType(name + "Protocol");
-
+		Debug.Log ("type : " + type);
         if (type != null)
         {
             if (!table.ContainsKey(protocol_id))

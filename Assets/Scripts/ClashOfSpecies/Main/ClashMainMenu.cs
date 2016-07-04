@@ -112,5 +112,9 @@ public class ClashMainMenu : MonoBehaviour
         Game.LoadScene("InputTestScene");
     }
 
+	public void ShowPlayerHistory(){
+
+		gameObject.AddComponent <PlayerHistoryGUI>();
+	}
 
 }
