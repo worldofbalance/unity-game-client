@@ -16,6 +16,7 @@ public class PlayerHistoryGUI: MonoBehaviour
 	private string message2 = "Match Result";
 	private string message3 = "Play Date";
 	private Rect windowRect;
+	public Vector2 scrollPosition;
 
 	public Dictionary<int, string> playerNames {get; set;}
 	public Dictionary<int, string> opponentNames {get; set;}
@@ -50,7 +51,6 @@ public class PlayerHistoryGUI: MonoBehaviour
 			Done ();
 		}
 
-
 		GUIStyle style = new GUIStyle ();
 		style.alignment = TextAnchor.UpperLeft;
 		style.normal.textColor = Color.white;
@@ -71,7 +71,7 @@ public class PlayerHistoryGUI: MonoBehaviour
 		GUILayout.EndHorizontal();
 		GUILayout.Space (50);
 
-
+		scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(800), GUILayout.Height(500));
 		GUILayout.BeginHorizontal(); //side by side columns
 		GUILayout.Space (50);
 		GUILayout.BeginVertical(); //side by side columns
@@ -112,6 +112,7 @@ public class PlayerHistoryGUI: MonoBehaviour
 		GUILayout.EndVertical();
 
 		GUILayout.EndHorizontal();
+		GUILayout.EndScrollView();
 		GUILayout.EndArea();
 	}
 
