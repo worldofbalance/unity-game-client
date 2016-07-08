@@ -31,16 +31,16 @@ public class MultiConvergeGame : MonoBehaviour
 	private int bufferBorder = 10;
 	private float leftGraph = 10;
 	private float topGraph = 45;    // DH change. Was 75
+	private float buttonStep = 45;    // Y step for opponent status buttons 
     private float balanceY;        // balance msg Y coordinate
-    private float roundY;          // rounds msgg Y coordinate
     private int sliderBorder = 20;  // DH change. Gives extra for sliders
 	private float OppViewWidth;    // DH change. Width of opponent view area
 	private Rect windowRect;
     private Rect windowRectConfig;
 	// Logic
-    private bool isActive = false;   // Not active until host specifies    Ivan - change to false
+    private bool isActive = false;   // Not active until host specifies
     private bool isInitial = true;   // helps with GUI focus
-    private bool isSetup = true;   // read parameters   Ivan - change to true
+    private bool isSetup = true;   // read parameters
     private bool isDone = false;   // used to display end result screen
 	// DH change
 	// eliminate blink. Replace isProcessing with betAccepted
@@ -88,7 +88,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private bool host;    // Is this player the host?
 	private int timeRemain = 0;   // How many seconds left in round. Could be negative
     private int timeDisplayed = 0;   // Value displayed for time remaining
-    private int timeCheck = -120;   // timeRemain value to check for no response
+    private int timeCheck = -40;   // timeRemain value to check for no response
     private int checkCount = 0;   // count of number of CheckPlayers msgs sent
     private int playerDrop = 0;   // Count of frames to display player dropped msg 
 	private string remainLabel;
@@ -133,6 +133,7 @@ public class MultiConvergeGame : MonoBehaviour
     // Initial response message from client
     string ftr1 = "";
     int ftr1P = 0;
+	int paramOverflow, paramCount;    // overflow and total count of species parameters
 
 	void Awake ()
     {
@@ -154,8 +155,8 @@ public class MultiConvergeGame : MonoBehaviour
         Debug.Log ("Width / OppViewWidth: " + width + " " + OppViewWidth);
         buttonWidth = OppViewWidth > 125 ? 125 : OppViewWidth;
         // balance & bet initially hardcoded in client. Overwritten by future code
-		balance = 1000;
-        bet = 100;
+		// balance = 1000;
+        // bet = 100;
 		
 		windowRect = new Rect (left, top, width, height);
         windowRectConfig = new Rect (leftConfig, topConfig, widthConfig, heightConfig);
@@ -176,8 +177,7 @@ public class MultiConvergeGame : MonoBehaviour
 		simRunning = false;
 		formattedScores = new List<int>();
 		otherScores = new List<int>();
-        balanceY = topGraph + 45*5 + 20;     // balance msg Y coordinate
-        roundY = balanceY + 2 * 30 + 5;
+        balanceY = topGraph + buttonStep*4 + 0;     // balance msg Y coordinate
         curRound = 1;   // Start with Round 1
         numRounds = 5;    // Over written by user input 
 	}
@@ -189,6 +189,7 @@ public class MultiConvergeGame : MonoBehaviour
         // Debug.Log ("indexOf if value is not found: " + t1.IndexOf (","));
 		// DH change
 		// Get room that player is in
+		Debug.Log ("Screen width/height " + Screen.width + " " + Screen.height);
 		var room = RoomManager.getInstance().getRoom(matchID);
 		Debug.Log("MC: room id / host name / player_id: " + matchID + " " + room.host + " " + player_id);
 		Debug.Log("MC: Number of players: " + room.numPlayers());
@@ -385,37 +386,38 @@ public class MultiConvergeGame : MonoBehaviour
 		// DH change
 		// Add in time remaining label
         timeDisplayed = (timeRemain < 0) ? 0 : timeRemain;
-		remainLabel = "Bidding Time Remaining:  ";
-		if (windowClosed) {
-			remainLabel += "Bidding Now Closed";
-		} else if (simRunning) {
-			remainLabel += "Simulation Running";
+		if (betAccepted) {
+			remainLabel = "Submission Accepted";
+		} else if ((windowClosed) || (timeDisplayed == 0)) {
+			remainLabel = "Submission Window Closed";
 		} else {
-			remainLabel = remainLabel + timeDisplayed + " seconds";
+			remainLabel = "Submission Time Remaining: " + timeDisplayed + " seconds";
 		}
 		GUI.Label (new Rect (bufferBorder, height - 75 - bufferBorder, 400, 30), remainLabel, style);
 
 		// Add in money balance and bid amount
         GUI.Label (new Rect (bufferBorder + width - 150, balanceY, 200, 30), "Balance: $" + balance, style);
         GUI.Label (new Rect (bufferBorder + width - 150, balanceY + 30, 200, 30), "Bet:      $" + bet, style);
-        GUI.Label (new Rect (bufferBorder + width - 150, roundY, 200, 30), "Total Rounds:  " + numRounds, style);
-        GUI.Label (new Rect (bufferBorder + width - 150, roundY + 30, 200, 30), "Round:          " + curRound, style);
+		GUI.Label (new Rect (bufferBorder + 320, height - 75 - bufferBorder, 200, 30), "Round " + curRound + " of " + numRounds, style);
 
 		if (betAccepted) {
-            GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Please wait for results of betting.", style);
+            GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Please wait for round results.", style);
 		} else if (results) {
 			if (won == 1) {
-                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Congratulations - you won last round!", style);
+                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Congratulations - you won!", style);
 			} else if (won == 0) {
-                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Sorry - you lost last round.", style);
+                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Sorry - you lost.", style);
 			} else {
                 GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "You did not play last round.", style);
 			}
 		}
+		/*  Hard to find space in GUI for this message 
         if (playerDrop > 0) {
             GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder + 20, 300, 30), "A player left the game.", style);
             playerDrop--;
+
         }
+        */
 
 		if (betAccepted) {
 			buttonTitle = "Bet Entered";
@@ -459,21 +461,23 @@ public class MultiConvergeGame : MonoBehaviour
 			// do something with entry.Value or entry.Key
 			id_otherPlayer = (int) entry.Key;
 			name_otherPlayer = (string)entry.Value;
-			if ((id_otherPlayer > 0 ) && (betStatusList.Contains(id_otherPlayer))) {
-				if (((short) betStatusList [id_otherPlayer]) == 1) {  // bet placed
-					GUI.color = Color.green; 
-					buttonText = name_otherPlayer + " Entered Bet";
-				} else {  // bet not placed
-					GUI.color = Color.red;
-					buttonText = name_otherPlayer + " No Bet";
-				}
-				// Debug.Log ("other player button: " + (bufferBorder + width - 170) + " " + topLeft + " " + buttonWidth);
-				// Debug.Log ("Button text: " + buttonText);
-				if (GUI.Button (new Rect (bufferBorder + width - 150, topLeft, buttonWidth, 30), buttonText)) {
-                    barGraph.setOppName (name_otherPlayer);
-					displayOtherGraph ();
-				}
-				topLeft += 45;
+			if ((id_otherPlayer > 0) && (betStatusList.Contains (id_otherPlayer))) {
+				for (int k = 0; k < 4; k++) {
+					if (((short)betStatusList [id_otherPlayer]) == 1) {  // bet placed
+						GUI.color = Color.green; 
+						buttonText = name_otherPlayer + " Made Bet";
+					} else {  // bet not placed
+						GUI.color = Color.red;
+						buttonText = name_otherPlayer + " No Bet";
+					}
+					// Debug.Log ("other player button: " + (bufferBorder + width - 170) + " " + topLeft + " " + buttonWidth);
+					// Debug.Log ("Button text: " + buttonText);
+					if (GUI.Button (new Rect (bufferBorder + width - 150, topLeft, buttonWidth, 30), buttonText)) {
+						barGraph.setOppName (name_otherPlayer);
+						displayOtherGraph ();
+					}
+					topLeft += buttonStep;
+				}  
 			}
 		}
 		GUI.color = savedColor2;
@@ -531,12 +535,12 @@ public class MultiConvergeGame : MonoBehaviour
         style.font = font;
         style.fontSize = 16;
 
-        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.03f, hdr1P, 30), hdr1, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.08f, hdr2P, 30), hdr2, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.13f, hdr3P, 30), hdr3, style);
-        GUI.Label(new Rect((windowRectConfig.width - ftr1P) / 2, windowRectConfig.height * 0.95f, ftr1P, 30), ftr1, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.03f, hdr1P, 45), hdr1, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.08f, hdr2P, 45), hdr2, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.13f, hdr3P, 45), hdr3, style);
+        GUI.Label(new Rect((windowRectConfig.width - ftr1P) / 2, windowRectConfig.height * 0.95f, ftr1P, 45), ftr1, style);
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.24f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.20f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.20f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
@@ -546,7 +550,7 @@ public class MultiConvergeGame : MonoBehaviour
         }
         GUI.EndGroup();
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.35f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.34f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.20f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
@@ -556,7 +560,7 @@ public class MultiConvergeGame : MonoBehaviour
         }
         GUI.EndGroup();
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.46f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.48f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.20f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
@@ -566,7 +570,7 @@ public class MultiConvergeGame : MonoBehaviour
         }
         GUI.EndGroup();
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.57f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.62f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.20f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
@@ -576,7 +580,7 @@ public class MultiConvergeGame : MonoBehaviour
         }
         GUI.EndGroup();
 
-		GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.68f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+		GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.78f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.20f));
 		{
 			style.alignment = TextAnchor.UpperLeft;
 			style.fontSize = 14;
@@ -764,6 +768,8 @@ public class MultiConvergeGame : MonoBehaviour
             styleMR.alignment = TextAnchor.UpperLeft;
             styleMR.font = font;
             styleMR.fontSize = 12;
+			paramOverflow = 0;   // Reset count of species parameters not fitting on screen
+			paramCount = 0;      // Count of species parameters 
 			//use seriesNodes to force order
 			foreach (int nodeId in manager.seriesNodes) {
 				//look for all possible parameter types for each node
@@ -886,7 +892,7 @@ public class MultiConvergeGame : MonoBehaviour
 						style.alignment = TextAnchor.UpperRight;
 					}
 
-					if ((row + 1) * 35 + 30 > entryHeight) {
+					if ((row + 1) * 35 + 40 > entryHeight) {
 						col++;
 						row = 0;
 					} else {
