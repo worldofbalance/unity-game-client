@@ -15,13 +15,11 @@ public class ClashPlayerHistoryProtocol
 		ResponseClashPlayerHistory response = new ResponseClashPlayerHistory();
 		int count = DataReader.ReadInt(dataStream);
 		for(int i = 0; i < count; i++){
-			int gameId = DataReader.ReadInt(dataStream);
 			string playerName = DataReader.ReadString(dataStream);
 			string opponentName = DataReader.ReadString(dataStream);
 			string matchResult = DataReader.ReadString(dataStream);
 			string playDate = DataReader.ReadString(dataStream);
-			Debug.Log ("Game ID: " + gameId);
-			response.addMatch (gameId, playerName, opponentName, matchResult, playDate);
+			response.addMatch (i, playerName, opponentName, matchResult, playDate);
 		}
 
 		return response;

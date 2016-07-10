@@ -117,4 +117,9 @@ public class ClashMainMenu : MonoBehaviour
 		gameObject.AddComponent <PlayerHistoryGUI>();
 	}
 
+	public void ShowLeaderboard(){
+
+		gameObject.AddComponent <ClashLeaderboardGUI>();
+	}
+
 }

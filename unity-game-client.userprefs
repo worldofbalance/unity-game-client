@@ -1,9 +1,9 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Constants.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/PlayerHistoryGUI.cs">
     <Files>
-      <File FileName="Assets/Scripts/Constants.cs" Line="20" Column="53" />
       <File FileName="Assets/Scripts/ClashOfSpecies/Main/ClashMainMenu.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Constants.cs" Line="20" Column="53" />
       <File FileName="Assets/RRAssets/Scripts/EndScene/EndGameManager.cs" Line="1" Column="1" />
       <File FileName="Assets/Game.cs" Line="1" Column="1" />
       <File FileName="Assets/Lobby/MenuScript.cs" Line="1" Column="1" />
@@ -17,7 +17,10 @@
       <File FileName="Assets/Scripts/World/NavBar.cs" Line="1" Column="1" />
       <File FileName="Assets/CWAssets/Scripts/Network/Protocol/BattleProtocols/ReturnLobbyProtocol.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/Config.cs" Line="8" Column="5" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleUnit.cs" Line="141" Column="23" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleUnit.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/PlayerHistoryGUI.cs" Line="74" Column="79" />
+      <File FileName="Assets/Scripts/Network/Protocol/ClashOfSpecies/ClashPlayerHistoryProtocol.cs" Line="23" Column="35" />
+      <File FileName="Assets/Scripts/Network/ConnectionManager.cs" Line="110" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
