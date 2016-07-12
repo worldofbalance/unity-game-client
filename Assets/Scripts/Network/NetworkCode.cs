@@ -101,6 +101,8 @@
 	public static readonly short CLASH_END_BATTLE = 168;
 	public static readonly short CLASH_PLAYER_HISTORY = 169;
 	public static readonly short CLASH_LEADERBOARD = 170;
+	public static readonly short CLASH_NOTIFICATION = 171;
+
 
 
 	// Cards of the wild 

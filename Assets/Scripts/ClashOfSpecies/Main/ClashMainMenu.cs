@@ -14,6 +14,7 @@ public class ClashMainMenu : MonoBehaviour
     public Transform contentPanel;
     public GameObject playerItemPrefab;
     public Button attackBtn;
+	private static int flag = 0;
 
     private Player selectedPlayer = null;
     private ToggleGroup toggleGroup;
@@ -21,6 +22,10 @@ public class ClashMainMenu : MonoBehaviour
     void Awake()
     {
         manager = GameObject.Find("MainObject").GetComponent<ClashGameManager>();
+		if (flag == 0) {
+			flag = 1;
+			ShowNotification ();
+		}
     }
 
     void Start()
@@ -122,4 +127,8 @@ public class ClashMainMenu : MonoBehaviour
 		gameObject.AddComponent <ClashLeaderboardGUI>();
 	}
 
+	public void ShowNotification(){
+
+		gameObject.AddComponent <ClashNotificationGUI>();
+	}
 }

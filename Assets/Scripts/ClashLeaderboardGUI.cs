@@ -119,26 +119,6 @@ public class ClashLeaderboardGUI: MonoBehaviour
 	{
 		GUILayout.Space (10);
 
-		//GUILayout.BeginArea();
-
-
-		//		GUIStyle style = new GUIStyle ();
-		//		style.alignment = TextAnchor.UpperLeft;
-		//		style.normal.textColor = Color.white;
-		//		style.fontSize = 20;
-		//
-		//		GUILayout.BeginHorizontal(); //side by side columns
-		//		GUILayout.TextArea (message, style);
-		//		GUILayout.Space (30);
-		//		GUILayout.TextArea (message1, style);
-		//		GUILayout.Space (30);
-		//		GUILayout.TextArea (message2, style);
-		//		GUILayout.Space (30);
-		//		GUILayout.TextArea (message3, style);
-		//		GUILayout.EndHorizontal();
-
-		//tableContent ();
-
 		GUILayout.Space (30);
 
 		if (GUI.Button (new Rect (windowRect.width / 2 - 30, windowRect.height - 40, 100, 30), "Done")) {

@@ -23,6 +23,7 @@ public class NetworkProtocolTableCOS : NetworkProtocolTableBase
         Add(NetworkCode.CLASH_END_BATTLE, "ClashEndBattle");
 		Add(NetworkCode.CLASH_PLAYER_HISTORY, "ClashPlayerHistory");
 		Add(NetworkCode.CLASH_LEADERBOARD, "ClashLeaderboard");
+		Add(NetworkCode.CLASH_NOTIFICATION, "ClashNotification");
 
         Add(NetworkCode.CLIENT, "Client");
         Add(NetworkCode.LOGIN, "Login");

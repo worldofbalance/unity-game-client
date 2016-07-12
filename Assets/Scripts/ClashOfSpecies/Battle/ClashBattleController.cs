@@ -410,6 +410,10 @@ public class ClashBattleController : MonoBehaviour
         }
     }
 
+	public void Surrender () {
+		ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.LOSS);
+	}
+
     public void GetBuffs(ClashBattleUnit attributes, string tag)
     {
         var team = GameObject.FindGameObjectsWithTag(tag);

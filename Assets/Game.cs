@@ -96,7 +96,7 @@ public class Game : MonoBehaviour
                 case "MiniClient":
                 case "DontEatMe":
                 case "RRReadyScene":
-                case "ClashSplash":
+				case "ClashSplash":
                 case "Converge":
                 case "CWBattle":
                 case "SDReadyScene":
@@ -108,6 +108,9 @@ public class Game : MonoBehaviour
                 //on non-initial login, need to reset isFading 1->0
                     StartEnterTransition();
                     break;
+			case "ClashNotification":
+					gObject.AddComponent <ClashNotificationGUI>();
+					break;
                 case "World":
                     Debug.Log("The client is requesting for quiting...");
                     networkManager.Send(BackToLobbyProtocol.Prepare());
@@ -127,7 +130,7 @@ public class Game : MonoBehaviour
     {
         isFading = -1;
     }
-
+		
     private void PerformTransition()
     {
         if (isFading > 0)

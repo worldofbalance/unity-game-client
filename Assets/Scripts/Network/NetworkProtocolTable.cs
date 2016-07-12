@@ -72,6 +72,8 @@ public class NetworkProtocolTable {
 		Add(NetworkCode.CLASH_END_BATTLE, "ClashEndBattle");
 		Add(NetworkCode.CLASH_PLAYER_HISTORY, "ClashPlayerHistory");
 		Add(NetworkCode.CLASH_LEADERBOARD, "ClashLeaderboard");
+		Add(NetworkCode.CLASH_NOTIFICATION, "ClashNotification");
+	
 
 		//Cards of the Wild
 		Add(NetworkCode.MATCH_INIT, "CW.MatchInit");
