@@ -1,26 +1,23 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/PlayerHistoryGUI.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Config.cs">
     <Files>
-      <File FileName="Assets/Scripts/ClashOfSpecies/Main/ClashMainMenu.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Constants.cs" Line="20" Column="53" />
-      <File FileName="Assets/RRAssets/Scripts/EndScene/EndGameManager.cs" Line="1" Column="1" />
-      <File FileName="Assets/Game.cs" Line="1" Column="1" />
-      <File FileName="Assets/Lobby/MenuScript.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/ClashOfSpeciesGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Network/Protocol/ClashOfSpecies/ClashPlayerListProtocol.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Network/Protocol/ClashOfSpecies/ClashPlayerViewProtocol.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Network/Protocol/BackToLobbyProtocol.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Network/NetworkRequest.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/DontEatMeGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/DontEatMe/DemBoard.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/World/NavBar.cs" Line="1" Column="1" />
-      <File FileName="Assets/CWAssets/Scripts/Network/Protocol/BattleProtocols/ReturnLobbyProtocol.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Config.cs" Line="8" Column="5" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleUnit.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/PlayerHistoryGUI.cs" Line="74" Column="79" />
-      <File FileName="Assets/Scripts/Network/Protocol/ClashOfSpecies/ClashPlayerHistoryProtocol.cs" Line="23" Column="35" />
-      <File FileName="Assets/Scripts/Network/ConnectionManager.cs" Line="110" Column="1" />
+      <File FileName="Assets/Scripts/Network/NetworkManagerCOS.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Network/NetworkManager.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpeciesGUI.cs" Line="65" Column="17" />
+      <File FileName="Assets/Lobby/MenuScript.cs" Line="109" Column="45" />
+      <File FileName="Assets/Game.cs" Line="84" Column="5" />
+      <File FileName="Assets/Scripts/Network/Protocol/PlayGameProtocol.cs" Line="28" Column="21" />
+      <File FileName="Assets/Scripts/Network/NetworkRequest.cs" Line="6" Column="2" />
+      <File FileName="Assets/Scripts/Network/NetworkCode.cs" Line="91" Column="40" />
+      <File FileName="Assets/Scripts/DontEatMe/DemMain.cs" Line="91" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Main/ClashMainMenu.cs" Line="17" Column="17" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleController.cs" Line="518" Column="5" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/PauseMenu.cs" Line="63" Column="2" />
+      <File FileName="Assets/CWAssets/Scripts/Network/Protocol/ShopProtocol.cs" Line="43" Column="2" />
+      <File FileName="Assets/CWAssets/Scripts/Constants.cs" Line="5" Column="1" />
+      <File FileName="Assets/Scripts/Config.cs" Line="6" Column="5" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/COSAbstractInputController.cs" Line="38" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
