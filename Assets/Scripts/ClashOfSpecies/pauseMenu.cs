@@ -7,10 +7,14 @@ public class PauseMenu : MonoBehaviour
     public GUISkin myskin;
     public Rect windowRect;
     public bool paused = false, waited = true;
+	private ClashBattleController cbc;
+
 
     public void Start()
     {
         windowRect = new Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 200, 200);
+		cbc = GameObject.Find ("Battle Menu").GetComponent<ClashBattleController> ();
+
     }
 
     public void waiting()
@@ -56,8 +60,11 @@ public class PauseMenu : MonoBehaviour
 
         if (GUILayout.Button("Quit"))
         {
+			paused = false;
+			cbc.Surrender ();
 //						Application.LoadLevel ("ClashMain");
-            SceneManager.LoadScene("ClashMain");
+//			cbc.ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.LOSS);
+            //SceneManager.LoadScene("ClashMain");
         }
     }
 

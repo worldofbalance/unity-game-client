@@ -110,7 +110,7 @@ public class ClashBattleUnit : MonoBehaviour
             RemoveBuffs (species, this.gameObject.tag);
             if (this.gameObject.tag == "Ally")
                 controller.UpdateBuffPanel (species, false);
-            this.gameObject.GetComponent<Renderer> ().enabled = false;
+            this.gameObject.GetComponentInChildren<Renderer> ().enabled = false;
         }
     }
 
