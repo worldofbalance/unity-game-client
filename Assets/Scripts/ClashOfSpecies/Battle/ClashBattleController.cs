@@ -19,7 +19,8 @@ public class ClashBattleController : MonoBehaviour
     public HorizontalLayoutGroup unitList;
     public GameObject attackItemPrefab;
     public GameObject healthBar;
-
+	public AudioClip[] audioClip;
+	public AudioSource audioSource;
 
     public List<ClashBattleUnit> enemiesList = new List<ClashBattleUnit>();
     public List<ClashBattleUnit> alliesList = new List<ClashBattleUnit>();
@@ -519,11 +520,13 @@ public class ClashBattleController : MonoBehaviour
     {
         if (outcome == ClashEndBattleProtocol.BattleResult.WIN)
         {
+			PlaySound (0);
             messageCanvas.SetActive(true);
             messageText.text = "You Won!\n\nKeep on fighting!";
         }
         else
         {
+			PlaySound (1);
             messageCanvas.SetActive(true);
             messageText.text = "You Lost!\n\nTry again next time!";
         }
@@ -547,6 +550,12 @@ public class ClashBattleController : MonoBehaviour
                 finished = true;
             });
     }
+
+	public void PlaySound (int clip) {
+	
+		audioSource.clip = audioClip [clip];
+		audioSource.Play ();
+	}
 
     public bool isSpawningSpecies()
     {
