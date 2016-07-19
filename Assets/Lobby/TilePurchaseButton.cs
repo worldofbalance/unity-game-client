@@ -37,20 +37,18 @@ public class TilePurchaseButton : MonoBehaviour, IPointerClickHandler
         // button1 = tileUi.transform.GetChild(...).GetComponent<Button>();
         //  text1 = button1.transform.GetChild(0).GetComponent<Text>();
 
-
-        // if script is attached to button in editor
-        currentButton = this.gameObject.GetComponent<Button>();
-        currentText = currentButton.transform.GetChild(0).GetComponent<Text>();
-
     }
 
     void Start()
     {
+		// if script is attached to button in editor
+		currentButton = this.gameObject.GetComponent<Button>();
+		currentText = currentButton.transform.GetChild(0).GetComponent<Text>();
+
         localObject = GameObject.Find("Local Object");
         map = GameObject.Find("Map");
         currentTile = localObject.GetComponent<WorldMouse>().currentSelectedTile;
         purchaseCursor = GameObject.Find("PurchaseCursor") as GameObject;
-
     }
     void Update()
     {

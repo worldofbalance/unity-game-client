@@ -32,6 +32,10 @@ public class ClashBattleController : MonoBehaviour
     public Text dmgBuffValue;
     public Text spdBuffValue;
 
+	public Text typeSpecies1, typeSpecies2, typeSpecies3, typeSpecies4, typeSpecies5;
+	public Text nameSpecies1, nameSpecies2, nameSpecies3, nameSpecies4, nameSpecies5;
+	public Text countSpecies1, countSpecies2, countSpecies3, countSpecies4, countSpecies5;
+
     private Boolean finished = false;
     private bool isStarted = false;
 
@@ -73,6 +77,9 @@ public class ClashBattleController : MonoBehaviour
     private float timeTouchPhaseEnded;
     private Vector3 oldTouchPos;
 
+	public Dictionary<string, int> enemySpecies = new Dictionary<string, int> ();
+	public Dictionary<string, int> allySpecies = new Dictionary<string, int> ();
+
     COSAbstractInputController cosInController;
 
     /// <summary>
@@ -97,6 +104,7 @@ public class ClashBattleController : MonoBehaviour
 
         terrain = terrainObject.GetComponentInChildren<Terrain>();
 
+
 //        Camera.main.GetComponent<ClashBattleCamera>().target = terrain;
 
         _camera = Camera.main;
@@ -108,7 +116,7 @@ public class ClashBattleController : MonoBehaviour
         foreach (var pair in manager.currentTarget.layout)
         {
             var species = pair.Key;
-            
+
             // Place navmesh agent.
             List<Vector2> positions = pair.Value;
             foreach (var pos in positions)
@@ -126,6 +134,9 @@ public class ClashBattleController : MonoBehaviour
                     speciesObject.tag = "Enemy";
 
                     var unit = speciesObject.AddComponent<ClashBattleUnit>();
+					var key = unit.name.Split ('(') [0];
+	
+					enemySpecies [key] = 5;
                     enemiesList.Add(unit);
                     unit.species = species;
 
@@ -211,11 +222,11 @@ public class ClashBattleController : MonoBehaviour
 
     void Update()
     {
+
         RaycastHit hit = cosInController.InputUpdate(_camera);
 
         if (isStarted && !finished)
             UpdateTimer();
-
 
         if (cosInController.TouchState == COSTouchState.TerrainTapped)
         {
@@ -230,6 +241,55 @@ public class ClashBattleController : MonoBehaviour
                 }
                 
                 var unit = allyObject.AddComponent<ClashBattleUnit>();
+				var key = unit.name.Split ('(') [0];
+				if (!allySpecies.ContainsKey(key)) {
+					allySpecies [key] = 1;
+				} else {
+					allySpecies [key] += 1;
+				}
+//				if (!allySpecies.ContainsKey(key) && nameSpecies2 == null) {
+//					allySpecies [key] = 1;
+//					typeSpecies2.text = selected.type.ToString();
+//					nameSpecies2.text = key.ToString();
+//					countSpecies2.text = allySpecies[key].ToString();
+//				} else if (nameSpecies2 != null){
+//					allySpecies [key] += 1;
+//					countSpecies2.text = allySpecies[key].ToString();
+//
+//				}
+//				if (!allySpecies.ContainsKey(key) && nameSpecies3 == null) {
+//					allySpecies [key] = 1;
+//					typeSpecies3.text = selected.type.ToString();
+//					nameSpecies3.text = key.ToString();
+//					countSpecies3.text = allySpecies[key].ToString();
+//				} else if (nameSpecies3 != null){
+//					allySpecies [key] += 1;
+//					countSpecies3.text = allySpecies[key].ToString();
+//
+//				}
+//				if (!allySpecies.ContainsKey(key) && nameSpecies4 == null) {
+//					allySpecies [key] = 1;
+//					typeSpecies4.text = selected.type.ToString();
+//					nameSpecies4.text = key.ToString();
+//					countSpecies4.text = allySpecies[key].ToString();
+//				} else if (nameSpecies4 != null){
+//					allySpecies [key] += 1;
+//					countSpecies4.text = allySpecies[key].ToString();
+//
+//				}
+//				if (!allySpecies.ContainsKey(key) && nameSpecies5 == null) {
+//					allySpecies [key] = 1;
+//					typeSpecies5.text = selected.type.ToString();
+//					nameSpecies5.text = key.ToString();
+//					countSpecies5.text = allySpecies[key].ToString();
+//				} else if (nameSpecies5 != null){
+//					allySpecies [key] += 1;
+//					countSpecies5.text = allySpecies[key].ToString();
+//
+//				}
+
+				//allySpecies [key] = 5;
+
                 alliesList.Add(unit);
                 unit.species = selected;
                 var trigger = allyObject.AddComponent<SphereCollider>();
@@ -287,6 +347,48 @@ public class ClashBattleController : MonoBehaviour
             }
         }
 
+		List<string> keyList = new List<string>(this.allySpecies.Keys);
+		if (allySpecies.ContainsKey (keyList [0])) {
+			if (typeSpecies1.text == "") {
+				typeSpecies1.text = selected.type.ToString();
+
+			}
+			nameSpecies1.text = keyList [0].ToString();
+			countSpecies1.text = allySpecies[keyList[0]].ToString();
+		}
+		if (allySpecies.ContainsKey (keyList [1])) {
+			if (typeSpecies2.text == "") {
+				typeSpecies2.text = selected.type.ToString();
+
+			}
+			nameSpecies2.text = keyList [1].ToString();
+			countSpecies2.text = allySpecies[keyList[1]].ToString();
+		}
+		if (allySpecies.ContainsKey (keyList [2])) {
+			if (typeSpecies3.text == "") {
+				typeSpecies3.text = selected.type.ToString();
+
+			}
+			nameSpecies3.text = keyList [2].ToString();
+			countSpecies3.text = allySpecies[keyList[2]].ToString();
+		}
+		if (allySpecies.ContainsKey (keyList [3])) {
+			if (typeSpecies4.text == "") {
+				typeSpecies4.text = selected.type.ToString();
+
+			}
+			nameSpecies4.text = keyList [3].ToString();
+			countSpecies4.text = allySpecies[keyList[3]].ToString();
+		}
+		if (allySpecies.ContainsKey (keyList [4])) {
+			if (typeSpecies5.text == "") {
+				typeSpecies5.text = selected.type.ToString();
+
+			}
+			nameSpecies5.text = keyList [4].ToString();
+			countSpecies5.text = allySpecies[keyList[4]].ToString();
+		}
+
     }
 
     void LateUpdate()
@@ -324,7 +426,6 @@ public class ClashBattleController : MonoBehaviour
 
         foreach (var enemy in enemiesList)
         {
-
             totalEnemyHealth += enemy.currentHealth;
             //Debug.Log(totalEnemyHealth);
             if (enemy.currentHealth > 0 && !enemy.target && alliesList.Count > 0)

@@ -76,7 +76,7 @@ public class ClashBattleUnit : MonoBehaviour
         timer = 0f;
         if (agent && agent.isActiveAndEnabled) {
             agent.destination = target.transform.position;
-			
+
 //			Debug.Log (tag + " " + species.name +
 //			           " distance to " +
 //			           target.tag + " " + target.species.name +
@@ -103,6 +103,17 @@ public class ClashBattleUnit : MonoBehaviour
         if (anim != null) {
             anim.SetTrigger ("Dead");
         }
+		if (this.gameObject.tag == "Ally") {
+			controller.allySpecies[species.name] -= 1;
+			//controller.ActiveSpecies ();
+			Debug.Log (this.gameObject.tag + " : " + species.type + " : " + species.name + " : " + controller.allySpecies [species.name]);
+		}
+		if (this.gameObject.tag == "Enemy") {
+			controller.enemySpecies[species.name] -= 1;
+			Debug.Log (this.gameObject.tag + " : " +  species.type + " : " + species.name + ": " + controller.enemySpecies [species.name]);
+		}
+
+
         target = null;
         if (agent != null)
             agent.enabled = false;
