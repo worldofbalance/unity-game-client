@@ -247,48 +247,6 @@ public class ClashBattleController : MonoBehaviour
 				} else {
 					allySpecies [key] += 1;
 				}
-//				if (!allySpecies.ContainsKey(key) && nameSpecies2 == null) {
-//					allySpecies [key] = 1;
-//					typeSpecies2.text = selected.type.ToString();
-//					nameSpecies2.text = key.ToString();
-//					countSpecies2.text = allySpecies[key].ToString();
-//				} else if (nameSpecies2 != null){
-//					allySpecies [key] += 1;
-//					countSpecies2.text = allySpecies[key].ToString();
-//
-//				}
-//				if (!allySpecies.ContainsKey(key) && nameSpecies3 == null) {
-//					allySpecies [key] = 1;
-//					typeSpecies3.text = selected.type.ToString();
-//					nameSpecies3.text = key.ToString();
-//					countSpecies3.text = allySpecies[key].ToString();
-//				} else if (nameSpecies3 != null){
-//					allySpecies [key] += 1;
-//					countSpecies3.text = allySpecies[key].ToString();
-//
-//				}
-//				if (!allySpecies.ContainsKey(key) && nameSpecies4 == null) {
-//					allySpecies [key] = 1;
-//					typeSpecies4.text = selected.type.ToString();
-//					nameSpecies4.text = key.ToString();
-//					countSpecies4.text = allySpecies[key].ToString();
-//				} else if (nameSpecies4 != null){
-//					allySpecies [key] += 1;
-//					countSpecies4.text = allySpecies[key].ToString();
-//
-//				}
-//				if (!allySpecies.ContainsKey(key) && nameSpecies5 == null) {
-//					allySpecies [key] = 1;
-//					typeSpecies5.text = selected.type.ToString();
-//					nameSpecies5.text = key.ToString();
-//					countSpecies5.text = allySpecies[key].ToString();
-//				} else if (nameSpecies5 != null){
-//					allySpecies [key] += 1;
-//					countSpecies5.text = allySpecies[key].ToString();
-//
-//				}
-
-				//allySpecies [key] = 5;
 
                 alliesList.Add(unit);
                 unit.species = selected;
