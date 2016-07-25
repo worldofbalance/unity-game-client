@@ -3,9 +3,9 @@ namespace RR {
 		
 		// Constants
 		public static readonly string CLIENT_VERSION = "1.00";
-		// public static readonly string REMOTE_HOST = "localhost";
-		public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
-		public static readonly int REMOTE_PORT = 20039;
+		public static readonly string REMOTE_HOST = "localhost";
+		//public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
+		public static readonly int REMOTE_PORT = 9253;
 		
 		// Request (1xx) + Response (2xx)
 		public static readonly short CMSG_AUTH = 101;

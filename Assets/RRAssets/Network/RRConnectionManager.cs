@@ -54,7 +54,7 @@ namespace RR
         /// </summary>
         void Start ()
         {
-            //SetupSocket ();
+            SetupSocket ();
         }
 
         /// <summary>
@@ -154,13 +154,16 @@ namespace RR
         public void Send (NetworkRequest request)
         {
             if (!socketReady) {
+				Debug.Log ("Test1");
                 return;
             }
+			Debug.Log ("Test3");
 
             GamePacket packet = request.packet;
 
             byte[] bytes = packet.getBytes ();
             theStream.Write (bytes, 0, bytes.Length);
+			Debug.Log ("Test4");
 
             // TODO debug, report
             if (request.request_id != RR.Constants.CMSG_HEARTBEAT) {

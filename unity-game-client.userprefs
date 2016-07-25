@@ -1,11 +1,16 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/RRAssets/Network/RRConnectionManager.cs">
     <Files>
+      <File FileName="Assets/RRAssets/Scripts/SelectionScene/SelectionManager.cs" Line="376" Column="22" />
+      <File FileName="Assets/Scripts/Config.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/ClashOfSpecies/PauseMenu.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleController.cs" Line="250" Column="1" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleUnit.cs" Line="40" Column="1" />
-      <File FileName="Assets/Scripts/Config.cs" Line="6" Column="5" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleController.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleUnit.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/MultiplayerGames.cs" Line="1" Column="1" />
+      <File FileName="Assets/RRAssets/Scripts/Constants.cs" Line="8" Column="3" />
+      <File FileName="Assets/RRAssets/Network/Request/RequestRRStartGame.cs" Line="12" Column="2" />
+      <File FileName="Assets/RRAssets/Network/RRConnectionManager.cs" Line="57" Column="24" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

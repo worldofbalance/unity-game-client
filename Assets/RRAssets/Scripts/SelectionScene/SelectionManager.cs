@@ -374,7 +374,7 @@ namespace RR
             Debug.Log ("Sending request for start game with player id " + RR.Constants.USER_ID);
             request.Send (RR.Constants.USER_ID);
             rrcm.Send (request);
-            //        Application.LoadLevel("CountdownScene");
+//                    Application.LoadLevel("CountdownScene");
 
             // Give the client a message about waiting for the other player to finish selecting.  Hide the PLAY button so 
             // player can't send another RequestRRStartGame.  It is cruicial only one RequestRRstartGame is sent from each
