@@ -56,7 +56,17 @@ public class ClashBattleUnit : MonoBehaviour
             if (agent && agent.isActiveAndEnabled)
                 agent.destination = targetPoint;
         } else if ((target.currentHealth > 0) && (timer >= timeBetweenAttacks) && (currentHealth >= 0.0f)) {
-            Attack ();
+			if (agent.name == "Bat-Eared Fox(Clone)" && (target.name == "Ants(Clone)")) {
+				Attack ();
+			}else if (agent.name == "Lion(Clone)" && (target.name == "Buffalo(Clone)" || target.name == "Lion(Clone)")) {
+				Attack ();
+			}else if (agent.name == "Ants(Clone)" && (target.name == "Trees and Shrubs(Clone)")) {
+				Attack ();
+			}else if (agent.name == "African Elephant(Clone)" && (target.name == "Trees and Shrubs(Clone)")) {
+				Attack ();
+			}else if (agent.name == "Masai Giraffe(Clone)" && (target.name == "Trees and Shrubs(Clone)")) {
+				Attack ();
+			}
         } else if (target.currentHealth <= 0) {
             target = null;		
         }
@@ -106,11 +116,9 @@ public class ClashBattleUnit : MonoBehaviour
 		if (this.gameObject.tag == "Ally") {
 			controller.allySpecies[species.name] -= 1;
 			//controller.ActiveSpecies ();
-			Debug.Log (this.gameObject.tag + " : " + species.type + " : " + species.name + " : " + controller.allySpecies [species.name]);
 		}
 		if (this.gameObject.tag == "Enemy") {
 			controller.enemySpecies[species.name] -= 1;
-			Debug.Log (this.gameObject.tag + " : " +  species.type + " : " + species.name + ": " + controller.enemySpecies [species.name]);
 		}
 
 
