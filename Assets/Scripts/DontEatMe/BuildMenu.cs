@@ -339,7 +339,7 @@ public class BuildMenu : MonoBehaviour
 
         //statistic button 
         float sBX = Screen.width / 10.0f;
-        float sBY = Screen.height / 10.0f;
+        float sBY = Screen.height / 15.0f;
         demButton.setSize(sBX, sBY);
         GameObject statButton = demButton.CreateButton(Screen.width - qBX * 2, 0, "statistic");
         demButton.SetButtonText(statButton, "Statistic");
@@ -357,7 +357,7 @@ public class BuildMenu : MonoBehaviour
 
 
         // Instructions button
-        float iBX = Screen.width / 5.0f;
+        float iBX = Screen.width / 20.0f;
         float iBY = Screen.height / 10.0f;
         demButton.setSize(iBX, iBY);
         GameObject instructionButton = demButton.CreateButton(Screen.width - iBX, 10, "How to Play");
