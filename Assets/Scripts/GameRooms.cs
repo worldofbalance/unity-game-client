@@ -7,6 +7,13 @@ public class Room {
 	public int game_id = -1;
 	public List<int> players = new List<int>();
 	public string host;
+	// DH for Multiplayer Convergence 
+	public short totalPlayers = -1;    // total players requested by host
+	public short numRounds = -1;       // number of rounds
+	public short secPerRound = -1;     // seconds per round
+	public short betAmt = -1;          // bet amount
+	public short ecoNum = -1;          // ecosystem number
+	public short helps = -1;           // enable sliders help. 1 = yes; 0 = no
 
 	public int numPlayers() {
 		return players.Count;

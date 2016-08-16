@@ -40,9 +40,9 @@ public class MultiConvergeGame : MonoBehaviour
 	private Rect windowRect, sliderSRect;
     private Rect windowRectConfig;
 	// Logic
-    private bool isActive = false;   // Not active until host specifies
+	private bool isActive = false;   // Not active until host specifies
     private bool isInitial = true;   // helps with GUI focus
-    private bool isSetup = true;   // read parameters
+	private bool isSetup = false;   // parameters entered in lobby 
     private bool isDone = false;   // used to display end result screen
 	// DH change
 	// eliminate blink. Replace isProcessing with betAccepted
@@ -86,7 +86,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private int maxResetSliderValue = 0;
 	// DH change
 	private string buttonTitle;
-	public static int matchID;     // This is the room_id
+	public static int matchID;     // This is the room_id. Set by MultiplayerGames
 	private bool host;    // Is this player the host?
 	private int timeRemain = 0;   // How many seconds left in round. Could be negative
     private int timeDisplayed = 0;   // Value displayed for time remaining
@@ -188,7 +188,7 @@ public class MultiConvergeGame : MonoBehaviour
 		balanceX = width - buttonWidth - bufferBorder;      // balance, bet msgs, oppo buttons, species slider X coordinate
 		sliderY = balanceY + 65;                    // slider Y coordinate 
         curRound = 1;   // Start with Round 1
-        numRounds = 5;    // Over written by user input 
+        // numRounds = 5;    // Over written by user input 
 		// last 35 taken to allocate room for multiplayer convergence text 
 		entryHeight = height - heightGraph - 30 * 3 - bufferBorder * 2 - 35;
 		speciesRowCount = Math.Max((int)((entryHeight-40)/35)+1,1);
@@ -204,14 +204,18 @@ public class MultiConvergeGame : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-        // string t1 = "abc";
-        // Debug.Log ("indexOf if value is not found: " + t1.IndexOf (","));
 		// DH change
 		// Get room that player is in
 		Debug.Log ("Screen width/height " + Screen.width + " " + Screen.height);
 		var room = RoomManager.getInstance().getRoom(matchID);
 		Debug.Log("MC: room id / host name / player_id: " + matchID + " " + room.host + " " + player_id);
 		Debug.Log("MC: Number of players: " + room.numPlayers());
+		// Read parameters from Room object
+		numRounds = room.numRounds;
+		bet = room.betAmt;
+		ecoNumber = room.ecoNum;
+		allowSliders = room.helps;
+		Debug.Log("ROOM: numRounds/bet/eco#/sliders: " + numRounds + " " + bet + " " + ecoNumber + " " + allowSliders);
 
 		if (GameState.player.GetName () == room.host) {
 			host = true;
@@ -237,12 +241,18 @@ public class MultiConvergeGame : MonoBehaviour
 		// DH change - start everyone at beginning to make equal
 		// GetPriorAttempts ();
 		// Replacement for GetPriorAttempts()
-
+		/*
         if (!isSetup) {
             NoPriorAttempts();
             InitializeBarGraph();
         }
-		
+        */
+
+		ecosystem_idx = ecoNumber;  // implement after ecosystems read
+		ecosystem_id = GetEcosystemId (ecosystem_idx);
+		NoPriorAttempts();
+		InitializeBarGraph();
+		isActive = true;
 
 		//create array of ecosystem descriptions
         /*
@@ -283,7 +293,7 @@ public class MultiConvergeGame : MonoBehaviour
 				GetTime();  // Update bet time 
 
 				// On the multiples of 5 seconds, get the names
-                if (((timeRemain % 10) == 5) && (!windowClosed)) {
+                if (((timeRemain % 4) == 0) && (!windowClosed)) {
 					GetNames();
 				}
 			}
@@ -1418,30 +1428,30 @@ public class MultiConvergeGame : MonoBehaviour
 
 						ConvergeEcosystem ecosystem = new ConvergeEcosystem (ecosystem_id);
 						int fldSize = br.ReadInt16 ();
-                        Debug.Log("description_fldSize: " + fldSize);
+                        // Debug.Log("description_fldSize: " + fldSize);
 						ecosystem.description = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-                        Debug.Log(ecosystem.description);
+                        // Debug.Log(ecosystem.description);
 						ecosystem.timesteps = br.ReadInt32 ();
 						fldSize = br.ReadInt16 ();
-                        Debug.Log("config_default_fldSize: " + fldSize);
+                        // Debug.Log("config_default_fldSize: " + fldSize);
 						ecosystem.config_default = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-                        Debug.Log(ecosystem.config_default);
+                        // Debug.Log(ecosystem.config_default);
 						fldSize = br.ReadInt16 ();
-                        Debug.Log("config_target_fldSize: " + fldSize);
+                        // Debug.Log("config_target_fldSize: " + fldSize);
 						ecosystem.config_target = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
                         Debug.Log(ecosystem.config_target);
 						fldSize = br.ReadInt16 ();
                         // Harjit's 32 bit length string
                         // fldSize = br.ReadInt32 ();
-                        Debug.Log("Harjit: csv_default_string_fldSize: " + fldSize);
+                        // Debug.Log("Harjit: csv_default_string_fldSize: " + fldSize);
 						ecosystem.csv_default_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-                        Debug.Log(ecosystem.csv_default_string);
+                        // Debug.Log(ecosystem.csv_default_string);
 						fldSize = br.ReadInt16 ();
                         // Harjit's 32 bit length string
                         // fldSize = br.ReadInt32 ();
-                        Debug.Log("Harjit: csv_target_string_fldSize: " + fldSize);
+                        // Debug.Log("Harjit: csv_target_string_fldSize: " + fldSize);
 						ecosystem.csv_target_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-                        Debug.Log(ecosystem.csv_target_string);
+                        // Debug.Log(ecosystem.csv_target_string);
                         ecosystem.sliderRanges = "";
                         ecosystem.markerEnabled = false;
 						
