@@ -132,6 +132,7 @@ public class MultiConvergeGame : MonoBehaviour
     private DateTime tNow;
     private TimeSpan tDiff;
     private bool sendNonHost = true;
+	private bool duplSlider = false;
     // Initial response message from client
     string ftr1 = "";
     int ftr1P = 0;
@@ -293,7 +294,7 @@ public class MultiConvergeGame : MonoBehaviour
 				GetTime();  // Update bet time 
 
 				// On the multiples of 5 seconds, get the names
-                if (((timeRemain % 4) == 0) && (!windowClosed)) {
+                if ((timeRemain % 4) == 0) {
 					GetNames();
 				}
 			}
@@ -466,9 +467,10 @@ public class MultiConvergeGame : MonoBehaviour
 				} else if (!showPopup) {
 					int prior_idx = attemptList.FindIndex (entry => entry.config == currAttempt.config);
 					if (prior_idx == Constants.ID_NOT_SET) {
-						popupMessage = "Duplicate configuration to initial ecosystem.  Please try again.";
+						popupMessage = "Duplicate configuration to initial ecosystem.  Please change one slider and press 'Accept' again.";
 					} else {
-						popupMessage = "Duplicate configuration to prior attempt (#" + (prior_idx + 1) + ").  Please try again.";
+						popupMessage = "Duplicate configuration to prior attempt (#" 
+							+ (prior_idx + 1) + ").  Please change one slider and press 'Accept' again.";
 					}
 					//Debug.Log (popupMessage);
 					showPopup = true;
@@ -909,12 +911,20 @@ public class MultiConvergeGame : MonoBehaviour
 									ConvergeParam.NormParam (param.origVal, min, max));
 								// DH change
 								// Since slider moved, reset all other sliders
+								duplSlider = false;
 								foreach(KeyValuePair<string, ConvergeParam> entry in currAttempt.seriesParams)
 								{
 									// do something with entry.Value or entry.Key
 									if (!entry.Value.name.Equals(manager.selected)) {
+										if (entry.Value.value != entry.Value.origVal) {
+											duplSlider = true;
+										}
 										entry.Value.value = entry.Value.origVal;
 									}
+								}
+								if (duplSlider) {
+									popupMessage = "Please change only one slider per round. Other slider reset.";
+									showPopup = true;
 								}
 							}
 							style.alignment = TextAnchor.UpperLeft;
@@ -1183,7 +1193,7 @@ public class MultiConvergeGame : MonoBehaviour
 	public void ProcessConvergeBetUpdate (NetworkResponse response)
 	{
 		ResponseConvergeBetUpdate args = response as ResponseConvergeBetUpdate;
-		Debug.Log ("In responseconvergebetupdate");
+		Debug.Log ("In responseconvergetbetupdate");
 		won = args.winStatus;
 		wonAmount = args.wonAmount; 
 		Debug.Log ("won/wonamount: " + won + " " + wonAmount);
