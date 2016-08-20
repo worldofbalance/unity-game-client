@@ -72,6 +72,7 @@ public class ClashMainMenu : MonoBehaviour
                                         manager.currentTarget.layout = responseView.layout.Select(x =>
                                             {
                                                 var species = manager.availableSpecies.Single(s => s.id == x.Key);
+												Debug.Log("Species Name: " + species.type);
                                                 var positions = x.Value;
                                                 return new { 
                                     species,
