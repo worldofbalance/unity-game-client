@@ -8,6 +8,8 @@
 //		2 - clash of species
 //		3 - running rhino
 //		4 - cards of wild
+//      5 - Multiplayer Convergence
+//
 // credits - if don't eat me, # of credits won
 //
 // response parameters:
@@ -26,6 +28,11 @@ public class EndGameProtocol {
 		if (game_id == 1) {
 			request.AddInt32(credits);
 		}
+
+		if (game_id == 5) {
+			request.AddInt32(credits);
+		}
+
 		
 		return request;
 	}

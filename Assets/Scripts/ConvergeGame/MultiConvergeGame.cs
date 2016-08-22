@@ -94,7 +94,7 @@ public class MultiConvergeGame : MonoBehaviour
     private int checkCount = 0;   // count of number of CheckPlayers msgs sent
     private int playerDrop = 0;   // Count of frames to display player dropped msg 
 	private string remainLabel;
-	private int balance;    // player money balance
+	private int balance, balBeg;    // player money balance, beginning balance 
 	private int bet;        // player bet amount 
 	private int timeNow;     // present millisecond time component
 	private int timeNowNew; 
@@ -149,6 +149,9 @@ public class MultiConvergeGame : MonoBehaviour
         sendNonHost = true;
         DontDestroyOnLoad (gameObject.GetComponent ("Login"));
         player_id = GameState.player.GetID ();
+		balance = GameState.player.credits;
+		balBeg = balance;
+		Debug.Log ("Player name: " + GameState.player.name + ", credits: " + balance);
 
         left = (Screen.width - width) / 2;
         top = (Screen.height - height) / 2;
@@ -163,7 +166,7 @@ public class MultiConvergeGame : MonoBehaviour
         Debug.Log ("Width / OppViewWidth: " + width + " " + OppViewWidth);
         buttonWidth = OppViewWidth > 125 ? 125 : OppViewWidth;
         // balance & bet initially hardcoded in client. Overwritten by future code
-		balance = 1000;
+		// balance = 1000;
         // bet = 100;
 		
 		windowRect = new Rect (left, top, width, height);
@@ -688,7 +691,6 @@ public class MultiConvergeGame : MonoBehaviour
         isActive = true;
     }
 
-
     void MakeWindowNonHost(int id) {
         Functions.DrawBackground(new Rect(0, 0, widthConfig, heightConfig), bgTexture);
         string hdr1 = "Welcome to Multiplayer Convergence";
@@ -725,10 +727,12 @@ public class MultiConvergeGame : MonoBehaviour
         int hdr1P = hdr1.Length * pixelPerChar;
         string hdr2 = "Game Over. Thank you for playing";
         int hdr2P = hdr2.Length * pixelPerChar;
-        string hdr3 = "Your Final balance is: " + balance;
-        int hdr3P = hdr3.Length * pixelPerChar;
-        string hdr4 = "The Database will be updated with your new Balance";
+		string hdr3 = "Your Beginning balance was: " + balBeg;
+		int hdr3P = hdr3.Length * pixelPerChar;
+        string hdr4 = "Your Final balance is: " + balance;
         int hdr4P = hdr4.Length * pixelPerChar;
+        string hdr5 = "The Database will be updated with your new Balance";
+        int hdr5P = hdr5.Length * pixelPerChar;
         string retButton = "Return to Lobby";
         int retButtonP = 110;
 
@@ -737,12 +741,13 @@ public class MultiConvergeGame : MonoBehaviour
         style.font = font;
         style.fontSize = 16;
 
-        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.15f, hdr1P, 30), hdr1, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.30f, hdr2P, 30), hdr2, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.45f, hdr3P, 30), hdr3, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr4P) / 2, windowRectConfig.height * 0.60f, hdr4P, 30), hdr4, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.10f, hdr1P, 30), hdr1, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.25f, hdr2P, 30), hdr2, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.40f, hdr3P, 30), hdr3, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr4P) / 2, windowRectConfig.height * 0.55f, hdr4P, 30), hdr4, style);
+		GUI.Label(new Rect((windowRectConfig.width - hdr5P) / 2, windowRectConfig.height * 0.70f, hdr5P, 30), hdr5, style);
 
-        if (GUI.Button (new Rect ((windowRectConfig.width - retButtonP) / 2, windowRectConfig.height * 0.80f, retButtonP, 30), retButton)) {
+        if (GUI.Button (new Rect ((windowRectConfig.width - retButtonP) / 2, windowRectConfig.height * 0.85f, retButtonP, 30), retButton)) {
             Destroy (this);
             Destroy (foodWeb);
             GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
@@ -1216,14 +1221,32 @@ public class MultiConvergeGame : MonoBehaviour
 		closedResponseSent = false;
         curRound++;    // Needs to be replaced by adding round number from server 
         if (curRound > numRounds) {
-            // Game over - switch to game over display 
+			// Update database with new player balance
+			Debug.Log ("Submit EndGameProtocol with new balance: " + balance);
+			// Update database with new balance
+			Game.networkManager.Send (
+				EndGameProtocol.Prepare (
+					(short) 5,
+					balance
+				),
+				ProcessEndGame
+			);
+			GameState.player.credits = balance;    // Update player object as well
+			// Game over - switch to game over display 
             isActive = false;
             isDone = true;
             Debug.Log ("Game over");
         }
 		Debug.Log ("new balance: " + balance);
 	}
-
+		
+	public void ProcessEndGame (NetworkResponse response)
+	{
+		ResponseEndGame args = response as ResponseEndGame;
+		Debug.Log ("==== ResponseEndGame");
+		Debug.Log ("Credit difference: " + args.creditDiff);
+	}
+		
 	public void ProcessConvergePriorAttemptCount (NetworkResponse response)
 	{
 		ResponseConvergePriorAttemptCount args = response as ResponseConvergePriorAttemptCount;
