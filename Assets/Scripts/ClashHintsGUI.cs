@@ -49,8 +49,9 @@ public class ClashHintsGUI: MonoBehaviour
 		style.fontSize = 20;
 
 		GUILayout.BeginArea(windowRect);
+		GUILayout.Space (30);
 
-			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(800), GUILayout.Height(500));
+		scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(800), GUILayout.Height(500));
 		Debug.Log (clashMainMenu);
 		Debug.Log (clashMainMenu.carnivore);
 		if (clashMainMenu.carnivore.Count == 0 && clashMainMenu.herbivore.Count == 0 && clashMainMenu.omnivore.Count == 0 && clashMainMenu.plant.Count == 0) {
@@ -97,7 +98,7 @@ public class ClashHintsGUI: MonoBehaviour
 
 			if (clicks >= 1) {
 				GUILayout.Space (30);
-				GUILayout.TextArea ("---------------------------------------------------------------------------------------------------------------------------------------");
+				GUILayout.TextArea ("");
 				GUILayout.BeginHorizontal (); //side by side columns
 				GUILayout.Space (30);
 				GUILayout.TextArea ("Carnivore", style);
@@ -152,6 +153,8 @@ public class ClashHintsGUI: MonoBehaviour
 
 
 				GUILayout.EndHorizontal();
+				GUILayout.Space (80);
+
 			}
 		}
 		GUILayout.EndScrollView();
