@@ -71,6 +71,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private Database foodWeb = null;
 	//popup messaging
 	private bool showPopup = false;
+	private bool showPopup2 = false;
 	private string popupMessage = "";
 	private Rect popupRect;
 	private Vector2 popupScrollPosn  = Vector2.zero;
@@ -133,6 +134,7 @@ public class MultiConvergeGame : MonoBehaviour
     private TimeSpan tDiff;
     private bool sendNonHost = true;
 	private bool duplSlider = false;
+	private string selectedSaved;
     // Initial response message from client
     string ftr1 = "";
     int ftr1P = 0;
@@ -359,6 +361,10 @@ public class MultiConvergeGame : MonoBehaviour
 			GUI.Window (Constants.CONVERGE_POPUP_WIN, popupRect, ShowPopup, "Error", GUIStyle.none);
 		}
 
+		if (showPopup2) {
+			GUI.Window (Constants.CONVERGE_POPUP_WIN2, popupRect, ShowPopup2, "Error", GUIStyle.none);
+		}
+
 	}
 	
 	void MakeWindow (int id)
@@ -470,10 +476,11 @@ public class MultiConvergeGame : MonoBehaviour
 				} else if (!showPopup) {
 					int prior_idx = attemptList.FindIndex (entry => entry.config == currAttempt.config);
 					if (prior_idx == Constants.ID_NOT_SET) {
-						popupMessage = "Duplicate configuration to initial ecosystem.  Please change one slider and press 'Accept' again.";
+						popupMessage = "This attempt matches the initial ecosystem. Each attempt must be unique. ";
+						popupMessage +=  "Please change one slider and press 'Accept' again.";
 					} else {
-						popupMessage = "Duplicate configuration to prior attempt (#" 
-							+ (prior_idx + 1) + ").  Please change one slider and press 'Accept' again.";
+						popupMessage = "This attempt matches prior attempt #" 
+							+ (prior_idx + 1) + ". Each attempt must be unique. Please change one slider and press 'Accept' again.";
 					}
 					//Debug.Log (popupMessage);
 					showPopup = true;
@@ -923,13 +930,15 @@ public class MultiConvergeGame : MonoBehaviour
 									if (!entry.Value.name.Equals(manager.selected)) {
 										if (entry.Value.value != entry.Value.origVal) {
 											duplSlider = true;
+											selectedSaved = manager.selected;
 										}
-										entry.Value.value = entry.Value.origVal;
 									}
 								}
 								if (duplSlider) {
-									popupMessage = "Please change only one slider per round. Other slider reset.";
-									showPopup = true;
+									popupMessage = "You are only allowed to change one slider per round. "
+										+ "Press 'OK' to reset previous slider and continue. "
+										+ "Press 'Cancel' to retain previous slider setting and undo current change. ";
+									showPopup2 = true;
 								}
 							}
 							style.alignment = TextAnchor.UpperLeft;
@@ -1054,6 +1063,59 @@ public class MultiConvergeGame : MonoBehaviour
 		
 	}
 
+	void ShowPopup2 (int windowID)
+	{
+		GUIStyle style = new GUIStyle (GUI.skin.label);
+		style.alignment = TextAnchor.UpperCenter;
+		style.font = font;
+		style.fontSize = 16;
+
+		Functions.DrawBackground (new Rect (0, 0, popupRect.width, popupRect.height), bgTexture);
+		GUI.BringWindowToFront (windowID);
+		Rect outerRect = new Rect (
+			bufferBorder, 
+			bufferBorder, 
+			popupRect.width - bufferBorder, 
+			popupRect.height - 30 - bufferBorder * 2
+		);
+		float msgHeight = Mathf.Max (1, popupMessage.Length / 150) * outerRect.height;
+		popupScrollPosn = GUI.BeginScrollView (
+			outerRect,
+			popupScrollPosn, 
+			new Rect (0, 0, outerRect.width - 32, msgHeight),
+			null, 
+			GUI.skin.verticalScrollbar
+		);
+		GUI.Label (
+			new Rect (0, 0, outerRect.width - 32, msgHeight), 
+			popupMessage, 
+			style
+		);
+		GUI.EndScrollView ();
+
+		if (GUI.Button (new Rect (40, popupRect.height - 30 - bufferBorder, 80, 30), "OK")) {
+			showPopup2 = false;
+			foreach(KeyValuePair<string, ConvergeParam> entry in currAttempt.seriesParams)
+			{
+				// do something with entry.Value or entry.Key
+				if (!entry.Value.name.Equals(selectedSaved)) {
+					entry.Value.value = entry.Value.origVal;
+				}
+			}
+		}
+
+		if (GUI.Button (new Rect (popupRect.width - 80 - 40, popupRect.height - 30 - bufferBorder, 80, 30), "Cancel")) {
+			showPopup2 = false;
+			foreach(KeyValuePair<string, ConvergeParam> entry in currAttempt.seriesParams)
+			{
+				// do something with entry.Value or entry.Key
+				if (entry.Value.name.Equals(selectedSaved)) {
+					entry.Value.value = entry.Value.origVal;
+				}
+			}
+		}
+	}
+		
 	public void Submit ()
 	{
 		simRunning = true;

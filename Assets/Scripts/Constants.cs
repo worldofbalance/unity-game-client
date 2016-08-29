@@ -72,6 +72,7 @@ public class Constants
     public static readonly int CONVERGE_POPUP_WIN = 13;
     public static readonly int CONVERGE_HOST_CONFIG = 14;
     public static readonly int CONVERGE_NONHOST_CONFIG = 15;
+	public static readonly int CONVERGE_POPUP_WIN2 = 16;
 
     public static readonly float ECO_HEX_SCALE = 3;
 

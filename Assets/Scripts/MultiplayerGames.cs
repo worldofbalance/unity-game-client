@@ -14,12 +14,14 @@ public class MultiplayerGames : MonoBehaviour {
 	private float heightOffset = 50;    // DH
 
 	// Multiplayer Convergence Window Properties    DH
-	private float widthMC = 500;
+	private float widthMC = 550;
 	private float heightMC;       // Set based upon left over space
-	private float heightMCSpace = 50;  
+	private float heightMCSpaceTop = 75;
+	private float heightMCSpaceBot = 25;
 
 	// DH  Other additions
 	private bool enableHostEntry = false;
+	private bool hostEntryError = false;
 	private float widthConfig;
 	private float heightConfig;
 	private float topConfig;
@@ -44,6 +46,7 @@ public class MultiplayerGames : MonoBehaviour {
 	private int host_config_id = Constants.CONVERGE_HOST_CONFIG;
 	private Font font;
 	private short host;
+	private string tStr = "5";
 
 	// Other
 	private int window_id, window_idMC;
@@ -91,15 +94,16 @@ public class MultiplayerGames : MonoBehaviour {
 		ReadConvergeEcosystemsFileCount();
 		windowRect = new Rect ((Screen.width - width) / 2, Screen.height - height - heightOffset, width, height);
 
-		heightMC = Screen.height - height - heightOffset - heightMCSpace;
-		windowRectMC = new Rect ((Screen.width - widthMC) / 2, heightMCSpace/2, widthMC, heightMC);
+		heightMC = Screen.height - height - heightOffset - heightMCSpaceTop - heightMCSpaceBot;
+		windowRectMC = new Rect ((Screen.width - widthMC) / 2, heightMCSpaceTop, widthMC, heightMC);
 
 		StartCoroutine(RequestGetRooms(1f));
 	}
 
 	void OnGUI() {
 
-		if (enableHostEntry) {
+		/*
+		if (enableHostEntry) {    
 			windowRectConfig = GUI.Window (host_config_id, windowRectConfig, MakeWindowHost, "Host Configuration Entry", GUIStyle.none);
 		} else {
 			Color newColor = new Color(1,1,1,1.0f);
@@ -107,6 +111,12 @@ public class MultiplayerGames : MonoBehaviour {
 			windowRect = GUILayout.Window(window_id, windowRect, MakeWindow, "Game Rooms");
 			windowRectMC = GUILayout.Window(window_idMC, windowRectMC, MakeWindowMC, "Multiplayer Convergence Game Rooms");
 		}
+		*/
+
+		Color newColor = new Color(1,1,1,1.0f);
+		GUI.color = newColor;
+		windowRect = GUILayout.Window(window_id, windowRect, MakeWindow, "Game Rooms");
+		windowRectMC = GUILayout.Window(window_idMC, windowRectMC, MakeWindowMC, "Multiplayer Convergence Game Rooms");
 	}
 	
 	void MakeWindow(int id) {
@@ -188,11 +198,12 @@ public class MultiplayerGames : MonoBehaviour {
 		style.normal.textColor = Color.white;
 
 		GUILayout.BeginHorizontal();
-		GUILayout.Label(new GUIContent(" "));
-		GUILayout.Label(new GUIContent("    Total "));
-		GUILayout.Label(new GUIContent("     #  "));
-		GUILayout.Label(new GUIContent("      #  "));
-		GUILayout.Label(new GUIContent("    Bet"));
+		GUILayout.Label(new GUIContent("  "));
+		GUILayout.Label(new GUIContent("   Total "));
+		GUILayout.Label(new GUIContent("  Number "));
+		GUILayout.Label(new GUIContent(" Number "));
+		GUILayout.Label(new GUIContent(" Secs/ "));
+		GUILayout.Label(new GUIContent("  Bet"));
 		GUILayout.Label(new GUIContent(" Eco"));
 		GUILayout.Label(new GUIContent("        "));
 		GUILayout.Label(new GUIContent("        "));
@@ -200,28 +211,40 @@ public class MultiplayerGames : MonoBehaviour {
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
-		GUILayout.Label(new GUIContent("#"));
-		GUILayout.Label(new GUIContent("   Players"));
-		GUILayout.Label(new GUIContent("  Joined"));
+		GUILayout.Label(new GUIContent(" #"));
+		GUILayout.Label(new GUIContent(" Players"));
+		GUILayout.Label(new GUIContent("Joined "));
 		GUILayout.Label(new GUIContent("  Rounds"));
-		GUILayout.Label(new GUIContent("  Amt"));
-		GUILayout.Label(new GUIContent("  #  "));
-		GUILayout.Label(new GUIContent(" Helps?"));
-		GUILayout.Label(new GUIContent(" Host"));
+		GUILayout.Label(new GUIContent(" Round "));
+		GUILayout.Label(new GUIContent(" Amt"));
+		GUILayout.Label(new GUIContent("  # "));
+		GUILayout.Label(new GUIContent("Helps?"));
+		GUILayout.Label(new GUIContent("Host"));
 		GUILayout.Label(new GUIContent(""), GUILayout.Width(40));
 		GUILayout.EndHorizontal();
 
 		foreach(var item in RoomManager.getInstance().getRooms()) {
 			if (item.Value.game_id == Constants.MINIGAME_MULTI_CONVERGENCE) {
+				string nR = "   " + item.Value.numRounds.ToString();
+				nR = nR.Substring (nR.Length - 3);
+				string sR = item.Value.secPerRound.ToString();
+				if (item.Value.secPerRound < 100) {
+					sR = "  " + sR;
+				}
+				string bA = item.Value.betAmt.ToString();
+				if (item.Value.betAmt < 100) {
+					bA = "  " + bA;
+				}
 				GUILayout.BeginHorizontal();
 				GUILayout.Label(new GUIContent("" + item.Key));
-				GUILayout.Label(new GUIContent("     " + item.Value.totalPlayers));
-				GUILayout.Label(new GUIContent("        " + item.Value.players.Count));
-				GUILayout.Label(new GUIContent("       " + item.Value.numRounds));
-				GUILayout.Label(new GUIContent("       " + item.Value.betAmt));
-				GUILayout.Label(new GUIContent("  " + item.Value.ecoNum));
-				GUILayout.Label(new GUIContent("    " + (item.Value.helps == 1 ? "Y" : "N") + "   "));
-				GUILayout.Label(new GUIContent(item.Value.host));
+				GUILayout.Label(new GUIContent("   " + item.Value.totalPlayers));
+				GUILayout.Label(new GUIContent("           " + item.Value.players.Count));
+				GUILayout.Label(new GUIContent("           " + nR));
+				GUILayout.Label(new GUIContent("        " + sR));
+				GUILayout.Label(new GUIContent("      " + bA));
+				GUILayout.Label(new GUIContent("    " + item.Value.ecoNum));
+				GUILayout.Label(new GUIContent("     " + (item.Value.helps == 1 ? "Y" : "N") + "   "));
+				GUILayout.Label(new GUIContent("  " + item.Value.host));
 
 				if (item.Value.containsPlayer(GameState.account.account_id)) {
 					if(GUILayout.Button(new GUIContent("Quit"), GUILayout.Width(40))) {
@@ -235,17 +258,83 @@ public class MultiplayerGames : MonoBehaviour {
 					GUI.enabled = true;
 				}
 				GUILayout.EndHorizontal();
-
 			}
 		}
 
-		GUILayout.Space(30);
+		if (enableHostEntry) {
+			// Block for user entry
+			// GUIStyle style2 = new GUIStyle();
+			// style2.normal.textColor = Color.red;
+
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(new GUIContent("           "));
+			numPlayersS = GUILayout.TextField(numPlayersS, 1,  GUILayout.Width(20));
+			GUILayout.Label(new GUIContent("         " + 0));
+			GUILayout.Label(new GUIContent("           "));
+			numRoundsS = GUILayout.TextField(numRoundsS, 2,  GUILayout.Width(30));
+			GUILayout.Label(new GUIContent("       "));
+			timeWindowS = GUILayout.TextField(timeWindowS, 3,  GUILayout.Width(35));
+			GUILayout.Label(new GUIContent("   "));
+			betAmountS = GUILayout.TextField(betAmountS, 3, GUILayout.Width(35));
+			GUILayout.Label(new GUIContent("  "));
+			ecoNumberS = GUILayout.TextField(ecoNumberS, 2,  GUILayout.Width(25));
+			GUILayout.Label(new GUIContent("   "));
+			allowSlidersS = GUILayout.TextField(allowSlidersS, 1,  GUILayout.Width(20));
+			GUILayout.Label(new GUIContent("    " + GameState.player.GetName()));
+			if(GUILayout.Button(new GUIContent("Enter"), GUILayout.Width(50))) {
+				SubmitHostConfig();
+			}
+			GUILayout.EndHorizontal();
+
+			// Ranges of valid entries displayed next 
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(new GUIContent("          "));
+			GUILayout.Label(new GUIContent(" 2-5 "));
+			GUILayout.Label(new GUIContent("             "));
+			GUILayout.Label(new GUIContent("       "));
+			GUILayout.Label(new GUIContent(" 5-50 "));
+			GUILayout.Label(new GUIContent("     "));
+			GUILayout.Label(new GUIContent(" 30-180"));
+			GUILayout.Label(new GUIContent(" "));
+			GUILayout.Label(new GUIContent("10-200 "));
+			GUILayout.Label(new GUIContent(" "));
+			GUILayout.Label(new GUIContent("0-" + (ecoCount-1) + " "));
+			GUILayout.Label(new GUIContent(" "));
+			GUILayout.Label(new GUIContent(" Y/N "));
+			GUILayout.Label(new GUIContent("             "));
+			GUILayout.Label(new GUIContent(""), GUILayout.Width(50));
+			GUILayout.EndHorizontal();
+
+
+			if (hostEntryError) {
+				GUIStyle styleLocal = new GUIStyle();
+				styleLocal.normal.textColor = Color.red;
+				GUI.Label (new Rect (10, windowRectMC.height - 70, 500, 30), 
+					"The entry with a '?' is out of range. Please fix. Then press 'Enter'", styleLocal);
+			} else {
+				GUI.Label (new Rect (10, windowRectMC.height - 70, 500, 30), 
+					"Update values as desired. Range of valid entry given below entry box. Press 'Enter'");
+			}
+		}
+
+		// GUILayout.Space(30);
 
 		// DH change
 		GUI.enabled = enableMCButton;
 		if (GUI.Button(new Rect(10, windowRectMC.height - 40, 160, 30), "Play Multi-Convergence")) {
-			isInitial = true;
-			enableHostEntry = true;
+			if (!enableHostEntry) {
+				// isInitial = true;
+				enableHostEntry = true;
+				hostEntryError = false;
+
+				// set default values 
+				numPlayersS = "2";
+				numRoundsS = "10";
+				timeWindowS = "60";
+				betAmountS = "20";
+				ecoNumberS = "0";
+				allowSlidersS = "Y";
+			}
 		}
 
 		GUI.enabled = true;
@@ -365,19 +454,26 @@ public class MultiplayerGames : MonoBehaviour {
 		betAmount = Int16.TryParse (betAmountS, out tempConvert) ? tempConvert : neg1;
 		ecoNumber = Int16.TryParse (ecoNumberS, out tempConvert) ? tempConvert : neg1;
 		allowSliders = (short) (((allowSlidersS.Length > 0) && (allowSlidersS.ToUpper().Substring(0, 1)) == "Y") ? 1 : 0);
+		if (allowSliders == 1) {
+			allowSlidersS = "Y";
+		} else {
+			allowSlidersS = "N";
+		}
 
+		hostEntryError = true;
 		if ((numPlayers < 2) || (numPlayers > 5)) {
-			GUI.FocusControl ("number_of_players");
+			numPlayersS = "?" + numPlayersS;
 		} else if ((numRounds < 5) || (numRounds > 50)) {
-			GUI.FocusControl ("number_of_rounds");
+			numRoundsS = "?" + numRoundsS;
 		} else if ((timeWindow < 30) || (timeWindow > 180)) {
-			GUI.FocusControl ("bet_time");
-		} else if ((betAmount < 20) || (betAmount > 200)) {
-			GUI.FocusControl ("bet_amount");
+			timeWindowS = "?" + timeWindowS;
+		} else if ((betAmount < 10) || (betAmount > 200)) {
+			betAmountS = "?" + betAmountS;
 		} else if ((ecoNumber < 0) || (ecoNumber >= ecoCount)) {
-			GUI.FocusControl ("ecosystem_number");
+			ecoNumberS = "?" + ecoNumberS;
 		} else {
 			enableHostEntry = false;
+			hostEntryError = false;
 			Game.networkManager.Send (MCSetupProtocol.Prepare (Constants.MINIGAME_MULTI_CONVERGENCE, numPlayers, numRounds,
 				timeWindow, betAmount, ecoNumber, allowSliders));
 		}
