@@ -849,17 +849,39 @@ public class MultiConvergeGame : MonoBehaviour
 							break;
 						}
 
-						Rect labelRect;
+						Rect labelRect, TFRect;
 						//draw name, paramId
-						labelRect = new Rect (col * (350 + bufferBorder), row * 35 + sliderBorder, 250, 30);
-						if (labelRect.Contains (Event.current.mousePosition)) {
+						labelRect = new Rect (col * (350 + bufferBorder), row * 35 + sliderBorder, 200, 30);
+						TFRect = new Rect (col * (350 + bufferBorder) + 215, row * 35 + sliderBorder, 30, 25);
+						if (labelRect.Contains (Event.current.mousePosition) || TFRect.Contains(Event.current.mousePosition)) {
 							manager.mouseOverLabels.Add (param.name);
 							manager.selected = param.name;
 							manager.lastSeriesToDraw = param.name;
 						}
 						GUI.color = (param.name.Equals (manager.selected)) ? 
 							manager.seriesColors [param.name] : Color.white;
-						GUI.Label (labelRect, param.name + " - " + param.paramId, style);
+						String pStr = param.name;
+						int pSIdx = pStr.IndexOf ("[");
+						if (pSIdx != -1) {
+							pStr = pStr.Substring (0, pSIdx);
+						}
+						// GUI.Label (labelRect, param.name + " - " + param.paramId, style);
+						GUI.Label (labelRect, pStr, style);
+
+						int pVInInt = (int) (99.5 * (param.value - min) / (max - min));
+						String pVInStr = "" + pVInInt;
+						if (pVInInt == 0) {
+							pVInStr = "";
+						} 
+						String pVOutStr = GUI.TextField(TFRect, pVInStr, 2);
+						if (!pVInStr.Equals (pVOutStr)) {
+							int pVOutInt;
+							if (!Int32.TryParse(pVOutStr, out pVOutInt)) {
+								pVOutInt = 0;
+							}
+							param.value = min + (pVOutInt + 0.5f) * (max - min) / 99.5f;
+						}
+
 						//if player clicks on species, set as selected and activate foodWeb
 						if (GUI.Button (labelRect, "", GUIStyle.none)) {
 							foodWeb.selected = SpeciesTable.GetSpeciesName (param.name);
@@ -868,7 +890,7 @@ public class MultiConvergeGame : MonoBehaviour
 						//draw slider with underlying colored bar showing original value
 						Rect sliderRect = new Rect (labelRect.x + 250 + bufferBorder, labelRect.y + 5, 100, 20);
 
-						if (sliderRect.Contains (Event.current.mousePosition)) {
+						if (sliderRect.Contains (Event.current.mousePosition) || TFRect.Contains(Event.current.mousePosition)) {
 							manager.mouseOverLabels.Add (param.name);
 							manager.selected = param.name;
 							manager.lastSeriesToDraw = param.name;
