@@ -199,9 +199,11 @@ public class ConvergeGame : MonoBehaviour
 				} else if (!showPopup) {
 					int prior_idx = attemptList.FindIndex (entry => entry.config == currAttempt.config);
 					if (prior_idx == Constants.ID_NOT_SET) {
-						popupMessage = "Duplicate configuration to initial ecosystem.  Please try again.";
+						popupMessage = "This attempt matches the initial ecosystem. Each attempt must be unique. ";
+						popupMessage +=  "Please change at least one slider and press 'Submit' again.";
 					} else {
-						popupMessage = "Duplicate configuration to prior attempt (#" + (prior_idx + 1) + ").  Please try again.";
+						popupMessage = "This attempt matches prior attempt #" 
+							+ (prior_idx + 1) + ". Each attempt must be unique. Please change at least one slider and press 'Submit' again.";
 					}
 					//Debug.Log (popupMessage);
 					showPopup = true;
@@ -290,17 +292,39 @@ public class ConvergeGame : MonoBehaviour
 						break;
 					}
 				
-					Rect labelRect;
+					Rect labelRect, TFRect;
 					//draw name, paramId
-					labelRect = new Rect (col * (350 + bufferBorder), row * 35, 250, 30);
-					if (labelRect.Contains (Event.current.mousePosition)) {
+					labelRect = new Rect (col * (350 + bufferBorder), row * 35, 200, 30);
+					TFRect = new Rect (col * (350 + bufferBorder) + 215, row * 35, 30, 25);
+					if (labelRect.Contains (Event.current.mousePosition) || TFRect.Contains(Event.current.mousePosition)) {
 						manager.mouseOverLabels.Add (param.name);
 						manager.selected = param.name;
 						manager.lastSeriesToDraw = param.name;
 					}
 					GUI.color = (param.name.Equals (manager.selected)) ? 
 						manager.seriesColors [param.name] : Color.white;
-					GUI.Label (labelRect, param.name + " - " + param.paramId, style);
+					String pStr = param.name;
+					int pSIdx = pStr.IndexOf ("[");
+					if (pSIdx != -1) {
+						pStr = pStr.Substring (0, pSIdx);
+					}
+					// GUI.Label (labelRect, param.name + " - " + param.paramId, style);
+					GUI.Label (labelRect, pStr, style);
+
+					int pVInInt = (int) (99.5 * (param.value - min) / (max - min));
+					String pVInStr = "" + pVInInt;
+					if (pVInInt == 0) {
+						pVInStr = "";
+					} 
+					String pVOutStr = GUI.TextField(TFRect, pVInStr, 2);
+					if (!pVInStr.Equals (pVOutStr)) {
+						int pVOutInt;
+						if (!Int32.TryParse(pVOutStr, out pVOutInt)) {
+							pVOutInt = 0;
+						}
+						param.value = min + (pVOutInt + 0.5f) * (max - min) / 99.5f;
+					}
+						
 					//if player clicks on species, set as selected and activate foodWeb
 					if (GUI.Button (labelRect, "", GUIStyle.none)) {
 						foodWeb.selected = SpeciesTable.GetSpeciesName (param.name);
@@ -309,7 +333,7 @@ public class ConvergeGame : MonoBehaviour
 				
 					//draw slider with underlying colored bar showing original value
 					Rect sliderRect = new Rect (labelRect.x + 250 + bufferBorder, labelRect.y + 5, 100, 20);
-					if (sliderRect.Contains (Event.current.mousePosition)) {
+					if (sliderRect.Contains (Event.current.mousePosition) || TFRect.Contains(Event.current.mousePosition)) {
 						manager.mouseOverLabels.Add (param.name);
 						manager.selected = param.name;
 						manager.lastSeriesToDraw = param.name;
@@ -595,7 +619,7 @@ public class ConvergeGame : MonoBehaviour
 		//add new attempt to list if response includes an attempt
 		if (attempt.attempt_id == Constants.ID_NOT_SET) {
 			Debug.LogError ("attempt_id not valid in ProcessConvergePriorAttempt");
-		} else {
+		} else  {    
 			attemptList.Add (attempt);
 			if (attempt.hint_id != Constants.ID_NOT_SET) {
 				priorHintIdList.Add (attempt.hint_id);
@@ -754,6 +778,7 @@ public class ConvergeGame : MonoBehaviour
 
 					for (int i = 0; i < ecosystemCnt; i++) {
 						int ecosystem_id = br.ReadInt32 ();
+						Debug.Log("**** ecosystem_id: " + ecosystem_id);
 
 						ConvergeEcosystem ecosystem = new ConvergeEcosystem (ecosystem_id);
 						int fldSize = br.ReadInt16 ();

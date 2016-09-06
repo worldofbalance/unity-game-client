@@ -1144,7 +1144,7 @@ public class MultiConvergeGame : MonoBehaviour
         Game.networkManager.Send (
 			ConvergeNewAttemptProtocol.Prepare (
 			player_id, 
-			ecosystem_id, 
+			ecosystem_id + 1000,    // Offset by 1000 to seperate from single player game 
 			currAttempt.attempt_id,
 			currAttempt.allow_hints,
 			currAttempt.hint_id,
@@ -1233,7 +1233,7 @@ public class MultiConvergeGame : MonoBehaviour
 
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-			    ecosystem_id, 
+			    ecosystem_id + 1000,  // Offset MC by 1000, to differante from Convergence
 			    attempt.attempt_id + 1,
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
@@ -1416,7 +1416,7 @@ public class MultiConvergeGame : MonoBehaviour
 			int attempt_id = 0;
 			currAttempt = new ConvergeAttempt (
 				player_id,
-				ecosystem_id, 
+				ecosystem_id + 1000, 
 			    attempt_id,
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
@@ -1431,7 +1431,7 @@ public class MultiConvergeGame : MonoBehaviour
 			int attempt_id = attemptList [attemptCount - 1].attempt_id + 1;
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-			    ecosystem_id, 
+			    ecosystem_id + 1000, 
 			    attempt_id,
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
@@ -1461,7 +1461,7 @@ public class MultiConvergeGame : MonoBehaviour
 		if (attemptIdx == Constants.ID_NOT_SET) {
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-		        ecosystem_id, 
+		        ecosystem_id + 1000, 
 		        attempt_id,
 		        allowHintsMaster,
 		        hint_id,
@@ -1474,7 +1474,7 @@ public class MultiConvergeGame : MonoBehaviour
 		} else {
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-		        ecosystem_id, 
+		        ecosystem_id + 1000, 
 		        attempt_id,
 		        allowHintsMaster,
 			    hint_id,
@@ -1542,6 +1542,7 @@ public class MultiConvergeGame : MonoBehaviour
 
 					for (int i = 0; i < ecosystemCnt; i++) {
 						int ecosystem_id = br.ReadInt32 ();
+						Debug.Log("**** ecosystem_id: " + ecosystem_id);
 
 						ConvergeEcosystem ecosystem = new ConvergeEcosystem (ecosystem_id);
 						int fldSize = br.ReadInt16 ();
