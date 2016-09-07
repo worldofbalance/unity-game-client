@@ -14,6 +14,11 @@ public class ClashMainMenu : MonoBehaviour
     public Transform contentPanel;
     public GameObject playerItemPrefab;
     public Button attackBtn;
+	private static int flag = 0; 
+	public List<string> carnivore {get; set;}
+	public List<string> omnivore {get; set;}
+	public List<string> herbivore {get; set;}
+	public List<string> plant {get; set;}
 
     private Player selectedPlayer = null;
     private ToggleGroup toggleGroup;
@@ -21,6 +26,14 @@ public class ClashMainMenu : MonoBehaviour
     void Awake()
     {
         manager = GameObject.Find("MainObject").GetComponent<ClashGameManager>();
+		if (flag == 0) {
+			flag = 1;
+			ShowNotification ();
+		}
+		carnivore = new List<string> ();
+		omnivore = new List<string> ();
+		herbivore = new List<string> ();
+		plant = new List<string> ();
     }
 
     void Start()
@@ -55,6 +68,10 @@ public class ClashMainMenu : MonoBehaviour
                             contentPanel.Find("Message").GetComponent<Text>().enabled = !val;
                             if (val)
                             {
+								carnivore.Clear();
+								omnivore.Clear();
+								herbivore.Clear();
+								plant.Clear();
                                 selectedPlayer = player;
                                 manager.currentTarget = new ClashDefenseConfig();
                                 NetworkManagerCOS.getInstance().Send(ClashPlayerViewProtocol.Prepare(player.GetID()), (resView) =>
@@ -67,6 +84,7 @@ public class ClashMainMenu : MonoBehaviour
                                         manager.currentTarget.layout = responseView.layout.Select(x =>
                                             {
                                                 var species = manager.availableSpecies.Single(s => s.id == x.Key);
+												SaveSpecies(species.name.ToString(), species.type.ToString());
                                                 var positions = x.Value;
                                                 return new { 
                                     species,
@@ -85,13 +103,28 @@ public class ClashMainMenu : MonoBehaviour
             });
     }
 
+	public void SaveSpecies (string speciesName, string speciesType){
+		var name = speciesName;
+		var type = speciesType;
+
+		if (type == "CARNIVORE") {
+			carnivore.Add (speciesName);
+		}else if (type == "OMNIVORE") {
+			omnivore.Add (speciesName);
+		}else if (type == "HERBIVORE") {
+			herbivore.Add (speciesName);
+		}else if (type == "PLANT") {
+			plant.Add (speciesName);
+		}
+	}
+
     void Update()
     {
     }
 
     public void ReturnToLobby()
     {
-        Game.LoadScene("World");
+        Game.SwitchScene("World");
     }
 
     public void EditDefense()
@@ -101,9 +134,34 @@ public class ClashMainMenu : MonoBehaviour
 
     public void Attack()
     {
-        if (manager.currentTarget != null)
+        if (manager.currentTarget != null && manager.currentTarget.owner != null)
         {
             Game.LoadScene("ClashAttackShop");
         }
     }
+
+    public void GoToInputSetup()
+    {
+        Game.LoadScene("InputTestScene");
+    }
+
+	public void ShowPlayerHistory(){
+
+		gameObject.AddComponent <PlayerHistoryGUI>();
+	}
+
+	public void ShowLeaderboard(){
+
+		gameObject.AddComponent <ClashLeaderboardGUI>();
+	}
+
+	public void ShowNotification(){
+
+		gameObject.AddComponent <ClashNotificationGUI>();
+	}
+
+	public void ShowHints(){
+
+		gameObject.AddComponent <ClashHintsGUI>();
+	}
 }

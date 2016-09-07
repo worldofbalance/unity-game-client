@@ -109,6 +109,7 @@ public class MenuScript : MonoBehaviour {
 		Debug.Log("You Pressed Clash of Species");
 		gameObject.AddComponent <ClashOfSpeciesGUI>();
 		menuOpen=true;
+		CloseAllMenus ();
 	}
 		
 

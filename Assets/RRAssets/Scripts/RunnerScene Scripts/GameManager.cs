@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -11,6 +11,7 @@ namespace RR
         public GameObject map;
         public GameObject endFlag;
         public GameObject item1;
+        public GameObject clouds; // Another background layer
 
         public ArrayList items;
         private GameCamera cam;
@@ -120,7 +121,7 @@ namespace RR
         {
             float tempEnd = -35f;
             mapLength = 20;
-            mapLength = 5;
+            //mapLength = 5;
 
             if (mapSeed != null)
             {
@@ -132,32 +133,35 @@ namespace RR
                 DebugConsole.Log("Not receive map seed!! Will use random number!!");
             }
 
+			float myScale = .1f;
+			float myScale2 = .1f;
             for (int i = 0; i < mapLength; i++)
             {
                 // Instantiate(map, new Vector3((float)(20 + (i * 62.9)), 0.507454f, 0), Quaternion.identity);
                 //map = Instantiate(Resources.Load("Box")) as GameObject;
 
-                if (i == 0)
-                    map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
-                else if (i == mapLength - 1)
-                    map = Instantiate(Resources.Load("Prefabs/Maps/BaseMapVar"), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
-                else
-                    map = Instantiate(Resources.Load("Prefabs/Maps/MapVar_" + Random.Range(0, 6)), new Vector3(tempEnd, -2.5f, 0), Quaternion.identity) as GameObject;
+                string mapResourcePath = (i == 0 || i == mapLength - 1)? "Prefabs/Maps/BaseMapVar" : "Prefabs/Maps/MapVar_" + Random.Range(0, 5);
 
-                //map.name = map.name + " " + i;
+                map = Instantiate (
+                    Resources.Load (mapResourcePath),
+                    new Vector3 (tempEnd, -2.5f, 0),
+                    Quaternion.identity
+                ) as GameObject;
+
                 map.name = "aMap" + i;
                 //(float)(20 + (i * 62.9))
-                tempEnd += 50f;
-                endPoint = tempEnd - 24;
+                tempEnd += 500f;
+                endPoint = tempEnd - 240;
             }
 
-            Instantiate(endFlag, new Vector3(endPoint, -8.5f, 0), Quaternion.identity);
+            Instantiate(endFlag, new Vector3(endPoint, -120f, 0), Quaternion.identity);
         }
+       
 
         private void PlaceItem(int speciesId, float x) 
         {
             //DebugConsole.Log("Prefabs/Items/item" + speciesId.ToString());
-            GameObject aItem = Instantiate (Resources.Load("Prefabs/Items/item" + speciesId.ToString()), new Vector3(x, 10f, 0f), Quaternion.identity) as GameObject;
+            GameObject aItem = Instantiate (Resources.Load("Prefabs/Items/item" + speciesId.ToString()), new Vector3(x, 100f, 0f), Quaternion.identity) as GameObject;
             aItem.name = "animal" + speciesId + "id" + itemCounter;
             itemCounter++;
         }

@@ -90,8 +90,7 @@ public class ProtocolManager : MonoBehaviour{
 			                    " opponentIsReady " + GameManager.opponentIsReady );
 		} else {
 			Debug.Log("Failed to acquire Match Status");
-			// Could return to Lobby Here
-
+            setMatchStatus();
 		}
 
 	}
@@ -204,9 +203,10 @@ public class ProtocolManager : MonoBehaviour{
 	}
 
 
-	public void sendFoodBuff(int playerID, int targetPosition){
+	public void sendFoodBuff(int playerId, int targetPosition){
+            
 			CWGame.networkManager.Send (
-				ApplyFoodBuffProtocol.Prepare(playerID, targetPosition),
+                ApplyFoodBuffProtocol.Prepare(playerId, targetPosition),
 				ProcessFoodBuff);
 		}
 
@@ -271,6 +271,7 @@ public class ProtocolManager : MonoBehaviour{
 		Debug.Log ("Return To Lobby processed" + args.status );
 	}
     public void sendWeatherCard(int playerID, int card_id){
+            
             CWGame.networkManager.Send (
                 ApplyWeatherProtocol.Prepare (playerID, card_id),
                 ProcessWeatherCard);

@@ -21,7 +21,11 @@
 	
 	public static readonly short SHOP = 116;
 	public static readonly short SHOP_ACTION = 117;
-	public static readonly short PARAMS = 118;
+    //tile purchase 
+    public static readonly short TILE_PURCHASE = 301;
+    public static readonly short TILE_PRICE = 302;
+
+    public static readonly short PARAMS = 118;
 	public static readonly short CHANGE_PARAMETERS = 119;
 	public static readonly short GET_FUNCTIONAL_PARAMETERS = 120;
 	public static readonly short CHANGE_FUNCTIONAL_PARAMETERS = 121;
@@ -96,6 +100,11 @@
 	public static readonly short CLASH_PLAYER_VIEW = 166;
 	public static readonly short CLASH_INITIATE_BATTLE = 167;
 	public static readonly short CLASH_END_BATTLE = 168;
+	public static readonly short CLASH_PLAYER_HISTORY = 169;
+	public static readonly short CLASH_LEADERBOARD = 170;
+	public static readonly short CLASH_NOTIFICATION = 171;
+
+
 
 	// Cards of the wild 
 	public static readonly short MATCH_INIT= 201;
@@ -113,4 +122,20 @@
 	public static readonly short RETURN_LOBBY = 213;
 	public static readonly short APPLY_FOOD = 214;
 	public static readonly short APPLY_WEATHER = 215;
+
+    // Sea Divided
+    public static readonly short SD_GAME_LOGIN = 400;
+    public static readonly short SD_PLAY_INIT = 401;
+    public static readonly short SD_START_GAME = 402;
+    public static readonly short SD_END_GAME = 403;
+    public static readonly short SD_KEYBOARD = 404;
+    public static readonly short SD_PLAYER_POSITION = 405;
+    public static readonly short SD_PREY = 406;
+    public static readonly short SD_EAT_PREY = 407;
+    public static readonly short SD_SCORE = 408;
+    public static readonly short SD_DISCONNECT = 409;
+    public static readonly short SD_RECONNECT = 410;
+    public static readonly short SD_HEARTBEAT = 411;
+    public static readonly short SD_NPCPOSITION = 412;
+    public static readonly short SD_RESPAWN = 413;
 }

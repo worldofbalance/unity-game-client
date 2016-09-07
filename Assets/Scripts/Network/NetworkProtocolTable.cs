@@ -22,7 +22,11 @@ public class NetworkProtocolTable {
 		Add(NetworkCode.SPECIES_CREATE, "SpeciesCreate");
 		Add(NetworkCode.ECOSYSTEM, "Ecosystem");
 		Add(NetworkCode.SHOP_ACTION, "ShopAction");
-		Add(NetworkCode.UPDATE_RESOURCES, "UpdateResources");
+        //tile purchase
+        Add(NetworkCode.TILE_PRICE, "TilePrice");
+        Add(NetworkCode.TILE_PURCHASE, "TilePurchase");
+
+        Add(NetworkCode.UPDATE_RESOURCES, "UpdateResources");
 		Add(NetworkCode.SPECIES_ACTION, "SpeciesAction");
 		Add(NetworkCode.PREDICTION, "Prediction");
 		Add(NetworkCode.UPDATE_TIME, "UpdateTime");
@@ -67,6 +71,10 @@ public class NetworkProtocolTable {
 		Add(NetworkCode.CLASH_PLAYER_VIEW, "ClashPlayerView");
 		Add(NetworkCode.CLASH_INITIATE_BATTLE, "ClashInitiateBattle");
 		Add(NetworkCode.CLASH_END_BATTLE, "ClashEndBattle");
+		Add(NetworkCode.CLASH_PLAYER_HISTORY, "ClashPlayerHistory");
+		Add(NetworkCode.CLASH_LEADERBOARD, "ClashLeaderboard");
+		Add(NetworkCode.CLASH_NOTIFICATION, "ClashNotification");
+	
 
 		//Cards of the Wild
 		Add(NetworkCode.MATCH_INIT, "CW.MatchInit");
@@ -84,6 +92,20 @@ public class NetworkProtocolTable {
 		Add(NetworkCode.RETURN_LOBBY, "CW.ReturnLobby");
 		Add(NetworkCode.APPLY_FOOD, "CW.ApplyFoodBuff");
         Add(NetworkCode.APPLY_WEATHER, "CW.ApplyWeather");
+
+        // Sea Divided
+        Add(NetworkCode.SD_GAME_LOGIN, "SD.SDLogin");
+        Add (NetworkCode.SD_PLAY_INIT, "SD.SDPlayInit");
+        Add (NetworkCode.SD_START_GAME, "SD.SDStartGame");
+        Add (NetworkCode.SD_END_GAME, "SD.SDEndGame");
+        Add (NetworkCode.SD_PLAYER_POSITION, "SD.SDPlayerPosition");
+        Add (NetworkCode.SD_KEYBOARD, "SD.SDKeyboard");
+        Add (NetworkCode.SD_PREY, "SD.SDPrey");
+        Add (NetworkCode.SD_EAT_PREY, "SD.SDDestroyPrey");
+        Add (NetworkCode.SD_SCORE, "SD.SDScore");
+        Add (NetworkCode.SD_HEARTBEAT, "SD.SDHeartbeat");
+        Add (NetworkCode.SD_NPCPOSITION, "SD.SDNpcPosition");
+        Add (NetworkCode.SD_RESPAWN, "SD.SDRespawnNpc");
 	}
 	
 	public static void Add(short protocol_id, string name) {
@@ -93,7 +115,7 @@ public class NetworkProtocolTable {
 			if (!table.ContainsKey(protocol_id)) {
 				table.Add(protocol_id, type);
 			} else {
-				Debug.LogError("Protocol ID " + protocol_id + " already exists! Ignored " + name);
+				Debug.Log("Protocol ID " + protocol_id + " already exists! Ignored " + name);
 			}
 		} else {
 			Debug.LogError(name + " not found");

@@ -6,8 +6,8 @@ namespace CW{
 public class Chat : MonoBehaviour {
 
 	// Window Properties
-	private float width = 400;
-	private float height = 200;
+	private float width = 200;
+	private float height = 100;
 	// Other
 	private Rect windowRect;
 	private Rect buttonRect;

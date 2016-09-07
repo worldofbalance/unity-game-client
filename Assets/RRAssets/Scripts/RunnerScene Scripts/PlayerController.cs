@@ -8,11 +8,11 @@ namespace RR
     public class PlayerController : MonoBehaviour
     {
         // Player Handling
-        public float gravity = 20;
+        public float gravity;
         // Cannot assign speed with other value here. Don't know why.
-        public float speed = 8;//Running.BASE_SPEED; // <- Doesn't work.
-        public float acceleration = 32;
-        public float jumpHeight = 12;
+        public float speed;//Running.BASE_SPEED; // <- Doesn't work.
+        public float acceleration;
+        public float jumpHeight = 120;
 
         private Animator anim;
         private float currentSpeed;
@@ -23,16 +23,58 @@ namespace RR
 
         private PlayerPhysics playerPhysics;
 
+
+
+
+        private float barDisplay = 0.0f;
+        private Vector2 pos = new Vector2(620,20);
+        private Vector2 size = new Vector2(300,30);
+        public Texture2D progressBarEmpty;
+        public Texture2D progressBarFull;
+
+
+
+
         void Start()
         {
             speed = Running.BASE_SPEED;
-            //Debug.Log("!!!!!!!!!"+speed.ToString());
+            // speed = 150;
+			gravity = 175;
+            acceleration = 64;
+            DebugConsole.Log("!!!!!!!!!"+speed.ToString());
+            DebugConsole.Log("!!!!!!!!!"+acceleration.ToString());
+			DebugConsole.Log(gravity.ToString());
             playerPhysics = GetComponent<PlayerPhysics>();
             anim = GetComponent<Animator>();
         }
 
+        void OnGUI ()
+        {
+            GUIStyle myStyle = new GUIStyle ();
+            myStyle.normal.textColor = Color.black;
+            myStyle.fontSize = 20;
+            myStyle.alignment = TextAnchor.UpperCenter;
+
+
+            GUI.Label (new Rect (520, 25, 100, 20),
+                "Speed:",
+                myStyle);
+
+            GUI.BeginGroup (new Rect (pos.x, pos.y, size.x, size.y));
+            GUI.Box (new Rect (0, 0, size.x, size.y),"");
+
+            // draw the filled-in part:
+            GUI.BeginGroup (new Rect (0, 0, size.x * barDisplay, size.y));
+            GUI.Box (new Rect (0,0, size.x, size.y),"");
+            GUI.EndGroup ();
+
+            GUI.EndGroup ();
+            
+        }
+
         void Update()
         {
+
             int direction;
             direction = doKeyboardInput();
 
@@ -49,7 +91,10 @@ namespace RR
             }
 
             targetSpeed = direction * speed;
+
             currentSpeed = IncrementTowards(currentSpeed, targetSpeed, acceleration);
+
+            barDisplay =  speed / Running.MAX_SPEED;
 
             //Animation code
             anim.SetFloat("speed", currentSpeed);

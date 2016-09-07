@@ -47,19 +47,19 @@ namespace CW
                 }
                 else if(card.diet == AbstractCard.DIET.WEATHER)
                 {
+                    
+                    player.applyWeather(card.cardID, true);
+                    GameManager.player2.applyWeather(card.cardID,false);
+                    player.getProtocolManager().sendWeatherCard(player.playerID, card.cardID);
                     player.hand.Remove (removeCard);
                     GameObject.Destroy(removeCard);
-                    player.currentMana -= card.getManaCost ();
+                    player.currentMana -= card.getManaCost ();               
 
-                    player.applyWeather(card.cardID, true);
-                    GameManager.player2.applyWeather(card.cardID,true);
-
-                    player.getProtocolManager().sendWeatherCard(player.playerID, card.cardID);
                 }
                 else if(card.diet == AbstractCard.DIET.FOOD){
-                    //DebugConsole.Log("food card in hand");
-					player.hand.Remove (removeCard);
-					player.currentMana -= card.getManaCost ();
+                    
+					//player.hand.Remove (removeCard);
+					//player.currentMana -= card.getManaCost ();
 					startFoodCard();
 				}
 
