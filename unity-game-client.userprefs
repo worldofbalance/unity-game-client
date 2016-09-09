@@ -37,4 +37,7 @@
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <DisabledProjects>
+    <String>Assembly-CSharp-firstpass.csproj</String>
+  </DisabledProjects>
 </Properties>

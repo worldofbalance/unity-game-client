@@ -23,24 +23,26 @@ public class MultiConvergeGame : MonoBehaviour
     // dimensions for host / non-host windows - both are the same
     private float leftConfig;
     private float topConfig;
-    private float widthConfig = Screen.width * 0.80f;
-    private float heightConfig = Screen.height * 0.80f;
+    private float widthConfig = Screen.width * 0.90f;
+    private float heightConfig = Screen.height * 0.90f;
 
 	private float widthGraph;
 	private float heightGraph;
 	private int bufferBorder = 10;
 	private float leftGraph = 10;
 	private float topGraph = 45;    // DH change. Was 75
-    private float balanceY;        // balance msg Y coordinate
-    private float roundY;          // rounds msgg Y coordinate
-    private int sliderBorder = 20;  // DH change. Gives extra for sliders
+	private float buttonStep = 35;    // Y step for opponent status buttons 
+    private float balanceY, sliderY;        // balance msg & species slider Y coordinates
+	private float balanceX;                 // balance msg + buttons + species slider X coordinate
+	private float entryHeight;              // height for species sliders
+	private int sliderBorder = 20;  // DH change. Gives extra for sliders
 	private float OppViewWidth;    // DH change. Width of opponent view area
-	private Rect windowRect;
+	private Rect windowRect, sliderSRect;
     private Rect windowRectConfig;
 	// Logic
-    private bool isActive = false;   // Not active until host specifies    Ivan - change to false
+	private bool isActive = false;   // Not active until host specifies
     private bool isInitial = true;   // helps with GUI focus
-    private bool isSetup = true;   // read parameters   Ivan - change to true
+	private bool isSetup = false;   // parameters entered in lobby 
     private bool isDone = false;   // used to display end result screen
 	// DH change
 	// eliminate blink. Replace isProcessing with betAccepted
@@ -69,6 +71,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private Database foodWeb = null;
 	//popup messaging
 	private bool showPopup = false;
+	private bool showPopup2 = false;
 	private string popupMessage = "";
 	private Rect popupRect;
 	private Vector2 popupScrollPosn  = Vector2.zero;
@@ -84,15 +87,15 @@ public class MultiConvergeGame : MonoBehaviour
 	private int maxResetSliderValue = 0;
 	// DH change
 	private string buttonTitle;
-	public static int matchID;     // This is the room_id
+	public static int matchID;     // This is the room_id. Set by MultiplayerGames
 	private bool host;    // Is this player the host?
 	private int timeRemain = 0;   // How many seconds left in round. Could be negative
     private int timeDisplayed = 0;   // Value displayed for time remaining
-    private int timeCheck = -120;   // timeRemain value to check for no response
+    private int timeCheck = -40;   // timeRemain value to check for no response
     private int checkCount = 0;   // count of number of CheckPlayers msgs sent
     private int playerDrop = 0;   // Count of frames to display player dropped msg 
 	private string remainLabel;
-	private int balance;    // player money balance
+	private int balance, balBeg;    // player money balance, beginning balance 
 	private int bet;        // player bet amount 
 	private int timeNow;     // present millisecond time component
 	private int timeNowNew; 
@@ -130,16 +133,27 @@ public class MultiConvergeGame : MonoBehaviour
     private DateTime tNow;
     private TimeSpan tDiff;
     private bool sendNonHost = true;
+	private bool duplSlider = false;
+	private string selectedSaved;
     // Initial response message from client
     string ftr1 = "";
     int ftr1P = 0;
+	// Slider control for species
+	private bool speciesCounted;    // true indicates other values are valid, count cycle complete
+	private int speciesColCount;       // number of columns of species in ecosystem
+	private int speciesRowCount;       // number of rows of species in ecosystem
+	private int speciesColFit;         // number of columns of species that will fit on screen
+	private int speciesColIndex;       // index of coloum of species presently starting display. Ranges 0 to speciesCount - speciesFit
 
 	void Awake ()
-    {
+	{
         tStamp = DateTime.UtcNow;
         sendNonHost = true;
         DontDestroyOnLoad (gameObject.GetComponent ("Login"));
         player_id = GameState.player.GetID ();
+		balance = GameState.player.credits;
+		balBeg = balance;
+		Debug.Log ("Player name: " + GameState.player.name + ", credits: " + balance);
 
         left = (Screen.width - width) / 2;
         top = (Screen.height - height) / 2;
@@ -154,8 +168,8 @@ public class MultiConvergeGame : MonoBehaviour
         Debug.Log ("Width / OppViewWidth: " + width + " " + OppViewWidth);
         buttonWidth = OppViewWidth > 125 ? 125 : OppViewWidth;
         // balance & bet initially hardcoded in client. Overwritten by future code
-		balance = 1000;
-        bet = 100;
+		// balance = 1000;
+        // bet = 100;
 		
 		windowRect = new Rect (left, top, width, height);
         windowRectConfig = new Rect (leftConfig, topConfig, widthConfig, heightConfig);
@@ -176,22 +190,38 @@ public class MultiConvergeGame : MonoBehaviour
 		simRunning = false;
 		formattedScores = new List<int>();
 		otherScores = new List<int>();
-        balanceY = topGraph + 45*5 + 20;     // balance msg Y coordinate
-        roundY = balanceY + 2 * 30 + 5;
+        balanceY = topGraph + buttonStep*4 + 0;     // balance msg Y coordinate
+		balanceX = width - buttonWidth - bufferBorder;      // balance, bet msgs, oppo buttons, species slider X coordinate
+		sliderY = balanceY + 65;                    // slider Y coordinate 
         curRound = 1;   // Start with Round 1
-        numRounds = 5;    // Over written by user input 
+        // numRounds = 5;    // Over written by user input 
+		// last 35 taken to allocate room for multiplayer convergence text 
+		entryHeight = height - heightGraph - 30 * 3 - bufferBorder * 2 - 35;
+		speciesRowCount = Math.Max((int)((entryHeight-40)/35)+1,1);
+		speciesCounted = false;
+		speciesColCount = 0;
+		speciesColFit = Math.Max ((int)(width / (350 + bufferBorder)), 1);
+		// This is the column # where display begins (slider output) range: 0 to SpeciesColCount - speciesColFit
+		speciesColIndex = 0;    
+		sliderSRect = new Rect (balanceX, sliderY, buttonWidth, 30); 
+		Debug.Log ("=== Awake: sRC/sCF/eH: " + speciesRowCount + " " + speciesColFit + " " + entryHeight);
 	}
 	
 	// Use this for initialization
 	void Start ()
 	{
-        // string t1 = "abc";
-        // Debug.Log ("indexOf if value is not found: " + t1.IndexOf (","));
 		// DH change
 		// Get room that player is in
+		Debug.Log ("Screen width/height " + Screen.width + " " + Screen.height);
 		var room = RoomManager.getInstance().getRoom(matchID);
 		Debug.Log("MC: room id / host name / player_id: " + matchID + " " + room.host + " " + player_id);
 		Debug.Log("MC: Number of players: " + room.numPlayers());
+		// Read parameters from Room object
+		numRounds = room.numRounds;
+		bet = room.betAmt;
+		ecoNumber = room.ecoNum;
+		allowSliders = room.helps;
+		Debug.Log("ROOM: numRounds/bet/eco#/sliders: " + numRounds + " " + bet + " " + ecoNumber + " " + allowSliders);
 
 		if (GameState.player.GetName () == room.host) {
 			host = true;
@@ -217,12 +247,18 @@ public class MultiConvergeGame : MonoBehaviour
 		// DH change - start everyone at beginning to make equal
 		// GetPriorAttempts ();
 		// Replacement for GetPriorAttempts()
-
+		/*
         if (!isSetup) {
             NoPriorAttempts();
             InitializeBarGraph();
         }
-		
+        */
+
+		ecosystem_idx = ecoNumber;  // implement after ecosystems read
+		ecosystem_id = GetEcosystemId (ecosystem_idx);
+		NoPriorAttempts();
+		InitializeBarGraph();
+		isActive = true;
 
 		//create array of ecosystem descriptions
         /*
@@ -263,7 +299,7 @@ public class MultiConvergeGame : MonoBehaviour
 				GetTime();  // Update bet time 
 
 				// On the multiples of 5 seconds, get the names
-                if (((timeRemain % 10) == 5) && (!windowClosed)) {
+                if ((timeRemain % 4) == 0) {
 					GetNames();
 				}
 			}
@@ -323,6 +359,10 @@ public class MultiConvergeGame : MonoBehaviour
 
 		if (showPopup) {
 			GUI.Window (Constants.CONVERGE_POPUP_WIN, popupRect, ShowPopup, "Error", GUIStyle.none);
+		}
+
+		if (showPopup2) {
+			GUI.Window (Constants.CONVERGE_POPUP_WIN2, popupRect, ShowPopup2, "Error", GUIStyle.none);
 		}
 
 	}
@@ -385,37 +425,38 @@ public class MultiConvergeGame : MonoBehaviour
 		// DH change
 		// Add in time remaining label
         timeDisplayed = (timeRemain < 0) ? 0 : timeRemain;
-		remainLabel = "Bidding Time Remaining:  ";
-		if (windowClosed) {
-			remainLabel += "Bidding Now Closed";
-		} else if (simRunning) {
-			remainLabel += "Simulation Running";
+		if (betAccepted) {
+			remainLabel = "Submission Accepted";
+		} else if ((windowClosed) || (timeDisplayed == 0)) {
+			remainLabel = "Submission Window Closed";
 		} else {
-			remainLabel = remainLabel + timeDisplayed + " seconds";
+			remainLabel = "Submission Time Remaining: " + timeDisplayed + " seconds";
 		}
 		GUI.Label (new Rect (bufferBorder, height - 75 - bufferBorder, 400, 30), remainLabel, style);
 
 		// Add in money balance and bid amount
-        GUI.Label (new Rect (bufferBorder + width - 150, balanceY, 200, 30), "Balance: $" + balance, style);
-        GUI.Label (new Rect (bufferBorder + width - 150, balanceY + 30, 200, 30), "Bet:      $" + bet, style);
-        GUI.Label (new Rect (bufferBorder + width - 150, roundY, 200, 30), "Total Rounds:  " + numRounds, style);
-        GUI.Label (new Rect (bufferBorder + width - 150, roundY + 30, 200, 30), "Round:          " + curRound, style);
+		GUI.Label (new Rect (balanceX, balanceY, 200, 30), "Balance: $" + balance, style);
+        GUI.Label (new Rect (balanceX, balanceY + 25, 200, 30), "Bet:      $" + bet, style);
+		GUI.Label (new Rect (bufferBorder + 320, height - 75 - bufferBorder, 200, 30), "Round " + curRound + " of " + numRounds, style);
 
 		if (betAccepted) {
-            GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Please wait for results of betting.", style);
+            GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Please wait for round results.", style);
 		} else if (results) {
 			if (won == 1) {
-                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Congratulations - you won last round!", style);
+                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Congratulations - you won!", style);
 			} else if (won == 0) {
-                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Sorry - you lost last round.", style);
+                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Sorry - you lost.", style);
 			} else {
                 GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "You did not play last round.", style);
 			}
 		}
+		/*  Hard to find space in GUI for this message 
         if (playerDrop > 0) {
             GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder + 20, 300, 30), "A player left the game.", style);
             playerDrop--;
+
         }
+        */
 
 		if (betAccepted) {
 			buttonTitle = "Bet Entered";
@@ -435,9 +476,11 @@ public class MultiConvergeGame : MonoBehaviour
 				} else if (!showPopup) {
 					int prior_idx = attemptList.FindIndex (entry => entry.config == currAttempt.config);
 					if (prior_idx == Constants.ID_NOT_SET) {
-						popupMessage = "Duplicate configuration to initial ecosystem.  Please try again.";
+						popupMessage = "This attempt matches the initial ecosystem. Each attempt must be unique. ";
+						popupMessage +=  "Please change one slider and press 'Accept' again.";
 					} else {
-						popupMessage = "Duplicate configuration to prior attempt (#" + (prior_idx + 1) + ").  Please try again.";
+						popupMessage = "This attempt matches prior attempt #" 
+							+ (prior_idx + 1) + ". Each attempt must be unique. Please change one slider and press 'Accept' again.";
 					}
 					//Debug.Log (popupMessage);
 					showPopup = true;
@@ -454,26 +497,29 @@ public class MultiConvergeGame : MonoBehaviour
 		float topLeft = topGraph;
 
 		string buttonText;
+		style.fontSize = 14;
 		// Debug.Log ("Other player button routine");
 		foreach (DictionaryEntry entry in playerNames) {
 			// do something with entry.Value or entry.Key
 			id_otherPlayer = (int) entry.Key;
 			name_otherPlayer = (string)entry.Value;
-			if ((id_otherPlayer > 0 ) && (betStatusList.Contains(id_otherPlayer))) {
-				if (((short) betStatusList [id_otherPlayer]) == 1) {  // bet placed
-					GUI.color = Color.green; 
-					buttonText = name_otherPlayer + " Entered Bet";
-				} else {  // bet not placed
-					GUI.color = Color.red;
-					buttonText = name_otherPlayer + " No Bet";
-				}
-				// Debug.Log ("other player button: " + (bufferBorder + width - 170) + " " + topLeft + " " + buttonWidth);
-				// Debug.Log ("Button text: " + buttonText);
-				if (GUI.Button (new Rect (bufferBorder + width - 150, topLeft, buttonWidth, 30), buttonText)) {
-                    barGraph.setOppName (name_otherPlayer);
-					displayOtherGraph ();
-				}
-				topLeft += 45;
+			if ((id_otherPlayer > 0) && (betStatusList.Contains (id_otherPlayer))) {
+
+					if (((short)betStatusList [id_otherPlayer]) == 1) {  // bet placed
+						GUI.color = Color.green; 
+						buttonText = name_otherPlayer + " Made Bet";
+					} else {  // bet not placed
+						GUI.color = Color.red;
+						buttonText = name_otherPlayer + " No Bet";
+					}
+					// Debug.Log ("other player button: " + (bufferBorder + width - 170) + " " + topLeft + " " + buttonWidth);
+					// Debug.Log ("Button text: " + buttonText);
+					if (GUI.Button (new Rect (balanceX, topLeft, buttonWidth, 25), buttonText)) {
+						barGraph.setOppName (name_otherPlayer);
+						displayOtherGraph ();
+					}
+					topLeft += buttonStep;
+
 			}
 		}
 		GUI.color = savedColor2;
@@ -531,58 +577,58 @@ public class MultiConvergeGame : MonoBehaviour
         style.font = font;
         style.fontSize = 16;
 
-        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.03f, hdr1P, 30), hdr1, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.08f, hdr2P, 30), hdr2, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.13f, hdr3P, 30), hdr3, style);
-        GUI.Label(new Rect((windowRectConfig.width - ftr1P) / 2, windowRectConfig.height * 0.95f, ftr1P, 30), ftr1, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.02f, hdr1P, 45), hdr1, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.07f, hdr2P, 45), hdr2, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.12f, hdr3P, 45), hdr3, style);
+        GUI.Label(new Rect((windowRectConfig.width - ftr1P) / 2, windowRectConfig.height * 0.94f, ftr1P, 45), ftr1, style);
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.24f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.20f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.30f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
             GUI.Label(new Rect(0, 0, windowRectConfig.width * 0.85f, 30), "Enter Number of Rounds (5 to 50)", style);
             GUI.SetNextControlName("number_of_rounds");
-            numRoundsS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 25), numRoundsS, 25);
+            numRoundsS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 22), numRoundsS, 22);
         }
         GUI.EndGroup();
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.35f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.34f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.30f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
             GUI.Label(new Rect(0, 0, windowRectConfig.width * 0.85f, 30), "Enter Round Play Time in seconds (30 to 180)", style);
             GUI.SetNextControlName("bet_time");
-            timeWindowS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 25), timeWindowS, 25);
+            timeWindowS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 22), timeWindowS, 22);
         }
         GUI.EndGroup();
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.46f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.48f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.30f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
             GUI.Label(new Rect(0, 0, windowRectConfig.width * 0.85f, 30), "Enter Bet Amount (20 to 200)", style);
             GUI.SetNextControlName("bet_amount");
-            betAmountS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 25), betAmountS, 25);
+            betAmountS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 22), betAmountS, 22);
         }
         GUI.EndGroup();
 
-        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.57f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+        GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.62f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.30f));
         {
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = 14;
             GUI.Label(new Rect(0, 0, windowRectConfig.width * 0.85f, 30), "Enter EcoSystem Number (0 to " + (ecoCount-1) + ")", style);
             GUI.SetNextControlName("ecosystem_number");
-            ecoNumberS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 25), ecoNumberS, 25);
+            ecoNumberS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 22), ecoNumberS, 22);
         }
         GUI.EndGroup();
 
-		GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.68f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.10f));
+		GUI.BeginGroup(new Rect(10, windowRectConfig.height * 0.76f, windowRectConfig.width * 0.80f, windowRectConfig.height * 0.30f));
 		{
 			style.alignment = TextAnchor.UpperLeft;
 			style.fontSize = 14;
 			GUI.Label(new Rect(0, 0, windowRectConfig.width * 0.85f, 30), "Enter 'Y' to see Slider Help *'s", style);
 			GUI.SetNextControlName("allow_slider");
-			allowSlidersS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 25), allowSlidersS, 5);
+			allowSlidersS = GUI.TextField(new Rect(0, 25, windowRectConfig.width * 0.80f, 22), allowSlidersS, 22);
 		}
 		GUI.EndGroup();
 
@@ -591,7 +637,8 @@ public class MultiConvergeGame : MonoBehaviour
             isInitial = false;
         }
 
-        if (GUI.Button(new Rect((windowRectConfig.width - 100) / 2,  windowRectConfig.height * 0.87f, 100, 30), "Submit")) {
+		float butY = Math.Max (windowRectConfig.height * 0.90f, windowRectConfig.height * 0.76f + 25 + 22 + 10);
+		if (GUI.Button(new Rect((windowRectConfig.width - 100) / 2,  butY, 100, 25), "Submit")) {
             SubmitHostConfig();
         }
     }
@@ -651,7 +698,6 @@ public class MultiConvergeGame : MonoBehaviour
         isActive = true;
     }
 
-
     void MakeWindowNonHost(int id) {
         Functions.DrawBackground(new Rect(0, 0, widthConfig, heightConfig), bgTexture);
         string hdr1 = "Welcome to Multiplayer Convergence";
@@ -688,10 +734,12 @@ public class MultiConvergeGame : MonoBehaviour
         int hdr1P = hdr1.Length * pixelPerChar;
         string hdr2 = "Game Over. Thank you for playing";
         int hdr2P = hdr2.Length * pixelPerChar;
-        string hdr3 = "Your Final balance is: " + balance;
-        int hdr3P = hdr3.Length * pixelPerChar;
-        string hdr4 = "The Database will be updated with your new Balance";
+		string hdr3 = "Your Beginning balance was: " + balBeg;
+		int hdr3P = hdr3.Length * pixelPerChar;
+        string hdr4 = "Your Final balance is: " + balance;
         int hdr4P = hdr4.Length * pixelPerChar;
+        string hdr5 = "The Database will be updated with your new Balance";
+        int hdr5P = hdr5.Length * pixelPerChar;
         string retButton = "Return to Lobby";
         int retButtonP = 110;
 
@@ -700,12 +748,13 @@ public class MultiConvergeGame : MonoBehaviour
         style.font = font;
         style.fontSize = 16;
 
-        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.15f, hdr1P, 30), hdr1, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.30f, hdr2P, 30), hdr2, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.45f, hdr3P, 30), hdr3, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr4P) / 2, windowRectConfig.height * 0.60f, hdr4P, 30), hdr4, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.10f, hdr1P, 30), hdr1, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.25f, hdr2P, 30), hdr2, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.40f, hdr3P, 30), hdr3, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr4P) / 2, windowRectConfig.height * 0.55f, hdr4P, 30), hdr4, style);
+		GUI.Label(new Rect((windowRectConfig.width - hdr5P) / 2, windowRectConfig.height * 0.70f, hdr5P, 30), hdr5, style);
 
-        if (GUI.Button (new Rect ((windowRectConfig.width - retButtonP) / 2, windowRectConfig.height * 0.80f, retButtonP, 30), retButton)) {
+        if (GUI.Button (new Rect ((windowRectConfig.width - retButtonP) / 2, windowRectConfig.height * 0.85f, retButtonP, 30), retButton)) {
             Destroy (this);
             Destroy (foodWeb);
             GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
@@ -756,14 +805,13 @@ public class MultiConvergeGame : MonoBehaviour
             int startRange = 0;
             int spanRange = 0;
 
-            // last 35 taken to allocate room for multiplayer convergence text 
-			float entryHeight = height - heightGraph - 30 * 3 - bufferBorder * 2 - 35;
 			GUI.BeginGroup (new Rect (bufferBorder, topGraph + heightGraph + bufferBorder, width, entryHeight));
 
             GUIStyle styleMR = new GUIStyle(GUI.skin.label);
             styleMR.alignment = TextAnchor.UpperLeft;
             styleMR.font = font;
             styleMR.fontSize = 12;
+			int sCnt = 0;
 			//use seriesNodes to force order
 			foreach (int nodeId in manager.seriesNodes) {
 				//look for all possible parameter types for each node
@@ -776,117 +824,159 @@ public class MultiConvergeGame : MonoBehaviour
 					} else {
 						continue;
 					}
-				
-					float min = 0f;
-					float max = 1f;
-					switch (paramId) {
-					case 'K':
-						min = 1000f;
-						max = 15000f;
-						break;
-					case 'R':
-						min = 0f;
-						max = 3f;
-						break;
-					default:
-						break;
+					sCnt++;
+					if (speciesCounted && (speciesColCount > speciesColFit)) {
+						if ((speciesColIndex * speciesRowCount) >= sCnt) {
+							continue;
+						}
+					}	
+					if (!speciesCounted) {
+						speciesColCount = col+1;
 					}
-				
-					Rect labelRect;
-					//draw name, paramId
-					labelRect = new Rect (col * (350 + bufferBorder), row * 35 + sliderBorder, 250, 30);
-					if (labelRect.Contains (Event.current.mousePosition)) {
-						manager.mouseOverLabels.Add (param.name);
-						manager.selected = param.name;
-						manager.lastSeriesToDraw = param.name;
-					}
-					GUI.color = (param.name.Equals (manager.selected)) ? 
-						manager.seriesColors [param.name] : Color.white;
-					GUI.Label (labelRect, param.name + " - " + param.paramId, style);
-					//if player clicks on species, set as selected and activate foodWeb
-					if (GUI.Button (labelRect, "", GUIStyle.none)) {
-						foodWeb.selected = SpeciesTable.GetSpeciesName (param.name);
-						foodWeb.SetActive (true, foodWeb.selected);
-					}				
-					//draw slider with underlying colored bar showing original value
-					Rect sliderRect = new Rect (labelRect.x + 250 + bufferBorder, labelRect.y + 5, 100, 20);
+					if (col < speciesColCount) {
+						float min = 0f;
+						float max = 1f;
+						switch (paramId) {
+						case 'K':
+							min = 1000f;
+							max = 15000f;
+							break;
+						case 'R':
+							min = 0f;
+							max = 3f;
+							break;
+						default:
+							break;
+						}
 
-					if (sliderRect.Contains (Event.current.mousePosition)) {
-						manager.mouseOverLabels.Add (param.name);
-						manager.selected = param.name;
-						manager.lastSeriesToDraw = param.name;
-					}
-					GUI.color = manager.seriesColors [param.name];
-					float origValWidth = 
-						ConvergeParam.NormParam (param.origVal, min, max, sliderRect.width);
-					//float origValWidth = (param.origVal / (max - min)) * sliderRect.width;
-					Color slTexture= new Color (0.85f, 0.85f, 0.85f);
-					GUI.DrawTexture (new Rect (sliderRect.x, sliderRect.y, origValWidth, 10), //sliderRect.height),
-					                 Functions.CreateTexture2D (slTexture));
-//					GUI.color = savedColor;
+						Rect labelRect, TFRect;
+						//draw name, paramId
+						labelRect = new Rect (col * (350 + bufferBorder), row * 35 + sliderBorder, 200, 30);
+						TFRect = new Rect (col * (350 + bufferBorder) + 215, row * 35 + sliderBorder, 30, 25);
+						if (labelRect.Contains (Event.current.mousePosition) || TFRect.Contains(Event.current.mousePosition)) {
+							manager.mouseOverLabels.Add (param.name);
+							manager.selected = param.name;
+							manager.lastSeriesToDraw = param.name;
+						}
+						GUI.color = (param.name.Equals (manager.selected)) ? 
+							manager.seriesColors [param.name] : Color.white;
+						String pStr = param.name;
+						int pSIdx = pStr.IndexOf ("[");
+						if (pSIdx != -1) {
+							pStr = pStr.Substring (0, pSIdx);
+						}
+						// GUI.Label (labelRect, param.name + " - " + param.paramId, style);
+						GUI.Label (labelRect, pStr, style);
 
-                    // DH change
-                    // Add slider markers. First read slider range values
-                    highRange = param.highRange;
-                    lowRange = param.lowRange;
-					if ((allowSliders == 1) && param.markerEnabled && ((highRange != -1) || (lowRange != -1))) {
-                        if (lowRange == -1) {
-                            startRange = 0;
-                            lowRange = min;
-                        } else {
-                            startRange = (int) (100.0f * (lowRange - min) / (max - min));
-                        }
-                        if (highRange == -1) {
-                            spanRange = 100 - startRange;
-                        } else {
-                            spanRange = (int)(100.0f * (highRange - lowRange) / (max - min));
-                            spanRange = spanRange > 9 ? spanRange : 10;
-                        }                      
-                        GUI.Label (new Rect (labelRect.x + 250 + bufferBorder + startRange, row * 35 + sliderBorder - 20 + 5, spanRange, 20), 
-                            "******************", styleMR);
-                    }
-					
-					//draw slider for parameter value manipulation
-					GUI.backgroundColor = manager.seriesColors [param.name];
-					param.value = GUI.HorizontalSlider (
-					sliderRect, 
-					param.value, 
-					min, 
-					max
-					);
+						int pVInInt = (int) (99.5 * (param.value - min) / (max - min));
+						String pVInStr = "" + pVInInt;
+						if (pVInInt == 0) {
+							pVInStr = "";
+						} 
+						String pVOutStr = GUI.TextField(TFRect, pVInStr, 2);
+						if (!pVInStr.Equals (pVOutStr)) {
+							int pVOutInt;
+							if (!Int32.TryParse(pVOutStr, out pVOutInt)) {
+								pVOutInt = 0;
+							}
+							param.value = min + (pVOutInt + 0.5f) * (max - min) / 99.5f;
+						}
 
-					//show normalized value for parameter
-					if (param.name.Equals (manager.selected)) {
-                        string valLabel = String.Format (
-                            "{0}",
-							ConvergeParam.NormParam (param.value, min, max));
-						if (param.value != param.origVal) {
-							valLabel = valLabel + String.Format (
-								" [{0}]", 
-								ConvergeParam.NormParam (param.origVal, min, max));
-							// DH change
-							// Since slider moved, reset all other sliders
-							foreach(KeyValuePair<string, ConvergeParam> entry in currAttempt.seriesParams)
-							{
-								// do something with entry.Value or entry.Key
-								if (!entry.Value.name.Equals(manager.selected)) {
-									entry.Value.value = entry.Value.origVal;
+						//if player clicks on species, set as selected and activate foodWeb
+						if (GUI.Button (labelRect, "", GUIStyle.none)) {
+							foodWeb.selected = SpeciesTable.GetSpeciesName (param.name);
+							foodWeb.SetActive (true, foodWeb.selected);
+						}				
+						//draw slider with underlying colored bar showing original value
+						Rect sliderRect = new Rect (labelRect.x + 250 + bufferBorder, labelRect.y + 5, 100, 20);
+
+						if (sliderRect.Contains (Event.current.mousePosition) || TFRect.Contains(Event.current.mousePosition)) {
+							manager.mouseOverLabels.Add (param.name);
+							manager.selected = param.name;
+							manager.lastSeriesToDraw = param.name;
+						}
+						GUI.color = manager.seriesColors [param.name];
+						float origValWidth = 
+							ConvergeParam.NormParam (param.origVal, min, max, sliderRect.width);
+						//float origValWidth = (param.origVal / (max - min)) * sliderRect.width;
+						Color slTexture= new Color (0.85f, 0.85f, 0.85f);
+						GUI.DrawTexture (new Rect (sliderRect.x, sliderRect.y, origValWidth, 10), //sliderRect.height),
+							Functions.CreateTexture2D (slTexture));
+						//					GUI.color = savedColor;
+
+						// DH change
+						// Add slider markers. First read slider range values
+						highRange = param.highRange;
+						lowRange = param.lowRange;
+						if ((allowSliders == 1) && param.markerEnabled && ((highRange != -1) || (lowRange != -1))) {
+							if (lowRange == -1) {
+								startRange = 0;
+								lowRange = min;
+							} else {
+								startRange = (int) (100.0f * (lowRange - min) / (max - min));
+							}
+							if (highRange == -1) {
+								spanRange = 100 - startRange;
+							} else {
+								spanRange = (int)(100.0f * (highRange - lowRange) / (max - min));
+								spanRange = spanRange > 9 ? spanRange : 10;
+							}                      
+							GUI.Label (new Rect (labelRect.x + 250 + bufferBorder + startRange, row * 35 + sliderBorder - 20 + 5, spanRange, 20), 
+								"******************", styleMR);
+						}
+
+						//draw slider for parameter value manipulation
+						GUI.backgroundColor = manager.seriesColors [param.name];
+						param.value = GUI.HorizontalSlider (
+							sliderRect, 
+							param.value, 
+							min, 
+							max
+						);
+
+						//show normalized value for parameter
+						if (param.name.Equals (manager.selected)) {
+							string valLabel = String.Format (
+								"{0}",
+								ConvergeParam.NormParam (param.value, min, max));
+							if (param.value != param.origVal) {
+								valLabel = valLabel + String.Format (
+									" [{0}]", 
+									ConvergeParam.NormParam (param.origVal, min, max));
+								// DH change
+								// Since slider moved, reset all other sliders
+								duplSlider = false;
+								foreach(KeyValuePair<string, ConvergeParam> entry in currAttempt.seriesParams)
+								{
+									// do something with entry.Value or entry.Key
+									if (!entry.Value.name.Equals(manager.selected)) {
+										if (entry.Value.value != entry.Value.origVal) {
+											duplSlider = true;
+											selectedSaved = manager.selected;
+										}
+									}
+								}
+								if (duplSlider) {
+									popupMessage = "You are only allowed to change one slider per round. "
+										+ "Press 'OK' to reset previous slider and continue. "
+										+ "Press 'Cancel' to retain previous slider setting and undo current change. ";
+									showPopup2 = true;
 								}
 							}
-						}
-						style.alignment = TextAnchor.UpperLeft;
-						float xPosn = 
-							sliderRect.x + 
-							(param.value / (max - min)) * 
+							style.alignment = TextAnchor.UpperLeft;
+							float xPosn = 
+								sliderRect.x + 
+								(param.value / (max - min)) * 
 								sliderRect.width +
 								bufferBorder;
-						Rect valRect = new Rect(xPosn, labelRect.y, 70, labelRect.height - 5);
+							Rect valRect = new Rect(xPosn, labelRect.y, 70, labelRect.height - 5);
 
-						GUI.Box (valRect, valLabel);
-						style.alignment = TextAnchor.UpperRight;
+							GUI.Box (valRect, valLabel);
+							style.alignment = TextAnchor.UpperRight;
+						}
 					}
 
-					if ((row + 1) * 35 + 30 > entryHeight) {
+					if ((row + 1) * 35 + 40 > entryHeight) {
 						col++;
 						row = 0;
 					} else {
@@ -895,10 +985,15 @@ public class MultiConvergeGame : MonoBehaviour
 
 					GUI.color = savedColor;
 					GUI.backgroundColor = savedBkgdColor;
-
 				}
 			}
 			GUI.EndGroup ();
+			if (speciesCounted && (speciesColCount > speciesColFit)) {
+				speciesColIndex = Mathf.RoundToInt (GUI.HorizontalSlider (
+					sliderSRect, speciesColIndex, 0, speciesColCount - speciesColFit));
+			}
+			Debug.Log ("=== sCC/sCF/r/c/sC: " + speciesColCount + " " + speciesColFit + " " + row + " " + col + " " + sCnt);
+			speciesCounted = true;
 		}
 		style.alignment = TextAnchor.UpperLeft;
 		style.font = font;
@@ -990,13 +1085,66 @@ public class MultiConvergeGame : MonoBehaviour
 		
 	}
 
+	void ShowPopup2 (int windowID)
+	{
+		GUIStyle style = new GUIStyle (GUI.skin.label);
+		style.alignment = TextAnchor.UpperCenter;
+		style.font = font;
+		style.fontSize = 16;
+
+		Functions.DrawBackground (new Rect (0, 0, popupRect.width, popupRect.height), bgTexture);
+		GUI.BringWindowToFront (windowID);
+		Rect outerRect = new Rect (
+			bufferBorder, 
+			bufferBorder, 
+			popupRect.width - bufferBorder, 
+			popupRect.height - 30 - bufferBorder * 2
+		);
+		float msgHeight = Mathf.Max (1, popupMessage.Length / 150) * outerRect.height;
+		popupScrollPosn = GUI.BeginScrollView (
+			outerRect,
+			popupScrollPosn, 
+			new Rect (0, 0, outerRect.width - 32, msgHeight),
+			null, 
+			GUI.skin.verticalScrollbar
+		);
+		GUI.Label (
+			new Rect (0, 0, outerRect.width - 32, msgHeight), 
+			popupMessage, 
+			style
+		);
+		GUI.EndScrollView ();
+
+		if (GUI.Button (new Rect (40, popupRect.height - 30 - bufferBorder, 80, 30), "OK")) {
+			showPopup2 = false;
+			foreach(KeyValuePair<string, ConvergeParam> entry in currAttempt.seriesParams)
+			{
+				// do something with entry.Value or entry.Key
+				if (!entry.Value.name.Equals(selectedSaved)) {
+					entry.Value.value = entry.Value.origVal;
+				}
+			}
+		}
+
+		if (GUI.Button (new Rect (popupRect.width - 80 - 40, popupRect.height - 30 - bufferBorder, 80, 30), "Cancel")) {
+			showPopup2 = false;
+			foreach(KeyValuePair<string, ConvergeParam> entry in currAttempt.seriesParams)
+			{
+				// do something with entry.Value or entry.Key
+				if (entry.Value.name.Equals(selectedSaved)) {
+					entry.Value.value = entry.Value.origVal;
+				}
+			}
+		}
+	}
+		
 	public void Submit ()
 	{
 		simRunning = true;
         Game.networkManager.Send (
 			ConvergeNewAttemptProtocol.Prepare (
 			player_id, 
-			ecosystem_id, 
+			ecosystem_id + 1000,    // Offset by 1000 to seperate from single player game 
 			currAttempt.attempt_id,
 			currAttempt.allow_hints,
 			currAttempt.hint_id,
@@ -1085,7 +1233,7 @@ public class MultiConvergeGame : MonoBehaviour
 
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-			    ecosystem_id, 
+			    ecosystem_id + 1000,  // Offset MC by 1000, to differante from Convergence
 			    attempt.attempt_id + 1,
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
@@ -1134,7 +1282,7 @@ public class MultiConvergeGame : MonoBehaviour
 	public void ProcessConvergeBetUpdate (NetworkResponse response)
 	{
 		ResponseConvergeBetUpdate args = response as ResponseConvergeBetUpdate;
-		Debug.Log ("In responseconvergebetupdate");
+		Debug.Log ("In responseconvergetbetupdate");
 		won = args.winStatus;
 		wonAmount = args.wonAmount; 
 		Debug.Log ("won/wonamount: " + won + " " + wonAmount);
@@ -1157,14 +1305,32 @@ public class MultiConvergeGame : MonoBehaviour
 		closedResponseSent = false;
         curRound++;    // Needs to be replaced by adding round number from server 
         if (curRound > numRounds) {
-            // Game over - switch to game over display 
+			// Update database with new player balance
+			Debug.Log ("Submit EndGameProtocol with new balance: " + balance);
+			// Update database with new balance
+			Game.networkManager.Send (
+				EndGameProtocol.Prepare (
+					(short) 5,
+					balance
+				),
+				ProcessEndGame
+			);
+			GameState.player.credits = balance;    // Update player object as well
+			// Game over - switch to game over display 
             isActive = false;
             isDone = true;
             Debug.Log ("Game over");
         }
 		Debug.Log ("new balance: " + balance);
 	}
-
+		
+	public void ProcessEndGame (NetworkResponse response)
+	{
+		ResponseEndGame args = response as ResponseEndGame;
+		Debug.Log ("==== ResponseEndGame");
+		Debug.Log ("Credit difference: " + args.creditDiff);
+	}
+		
 	public void ProcessConvergePriorAttemptCount (NetworkResponse response)
 	{
 		ResponseConvergePriorAttemptCount args = response as ResponseConvergePriorAttemptCount;
@@ -1250,7 +1416,7 @@ public class MultiConvergeGame : MonoBehaviour
 			int attempt_id = 0;
 			currAttempt = new ConvergeAttempt (
 				player_id,
-				ecosystem_id, 
+				ecosystem_id + 1000, 
 			    attempt_id,
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
@@ -1265,7 +1431,7 @@ public class MultiConvergeGame : MonoBehaviour
 			int attempt_id = attemptList [attemptCount - 1].attempt_id + 1;
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-			    ecosystem_id, 
+			    ecosystem_id + 1000, 
 			    attempt_id,
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
@@ -1295,7 +1461,7 @@ public class MultiConvergeGame : MonoBehaviour
 		if (attemptIdx == Constants.ID_NOT_SET) {
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-		        ecosystem_id, 
+		        ecosystem_id + 1000, 
 		        attempt_id,
 		        allowHintsMaster,
 		        hint_id,
@@ -1308,7 +1474,7 @@ public class MultiConvergeGame : MonoBehaviour
 		} else {
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-		        ecosystem_id, 
+		        ecosystem_id + 1000, 
 		        attempt_id,
 		        allowHintsMaster,
 			    hint_id,
@@ -1376,33 +1542,34 @@ public class MultiConvergeGame : MonoBehaviour
 
 					for (int i = 0; i < ecosystemCnt; i++) {
 						int ecosystem_id = br.ReadInt32 ();
+						Debug.Log("**** ecosystem_id: " + ecosystem_id);
 
 						ConvergeEcosystem ecosystem = new ConvergeEcosystem (ecosystem_id);
 						int fldSize = br.ReadInt16 ();
-                        Debug.Log("description_fldSize: " + fldSize);
+                        // Debug.Log("description_fldSize: " + fldSize);
 						ecosystem.description = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-                        Debug.Log(ecosystem.description);
+                        // Debug.Log(ecosystem.description);
 						ecosystem.timesteps = br.ReadInt32 ();
 						fldSize = br.ReadInt16 ();
-                        Debug.Log("config_default_fldSize: " + fldSize);
+                        // Debug.Log("config_default_fldSize: " + fldSize);
 						ecosystem.config_default = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-                        Debug.Log(ecosystem.config_default);
+                        // Debug.Log(ecosystem.config_default);
 						fldSize = br.ReadInt16 ();
-                        Debug.Log("config_target_fldSize: " + fldSize);
+                        // Debug.Log("config_target_fldSize: " + fldSize);
 						ecosystem.config_target = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
                         Debug.Log(ecosystem.config_target);
 						fldSize = br.ReadInt16 ();
                         // Harjit's 32 bit length string
                         // fldSize = br.ReadInt32 ();
-                        Debug.Log("Harjit: csv_default_string_fldSize: " + fldSize);
+                        // Debug.Log("Harjit: csv_default_string_fldSize: " + fldSize);
 						ecosystem.csv_default_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-                        Debug.Log(ecosystem.csv_default_string);
+                        // Debug.Log(ecosystem.csv_default_string);
 						fldSize = br.ReadInt16 ();
                         // Harjit's 32 bit length string
                         // fldSize = br.ReadInt32 ();
-                        Debug.Log("Harjit: csv_target_string_fldSize: " + fldSize);
+                        // Debug.Log("Harjit: csv_target_string_fldSize: " + fldSize);
 						ecosystem.csv_target_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-                        Debug.Log(ecosystem.csv_target_string);
+                        // Debug.Log(ecosystem.csv_target_string);
                         ecosystem.sliderRanges = "";
                         ecosystem.markerEnabled = false;
 						

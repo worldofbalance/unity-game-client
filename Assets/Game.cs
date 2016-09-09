@@ -21,7 +21,7 @@ public class Game : MonoBehaviour
         scene = "Login";
         DontDestroyOnLoad(gameObject);
 
-//        SpeciesTable.Initialize ();
+        SpeciesTable.Initialize ();
         texture = Functions.CreateTexture2D(Color.black);
     }
 

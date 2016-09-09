@@ -1,7 +1,7 @@
 using UnityEngine;
 
 using System.Collections.Generic;
-
+ 
 public class Constants
 {
     public static readonly float UnitColliderRadius = 5.0f;
@@ -13,7 +13,7 @@ public class Constants
     // Constants
     public static readonly string CLIENT_VERSION = "1.00";
 
-    //public static readonly string REMOTE_HOST = "localhost";
+    // public static readonly string REMOTE_HOST = "localhost";
     public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
     // IP address may be 130.212.3.51
 
@@ -74,6 +74,7 @@ public class Constants
     public static readonly int CONVERGE_POPUP_WIN = 13;
     public static readonly int CONVERGE_HOST_CONFIG = 14;
     public static readonly int CONVERGE_NONHOST_CONFIG = 15;
+	public static readonly int CONVERGE_POPUP_WIN2 = 16;
 
     public static readonly float ECO_HEX_SCALE = 3;
 

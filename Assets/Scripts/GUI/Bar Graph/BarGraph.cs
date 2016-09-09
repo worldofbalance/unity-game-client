@@ -83,6 +83,7 @@ public class BarGraph : MonoBehaviour
 		xTitle = "Attempt #";
 		yTitle = "Biomass Difference";
 
+		width = 900;
 		left = (Screen.width - width) / 2;
 		top = 100;
 
@@ -166,8 +167,8 @@ public class BarGraph : MonoBehaviour
 		style.font = Constants.FONT_01;
 		style.fontSize = 16;
 		// Window Title
-		title2 = title;
-		title2 = title + " for " + oppName;
+		title2 = "Average Biomass Difference from Target";
+		title2 += " for " + oppName;
         if (oppGraph) {
             GUI.Label (new Rect ((windowRect.width - 550) / 2, 0, 550, 30), title2, style);
         } else {
@@ -712,6 +713,21 @@ public class BarGraph : MonoBehaviour
 
 	public void setOppGraph(bool oppGraph) {
 		this.oppGraph = oppGraph;
+		if (oppGraph) {
+			width = Mathf.Min (900, Screen.width * 0.80f);
+			left = (Screen.width - width) / 2;
+			windowRect = new Rect (left, top, width, height);
+			graphRect = new Rect (20, 30, width - 40, 325);
+			hStart = new Vector2 (85, graphRect.height - 75);
+			hEnd = new Vector2 (graphRect.width - 50, hStart.y);
+		} else {
+			width = 900;
+			left = (Screen.width - width) / 2;
+			windowRect = new Rect (left, top, width, height);
+			graphRect = new Rect (20, 30, 650, 325);
+			hStart = new Vector2 (85, graphRect.height - 75);
+			hEnd = new Vector2 (graphRect.width - 50, hStart.y);
+		}
 	}
 
 	public void setOppName(string oppName) {

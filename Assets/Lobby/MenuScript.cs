@@ -66,9 +66,10 @@ public class MenuScript : MonoBehaviour {
 			CloseAllMenus ();
 			//Debug.Log ("You Pressed STATUS");
 			//Camera.main.GetComponent<MapCamera>().Move(GameState.player.GetID());
-			statusContainer.SetActive (true);
-			menuOpen = true;
-			statusOpen = true;
+
+		statusContainer.SetActive (true);
+		menuOpen = true;
+		statusOpen = true;
 	}
 
 	public void OpenMiniGames(){
