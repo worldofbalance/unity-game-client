@@ -18,7 +18,7 @@ public class Constants
     // IP address may be 130.212.3.51
 
     //public static readonly int REMOTE_PORT = 9234;
-    public static readonly int REMOTE_PORT = 9255;
+    public static readonly int REMOTE_PORT = 9270;    // New port as of 2016-9-13
     //20041;
     //    public static readonly int REMOTE_PORT = 9234;
     //9257 9255 for locahost, 9257 for Anu's server
