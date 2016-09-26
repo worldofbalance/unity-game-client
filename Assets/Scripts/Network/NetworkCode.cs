@@ -76,6 +76,7 @@
     public static readonly short MC_HOST_CONFIG = 186;
     public static readonly short MC_NONHOST_CONFIG = 187;
 	public static readonly short MC_SETUP = 188;    // Equivalent of PAIR for setup MC 
+	public static readonly short MC_GET_FINAL_SCORES = 189;
 
 	public static readonly short TOPLIST = 153;
 

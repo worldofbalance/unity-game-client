@@ -75,8 +75,9 @@ public class NetworkManager {
 
 			if (cManager.Send(packet.GetBytes())) {
 				requests.Dequeue();
-                // commented by Rujoota
-				//Debug.Log("Sent Request No. " + packet.GetID() + " [" +  NetworkProtocolTable.Get(packet.GetID()).ToString() + "]");
+                // commented by Rujoota - put back in my David for a while
+				Debug.Log("Sent Request No. " + packet.GetID() + " [" +  NetworkProtocolTable.Get(packet.GetID()).ToString() + "]" + 
+					"port: " + cManager.getPort());
 			}
 		}
 

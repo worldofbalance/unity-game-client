@@ -43,7 +43,11 @@ public class TilePurchaseButton : MonoBehaviour, IPointerClickHandler
     {
 		// if script is attached to button in editor
 		currentButton = this.gameObject.GetComponent<Button>();
-		currentText = currentButton.transform.GetChild(0).GetComponent<Text>();
+		try {
+			currentText = currentButton.transform.GetChild(0).GetComponent<Text>();
+		} catch {
+			currentText = null;
+		}
 
         localObject = GameObject.Find("Local Object");
         map = GameObject.Find("Map");
@@ -52,8 +56,12 @@ public class TilePurchaseButton : MonoBehaviour, IPointerClickHandler
     }
     void Update()
     {
-        currentTile = localObject.GetComponent<WorldMouse>().currentSelectedTile;
-        mapTileSelected = GameObject.Find("Zone " + currentTile.row + "-" + currentTile.column) as GameObject;
+		try {
+			currentTile = localObject.GetComponent<WorldMouse>().currentSelectedTile;
+			mapTileSelected = GameObject.Find("Zone " + currentTile.row + "-" + currentTile.column) as GameObject;
+		} catch {
+		}
+
     }
 
     public void OnPointerClick(PointerEventData eventdata)

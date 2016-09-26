@@ -161,4 +161,8 @@ public class ConnectionManager
 		}
 	}
 
+	// Added DH for debugging
+	public int getPort() {
+		return port;
+	}
 }
