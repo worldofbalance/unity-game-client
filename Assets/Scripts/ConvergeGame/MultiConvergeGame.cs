@@ -190,12 +190,6 @@ public class MultiConvergeGame : MonoBehaviour
         // DH change
 		OppViewWidth = Math.Min((int)(width * 0.25f - 10), 160);
 		buttonWidth = OppViewWidth;
-        // Debug.Log ("Width / OppViewWidth: " + width + " " + OppViewWidth);
-        // buttonWidth = OppViewWidth > 125 ? 125 : OppViewWidth;
-        // balance & bet initially hardcoded in client. Overwritten by future code
-		// balance = 1000;
-        // bet = 100;
-		
 		windowRect = new Rect (left, top, width, height);
         windowRectConfig = new Rect (leftConfig, topConfig, widthConfig, heightConfig);
 		windowRectWinners = new Rect (leftWinner, topWinner, widthWinner, heightWinner);
@@ -361,8 +355,6 @@ public class MultiConvergeGame : MonoBehaviour
 					alarm5Sec = true;
 					audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/alarm_5sec"));
 				}
-					
-
 				// On the multiples of 5 seconds, get the names
 				/* Only call once at the beginning. 
                 if ((timeRemain % 4) == 0) {
@@ -570,10 +562,7 @@ public class MultiConvergeGame : MonoBehaviour
 			Debug.Log ("showWinners set to true");
 			showWinners = true;
 		}
-
-
-
-
+			
 		// Display buttons with opponent bet status 
 		Color savedColor2 = GUI.color;
 		float topLeft = topGraph;
@@ -595,8 +584,6 @@ public class MultiConvergeGame : MonoBehaviour
 					GUI.color = Color.red;
 					buttonText = name_otherPlayer + " No Bet";
 				}
-				// Debug.Log ("other player button: " + (bufferBorder + width - 170) + " " + topLeft + " " + buttonWidth);
-				// Debug.Log ("Button text: " + buttonText);
 				if (GUI.Button (new Rect (balanceX, topLeft, buttonWidth, 25), buttonText, customButton)) {
 					barGraph.setOppName (name_otherPlayer);
 					displayOtherGraph ();
