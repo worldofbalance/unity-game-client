@@ -11,6 +11,7 @@ using System.Text;
 public class MultiConvergeGame : MonoBehaviour
 {
 	private int player_id;
+	private string player_name;
 	// Window Properties
 	private int window_id = Constants.CONVERGE_WIN;
     private int host_config_id = Constants.CONVERGE_HOST_CONFIG;
@@ -25,6 +26,11 @@ public class MultiConvergeGame : MonoBehaviour
     private float topConfig;
     private float widthConfig = Screen.width * 0.90f;
     private float heightConfig = Screen.height * 0.90f;
+	// dimensions for round winner windows 
+	private float leftWinner;
+	private float topWinner;
+	private float widthWinner = Screen.width * 0.70f;
+	private float heightWinner = Screen.height * 0.70f;
 
 	private float widthGraph;
 	private float heightGraph;
@@ -38,12 +44,15 @@ public class MultiConvergeGame : MonoBehaviour
 	private int sliderBorder = 20;  // DH change. Gives extra for sliders
 	private float OppViewWidth;    // DH change. Width of opponent view area
 	private Rect windowRect, sliderSRect;
-    private Rect windowRectConfig;
+    private Rect windowRectConfig, windowRectWinners;
 	// Logic
 	private bool isActive = false;   // Not active until host specifies
     private bool isInitial = true;   // helps with GUI focus
 	private bool isSetup = false;   // parameters entered in lobby 
     private bool isDone = false;   // used to display end result screen
+	private bool alarm10Sec = true;
+	private bool alarm5Sec = true;
+	private bool haveNames = false; 
 	// DH change
 	// eliminate blink. Replace isProcessing with betAccepted
 	// private bool isProcessing = true;
@@ -72,6 +81,7 @@ public class MultiConvergeGame : MonoBehaviour
 	//popup messaging
 	private bool showPopup = false;
 	private bool showPopup2 = false;
+	private bool showWinners = false;
 	private string popupMessage = "";
 	private Rect popupRect;
 	private Vector2 popupScrollPosn  = Vector2.zero;
@@ -90,8 +100,10 @@ public class MultiConvergeGame : MonoBehaviour
 	public static int matchID;     // This is the room_id. Set by MultiplayerGames
 	private bool host;    // Is this player the host?
 	private int timeRemain = 0;   // How many seconds left in round. Could be negative
+	private int timePrevious = 0;
+	private int countPrevious = 0;
     private int timeDisplayed = 0;   // Value displayed for time remaining
-    private int timeCheck = -40;   // timeRemain value to check for no response
+    private int timeCheck = -5;   // timeRemain value to check for no response
     private int checkCount = 0;   // count of number of CheckPlayers msgs sent
     private int playerDrop = 0;   // Count of frames to display player dropped msg 
 	private string remainLabel;
@@ -108,6 +120,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private bool closedResponseSent = false;
 	private IDictionary playerNames;
 	private IDictionary betStatusList;
+	private int betCount = 0;
 	private float buttonWidth;
 	private bool simRunning;
 	private List<int> scores;   // Obtained from BarGraph
@@ -144,6 +157,14 @@ public class MultiConvergeGame : MonoBehaviour
 	private int speciesRowCount;       // number of rows of species in ecosystem
 	private int speciesColFit;         // number of columns of species that will fit on screen
 	private int speciesColIndex;       // index of coloum of species presently starting display. Ranges 0 to speciesCount - speciesFit
+	private AudioSource audio;
+	private int playerWinner;
+	private string playerWinnerName;
+	private List<int> winners;         // lists by round the player id of the winner
+	private IDictionary roundsWon;     // Dictionary by player of number of rounds won
+	private int[] playerId; 
+	private int[] playerWinnings;
+	private int[] playerLastImprove;
 
 	void Awake ()
 	{
@@ -151,28 +172,27 @@ public class MultiConvergeGame : MonoBehaviour
         sendNonHost = true;
         DontDestroyOnLoad (gameObject.GetComponent ("Login"));
         player_id = GameState.player.GetID ();
+		player_name = GameState.player.name;
 		balance = GameState.player.credits;
 		balBeg = balance;
-		Debug.Log ("Player name: " + GameState.player.name + ", credits: " + balance);
+		Debug.Log ("Player name: " + player_name + ", credits: " + balance);
 
         left = (Screen.width - width) / 2;
         top = (Screen.height - height) / 2;
         // DH change
         leftConfig = (Screen.width - widthConfig) / 2;
         topConfig = (Screen.height - heightConfig) / 2;
+		leftWinner = (Screen.width - widthWinner) / 2;
+		topWinner = (Screen.height - heightWinner) / 2;
         ftr1 = "";
         ftr1P = ftr1.Length * pixelPerChar;
 
         // DH change
-        OppViewWidth = (int)(width * 0.20f - 10);
-        Debug.Log ("Width / OppViewWidth: " + width + " " + OppViewWidth);
-        buttonWidth = OppViewWidth > 125 ? 125 : OppViewWidth;
-        // balance & bet initially hardcoded in client. Overwritten by future code
-		// balance = 1000;
-        // bet = 100;
-		
+		OppViewWidth = Math.Min((int)(width * 0.25f - 10), 160);
+		buttonWidth = OppViewWidth;
 		windowRect = new Rect (left, top, width, height);
         windowRectConfig = new Rect (leftConfig, topConfig, widthConfig, heightConfig);
+		windowRectWinners = new Rect (leftWinner, topWinner, widthWinner, heightWinner);
 		widthGraph = windowRect.width - (bufferBorder * 2) - OppViewWidth;
 		heightGraph = windowRect.height / 2;
 		popupRect = new Rect ((Screen.width / 2) - 250, (Screen.height / 2) - 125,
@@ -186,10 +206,13 @@ public class MultiConvergeGame : MonoBehaviour
 		playerNames.Clear();
 		betStatusList = new Dictionary<int, short>();
 		betStatusList.Clear();
+		roundsWon = new Dictionary<int, int>();
+		roundsWon.Clear();
 
 		simRunning = false;
 		formattedScores = new List<int>();
 		otherScores = new List<int>();
+		winners = new List<int> ();
         balanceY = topGraph + buttonStep*4 + 0;     // balance msg Y coordinate
 		balanceX = width - buttonWidth - bufferBorder;      // balance, bet msgs, oppo buttons, species slider X coordinate
 		sliderY = balanceY + 65;                    // slider Y coordinate 
@@ -205,6 +228,10 @@ public class MultiConvergeGame : MonoBehaviour
 		speciesColIndex = 0;    
 		sliderSRect = new Rect (balanceX, sliderY, buttonWidth, 30); 
 		Debug.Log ("=== Awake: sRC/sCF/eH: " + speciesRowCount + " " + speciesColFit + " " + entryHeight);
+		audio = gameObject.AddComponent<AudioSource> ();
+		playerId = new int[5];
+		playerWinnings = new int[5];
+		playerLastImprove = new int[5];
 	}
 	
 	// Use this for initialization
@@ -288,6 +315,12 @@ public class MultiConvergeGame : MonoBehaviour
 		// Client Version Label
 		GUI.Label (new Rect (Screen.width - 75, Screen.height - 30, 65, 20), "v" + Constants.CLIENT_VERSION + " Beta");
 
+		if (!haveNames) {
+			haveNames = true;   // Some problems getting names too early 
+			GetNames ();   // All players setup at the beginning. Only need to call once at beginning
+		}
+
+
         if ((!simRunning) && isActive) {
 			moment = DateTime.Now;
 			timeNowNew = moment.Millisecond;
@@ -298,14 +331,40 @@ public class MultiConvergeGame : MonoBehaviour
 				timeNow = timeNowNew;
 				GetTime();  // Update bet time 
 
+				if (timeRemain > timePrevious) {
+					timePrevious = timeRemain;
+					countPrevious = 5;    // cycles to play the round
+				}
+				timePrevious = timeRemain;
+				countPrevious--;
+				if (countPrevious == 0) {
+					audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/startRound"));
+				}
+
+				if (timeRemain > 15) {
+					alarm10Sec = false;
+					alarm5Sec = false;
+				}
+
+				if ((timeRemain <= 10) && !alarm10Sec) {
+					alarm10Sec = true;
+					audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/alarm_10sec"));
+				}
+
+				if ((timeRemain <= 5) && !alarm5Sec) {
+					alarm5Sec = true;
+					audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/alarm_5sec"));
+				}
 				// On the multiples of 5 seconds, get the names
+				/* Only call once at the beginning. 
                 if ((timeRemain % 4) == 0) {
 					GetNames();
 				}
+				*/
 			}
 		}
 
-        if ((timeRemain < timeCheck) && (checkCount < 3) && isActive) {  // waiting too long for some client(s). Check Server
+        if ((timeRemain < timeCheck) && (checkCount < 2) && isActive) {  // waiting too long for some client(s). Check Server
             checkCount++;
             CheckPlayers();
         }
@@ -363,6 +422,10 @@ public class MultiConvergeGame : MonoBehaviour
 
 		if (showPopup2) {
 			GUI.Window (Constants.CONVERGE_POPUP_WIN2, popupRect, ShowPopup2, "Error", GUIStyle.none);
+		}
+
+		if (showWinners) {
+			GUI.Window (Constants.CONVERGE_SHOW_WINNERS, windowRectWinners, makeWindowWinners, "Round Winners", GUIStyle.none);
 		}
 
 	}
@@ -445,7 +508,8 @@ public class MultiConvergeGame : MonoBehaviour
 			if (won == 1) {
                 GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Congratulations - you won!", style);
 			} else if (won == 0) {
-                GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Sorry - you lost.", style);
+                // GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Sorry - you lost.", style);
+				GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), playerWinnerName + " won last round.", style);
 			} else {
                 GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "You did not play last round.", style);
 			}
@@ -459,13 +523,15 @@ public class MultiConvergeGame : MonoBehaviour
         */
 
 		if (betAccepted) {
-			buttonTitle = "Bet Entered";
+			buttonTitle = "Entered";
 		} else {
 			buttonTitle = windowClosed ? "Closed" : "Accept";
 		}
 		if (true) {
-			if (GUI.Button (new Rect (bufferBorder, height - 30 - bufferBorder, 100, 30), buttonTitle) &&
+			if (GUI.Button (new Rect (bufferBorder, height - 30 - bufferBorder, 80, 30), buttonTitle) &&
 				!betAccepted && !windowClosed) {
+				audio.Stop ();
+				audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/gong"));
 				//make sure new config is distinct from prior attempts and initial value
 				currAttempt.UpdateConfig ();  //update config based on user data entry changes
 				ConvergeAttempt prior = attemptList.Find (entry => entry.config == currAttempt.config);
@@ -488,38 +554,41 @@ public class MultiConvergeGame : MonoBehaviour
 			}
 		}
 
-		if (GUI.Button (new Rect (bufferBorder + 110, height - 30 - bufferBorder, 110, 30), "Progress Report")) {
+		if (GUI.Button (new Rect (bufferBorder + 90, height - 30 - bufferBorder, 80, 30), "Progress")) {
 			GenerateBarGraph ();
 		}
 
+		if (GUI.Button (new Rect (bufferBorder + 180, height - 30 - bufferBorder, 80, 30), "Winners")) {
+			Debug.Log ("showWinners set to true");
+			showWinners = true;
+		}
+			
 		// Display buttons with opponent bet status 
 		Color savedColor2 = GUI.color;
 		float topLeft = topGraph;
 
 		string buttonText;
-		style.fontSize = 14;
+		// style.fontSize = 12;
 		// Debug.Log ("Other player button routine");
+		GUIStyle customButton = new GUIStyle("button");
+		customButton.fontSize = 12;
 		foreach (DictionaryEntry entry in playerNames) {
 			// do something with entry.Value or entry.Key
 			id_otherPlayer = (int) entry.Key;
-			name_otherPlayer = (string)entry.Value;
+			name_otherPlayer = (string)entry.Value + " (won " + roundsWon [id_otherPlayer] + ") ";
 			if ((id_otherPlayer > 0) && (betStatusList.Contains (id_otherPlayer))) {
-
-					if (((short)betStatusList [id_otherPlayer]) == 1) {  // bet placed
-						GUI.color = Color.green; 
-						buttonText = name_otherPlayer + " Made Bet";
-					} else {  // bet not placed
-						GUI.color = Color.red;
-						buttonText = name_otherPlayer + " No Bet";
-					}
-					// Debug.Log ("other player button: " + (bufferBorder + width - 170) + " " + topLeft + " " + buttonWidth);
-					// Debug.Log ("Button text: " + buttonText);
-					if (GUI.Button (new Rect (balanceX, topLeft, buttonWidth, 25), buttonText)) {
-						barGraph.setOppName (name_otherPlayer);
-						displayOtherGraph ();
-					}
-					topLeft += buttonStep;
-
+				if (((short)betStatusList [id_otherPlayer]) == 1) {  // bet placed
+					GUI.color = Color.green; 
+					buttonText = name_otherPlayer + " Made Bet";
+				} else {  // bet not placed
+					GUI.color = Color.red;
+					buttonText = name_otherPlayer + " No Bet";
+				}
+				if (GUI.Button (new Rect (balanceX, topLeft, buttonWidth, 25), buttonText, customButton)) {
+					barGraph.setOppName (name_otherPlayer);
+					displayOtherGraph ();
+				}
+				topLeft += buttonStep;
 			}
 		}
 		GUI.color = savedColor2;
@@ -562,6 +631,61 @@ public class MultiConvergeGame : MonoBehaviour
 
 		DrawResetButtons (screenOffset, style);
 	}
+
+	void makeWindowWinners(int id) {
+		Functions.DrawBackground(new Rect(0, 0, widthWinner, heightWinner), bgTexture);
+		GUIStyle style = new GUIStyle(GUI.skin.label);
+		style.alignment = TextAnchor.UpperCenter;
+		style.font = font;
+		style.fontSize = 14;
+
+		string msg;
+		string banner = "Round Winners";
+		string hdrMsg = "Round   Winner ";
+		int pixelPerChar2 = 10;
+		int xStart = 10;
+		int xStep = hdrMsg.Length * pixelPerChar2;
+		int xMax = (int) ((widthWinner - 2 * xStart) / xStep);
+		int yStep = 25;
+		int yStart = 75;
+		int yHeader = 45;
+		int yMax = (int) ((heightWinner - 55 - yStart - yStep) / yStep);
+		int rounds = winners.Count;
+		int xHdrCnt = Math.Min (xMax, (int)((rounds - 1) / yMax) + 1);
+		int startRound = Math.Max (1, rounds + 1 - xMax * yMax);
+		int xIdx = 1;
+		int yIdx = 1;
+		GUI.Label(new Rect((widthWinner-banner.Length*pixelPerChar2)/2, 10, banner.Length*pixelPerChar2, yStep), banner, style);
+		for (int i = 0; i < xHdrCnt; i++) {
+			GUI.Label(new Rect(xStart + i*xStep, yHeader, xStep, yStep), hdrMsg, style);
+		}
+		for (int i = startRound; i <= rounds; i++) {
+			msg = " " + i + "      ";
+			if (i < 10) {
+				msg = " " + msg;
+			}
+			if (playerNames.Contains (winners [i - 1])) {
+				msg += (playerNames [winners [i - 1]] as string);
+			} else if (winners [i - 1] == player_id) {
+				msg += player_name;
+			} else {
+				msg += "<no name>";
+			}
+			msg = (msg + "          ").Substring (0, 18);
+			GUI.Label(new Rect(xStart + (xIdx - 1) * xStep, yStart + (yIdx - 1) * yStep, xStep, yStep), msg, style);
+			yIdx++;
+			if (yIdx > yMax) {
+				yIdx = 1;
+				xIdx++;
+			}
+		}
+			
+		if (GUI.Button(new Rect(25,  windowRectWinners.height - 55, 80, 30), "Close")) {
+			Debug.Log ("showWinners set to false");
+			showWinners = false;
+		}
+	}
+
         
     void MakeWindowHost(int id) {
         Functions.DrawBackground(new Rect(0, 0, widthConfig, heightConfig), bgTexture);
@@ -740,6 +864,9 @@ public class MultiConvergeGame : MonoBehaviour
         int hdr4P = hdr4.Length * pixelPerChar;
         string hdr5 = "The Database will be updated with your new Balance";
         int hdr5P = hdr5.Length * pixelPerChar;
+		string hdr6 = "Player Final Results are listed below in Ranked Order";
+		int hdr6P = hdr6.Length * pixelPerChar;
+
         string retButton = "Return to Lobby";
         int retButtonP = 110;
 
@@ -749,10 +876,60 @@ public class MultiConvergeGame : MonoBehaviour
         style.fontSize = 16;
 
         GUI.Label(new Rect((windowRectConfig.width - hdr1P) / 2, windowRectConfig.height * 0.10f, hdr1P, 30), hdr1, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.25f, hdr2P, 30), hdr2, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.40f, hdr3P, 30), hdr3, style);
-        GUI.Label(new Rect((windowRectConfig.width - hdr4P) / 2, windowRectConfig.height * 0.55f, hdr4P, 30), hdr4, style);
-		GUI.Label(new Rect((windowRectConfig.width - hdr5P) / 2, windowRectConfig.height * 0.70f, hdr5P, 30), hdr5, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr2P) / 2, windowRectConfig.height * 0.15f, hdr2P, 30), hdr2, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr3P) / 2, windowRectConfig.height * 0.20f, hdr3P, 30), hdr3, style);
+        GUI.Label(new Rect((windowRectConfig.width - hdr4P) / 2, windowRectConfig.height * 0.25f, hdr4P, 30), hdr4, style);
+		GUI.Label(new Rect((windowRectConfig.width - hdr5P) / 2, windowRectConfig.height * 0.30f, hdr5P, 30), hdr5, style);
+		GUI.Label(new Rect((windowRectConfig.width - hdr6P) / 2, windowRectConfig.height * 0.40f, hdr6P, 30), hdr6, style);
+
+		GUI.Label(new Rect(windowRectConfig.width * 0.10f, windowRectConfig.height * 0.45f, 100, 30), "Player", style);
+		GUI.Label(new Rect(windowRectConfig.width * 0.25f, windowRectConfig.height * 0.45f, 150, 30), "Rounds Won", style);
+		GUI.Label(new Rect(windowRectConfig.width * 0.45f, windowRectConfig.height * 0.45f, 120, 30), "Winnings", style);
+		GUI.Label(new Rect(windowRectConfig.width * 0.65f, windowRectConfig.height * 0.45f, 150, 30), "Final Score", style);
+
+		int[] tPlayerId = new int[5];
+		int[] tPlayerWinnings = new int[5];
+		int[] tPlayerLastImprove = new int[5];
+		for (int i = 0; i < 5; i++) {
+			tPlayerId [i] = playerId [i];
+			tPlayerWinnings [i] = playerWinnings [i];
+			tPlayerLastImprove [i] = playerLastImprove [i];
+		}
+
+		int idx = 0;
+		int bestWinnings;
+		int besti = 0;
+		Boolean done = false; 
+		String displayName;
+		while (!done) {
+			bestWinnings = -1000000;
+			done = true;
+			for (int i = 0; i < 5; i++) {
+				if ((tPlayerId [i] != -1) && (tPlayerWinnings [i] > bestWinnings)) {
+					bestWinnings = tPlayerWinnings [i];
+					besti = i;
+					done = false;
+				}
+			}
+			if (!done) {
+				if (playerId [besti] == player_id) {
+					displayName = player_name;
+				} else {
+					displayName = (string) playerNames [playerId [besti]];
+				}
+				GUI.Label(new Rect(windowRectConfig.width * 0.10f, windowRectConfig.height * (0.49f + idx * 0.04f), 100, 30), 
+					" " + displayName, style);
+				GUI.Label(new Rect(windowRectConfig.width * 0.27f, windowRectConfig.height * (0.49f + idx * 0.04f), 100, 30), 
+					" " + roundsWon[playerId[besti]], style);				
+				GUI.Label(new Rect(windowRectConfig.width * 0.47f, windowRectConfig.height * (0.49f + idx * 0.04f), 120, 30), 
+					" " + playerWinnings[besti], style);
+				GUI.Label(new Rect(windowRectConfig.width * 0.67f, windowRectConfig.height * (0.49f + idx * 0.04f), 150, 30), 
+					" " + (-playerLastImprove[besti]), style);
+				idx++;
+				tPlayerId [besti] = -1;
+			}
+		}
+			
 
         if (GUI.Button (new Rect ((windowRectConfig.width - retButtonP) / 2, windowRectConfig.height * 0.85f, retButtonP, 30), retButton)) {
             Destroy (this);
@@ -1002,7 +1179,7 @@ public class MultiConvergeGame : MonoBehaviour
 
 	void DrawResetButtons (int screenOffset, GUIStyle style)
 	{
-		GUI.Label (new Rect (bufferBorder + 260 + screenOffset, height - 30 - bufferBorder, 110, 30), "Reset to:", style);
+		GUI.Label (new Rect (bufferBorder + 270 + screenOffset, height - 30 - bufferBorder, 110, 30), "Reset to:", style);
 		Rect initial = new Rect (bufferBorder * 2 + 330 + screenOffset, height - 30 - bufferBorder, 50, 30);
 		if (GUI.Button (initial, "Initial") && !betAccepted) {
 			ResetCurrAttempt (Constants.ID_NOT_SET);
@@ -1248,6 +1425,7 @@ public class MultiConvergeGame : MonoBehaviour
 
 			// DH change
 			// Send response server with client improvement
+			// See BarGarph.cs to determine how that value is calculated
 			int improveValue = barGraph.Improvement(); 
 			Debug.Log ("MC send improvement: " + improveValue);
 
@@ -1285,14 +1463,26 @@ public class MultiConvergeGame : MonoBehaviour
 		Debug.Log ("In responseconvergetbetupdate");
 		won = args.winStatus;
 		wonAmount = args.wonAmount; 
+		playerWinner = args.playerWinner;
+		if (playerNames.Contains (playerWinner)) {
+			playerWinnerName = playerNames [playerWinner] as string;
+		} else {
+			playerWinnerName = "";
+		}
+		winners.Add (playerWinner);   // Add winner to the list as winner of this round
+		// Increment count of rounds won 
+		roundsWon[playerWinner] = ((int) roundsWon[playerWinner]) + 1;
+		Debug.Log ("Round winner id: " + playerWinner);
 		Debug.Log ("won/wonamount: " + won + " " + wonAmount);
 		if (betAccepted) {
 			Debug.Log ("Bet accepted");
 			if (won == 1) {
 				Debug.Log ("you won");
+				audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/wonRound"));
 				balance = balance + wonAmount - bet;
 			} else {
 				Debug.Log ("you lost");
+				audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/lostRound"));
 				balance -= bet;
 			}
 		} else {  // this person did not play
@@ -1318,8 +1508,12 @@ public class MultiConvergeGame : MonoBehaviour
 			GameState.player.credits = balance;    // Update player object as well
 			// Game over - switch to game over display 
             isActive = false;
-            isDone = true;
-            Debug.Log ("Game over");
+			Debug.Log ("ProcessConvergeGetFinalScores submitted");
+			Game.networkManager.Send (
+				ConvergeGetFinalScoresProtocol.Prepare (
+				),
+				ProcessConvergeGetFinalScores
+			);
         }
 		Debug.Log ("new balance: " + balance);
 	}
@@ -1330,6 +1524,25 @@ public class MultiConvergeGame : MonoBehaviour
 		Debug.Log ("==== ResponseEndGame");
 		Debug.Log ("Credit difference: " + args.creditDiff);
 	}
+
+
+	public void ProcessConvergeGetFinalScores (NetworkResponse response)
+	{
+		ResponseConvergeGetFinalScores args = response as ResponseConvergeGetFinalScores;
+		Debug.Log ("Inside ProcessConvergeGetFinalScores");
+		playerId = args.playerId;
+		playerWinnings = args.playerWinnings;
+		playerLastImprove = args.playerLastImprove;
+		isDone = true;
+		Debug.Log ("ProcessConvergeGetFinalScores");
+		Debug.Log ("playerId/winnings/lastImprove");
+		for (int i = 0; i < 5; i++) {
+			Debug.Log (playerId [i] + " " + playerWinnings [i] + " " + playerLastImprove [i]);
+		}
+		audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/gameOver"));
+		Debug.Log ("Game over");
+	}
+		
 		
 	public void ProcessConvergePriorAttemptCount (NetworkResponse response)
 	{
@@ -1834,6 +2047,7 @@ public class MultiConvergeGame : MonoBehaviour
 
 	public void ProcessGetTime (NetworkResponse response)
 	{
+		int newBetCount = 0;
 		ResponseConvergeGetTime args = response as ResponseConvergeGetTime;
 		Debug.Log ("ResponseConvergeGetTime received. Bet time = " + args.betTime);
 		timeRemain = args.betTime;
@@ -1845,6 +2059,11 @@ public class MultiConvergeGame : MonoBehaviour
 		betStatusList.Add(args.player2ID, args.betStatus2);
 		betStatusList.Add(args.player3ID, args.betStatus3);
 		betStatusList.Add(args.player4ID, args.betStatus4);
+		newBetCount = args.betStatus1 + args.betStatus2 + args.betStatus3 + args.betStatus4;
+		if (newBetCount > betCount) {
+			audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/gong"));
+		}
+		betCount = newBetCount;
 
 		int id;
 		short val;
@@ -1893,11 +2112,17 @@ public class MultiConvergeGame : MonoBehaviour
 	{
 		ResponseConvergeGetNames args = response as ResponseConvergeGetNames;
 		Debug.Log ("ResponseConvergeGetNames received");
-		playerNames.Clear();
+		playerNames.Clear ();
+		roundsWon.Clear ();
+		roundsWon.Add (player_id, 0);
 		playerNames.Add (args.player1ID, args.player1Name);
+		roundsWon.Add (args.player1ID, 0);
 		playerNames.Add (args.player2ID, args.player2Name);
+		roundsWon.Add (args.player2ID, 0);
 		playerNames.Add (args.player3ID, args.player3Name);
+		roundsWon.Add (args.player3ID, 0);
 		playerNames.Add (args.player4ID, args.player4Name);
+		roundsWon.Add (args.player4ID, 0);
 
 		Debug.Log ("Other player id / name"); 
  

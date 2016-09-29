@@ -54,6 +54,7 @@ public class NetworkProtocolTable {
         Add(NetworkCode.MC_HOST_CONFIG, "ConvergeHostConfig");
         Add(NetworkCode.MC_NONHOST_CONFIG, "ConvergeNonHostConfig");
 		Add(NetworkCode.MC_SETUP, "MCSetup");
+		Add(NetworkCode.MC_GET_FINAL_SCORES, "ConvergeGetFinalScores");
 
 		Add(NetworkCode.TOPLIST, "TopList");
 		Add(NetworkCode.PAIR, "Pair");

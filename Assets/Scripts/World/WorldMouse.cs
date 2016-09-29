@@ -89,7 +89,7 @@ public class WorldMouse : MonoBehaviour
 
                 if (currentTile.player_id > 0)
                 {
-                    Debug.Log("Tile Owner Id: " + currentTile.player_id);
+                    // Debug.Log("Tile Owner Id: " + currentTile.player_id);
                     owner_name = GameObject.Find("Map").GetComponent<Map>().playerList[currentTile.player_id].name;
 
                     Color playerColor = GameObject.Find("Map").GetComponent<Map>().playerList[currentTile.player_id].color; ;

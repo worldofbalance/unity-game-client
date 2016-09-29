@@ -196,7 +196,7 @@ public class GraphUnit
 				continue;
 			}
 
-			Debug.Log ("label " + label);
+			// Debug.Log ("label " + label);
 			DrawSeries (seriesList [label]);
 		}
 		// Front Series Drawn Last

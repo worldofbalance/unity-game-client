@@ -648,10 +648,20 @@ public class BarGraph : MonoBehaviour
 	}
 
 	// DH change
+	// Higher score is better
+	// previous method. 
 	// Method returns the improvement from the most recent round
 	// improvement = latest score - Max(all previous scores)
+	// Presently, the smaller score is better 
 	public int Improvement() {
+		// Sept 2016 play session: It was decided to use the closest delta to the target as the score
+		// The player with smallest delta to the target score, that is, score[numScores-1] is smallest, wins the round
+		// The smallest negative number is the best
 		int numScores = scores.Count;
+		return 0 - scores [numScores - 1];
+
+		// The algorithm below returns a score based upon the improvement from the best previous score
+		// It was decided not to use that algorithm for now
 		if (numScores < 2) {
 			return 0;
 		}
@@ -662,9 +672,9 @@ public class BarGraph : MonoBehaviour
 			if (scores[i] < minValue)
 				minValue = scores[i];
 		}
-		return minValue - scores[numScores - 1];
 		Debug.Log ("BarGraph, minValue/count/latest/improve: " + minValue + " " + numScores + " " + scores [numScores - 1] + 
 			" " + (minValue - scores[numScores - 1]));
+		return minValue - scores[numScores - 1];
 	}
 
 

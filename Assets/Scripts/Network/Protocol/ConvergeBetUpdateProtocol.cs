@@ -27,10 +27,12 @@ public class ConvergeBetUpdateProtocol
 		using (BinaryReader br = new BinaryReader(dataStream, Encoding.UTF8)) {
 			short winStatus = br.ReadInt16 ();
 			int wonAmount = br.ReadInt32 ();
+			int playerWinner = br.ReadInt32 ();
 
 			// winStatus = 1 -> won round, 0 -> lost round, or didn't play
 			response.winStatus = winStatus;
 			response.wonAmount = wonAmount;
+			response.playerWinner = playerWinner;    // winner of the round
 		}
 		
 		return response;
@@ -41,6 +43,7 @@ public class ResponseConvergeBetUpdate : NetworkResponse {
 	
 	public short winStatus { get; set; }
 	public int wonAmount { get; set; }
+	public int playerWinner { get; set; }
 	
 	public ResponseConvergeBetUpdate() {
 		protocol_id = NetworkCode.MC_BET_UPDATE;

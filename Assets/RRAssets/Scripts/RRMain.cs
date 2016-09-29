@@ -16,6 +16,7 @@ namespace RR {
         /// of the script instance when the script instance is being loaded.
         /// </summary>
         void Awake() {
+			Debug.Log("Inside RRMain.cs");
             DontDestroyOnLoad(gameObject);
             
             gameObject.AddComponent<RRMessageQueue>();    
