@@ -50,13 +50,12 @@ public class MultiplayerGames : MonoBehaviour {
   private int window_id, window_idMC;
   private string message = "Single Player Game. Click start to play.";
   private Rect windowRect, windowRectMC, windowRectConfig;
+  private GameObject mainObject;
 
-    private GameObject mainObject;
-
-    private bool enableRRButton = true;
-    private bool enableCWButton = true;
-    private bool enableMCButton = true;
-    private bool enableSDButton = true;
+  private bool enableRRButton = true;
+  private bool enableCWButton = true;
+  private bool enableMCButton = true;
+  private bool enableSDButton = true;
 
   private bool quiting = false;
   private bool waiting = false;
@@ -585,7 +584,7 @@ public class MultiplayerGames : MonoBehaviour {
       this.enableRRButton = false;
       this.enableCWButton = false;
       this.enableMCButton = false;
-            this.enableSDButton = false;
+      this.enableSDButton = false;
       this.waiting = true;
     }
   }
@@ -675,14 +674,13 @@ public class MultiplayerGames : MonoBehaviour {
       }
     }
   }
-
-    public void SDProcessPlayInit(NetworkResponse response) {
-        SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;
-        SD.Constants.PLAYER_NUMBER = args.playerNumber;
-        Debug.Log ("The SD player number is " + args.playerNumber);
-        if (SD.Constants.PLAYER_NUMBER == 2) {
-            Game.SwitchScene("SDReadyScene");
-        }
-    }
+  public void SDProcessPlayInit(NetworkResponse response) {
+      SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;
+      SD.Constants.PLAYER_NUMBER = args.playerNumber;
+      Debug.Log ("The SD player number is " + args.playerNumber);
+      if (SD.Constants.PLAYER_NUMBER == 2) {
+          Game.SwitchScene("SDReadyScene");
+      }
+  }
     
 }
