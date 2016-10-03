@@ -50,13 +50,13 @@ public class MenuScript : MonoBehaviour {
     private void handleOnlinePlayers(Dictionary<int, Player> playerList)
     {
         //Display the onlinePlayer Response
-		int i =0;
+        int i =0;
         foreach (KeyValuePair<int, Player> entry in playerList)
         {
-			score = entry.Value.xp.ToString();
+            score = entry.Value.xp.ToString();
             name = entry.Value.name;
-			playerArray [i].text = name + "            " +score;
-			i++;
+            playerArray [i].text = name + "            " +score;
+            i++;
         }
 
     }
