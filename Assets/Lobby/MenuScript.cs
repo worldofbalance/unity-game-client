@@ -61,7 +61,7 @@ public class MenuScript : MonoBehaviour {
         statusOpen = true;
     }
 
-    public void OpenMiniGames(){
+    public void OpenMiniGames() {
         if (menuOpen) {
             CloseAllMenus ();
         }
@@ -69,18 +69,18 @@ public class MenuScript : MonoBehaviour {
         menuOpen = true;
     }
 
-    public void OpenConvergence(){
+    public void OpenConvergence() { 
         Debug.Log("You Pressed Convergence");
         gameObject.AddComponent <ConvergeGUI>();
         menuOpen=true;
     }
 
-    public void OpenCardsfWild(){
+    public void OpenCardsfWild() {
         Debug.Log("You Pressed CardsOfWild");
         menuOpen=true;
     }
 
-    public void OpenDontEatMe(){
+    public void OpenDontEatMe() {
         Debug.Log("You Pressed Dont Eat Me");
         gameObject.AddComponent <DontEatMeGUI>();
         menuOpen=true;
@@ -96,7 +96,7 @@ public class MenuScript : MonoBehaviour {
     }
 
 
-    public void OpenClashOfSpecies(){
+    public void OpenClashOfSpecies() {
         Debug.Log("You Pressed Clash of Species");
         gameObject.AddComponent <ClashOfSpeciesGUI>();
         menuOpen=true;
@@ -104,7 +104,7 @@ public class MenuScript : MonoBehaviour {
     }
     
 
-    public void CloseAllMenus(){
+    public void CloseAllMenus() {
         Debug.Log("Closing all menus");
         menuOpen = false;
         whosOnlineMenu.SetActive (false);
@@ -112,7 +112,7 @@ public class MenuScript : MonoBehaviour {
         statusOpen = false;
     }
 
-    public bool checkIfOpen(){
+    public bool checkIfOpen() {
         Debug.Log ("STATUS WINDOW OPEN: "+statusOpen);
         return statusOpen;
     }
