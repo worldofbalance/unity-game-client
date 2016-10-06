@@ -694,60 +694,6 @@ public class MultiConvergeGame : MonoBehaviour
 		}
 	}
 		
-
-    private void SubmitHostConfig() {
-        Debug.Log ("SubmitHostConfig called");
-
-        numRoundsS = numRoundsS.Trim();
-        timeWindowS = timeWindowS.Trim();
-        betAmountS = betAmountS.Trim();
-        ecoNumberS = ecoNumberS.Trim();
-
-        short tempConvert;
-        short neg1 = -1;
-        numRounds = Int16.TryParse (numRoundsS, out tempConvert) ? tempConvert : neg1;
-        timeWindow = Int16.TryParse (timeWindowS, out tempConvert) ? tempConvert : neg1;
-        betAmount = Int16.TryParse (betAmountS, out tempConvert) ? tempConvert : neg1;
-        ecoNumber = Int16.TryParse (ecoNumberS, out tempConvert) ? tempConvert : neg1;
-		allowSliders = (short) (((allowSlidersS.Length > 0) && (allowSlidersS.ToUpper().Substring(0, 1)) == "Y") ? 1 : 0);
-
-        if ((numRounds < 5) || (numRounds > 50)) {
-            GUI.FocusControl ("number_of_rounds");
-        } else if ((timeWindow < 30) || (timeWindow > 180)) {
-            GUI.FocusControl ("bet_time");
-        } else if ((betAmount < 20) || (betAmount > 200)) {
-            GUI.FocusControl ("bet_amount");
-        } else if ((ecoNumber < 0) || (ecoNumber >= ecoCount)) {
-            GUI.FocusControl ("ecosystem_number");
-        } else {
-            Game.networkManager.Send (
-                ConvergeHostConfigProtocol.Prepare (numRounds, timeWindow, betAmount, ecoNumber, allowSliders), 
-                ProcessConvergeHostConfig);
-            Debug.Log("Sent ConvergeHostConfig");
-            Debug.Log("numRounds, timeWindow, betAmount, ecoNumber, allowSlliders");
-            Debug.Log (numRounds + " " + timeWindow + " " + betAmount + " " + ecoNumber + " " + allowSliders);
-            ftr1 = "Entries Submitted. Please wait for game configuration";
-            ftr1P = ftr1.Length * pixelPerChar;
-
-            bet = betAmount;
-            ecosystem_idx = ecoNumber;  // implement after ecosystems read
-            ecosystem_id = GetEcosystemId (ecosystem_idx);
-            NoPriorAttempts();
-            InitializeBarGraph();
-        }
-    }
-
-
-    // DH change
-    public void ProcessConvergeHostConfig (NetworkResponse response)
-    {
-        ResponseConvergeHostConfig args = response as ResponseConvergeHostConfig;
-        Debug.Log ("In responseconvergehostconfg");
-        short status = args.status;
-        Debug.Log ("status: " + status);
-        isSetup = false;
-        isActive = true;
-    }
 		
 
     void MakeWindowDone(int id) {
@@ -832,30 +778,7 @@ public class MultiConvergeGame : MonoBehaviour
 			isDone = false;
         }
     }
-
-    public void ProcessConvergeNonHostConfig (NetworkResponse response)
-    {
-        ResponseConvergeNonHostConfig args = response as ResponseConvergeNonHostConfig;
-        sendNonHost = true; 
-        numRounds = args.numRounds;
-        Debug.Log ("In responseconvergenonhostconfg - received values. NumRounds = " + numRounds);
-        if (numRounds > 0) {
-            bet = args.betAmount;
-			allowSliders = args.allowSliders;
-            ecosystem_idx = args.ecoNumber;   // implement when new ecosystems ready
-            ecosystem_id = GetEcosystemId (ecosystem_idx);
-            NoPriorAttempts();
-            InitializeBarGraph();
-            Debug.Log("bet/ecosystem_idx/allowSliders: " + bet + " " + ecosystem_idx + " " + allowSliders);
-            Debug.Log("numRounds / time window: " + numRounds + " " + args.timeWindow); 
-            ftr1 = "Game Configuration information received";
-            ftr1P = ftr1.Length * pixelPerChar;
-            isSetup = false;
-            isActive = true;
-        }
-    }
-
-
+		
 	private void DrawParameterFields (GUIStyle style)
 	{
 		style.alignment = TextAnchor.UpperRight;
