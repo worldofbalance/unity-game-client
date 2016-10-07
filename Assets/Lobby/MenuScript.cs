@@ -21,7 +21,7 @@ public class MenuScript : MonoBehaviour {
         //shopPopUp.UpdateTextFields ();
     }
     void update(){
-        Debug.Log ("IN MENU SCRIPT");
+        // Debug.Log ("IN MENU SCRIPT");
     }
 
     public void OpenWhosOnline(){
@@ -92,7 +92,7 @@ public class MenuScript : MonoBehaviour {
         menuOpen = true;
         Debug.Log("You Pressed Open Multiplayer Games");
         gameObject.AddComponent <MultiplayerGames>();
-        //menuOpen=true;
+        this.enabled = false;
     }
 
 
@@ -105,10 +105,9 @@ public class MenuScript : MonoBehaviour {
     
 
     public void CloseAllMenus() {
-        Debug.Log("Closing all menus");
-        menuOpen = false;
         whosOnlineMenu.SetActive (false);
         statusContainer.SetActive(false);
+        menuOpen = false;
         statusOpen = false;
     }
 
