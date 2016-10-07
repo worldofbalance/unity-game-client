@@ -3,12 +3,21 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
+public class MultiplayerGame {
+  public String name;
+  public MultiplayerGame(String name) {
+    this.name = name;
+  }
+}
 public class MultiplayerGames : MonoBehaviour {
+  private System.Collections.Generic.Dictionary<String, MultiplayerGame> games = new System.Collections.Generic.Dictionary<String, MultiplayerGame>();
+  private MultiplayerGame activeGame;
 
   // Window Properties
-  private float width = 1024;
-  private float height = 768;
+  private float width = 800;
+  private float height = 600;
   private float heightOffset = 50;    // DH
 
   // Multiplayer Convergence Window Properties    DH
@@ -63,24 +72,40 @@ public class MultiplayerGames : MonoBehaviour {
   private int room_id = 0;
   private Room room;
 
-  void Awake() {
-    mainObject = GameObject.Find("MainObject");
-    window_id = Constants.GetUniqueID();
-    window_idMC = Constants.GetUniqueID();
+    public Dictionary<string, MultiplayerGame> Games
+    {
+        get
+        {
+            return games;
+        }
 
-    Game.networkManager.Listen (NetworkCode.PAIR, OnPairResult);
-    Game.networkManager.Listen (NetworkCode.QUIT_ROOM, OnQuitRoomResult);
+        set
+        {
+            games = value;
+        }
+    }
+    private void setActiveGame(MultiplayerGame game) {
+      activeGame = game;
+    }
 
-    // DH other values 
-    widthConfig = Screen.width * 0.80f;
-    heightConfig = Screen.height * 0.80f;
-    leftConfig = (Screen.width - widthConfig) / 2;
-    topConfig = (Screen.height - heightConfig) / 2;
-    bgTexture = Resources.Load<Texture2D> (Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
-    font = Resources.Load<Font> ("Fonts/" + "Chalkboard");
-    windowRectConfig = new Rect (leftConfig, topConfig, widthConfig, heightConfig);
+    void Awake() {
+      mainObject = GameObject.Find("MainObject");
+      window_id = Constants.GetUniqueID();
+      window_idMC = Constants.GetUniqueID();
 
-    Application.runInBackground = true;     // Is this ok?
+      Game.networkManager.Listen (NetworkCode.PAIR, OnPairResult);
+      Game.networkManager.Listen (NetworkCode.QUIT_ROOM, OnQuitRoomResult);
+
+      // DH other values 
+      widthConfig = Screen.width * 0.80f;
+      heightConfig = Screen.height * 0.80f;
+      leftConfig = (Screen.width - widthConfig) / 2;
+      topConfig = (Screen.height - heightConfig) / 2;
+      bgTexture = Resources.Load<Texture2D> (Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
+      font = Resources.Load<Font> ("Fonts/" + "Chalkboard");
+      windowRectConfig = new Rect (leftConfig, topConfig, widthConfig, heightConfig);
+
+      Application.runInBackground = false;     // Is this ok?
   }
 
   void OnDestroy () {
@@ -99,6 +124,11 @@ public class MultiplayerGames : MonoBehaviour {
     windowRectMC = new Rect ((Screen.width - widthMC) / 2, heightMCSpaceTop, widthMC, heightMC);
 
     StartCoroutine(RequestGetRooms(1f));
+    Games.Add("Converge", new MultiplayerGame("Converge"));
+    Games.Add("Running Rhino", new MultiplayerGame("Running Rhino"));
+    Games.Add("Sea Divided", new MultiplayerGame("Sea Divided"));
+    Games.Add("Cards of Wild", new MultiplayerGame("Cards of Wild"));
+    setActiveGame(games["Converge"]);
   }
 
   void OnGUI() {
@@ -117,19 +147,46 @@ public class MultiplayerGames : MonoBehaviour {
     Color newColor = new Color(1,1,1,1.0f);
     GUI.color = newColor;
     windowRect = GUILayout.Window(window_id, windowRect, MakeWindow, "Game Rooms");
-    windowRectMC = GUILayout.Window(window_idMC, windowRectMC, MakeWindowMC, "Multiplayer Convergence Game Rooms");
+    // windowRectMC = GUILayout.Window(window_idMC, windowRectMC, MakeWindowMC, "Multiplayer Convergence Game Rooms");
   }
-  
+  void drawTabHeaders() {
+    // create the colors for the buttons.
+    const float DarkGray = 0.4f;
+    const float LightGray = 0.9f;
+    Color highlightCol = new Color(LightGray, LightGray, LightGray);
+    Color bgCol = new Color(DarkGray, DarkGray, DarkGray);
+
+    // create a style for the buttons
+    GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+    buttonStyle.padding.bottom = 8;
+    buttonStyle.padding.top = 8;
+    buttonStyle.margin.left = 0;
+    buttonStyle.margin.right = 0;
+    buttonStyle.margin.top = 0;
+    buttonStyle.margin.bottom = 0;
+    GUI.backgroundColor = bgCol;
+    // actually draw the headers
+    GUILayout.BeginHorizontal();
+    foreach(System.Collections.Generic.KeyValuePair<String, MultiplayerGame> entry in this.Games) {
+      GUI.backgroundColor = activeGame == entry.Value ? highlightCol : bgCol;
+      if (GUILayout.Button(entry.Key, buttonStyle)) {
+        setActiveGame(entry.Value);
+      }
+    }
+    GUILayout.EndHorizontal();
+  }
   void MakeWindow(int id) {
     Color newColor = new Color(1,1,1,1.0f);
     GUI.color = newColor;
 
+    // draw the headers of the tabs.
+    drawTabHeaders();
     GUILayout.Space(10);
+
 
     GUIStyle style = new GUIStyle();
     style.alignment = TextAnchor.MiddleCenter;
     style.normal.textColor = Color.white;
-
     GUILayout.BeginHorizontal();
     GUILayout.Label(new GUIContent("#"));
     GUILayout.Label(new GUIContent("         Game"));
@@ -138,55 +195,59 @@ public class MultiplayerGames : MonoBehaviour {
     GUILayout.Label(new GUIContent(""), GUILayout.Width(100));
     GUILayout.EndHorizontal();
 
-    foreach(var item in RoomManager.getInstance().getRooms()) {
-      if (item.Value.game_id != Constants.MINIGAME_MULTI_CONVERGENCE) {
-        GUILayout.BeginHorizontal();
-        GUILayout.Label(new GUIContent("" + item.Key));
-        GUILayout.Label(new GUIContent(Room.getGameName(item.Value.game_id)));
-        GUILayout.Label(new GUIContent(item.Value.status()));
-        GUILayout.Label(new GUIContent(item.Value.host));
-
-        if (item.Value.containsPlayer(GameState.account.account_id)) {
-          if(GUILayout.Button(new GUIContent("Quit"), GUILayout.Width(100))) {
-            Game.networkManager.Send (QuitRoomProtocol.Prepare ());
-          }
-        } else {
-          GUI.enabled = !this.waiting;
-          if(GUILayout.Button(new GUIContent("Join"), GUILayout.Width(100))) {
-            Game.networkManager.Send (PairProtocol.Prepare (item.Value.game_id, item.Value.id));
-          }
-          GUI.enabled = true;
+    foreach (var item in RoomManager.getInstance().getRooms()) {
+      GUILayout.BeginHorizontal();
+      GUILayout.Label(new GUIContent("" + item.Key));
+      GUILayout.Label(new GUIContent(Room.getGameName(item.Value.game_id)));
+      GUILayout.Label(new GUIContent(item.Value.status()));
+      GUILayout.Label(new GUIContent(item.Value.host));
+      if (item.Value.containsPlayer(GameState.account.account_id)) {
+        if(GUILayout.Button(new GUIContent("Quit"), GUILayout.Width(100))) {
+          Game.networkManager.Send (QuitRoomProtocol.Prepare ());
         }
-        GUILayout.EndHorizontal();
+      } else {
+        GUI.enabled = !this.waiting;
+        if(GUILayout.Button(new GUIContent("Join"), GUILayout.Width(100))) {
+          Game.networkManager.Send (PairProtocol.Prepare (item.Value.game_id, item.Value.id));
+        }
+        GUI.enabled = true;
+      }
+      GUILayout.EndHorizontal();
+    }
+    GUILayout.Space(30);
+    drawFooter();
+    GUI.BringWindowToFront(window_id);
+    GUI.DragWindow();
+  }
+
+  private void drawFooter() {
+    GUI.enabled = enableRRButton;
+    Debug.Log(activeGame.name);
+    if (activeGame.name == "Running Rhino") {
+      if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Host Running Rhino")) {
+        Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_RUNNING_RHINO, -1));
       }
     }
 
-    GUILayout.Space(30);
-
-    GUI.enabled = enableRRButton;
-    if (GUI.Button(new Rect(10, windowRect.height - 80, 140, 30), "Play Running Rhino")) {
-      Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_RUNNING_RHINO, -1));
-    }
-
     GUI.enabled = enableCWButton;
-    if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Play Cards of Wild")) {
-      Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_CARDS_OF_WILD, -1));
-    }
-            
-        GUI.enabled = enableSDButton;
-        if (GUI.Button(new Rect(165, windowRect.height - 40, 160, 30), "Play Sea Divided")) {
-            Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_SEA_DIVIDED, -1));
-        }
-
-        GUI.enabled = true;
-        if (GUI.Button(new Rect(windowRect.width - 110, windowRect.height - 40, 100, 30), "Quit")) {
-            Quit();
-        }
-
-        GUI.BringWindowToFront(window_id);
-        GUI.DragWindow();
+    if (activeGame.name == "Cards of Wild") {
+      if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Host Cards of Wild")) {
+        Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_CARDS_OF_WILD, -1));
+      }      
     }
     
+    GUI.enabled = enableSDButton;
+    if (activeGame.name == "Sea Divided") {
+      if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Host Sea Divided")) {
+        Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_SEA_DIVIDED, -1));
+      }
+    }
+
+    GUI.enabled = true;
+    if (GUI.Button(new Rect(windowRect.width - 110, windowRect.height - 40, 100, 30), "Quit")) {
+        Quit();
+    }
+  }
 
 
   void MakeWindowMC(int id) {
