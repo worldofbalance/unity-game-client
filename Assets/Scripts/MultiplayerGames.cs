@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 public class MultiplayerGame {
   public String name;
+  public int numRooms = 0;
   public MultiplayerGame(String name) {
     this.name = name;
   }
@@ -165,15 +166,44 @@ public class MultiplayerGames : MonoBehaviour {
     buttonStyle.margin.top = 0;
     buttonStyle.margin.bottom = 0;
     GUI.backgroundColor = bgCol;
+
+    updateGameCounts();
+
     // actually draw the headers
     GUILayout.BeginHorizontal();
-    foreach(System.Collections.Generic.KeyValuePair<String, MultiplayerGame> entry in this.Games) {
+    foreach (System.Collections.Generic.KeyValuePair<String, MultiplayerGame> entry in this.Games) {
       GUI.backgroundColor = activeGame == entry.Value ? highlightCol : bgCol;
-      if (GUILayout.Button(entry.Key, buttonStyle)) {
+      String buttonText = entry.Key;
+      if (games[entry.Key].numRooms != 0) {
+        buttonText = buttonText + " (" + games[entry.Key].numRooms.ToString() + ")";
+      }
+      if (GUILayout.Button(buttonText, buttonStyle)) {
         setActiveGame(entry.Value);
       }
     }
     GUILayout.EndHorizontal();
+  }
+
+  // updates the number of rooms for every MultiplayerGame so that we can display it to the user.
+  private void updateGameCounts() {
+    System.Collections.Generic.Dictionary<String, int> counts = new System.Collections.Generic.Dictionary<String, int>();
+    foreach (System.Collections.Generic.KeyValuePair<String, MultiplayerGame> entry in this.Games) {
+      entry.Value.numRooms = 0;
+    }
+    // loop over every game
+    foreach (var item in RoomManager.getInstance().getRooms()) {
+      // increase the count of that specific game
+      String key = Room.getGameName(item.Value.game_id);
+      if (counts.ContainsKey(key)) {
+        counts[key]++;
+      } else {
+        counts[key] = 1;
+      }
+    }
+    foreach (var key in counts.Keys) {
+      Debug.Log("updating roomcount for " + key + " to " + counts[key]);
+      this.games[key].numRooms = counts[key];
+    }
   }
   void MakeWindow(int id) {
     Color newColor = new Color(1,1,1,1.0f);
@@ -229,7 +259,6 @@ public class MultiplayerGames : MonoBehaviour {
 
   private void drawFooter() {
     GUI.enabled = enableRRButton;
-    Debug.Log(activeGame.name);
     if (activeGame.name == "Running Rhino") {
       if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Host Running Rhino")) {
         Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_RUNNING_RHINO, -1));
