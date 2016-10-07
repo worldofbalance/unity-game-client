@@ -183,7 +183,7 @@ public class MultiplayerGames : MonoBehaviour {
     drawTabHeaders();
     GUILayout.Space(10);
 
-
+    // draw the headers themselves
     GUIStyle style = new GUIStyle();
     style.alignment = TextAnchor.MiddleCenter;
     style.normal.textColor = Color.white;
@@ -194,30 +194,37 @@ public class MultiplayerGames : MonoBehaviour {
     GUILayout.Label(new GUIContent("    Host"));
     GUILayout.Label(new GUIContent(""), GUILayout.Width(100));
     GUILayout.EndHorizontal();
-
-    foreach (var item in RoomManager.getInstance().getRooms()) {
-      GUILayout.BeginHorizontal();
-      GUILayout.Label(new GUIContent("" + item.Key));
-      GUILayout.Label(new GUIContent(Room.getGameName(item.Value.game_id)));
-      GUILayout.Label(new GUIContent(item.Value.status()));
-      GUILayout.Label(new GUIContent(item.Value.host));
-      if (item.Value.containsPlayer(GameState.account.account_id)) {
-        if(GUILayout.Button(new GUIContent("Quit"), GUILayout.Width(100))) {
-          Game.networkManager.Send (QuitRoomProtocol.Prepare ());
-        }
-      } else {
-        GUI.enabled = !this.waiting;
-        if(GUILayout.Button(new GUIContent("Join"), GUILayout.Width(100))) {
-          Game.networkManager.Send (PairProtocol.Prepare (item.Value.game_id, item.Value.id));
-        }
-        GUI.enabled = true;
-      }
-      GUILayout.EndHorizontal();
-    }
+  
+    drawGameRows();
     GUILayout.Space(30);
     drawFooter();
     GUI.BringWindowToFront(window_id);
     GUI.DragWindow();
+  }
+
+  private void drawGameRows() {
+    foreach (var item in RoomManager.getInstance().getRooms()) {
+      // only draw the games for the currently selected tab.
+      if (activeGame.name == Room.getGameName(item.Value.game_id)) {
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(new GUIContent("" + item.Key));
+        GUILayout.Label(new GUIContent(Room.getGameName(item.Value.game_id)));
+        GUILayout.Label(new GUIContent(item.Value.status()));
+        GUILayout.Label(new GUIContent(item.Value.host));
+        if (item.Value.containsPlayer(GameState.account.account_id)) {
+          if(GUILayout.Button(new GUIContent("Quit"), GUILayout.Width(100))) {
+            Game.networkManager.Send (QuitRoomProtocol.Prepare ());
+          }
+        } else {
+          GUI.enabled = !this.waiting;
+          if(GUILayout.Button(new GUIContent("Join"), GUILayout.Width(100))) {
+            Game.networkManager.Send (PairProtocol.Prepare (item.Value.game_id, item.Value.id));
+          }
+          GUI.enabled = true;
+        }
+        GUILayout.EndHorizontal();
+      }
+    }
   }
 
   private void drawFooter() {
