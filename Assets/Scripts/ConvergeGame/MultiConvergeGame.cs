@@ -50,7 +50,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private bool isActive = false;   // Not active until host specifies
     private bool isInitial = true;   // helps with GUI focus
 	private bool isSetup = false;   // parameters entered in lobby 
-    private bool isDone = false;   // used to display end result screen
+    private bool showScores = false;   // used to display end result screen
 	private bool alarm10Sec = true;
 	private bool alarm5Sec = true;
 	private bool haveNames = false; 
@@ -101,10 +101,11 @@ public class MultiConvergeGame : MonoBehaviour
 	public static int matchID;     // This is the room_id. Set by MultiplayerGames
 	private bool host;    // Is this player the host?
 	private int timeRemain = 0;   // How many seconds left in round. Could be negative
+	private int timeRemainMax = 0;  
 	private int timePrevious = 0;
 	private int countPrevious = 0;
     private int timeDisplayed = 0;   // Value displayed for time remaining
-    private int timeCheck = -5;   // timeRemain value to check for no response
+    private int timeCheck = -4;   // timeRemain value to check for no response
     private int checkCount = 0;   // count of number of CheckPlayers msgs sent
     private int playerDrop = 0;   // Count of frames to display player dropped msg 
 	private string remainLabel;
@@ -162,11 +163,13 @@ public class MultiConvergeGame : MonoBehaviour
 	private int playerWinner;
 	private string playerWinnerName;
 	private List<int> winners;         // lists by round the player id of the winner
+	private List<int> activePlayers;
 	private IDictionary roundsWon;     // Dictionary by player of number of rounds won
 	private int[] playerId; 
 	private int[] playerWinnings;
 	private int[] playerLastImprove;
 	private int improveValue = 0;      // This is the players score. Higher is better. Check BarGraph to determine formula
+	private string buttonText;
 
 	void Awake ()
 	{
@@ -215,6 +218,7 @@ public class MultiConvergeGame : MonoBehaviour
 		formattedScores = new List<int>();
 		otherScores = new List<int>();
 		winners = new List<int> ();
+		activePlayers = new List<int> ();
         balanceY = topGraph + buttonStep*4 + 0;     // balance msg Y coordinate
 		balanceX = width - buttonWidth - bufferBorder;      // balance, bet msgs, oppo buttons, species slider X coordinate
 		sliderY = balanceY + 65;                    // slider Y coordinate 
@@ -317,12 +321,6 @@ public class MultiConvergeGame : MonoBehaviour
 		// Client Version Label
 		GUI.Label (new Rect (Screen.width - 75, Screen.height - 30, 65, 20), "v" + Constants.CLIENT_VERSION + " Beta");
 
-		if (!haveNames) {
-			haveNames = true;   // Some problems getting names too early 
-			GetNames ();   // All players setup at the beginning. Only need to call once at beginning
-		}
-
-
 		if ((!simRunning) && isActive && (!gameOver)) {
 			moment = DateTime.Now;
 			timeNowNew = moment.Millisecond;
@@ -332,6 +330,15 @@ public class MultiConvergeGame : MonoBehaviour
 			if ((delta < 0) || (delta > 400)) {
 				timeNow = timeNowNew;
 				GetTime();  // Update bet time 
+
+				if (timeRemain > timeRemainMax) {
+					timeRemainMax = timeRemain;
+				}
+				if ((!haveNames) && (timeRemainMax > timeRemain + 4)) {
+					haveNames = true;   // Wait about 4 seconds to get the player names - to make sure everyone is there 
+					GetNames ();   // All players setup at the beginning. None are added later.
+				}
+
 
 				if (timeRemain > timePrevious) {
 					timePrevious = timeRemain;
@@ -343,26 +350,24 @@ public class MultiConvergeGame : MonoBehaviour
 					audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/startRound"));
 				}
 
-				if (timeRemain > 15) {
+				if ((timeRemain > 15) && !betAccepted) {
 					alarm10Sec = false;
 					alarm5Sec = false;
 				}
 
-				if ((timeRemain <= 10) && !alarm10Sec) {
+				if ((timeRemain <= 10) && !alarm10Sec && !betAccepted) {
 					alarm10Sec = true;
 					audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/alarm_10sec"));
 				}
 
-				if ((timeRemain <= 5) && !alarm5Sec) {
+				if ((timeRemain <= 5) && !alarm5Sec && !betAccepted) {
 					alarm5Sec = true;
 					audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/alarm_5sec"));
 				}
-				// On the multiples of 5 seconds, get the names
-				/* Only call once at the beginning. 
+				// On the multiples of 4 seconds, get the active players, eliminating those that dropped
                 if ((timeRemain % 4) == 0) {
-					GetNames();
+					GetActiveNames();
 				}
-				*/
 			}
 		}
 
@@ -413,10 +418,12 @@ public class MultiConvergeGame : MonoBehaviour
 
 		if (showWinners) {
 			GUI.Window (Constants.CONVERGE_SHOW_WINNERS, windowRectWinners, makeWindowWinners, "Round Winners", GUIStyle.none);
+			GUI.BringWindowToFront(Constants.CONVERGE_SHOW_WINNERS);
 		}
 
-		if (isDone) {    // Final score screen screen
+		if (showScores) {    // Final score screen screen
 			windowRectConfig = GUI.Window (host_config_id, windowRectConfig, MakeWindowDone, "Game Over", GUIStyle.none);
+			GUI.BringWindowToFront(host_config_id);
 		}
 
 	}
@@ -431,7 +438,23 @@ public class MultiConvergeGame : MonoBehaviour
 		style.fontSize = 16;
 
 		GUI.Label (new Rect ((windowRect.width - 200) / 2, 0, 200, 30), "Multiplayer Convergence", style);
-		if (GUI.Button (new Rect (windowRect.width - 100 - bufferBorder, 0, 100, 30), "Return to Lobby")) {
+		if (gameOver)
+			buttonText = "Return to Lobby";
+		else
+			buttonText = "Surrender";
+		if (GUI.Button (new Rect (windowRect.width - 100 - bufferBorder, 0, 100, 30), buttonText)) {
+			if (!gameOver) {
+				// Update database with new balance
+				Game.networkManager.Send (
+					EndGameProtocol.Prepare (
+						(short) 5,
+						balance
+					),
+					ProcessEndGame
+				);
+				GameState.player.credits = balance;    // Update player object as well
+				audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/gameOver"));
+			}
 			Destroy (this);
 			Destroy (foodWeb);
 			GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
@@ -528,6 +551,8 @@ public class MultiConvergeGame : MonoBehaviour
 			if (GUI.Button (new Rect (bufferBorder, height - 30 - bufferBorder, 80, 30), buttonTitle) &&
 				!betAccepted && !windowClosed) {
 				audio.Stop ();
+				alarm10Sec = true;
+				alarm5Sec = true;
 				audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/gong"));
 				//make sure new config is distinct from prior attempts and initial value
 				currAttempt.UpdateConfig ();  //update config based on user data entry changes
@@ -554,7 +579,7 @@ public class MultiConvergeGame : MonoBehaviour
 		if (gameOver) {
 			buttonTitle = "Scores";
 			if (GUI.Button (new Rect (bufferBorder, height - 30 - bufferBorder, 80, 30), buttonTitle)) {
-				isDone = true;
+				showScores = !showScores;
 
 			}
 
@@ -566,14 +591,13 @@ public class MultiConvergeGame : MonoBehaviour
 
 		if (GUI.Button (new Rect (bufferBorder + 180, height - 30 - bufferBorder, 80, 30), "Winners")) {
 			Debug.Log ("showWinners set to true");
-			showWinners = true;
+			showWinners = !showWinners;
 		}
 			
 		// Display buttons with opponent bet status 
 		Color savedColor2 = GUI.color;
 		float topLeft = topGraph;
 
-		string buttonText;
 		// style.fontSize = 12;
 		// Debug.Log ("Other player button routine");
 		GUIStyle customButton = new GUIStyle("button");
@@ -581,6 +605,8 @@ public class MultiConvergeGame : MonoBehaviour
 		foreach (DictionaryEntry entry in playerNames) {
 			// do something with entry.Value or entry.Key
 			id_otherPlayer = (int) entry.Key;
+			if (!activePlayers.Contains (id_otherPlayer))
+				continue;
 			name_otherPlayer = (string)entry.Value + " (won " + roundsWon [id_otherPlayer] + ") ";
 			if ((id_otherPlayer > 0) && (betStatusList.Contains (id_otherPlayer))) {
 				GUI.color = Color.red;
@@ -677,7 +703,7 @@ public class MultiConvergeGame : MonoBehaviour
 			} else if (winners [i - 1] == player_id) {
 				msg += player_name;
 			} else {
-				msg += "<no name>";
+				msg += "tie/none";
 			}
 			msg = (msg + "          ").Substring (0, 18);
 			GUI.Label(new Rect(xStart + (xIdx - 1) * xStep, yStart + (yIdx - 1) * yStep, xStep, yStep), msg, style);
@@ -775,7 +801,7 @@ public class MultiConvergeGame : MonoBehaviour
 		}
 			
         if (GUI.Button (new Rect ((windowRectConfig.width - retButtonP) / 2, windowRectConfig.height * 0.85f, retButtonP, 30), retButton)) {
-			isDone = false;
+			showScores = false;
         }
     }
 		
@@ -1284,8 +1310,8 @@ public class MultiConvergeGame : MonoBehaviour
 			playerWinnerName = "";
 		}
 		Debug.Log ("Winning player id: " + playerWinner);
-		if (playerWinner != 0) {   // If there is actually a winner (At least one played)
-			winners.Add (playerWinner);   // Add winner to the list as winner of this round
+		winners.Add (playerWinner);   // Add winner to the list as winner of this round
+		if (playerWinner != 0) {   // If there is actually a winner (At least one played)			
 			// Increment count of rounds won 
 			roundsWon[playerWinner] = ((int) roundsWon[playerWinner]) + 1;
 		}
@@ -1352,7 +1378,7 @@ public class MultiConvergeGame : MonoBehaviour
 		playerId = args.playerId;
 		playerWinnings = args.playerWinnings;
 		playerLastImprove = args.playerLastImprove;
-		isDone = true;
+		showScores = true;
 		showPopup = false;
 		showPopup2 = false; 
 		Debug.Log ("ProcessConvergeGetFinalScores");
@@ -1933,8 +1959,6 @@ public class MultiConvergeGame : MonoBehaviour
 	{
 		ResponseConvergeGetNames args = response as ResponseConvergeGetNames;
 		Debug.Log ("ResponseConvergeGetNames received");
-		playerNames.Clear ();
-		roundsWon.Clear ();
 		roundsWon.Add (player_id, 0);
 		playerNames.Add (args.player1ID, args.player1Name);
 		roundsWon.Add (args.player1ID, 0);
@@ -1946,9 +1970,6 @@ public class MultiConvergeGame : MonoBehaviour
 		roundsWon.Add (args.player4ID, 0);
 
 		Debug.Log ("Other player id / name"); 
- 
-		// foreach (KeyValuePair<int, string> entry in playerNames)
-		// {
 
 		int id;
 		foreach (DictionaryEntry entry in playerNames) {
@@ -1961,6 +1982,25 @@ public class MultiConvergeGame : MonoBehaviour
 				// Debug.Log (" " + id + " " + entry.Value);
 			}
 		}
+	}
+
+	public void GetActiveNames() {
+		Debug.Log ("Get names request sent - for active names");
+		Game.networkManager.Send (
+			ConvergeGetNamesProtocol.Prepare (),
+			ProcessGetActiveNames
+		);
+	}
+
+	public void ProcessGetActiveNames (NetworkResponse response)
+	{
+		ResponseConvergeGetNames args = response as ResponseConvergeGetNames;
+		Debug.Log ("ResponseConvergeGetNames received - active names");
+		activePlayers.Clear ();
+		activePlayers.Add(args.player1ID);
+		activePlayers.Add(args.player2ID);
+		activePlayers.Add(args.player3ID);
+		activePlayers.Add(args.player4ID);
 	}
 
 	void ObtainScores() {
