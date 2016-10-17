@@ -62,12 +62,9 @@ public class WorldMouse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         RaycastHit hit = new RaycastHit();
-
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit) && (!EventSystem.current.IsPointerOverGameObject()))
         {
-
             if (hit.transform.gameObject.tag == "Zone")
             {
                 currentTile = hit.transform.gameObject.GetComponent<Zone>();
