@@ -31,7 +31,22 @@ public class ChatPanel : MonoBehaviour {
   }
 
   public void onChatMessage(NetworkResponse response) {
-    Debug.Log("Received Chat message");
+    ResponseChat args = response as ResponseChat;
+    DateTime time = DateTime.Now;
+    // clone the prefab message
+    ChatMessage clone = (ChatMessage)Instantiate(messagePrefab);
+    
+    // append the new message to the scrollable
+    clone.GetComponent<RectTransform>().SetParent(messages, false);
+
+    // set the text
+    clone.setText(args.message);
+    // set the time and the sender
+    clone.setTime(time.ToString("h:mm:ss tt"));
+    clone.setUsername(args.username);
+
+    // scroll to the bottom.
+    scrollRect.GetComponent<ScrollRect>().velocity=new Vector2(0f,1000f);
   }
 
   void sendChatMessage() {
