@@ -18,6 +18,7 @@ public class NetworkProtocolTable {
 		Add(NetworkCode.REGISTER, "Register");
 		Add(NetworkCode.MESSAGE, "Message");
 		Add(NetworkCode.SHOP, "Shop");
+    Add(NetworkCode.CHAT, "Chat");
 		Add(NetworkCode.SPECIES_LIST, "SpeciesList");
 		Add(NetworkCode.SPECIES_CREATE, "SpeciesCreate");
 		Add(NetworkCode.ECOSYSTEM, "Ecosystem");
