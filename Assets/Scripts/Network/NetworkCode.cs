@@ -5,6 +5,7 @@
 	public static readonly short HEARTBEAT = 101;
 	public static readonly short ACTIVITY = 102;
 	public static readonly short LOGIN = 103;
+  
 	public static readonly short LOGOUT = 104;
 	public static readonly short REGISTER = 105;
 	public static readonly short ERROR_LOG = 106;
@@ -43,6 +44,7 @@
 	public static readonly short BATTLE_TURN = 132;
 	public static readonly short BATTLE_START = 133;
 	
+	public static readonly short CHAT = 333;
 	public static readonly short UPDATE_RESOURCES = 134;
 	public static readonly short SPECIES_KILL = 135;
 	public static readonly short UPDATE_TIME = 136;
