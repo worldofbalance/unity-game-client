@@ -903,21 +903,22 @@ public class MultiplayerGames : MonoBehaviour {
     
   private void ReadConvergeEcosystemsFileCount ()
   {
-    string filename = "converge-ecosystems-Ben";
-    int ecosystemCnt;
+    // string filename = "converge-ecosystems-Ben";  // Problem with file
+		string filename = "converge-ecosystems.txt";
+		int ecosystemCnt;
 
-    if (!File.Exists (filename)) {
-      Debug.LogError (filename + " not found.");
-    } else {
-      using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read)) {
-        using (BinaryReader br = new BinaryReader(fs, Encoding.UTF8)) {
-          int size = br.ReadInt16 ();
-          int responseId = br.ReadInt16 ();
-          ecosystemCnt = br.ReadInt16 ();
-          ecoCount = (short) ecosystemCnt;
-        }
-      }
-    }
+		if (!File.Exists (filename)) {
+			Debug.LogError (filename + " not found.");
+		} else {
+			using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read)) {
+				using (BinaryReader br = new BinaryReader(fs, Encoding.UTF8)) {
+					int size = br.ReadInt16 ();
+					int responseId = br.ReadInt16 ();
+					ecosystemCnt = br.ReadInt16 ();
+					ecoCount = (short) ecosystemCnt;
+				}
+			}
+		}			    
   }
   public void SDProcessPlayInit(NetworkResponse response) {
       SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;
