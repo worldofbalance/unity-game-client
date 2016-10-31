@@ -170,6 +170,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private int[] playerLastImprove;
 	private int improveValue = 0;      // This is the players score. Higher is better. Check BarGraph to determine formula
 	private string buttonText;
+	private bool debug1;
 
 	void Awake ()
 	{
@@ -238,6 +239,7 @@ public class MultiConvergeGame : MonoBehaviour
 		playerId = new int[5];
 		playerWinnings = new int[5];
 		playerLastImprove = new int[5];
+		debug1 = false;
 	}
 	
 	// Use this for initialization
@@ -334,8 +336,8 @@ public class MultiConvergeGame : MonoBehaviour
 				if (timeRemain > timeRemainMax) {
 					timeRemainMax = timeRemain;
 				}
-				if ((!haveNames) && (timeRemainMax > timeRemain + 4)) {
-					haveNames = true;   // Wait about 4 seconds to get the player names - to make sure everyone is there 
+				if ((!haveNames) && (timeRemainMax > timeRemain + 3)) {
+					haveNames = true;   // Wait about 2 seconds to get the player names - to make sure everyone is there 
 					GetNames ();   // All players setup at the beginning. None are added later.
 				}
 
@@ -524,12 +526,15 @@ public class MultiConvergeGame : MonoBehaviour
 				GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Please wait for round results.", style);
 			} else if (results) {
 				if (won == 1) {
-					GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Congratulations - you won!", style);
+					GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), 
+						"Congratulations - you won round " + (curRound-1), style);
 				} else if (won == 0) {
 					// GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "Sorry - you lost.", style);
-					GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), playerWinnerName + " won last round.", style);
+					GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), 
+						playerWinnerName + " won round " + (curRound-1), style);
 				} else {
-					GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), "You did not play last round.", style);
+					GUI.Label (new Rect (bufferBorder + 450, height - 75 - bufferBorder, 300, 30), 
+						"You did not play round " + (curRound-1), style);
 				}
 			}
 		}			
@@ -720,8 +725,6 @@ public class MultiConvergeGame : MonoBehaviour
 		}
 	}
 		
-		
-
     void MakeWindowDone(int id) {
         Functions.DrawBackground(new Rect(0, 0, widthConfig, heightConfig), bgTexture);
         string hdr1 = "Multiplayer Convergence";
@@ -1009,7 +1012,7 @@ public class MultiConvergeGame : MonoBehaviour
 				speciesColIndex = Mathf.RoundToInt (GUI.HorizontalSlider (
 					sliderSRect, speciesColIndex, 0, speciesColCount - speciesColFit));
 			}
-			Debug.Log ("=== sCC/sCF/r/c/sC: " + speciesColCount + " " + speciesColFit + " " + row + " " + col + " " + sCnt);
+			// Debug.Log ("=== sCC/sCF/r/c/sC: " + speciesColCount + " " + speciesColFit + " " + row + " " + col + " " + sCnt);
 			speciesCounted = true;
 		}
 		style.alignment = TextAnchor.UpperLeft;
@@ -1161,7 +1164,7 @@ public class MultiConvergeGame : MonoBehaviour
         Game.networkManager.Send (
 			ConvergeNewAttemptProtocol.Prepare (
 			player_id, 
-			ecosystem_id + 1000,    // Offset by 1000 to seperate from single player game 
+			ecosystem_id + 1000,    // Offset by 1000 to seperate from single player game. This is only for DB
 			currAttempt.attempt_id,
 			currAttempt.allow_hints,
 			currAttempt.hint_id,
@@ -1230,7 +1233,7 @@ public class MultiConvergeGame : MonoBehaviour
             Game.networkManager.Send (
 				ConvergeNewAttemptScoreProtocol.Prepare (
 				player_id, 
-				ecosystem_id, 
+				ecosystem_id + 1000, 
 				attempt.attempt_id, 
 				score
 				),
@@ -1250,7 +1253,7 @@ public class MultiConvergeGame : MonoBehaviour
 
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-			    ecosystem_id + 1000,  // Offset MC by 1000, to differante from Convergence
+			    ecosystem_id,     // Don't add 1000 here. This is not updating the DB
 			    attempt.attempt_id + 1,
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
@@ -1311,7 +1314,7 @@ public class MultiConvergeGame : MonoBehaviour
 		}
 		Debug.Log ("Winning player id: " + playerWinner);
 		winners.Add (playerWinner);   // Add winner to the list as winner of this round
-		if (playerWinner != 0) {   // If there is actually a winner (At least one played)			
+		if ((playerWinner != 0) && (roundsWon.Count > 0)) {   // If there is actually a winner (At least one played)			
 			// Increment count of rounds won 
 			roundsWon[playerWinner] = ((int) roundsWon[playerWinner]) + 1;
 		}
@@ -1390,7 +1393,7 @@ public class MultiConvergeGame : MonoBehaviour
 		Debug.Log ("Game over");
 	}
 		
-		
+	// Not used in MC 	
 	public void ProcessConvergePriorAttemptCount (NetworkResponse response)
 	{
 		ResponseConvergePriorAttemptCount args = response as ResponseConvergePriorAttemptCount;
@@ -1476,7 +1479,7 @@ public class MultiConvergeGame : MonoBehaviour
 			int attempt_id = 0;
 			currAttempt = new ConvergeAttempt (
 				player_id,
-				ecosystem_id + 1000, 
+				ecosystem_id, 
 			    attempt_id,
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
@@ -1491,7 +1494,7 @@ public class MultiConvergeGame : MonoBehaviour
 			int attempt_id = attemptList [attemptCount - 1].attempt_id + 1;
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-			    ecosystem_id + 1000, 
+			    ecosystem_id, 
 			    attempt_id,
 			    allowHintsMaster,
 			    Constants.ID_NOT_SET,
@@ -1521,7 +1524,7 @@ public class MultiConvergeGame : MonoBehaviour
 		if (attemptIdx == Constants.ID_NOT_SET) {
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-		        ecosystem_id + 1000, 
+		        ecosystem_id, 
 		        attempt_id,
 		        allowHintsMaster,
 		        hint_id,
@@ -1534,7 +1537,7 @@ public class MultiConvergeGame : MonoBehaviour
 		} else {
 			currAttempt = new ConvergeAttempt (
 				player_id, 
-		        ecosystem_id + 1000, 
+		        ecosystem_id, 
 		        attempt_id,
 		        allowHintsMaster,
 			    hint_id,
@@ -1545,8 +1548,9 @@ public class MultiConvergeGame : MonoBehaviour
                 ecosystemList[ecosystem_idx].markerEnabled
 			);
 		}
-
+		debug1 = true;
 		FinalizeAttemptUpdate (attemptIdx, false);
+		debug1 = false;
 	}
 
 	//update variables and graph configuration as necessary with updated attempt info
@@ -1557,7 +1561,7 @@ public class MultiConvergeGame : MonoBehaviour
 		if (newEcosystem) {
 			manager = new ConvergeManager ();
 		}
-
+			
 		//refresh or replace graphs as appropriate
 		GenerateGraphs (newEcosystem);
 
@@ -1579,13 +1583,18 @@ public class MultiConvergeGame : MonoBehaviour
 	{
 		ResponseConvergeEcosystems response = new ResponseConvergeEcosystems ();
 		
-		string filename = "converge-ecosystems-Ben";
-        string filenameR = "converge-ecosystems-Ben-sliders.txt";
+		// string filename = "converge-ecosystems-Ben";  // Problem with file 
+		string filename = "converge-ecosystems.txt";
+
+        // string filenameR = "converge-ecosystems-Ben-sliders.txt";
+		string filenameR = "";
+
 		ecosystemList = new List<ConvergeEcosystem> ();
         Debug.Log("ecosystem files: " + filename + " " + filenameR);
 		
-        if (!File.Exists (filenameR)) {
-            Debug.Log(filenameR + " not found.");
+		if ((filenameR.Length == 0) || !File.Exists (filenameR)) {
+            Debug.Log("Sliders hint file: " + filenameR + " not found.");
+			allowSliders = 0;
         }
 
         int ecosystemCnt;
@@ -1623,7 +1632,8 @@ public class MultiConvergeGame : MonoBehaviour
                         // fldSize = br.ReadInt32 ();
                         // Debug.Log("Harjit: csv_default_string_fldSize: " + fldSize);
 						ecosystem.csv_default_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-                        // Debug.Log(ecosystem.csv_default_string);
+						Debug.Log("ecosystem.csv_default_string next");
+                        Debug.Log(ecosystem.csv_default_string);
 						fldSize = br.ReadInt16 ();
                         // Harjit's 32 bit length string
                         // fldSize = br.ReadInt32 ();
@@ -1648,25 +1658,27 @@ public class MultiConvergeGame : MonoBehaviour
             String line;
             int rIndex = 0;
 
-            try {
-                using (StreamReader sr = new StreamReader(filenameR)) {
-                    for (rIndex = 0; rIndex < ecosystemCnt; rIndex++) {
-                        line = sr.ReadLine();
-                        Debug.Log("slider ranges, eco # " + rIndex + " is " + line);
-                        ecosystemList[rIndex].sliderRanges = line;
-                        if (line.Length > 0) {
-                            ecosystemList[rIndex].markerEnabled = true;
-                            Debug.Log("markerEnabled = true");
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.Log("Exception exit of reading slider range file: " + filenameR );
-                Debug.Log("ecosystemCnt/rIndex: " + ecosystemCnt + " " + rIndex);
-                Debug.Log(e.Message);
-            }
+			if (allowSliders == 1) {
+				try {
+					using (StreamReader sr = new StreamReader(filenameR)) {
+						for (rIndex = 0; rIndex < ecosystemCnt; rIndex++) {
+							line = sr.ReadLine();
+							Debug.Log("slider ranges, eco # " + rIndex + " is " + line);
+							ecosystemList[rIndex].sliderRanges = line;
+							if (line.Length > 0) {
+								ecosystemList[rIndex].markerEnabled = true;     
+								Debug.Log("markerEnabled = true");
+							}
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					Debug.Log("Exception exit of reading slider range file: " + filenameR );
+					Debug.Log("ecosystemCnt/rIndex: " + ecosystemCnt + " " + rIndex);
+					Debug.Log(e.Message);
+				}					
+			}
 		}
 	}
 
@@ -1678,11 +1690,13 @@ public class MultiConvergeGame : MonoBehaviour
 			String.Format ("Attempt #{0}", referenceAttemptIdx + 1)
 			);  //hide 0 start from user
 
-		CSVObject graph1CSV = (referenceAttemptIdx == Constants.ID_NOT_SET) ? 
-			ecosystemList [ecosystem_idx].csv_default_object : 
-				attemptList [referenceAttemptIdx].csv_object;
-		
-		if (newEcosystem) {			
+		CSVObject graph1CSV;
+
+		graph1CSV = (referenceAttemptIdx == Constants.ID_NOT_SET) ? 
+			ecosystemList [ecosystem_idx].csv_default_object :   
+			attemptList [referenceAttemptIdx].csv_object;
+				
+		if (newEcosystem) {
 			//destroy prior bargraph if it exists
 			//Note: barGraph is regenerated when requested
 			if (barGraph != null) {
@@ -1707,7 +1721,7 @@ public class MultiConvergeGame : MonoBehaviour
 			);
 
 		} else {
-			graphs.UpdateGraph1Data (graph1CSV, title);
+			graphs.UpdateGraph1Data (graph1CSV, title);			
 		}
 		
 	}
@@ -2058,7 +2072,4 @@ public class MultiConvergeGame : MonoBehaviour
 			barGraph.SetActive (true);
 		}
 	}
-
-
-		
 }
