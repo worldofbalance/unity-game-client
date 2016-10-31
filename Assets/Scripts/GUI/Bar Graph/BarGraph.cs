@@ -14,7 +14,7 @@ public class BarGraph : MonoBehaviour
 	private float width = 900;
 	private float height = 400;
 	private bool isActive = false;
-	private bool isLegendActive = true;
+	private bool isLegendActive = false;   // DH 20161028 remove legend
 	// Other
 	private string title;
 	private Rect windowRect;
@@ -340,7 +340,8 @@ public class BarGraph : MonoBehaviour
 		GUI.matrix = matrix;
 		// Expand "Animation"
 		if (Mathf.Abs (seriesSet.rect.width - yAxisLength) > 0.1f) {
-			seriesSet.rect.width = Mathf.Lerp (0, yAxisLength, seriesSet.rect.deltaTime += Time.deltaTime * 0.4f);
+			// seriesSet.rect.width = Mathf.Lerp (0, yAxisLength, seriesSet.rect.deltaTime += Time.deltaTime * 0.4f);
+			seriesSet.rect.width = yAxisLength;
 		} else {
 			// Create labels
 			GUIStyle style = new GUIStyle (GUI.skin.label);
@@ -731,7 +732,7 @@ public class BarGraph : MonoBehaviour
 			hStart = new Vector2 (85, graphRect.height - 75);
 			hEnd = new Vector2 (graphRect.width - 50, hStart.y);
 		} else {
-			width = 900;
+			width = 690;   // was 900 with legend
 			left = (Screen.width - width) / 2;
 			windowRect = new Rect (left, top, width, height);
 			graphRect = new Rect (20, 30, 650, 325);
