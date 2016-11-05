@@ -11,10 +11,11 @@ public class BarGraph : MonoBehaviour
 	// Window Properties
 	private float left;
 	private float top;
-	private float width = 900;
-	private float height = 400;
+	private float width = 700;     // DH 2016-11-4  was 900
+	private float height = 300;    // DH 2016-11-4  was 400
+	private float buttonMargin = 40;
 	private bool isActive = false;
-	private bool isLegendActive = false;   // DH 20161028 remove legend
+	private bool isLegendActive = false;   // DH 2016-10-28 remove legend
 	// Other
 	private string title;
 	private Rect windowRect;
@@ -59,10 +60,8 @@ public class BarGraph : MonoBehaviour
 	private int sliderValue = 0;
 	private int maxSliderValue = 0;
 	private static int perPage = 6;
-	private float barWidth = 50;
+	private float barWidth = 40;     // DH 2016-11-4  was 50
 	private float interBarWidth;
-	private float bottomMargin = 40;
-	private float bufferBorder = 10;
 
 	// DH change
 	private List<int> scores;  // list of scores, starting from initial and all attempts 
@@ -85,16 +84,16 @@ public class BarGraph : MonoBehaviour
 		xTitle = "Attempt #";
 		yTitle = "Biomass Difference";
 
-		width = 900;
-		left = (Screen.width - width) / 2;
-		top = 100;
+		// width = 900;
+		left = Screen.width - width;
+		top = Screen.height - height - buttonMargin;
 
 		windowRect = new Rect (left, top, width, height);
-		graphRect = new Rect (20, 30, 650, 325);
+		graphRect = new Rect (20, 30, 450, 225);
 		sliderRect = new Rect (
 			graphRect.x + (graphRect.width / 2) - 100, 
 			graphRect.x + graphRect.height + 20, 
-			200, 
+			150,     // DH 2016-11-4  was 200
 			30
 			);
 
@@ -115,7 +114,7 @@ public class BarGraph : MonoBehaviour
 
 		barTexture = Functions.CreateTexture2D (Color.white);
 		
-		barLegend = new BarLegend(new Rect(width - 200 - 20, 30, 200, 325), this);
+		// barLegend = new BarLegend(new Rect(width - 200 - 20, 30, 200, 325), this);
 
 		//gameObject.AddComponent<GraphInput>().graph = this;  jtc-commented out
 
@@ -124,6 +123,7 @@ public class BarGraph : MonoBehaviour
 		oppGraph = false;  // default is player graph
 		oppName = "";     // name of opponent
         rectO = new DynamicRect(0, 0, yAxisLength, barWidth);
+		Debug.Log ("BG: Screen width/height " + Screen.width + " " + Screen.height);
 
 	}
 
@@ -183,9 +183,11 @@ public class BarGraph : MonoBehaviour
 		if (!oppGraph)
 			DrawSlider ();
 		// Draw Legend
+		/*
 		if (isLegendActive && !oppGraph) {
 			barLegend.Draw();
 		}
+		*/
 		if (GUI.Button (new Rect (20, windowRect.height - 40, 50, 30), "Close")) {
 			SetActive (!isActive);
 		}
@@ -210,11 +212,6 @@ public class BarGraph : MonoBehaviour
 	{
 		isActive = active;
 	}
-
-	public bool GetActive() {
-		return isActive;
-	}
-
 	
 	private void DrawGrid (Rect rect)
 	{
@@ -242,8 +239,7 @@ public class BarGraph : MonoBehaviour
 		}
 		// X-Axis Label
 		style.alignment = TextAnchor.UpperCenter;
-		// DH 2016-11-4  was hStart.y + 35
-		GUI.Label (new Rect (hStart.x + (xAxisLength - 80) / 2, hStart.y + 25, 80, 30), "<color=yellow>" + xTitle + "</color>", style);
+		GUI.Label (new Rect (hStart.x + (xAxisLength - 80) / 2, hStart.y + 35, 80, 30), "<color=yellow>" + xTitle + "</color>", style);
 			
 		// Y-Axis
 		Drawing.DrawLine (vStart, vEnd, color, thickness, false);
@@ -326,8 +322,8 @@ public class BarGraph : MonoBehaviour
 		GUIUtility.RotateAroundPivot (-90, origin);
 		// Draw Series Set
 		GUI.BeginGroup (seriesSet.rect.GetRect ());
-        Debug.Log ("BG: seriesSet.rect: x,y,width,height: " + seriesSet.rect.x + " " + seriesSet.rect.y + " " +
-            seriesSet.rect.width + " " + seriesSet.rect.height);
+        // Debug.Log ("BG: seriesSet.rect: x,y,width,height: " + seriesSet.rect.x + " " + seriesSet.rect.y + " " +
+        //     seriesSet.rect.width + " " + seriesSet.rect.height);
 		float yNext = 0;
 
 		foreach (BarSeries series in seriesSet.seriesList) {
@@ -339,8 +335,8 @@ public class BarGraph : MonoBehaviour
 			// Next stacking position
 			yNext += barHeight - 1f;
 			
-            Debug.Log ("BG: barRect.rect: x,y,width,height: " + barRect.GetRect().x + " " + barRect.GetRect().y + " " +
-                barRect.GetRect().width + " " + barRect.GetRect().height);
+            // Debug.Log ("BG: barRect.rect: x,y,width,height: " + barRect.GetRect().x + " " + barRect.GetRect().y + " " +
+            //     barRect.GetRect().width + " " + barRect.GetRect().height);
 			Functions.DrawBackground (barRect.GetRect (), barTexture, series.color);
 		}
 		GUI.EndGroup ();
@@ -383,7 +379,7 @@ public class BarGraph : MonoBehaviour
 
 		rectO.x = xPos;
 		rectO.y = hStart.y - 1;
-        Debug.Log ("BG: rectO: x,y, width, height: " + rectO.x + " " + rectO.y + " " + rectO.width + " " + rectO.height);
+        // Debug.Log ("BG: rectO: x,y, width, height: " + rectO.x + " " + rectO.y + " " + rectO.width + " " + rectO.height);
 
 		GUI.color = (false) ? Color.gray : Color.white;
 
@@ -401,7 +397,7 @@ public class BarGraph : MonoBehaviour
         DynamicRect barRect = new DynamicRect (0, 0, 0, barWidth);
 		barRect.x = yNext;
 		barRect.width = barHeight;
-        Debug.Log ("BG: barRect: x,y, width, height: " + barRect.x + " " + barRect.y + " " + barRect.width + " " + barRect.height);
+        // Debug.Log ("BG: barRect: x,y, width, height: " + barRect.x + " " + barRect.y + " " + barRect.width + " " + barRect.height);
         // barRect.height = barWidth;
 		// Next stacking position
 
@@ -733,23 +729,19 @@ public class BarGraph : MonoBehaviour
 	public void setOppGraph(bool oppGraph) {
 		this.oppGraph = oppGraph;
 		if (oppGraph) {
-			width = 540;   // was 900 with legend. DH 2016-11-4  was 690 before shrink
-			height = 300;   // DH 2016-11-4 was 400 before shrink
-			barWidth = 35;
-			top = 100;
+			width = 600;
 			left = (Screen.width - width) / 2;
 			windowRect = new Rect (left, top, width, height);
-			graphRect = new Rect (20, 30, 500, 225);
-			redoAwake ();
+			graphRect = new Rect (20, 30, width - 40, 325);
+			hStart = new Vector2 (85, graphRect.height - 75);
+			hEnd = new Vector2 (graphRect.width - 50, hStart.y);
 		} else {
-			width = 540;   // was 900 with legend. DH 2016-11-4  was 690 before shrink
-			height = 300;   // DH 2016-11-4 was 400 before shrink
-			barWidth = 35;
-			top = Screen.height - height - bottomMargin;
-			left = Screen.width - width - bufferBorder;
+			width = 690;   // was 900 with legend
+			left = (Screen.width - width) / 2;
 			windowRect = new Rect (left, top, width, height);
-			graphRect = new Rect (20, 30, 500, 225);   // DH 2016-11-4 was 650, 325 before shrink
-			redoAwake ();
+			graphRect = new Rect (20, 30, 650, 325);
+			hStart = new Vector2 (85, graphRect.height - 75);
+			hEnd = new Vector2 (graphRect.width - 50, hStart.y);
 		}
 	}
 
@@ -761,10 +753,6 @@ public class BarGraph : MonoBehaviour
 		this.oppScores = oppScores;
 	}
 
-	public float getGraphLeft() {
-		return left;
-	}
-
 	void calcOppValues() {
 		// yRangeO is max of Opponent score values
 		yRangeO = oppScores[0];
@@ -774,29 +762,5 @@ public class BarGraph : MonoBehaviour
 			}
 		}			
 	}
-
-	void redoAwake() {
-		sliderRect = new Rect (
-			graphRect.x + (graphRect.width / 2) - 100, 
-			graphRect.x + graphRect.height + 20, 
-			150, 
-			30
-		);
-
-		hStart = new Vector2 (85, graphRect.height - 50);    // DH 2016-11-4  75 -> 50
-		hEnd = new Vector2 (graphRect.width - 50, hStart.y);
-
-		xAxisLength = Vector2.Distance (hStart, hEnd) * 0.95f;
-		xUnitLength = xAxisLength / xNumMarkers;
-		interBarWidth = (xAxisLength - (barWidth * perPage)) / perPage;
-
-		vStart = new Vector2 (hStart.x, hStart.y);
-		vEnd = new Vector2 (vStart.x, 20);    // DH 2016-11-4  30 -> 20
-
-		yAxisLength = Vector2.Distance (vStart, vEnd) * 0.95f;
-		yUnitLength = yAxisLength / yNumMarkers;
-
-		rectO = new DynamicRect(0, 0, yAxisLength, barWidth);
-	}
-
+		
 }

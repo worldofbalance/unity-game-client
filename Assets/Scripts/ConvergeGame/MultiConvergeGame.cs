@@ -18,19 +18,19 @@ public class MultiConvergeGame : MonoBehaviour
     private int non_host_config_id = Constants.CONVERGE_NONHOST_CONFIG;
 	private float left;
 	private float top;
-	private float width = Screen.width;
-	private float height = Screen.height;
+	private float width;
+	private float height;
     // DH change
     // dimensions for host / non-host windows - both are the same
     private float leftConfig;
     private float topConfig;
-    private float widthConfig = Screen.width * 0.90f;
-    private float heightConfig = Screen.height * 0.90f;
+    private float widthConfig;
+    private float heightConfig;
 	// dimensions for round winner windows 
 	private float leftWinner;
 	private float topWinner;
-	private float widthWinner = Screen.width * 0.70f;
-	private float heightWinner = Screen.height * 0.70f;
+	private float widthWinner;
+	private float heightWinner;
 
 	private float widthGraph;
 	private float heightGraph;
@@ -38,6 +38,9 @@ public class MultiConvergeGame : MonoBehaviour
 	private float leftGraph = 10;
 	private float topGraph = 45;    // DH change. Was 75
 	private float buttonStep = 35;    // Y step for opponent status buttons 
+	private float bottomMargin = 40;
+	private float heightBG = 300;           // Taken from BarGraph
+	private float topBG;
     private float balanceY, sliderY;        // balance msg & species slider Y coordinates
 	private float balanceX;                 // balance msg + buttons + species slider X coordinate
 	private float entryHeight;              // height for species sliders
@@ -54,6 +57,8 @@ public class MultiConvergeGame : MonoBehaviour
 	private bool alarm10Sec = true;
 	private bool alarm5Sec = true;
 	private bool haveNames = false; 
+	private bool prevActive = false;
+	private bool oppGraph = false;
 	// DH change
 	// eliminate blink. Replace isProcessing with betAccepted
 	// private bool isProcessing = true;
@@ -174,6 +179,12 @@ public class MultiConvergeGame : MonoBehaviour
 
 	void Awake ()
 	{
+		width = Screen.width;
+		height = Screen.height;
+		widthConfig = Screen.width * 0.90f;
+		heightConfig = Screen.height * 0.90f;
+		widthWinner = Screen.width * 0.70f;
+		heightWinner = Screen.height * 0.70f;
         tStamp = DateTime.UtcNow;
         sendNonHost = true;
         DontDestroyOnLoad (gameObject.GetComponent ("Login"));
@@ -200,7 +211,6 @@ public class MultiConvergeGame : MonoBehaviour
         windowRectConfig = new Rect (leftConfig, topConfig, widthConfig, heightConfig);
 		windowRectWinners = new Rect (leftWinner, topWinner, widthWinner, heightWinner);
 		widthGraph = windowRect.width - (bufferBorder * 2) - OppViewWidth;
-		heightGraph = windowRect.height / 2;
 		popupRect = new Rect ((Screen.width / 2) - 250, (Screen.height / 2) - 125,
 		                        500, 200);
 
@@ -225,6 +235,10 @@ public class MultiConvergeGame : MonoBehaviour
 		sliderY = balanceY + 65;                    // slider Y coordinate 
         curRound = 1;   // Start with Round 1
         // numRounds = 5;    // Over written by user input 
+		topBG = windowRect.height - heightBG - bottomMargin - topGraph;
+		heightGraph = Math.Min (windowRect.height * 0.50f, topBG);
+		heightGraph = Math.Max (heightGraph, sliderY + 0.0f);
+		Debug.Log ("windowRect.height, topBG, sliderY: " + windowRect.height + " " + topBG + " " + sliderY);
 		// last 35 taken to allocate room for multiplayer convergence text 
 		entryHeight = height - heightGraph - 30 * 3 - bufferBorder * 2 - 35;
 		speciesRowCount = Math.Max((int)((entryHeight-40)/35)+1,1);
@@ -432,6 +446,21 @@ public class MultiConvergeGame : MonoBehaviour
 	
 	void MakeWindow (int id)
 	{
+		if ((barGraph != null) && !oppGraph) {
+			if (prevActive != barGraph.GetActive()) {
+				prevActive = barGraph.GetActive ();
+				speciesCounted = false;
+				speciesColCount = 0;
+				speciesColIndex = 0;
+				if (prevActive) {
+					speciesColFit = Math.Max ((int)(barGraph.getGraphLeft() / (350 + bufferBorder)), 1);
+					// Debug.Log ("MCBG: getGraphLeft, speciesColFit: " + barGraph.getGraphLeft () + " " + speciesColFit);
+				} else {
+					speciesColFit = Math.Max ((int)(width / (350 + bufferBorder)), 1);
+				}
+			}
+		}
+
 		Functions.DrawBackground (new Rect (0, 0, width, height), bgTexture);
 		
 		GUIStyle style = new GUIStyle (GUI.skin.label);
@@ -853,7 +882,7 @@ public class MultiConvergeGame : MonoBehaviour
 					if (!speciesCounted) {
 						speciesColCount = col+1;
 					}
-					if (col < speciesColCount) {
+					if (col < speciesColFit) {
 						float min = 0f;
 						float max = 1f;
 						switch (paramId) {
@@ -1735,17 +1764,21 @@ public class MultiConvergeGame : MonoBehaviour
 	private void InitializeBarGraph () {
 		if (barGraph == null) {
 			barGraph = gameObject.AddComponent<BarGraph> ().GetComponent<BarGraph> ();
+			barGraph.setOppGraph (false);
 
 			//first object must be target, then default 
 			barGraph.InputToCSVObject (ecosystemList [ecosystem_idx].csv_target_string, manager);
 			barGraph.InputToCSVObject (ecosystemList [ecosystem_idx].csv_default_string, manager);
 		}
+		barGraph.setOppGraph (false);
+		oppGraph = false;
 	}
 		
 	private void GenerateBarGraph ()
 	{
 		if (barGraph == null) {
 			barGraph = gameObject.AddComponent<BarGraph> ().GetComponent<BarGraph> ();
+			barGraph.setOppGraph (false);
 
 			//first object must be target, then default 
 			barGraph.InputToCSVObject (ecosystemList [ecosystem_idx].csv_target_string, manager);
@@ -1757,8 +1790,8 @@ public class MultiConvergeGame : MonoBehaviour
 			}
 		}
 		barGraph.setOppGraph (false);   // This graph is for the player
+		oppGraph = false;
 		barGraph.SetActive (true);
-
 	}
 
 	private void GenerateFoodWeb ()
@@ -2069,6 +2102,7 @@ public class MultiConvergeGame : MonoBehaviour
             Debug.Log("MC: Display other player graph");
 			barGraph.setOppScores(otherScores);
 			barGraph.setOppGraph (true);
+			oppGraph = true;
 			barGraph.SetActive (true);
 		}
 	}
