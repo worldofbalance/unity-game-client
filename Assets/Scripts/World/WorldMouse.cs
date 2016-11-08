@@ -123,9 +123,9 @@ public class WorldMouse : MonoBehaviour
                         //Check to make sure they are not currently using shop (Raycasting issues) 
                         if (!Shop.gInshop)
                         {
-                            if (tileUi.activeSelf && currentTile.player_id == 0)
-                            {
-                                Debug.Log(tileUi.name);
+                            // fixed a null reference here.
+                            if (tileUi != null && currentTile != null && tileUi.activeSelf && currentTile.player_id == 0) {
+                                //Debug.Log(tileUi.name);
 
 
                                 currentSelectedTile = currentTile;
