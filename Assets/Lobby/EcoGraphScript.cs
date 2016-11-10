@@ -51,7 +51,8 @@ public class EcoGraphScript : MonoBehaviour {
 		you.lineScale = 2;*/
 	}
 
-	public void destroyGraph(){
+	public void destroyGraph() {
+    statusPanel.showCoreUI();
 		GameObject.Destroy (graphGO);
 	}
 }

@@ -50,12 +50,24 @@ public class MenuScript : MonoBehaviour {
             i++;
         }
     }
-
+    public void showCoreUI() {
+        GameObject.Find("ChatPanel").transform.localScale = new Vector3(1, 1, 1);
+        GameObject.Find("dropdown").transform.localScale = new Vector3(1, 1, 1);
+        GameObject.Find("btn_whosOnline").transform.localScale = new Vector3(1, 1, 1);
+        GameObject.Find("btn_status").transform.localScale = new Vector3(1, 1, 1);
+    }
+  
     public void OpenStatus() {
+        GameObject.Find("ChatPanel").transform.localScale = new Vector3(0, 0, 0);
+        GameObject.Find("dropdown").transform.localScale = new Vector3(0, 0, 0);
+        GameObject.Find("btn_whosOnline").transform.localScale = new Vector3(0, 0, 0);
+        GameObject.Find("btn_status").transform.localScale = new Vector3(0, 0, 0);
+
         CloseAllMenus ();
         statusContainer.SetActive (true);
+        Transform t  = statusContainer.GetComponent(typeof (Transform)) as Transform;
+        //t.SetAsFirstSibling();
         menuOpen = true;
-        statusOpen = true;
     }
 
     public void OpenMiniGames() {
