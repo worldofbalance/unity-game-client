@@ -4,7 +4,7 @@ using System.Collections;
 
 public class ClashOfSpeciesGUI : MonoBehaviour
 {
-	
+  
     private GameObject mainObject;
     // Window Properties
     private float width = 400;
@@ -19,7 +19,7 @@ public class ClashOfSpeciesGUI : MonoBehaviour
         mainObject = GameObject.Find ("MainObject");
         window_id = Constants.GetUniqueID ();
     }
-	
+  
     // Use this for initialization
     void Start ()
     {
@@ -30,7 +30,7 @@ public class ClashOfSpeciesGUI : MonoBehaviour
     void OnGUI ()
     {
         windowRect = GUILayout.Window (window_id, windowRect, MakeWindow, "Clash of Species");
-		
+    
         if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Return) {
             Submit ();
         }
@@ -39,7 +39,7 @@ public class ClashOfSpeciesGUI : MonoBehaviour
     void MakeWindow (int id)
     {
         GUILayout.Space (10);
-		
+    
         GUIStyle style = new GUIStyle ();
         style.alignment = TextAnchor.MiddleCenter;
         style.normal.textColor = Color.white;
@@ -48,23 +48,25 @@ public class ClashOfSpeciesGUI : MonoBehaviour
         style2.alignment = TextAnchor.MiddleCenter;
         style2.normal.textColor = Color.white;
         style2.fontSize = 20;
-		
+    
         GUILayout.Label (message, style);
-		
+    
         GUILayout.Label ("COST TO PLAY: 10 Credits", style2);
-		
+    
         GUILayout.Space (30);
-		
+    
         if (GUI.Button (new Rect (windowRect.width / 2 + 80, windowRect.height - 40, 100, 30), "Quit")) {
+            GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = false;
+            GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = true;
             Submit ();
         }
-		
-		
+    
+    
         if (GUI.Button (new Rect (windowRect.width / 2 - 30, windowRect.height - 40, 100, 30), "Start Game")) {
-			Debug.Log ("Pressed Start Game");
-			StartGame ();
+          Debug.Log ("Pressed Start Game");
+          StartGame ();
         }
-		
+    
         GUI.BringWindowToFront (window_id);
         GUI.DragWindow ();
     }
@@ -86,17 +88,17 @@ public class ClashOfSpeciesGUI : MonoBehaviour
             ProcessPlayGame
         );
     }
-	
+  
     // Update is called once per frame
     void Update ()
     {
     }
 
-	
+  
     public void ProcessPlayGame (NetworkResponse response)
     {
         ResponsePlayGame args = response as ResponsePlayGame;
-		
+    
         if (args.status == 1) {
             GameState.player.credits -= 10;
             Destroy (this);

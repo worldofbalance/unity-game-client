@@ -58,10 +58,13 @@ public class WorldMouse : MonoBehaviour
     {
 
     }
-
+    public bool popOversEnabled = true;
     // Update is called once per frame
     void Update()
     {
+        if (!popOversEnabled) {
+          return;
+        }
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit) && (!EventSystem.current.IsPointerOverGameObject()))
         {

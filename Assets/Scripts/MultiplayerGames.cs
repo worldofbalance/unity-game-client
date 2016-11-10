@@ -390,6 +390,7 @@ public class MultiplayerGames : MonoBehaviour {
   }
 
   private void drawFooter() {
+   
     GUI.enabled = enableRRButton;
     if (activeGame.name == "Running Rhino") {
       if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Host Running Rhino")) {
@@ -412,6 +413,7 @@ public class MultiplayerGames : MonoBehaviour {
     }
 
     GUI.enabled = enableMCButton;
+    
     if (activeGame.name == "Multiplayer Convergence") {
         // DH change
       if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Host Convergence")) {
@@ -429,6 +431,11 @@ public class MultiplayerGames : MonoBehaviour {
           allowSlidersS = "Y";
         }
       }
+    }
+    if (GUI.Button(new Rect(windowRect.width - 110, windowRect.height - 40, 100, 30), "Quit")) {
+      GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = true;
+      GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = false;
+      Quit();
     }
     GUI.enabled = true;
   }
@@ -585,9 +592,7 @@ public class MultiplayerGames : MonoBehaviour {
     }
 
     GUI.enabled = true;
-    if (GUI.Button(new Rect(windowRectMC.width - 110, windowRectMC.height - 40, 100, 30), "Quit")) {
-      Quit();
-    }
+   
 
     GUI.BringWindowToFront(window_id);
     GUI.DragWindow();

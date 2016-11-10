@@ -77,12 +77,12 @@ public class MapCamera : MonoBehaviour {
       isPanning = false;
     }
     
-        if (Input.GetMouseButtonDown(0) ) {
-            if (menuScript.menuOpen == false) {
-                dragging = true;
-                mouseDownPos = Input.mousePosition;
-                oldCameraPos = transform.position;
-            }
+    if (Input.GetMouseButtonDown(0) ) {
+      if (menuScript.menuOpen == false) {
+        dragging = true;
+        mouseDownPos = Input.mousePosition;
+        oldCameraPos = transform.position;
+      }
     }
     
     if (Input.GetMouseButtonUp(0)) {
