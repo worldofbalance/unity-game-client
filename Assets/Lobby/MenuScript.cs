@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class MenuScript : MonoBehaviour {
     public bool menuOpen = false;
     public GameObject whosOnlineMenu;
+    private Object activeGuiObject;
     public GameObject statusContainer;
     public Text[] playerArray;
     public bool statusOpen;
@@ -25,9 +26,7 @@ public class MenuScript : MonoBehaviour {
     }
 
     public void OpenWhosOnline(){
-        if (menuOpen) {
-            CloseAllMenus ();
-        }
+        CloseAllMenus ();
 
         //Call method to request players 
         CurrentlyOnline online = this.GetComponent<CurrentlyOnline>();
@@ -53,25 +52,22 @@ public class MenuScript : MonoBehaviour {
     }
 
     public void OpenStatus() {
-        if (menuOpen) {
-            CloseAllMenus ();
-        }
+        CloseAllMenus ();
         statusContainer.SetActive (true);
         menuOpen = true;
         statusOpen = true;
     }
 
     public void OpenMiniGames() {
-        if (menuOpen) {
-            CloseAllMenus ();
-        }
+        CloseAllMenus ();
         Debug.Log ("You Pressed MiniGames");
         menuOpen = true;
     }
 
-    public void OpenConvergence() { 
+    public void OpenConvergence() {
+        CloseAllMenus();
         Debug.Log("You Pressed Convergence");
-        gameObject.AddComponent <ConvergeGUI>();
+        this.activeGuiObject =  (Object) gameObject.AddComponent <ConvergeGUI>();
         menuOpen=true;
     }
 
@@ -81,30 +77,29 @@ public class MenuScript : MonoBehaviour {
     }
 
     public void OpenDontEatMe() {
-        Debug.Log("You Pressed Dont Eat Me");
-        gameObject.AddComponent <DontEatMeGUI>();
-        menuOpen=true;
         CloseAllMenus ();
+        this.activeGuiObject =  (Object)gameObject.AddComponent <DontEatMeGUI>();
     }
-    
     public void OpenMultiplayerGames() {
         CloseAllMenus();
         menuOpen = true;
         Debug.Log("You Pressed Open Multiplayer Games");
-        gameObject.AddComponent <MultiplayerGames>();
+        this.activeGuiObject =  (Object) gameObject.AddComponent <MultiplayerGames>();
         this.enabled = false;
     }
 
 
     public void OpenClashOfSpecies() {
-        Debug.Log("You Pressed Clash of Species");
-        gameObject.AddComponent <ClashOfSpeciesGUI>();
-        menuOpen=true;
         CloseAllMenus ();
+        this.activeGuiObject =  (Object) gameObject.AddComponent <ClashOfSpeciesGUI>();
+        menuOpen=true;
     }
     
 
     public void CloseAllMenus() {
+        if (this.activeGuiObject != null) {
+          Destroy(this.activeGuiObject);
+        }
         whosOnlineMenu.SetActive (false);
         statusContainer.SetActive(false);
         menuOpen = false;
