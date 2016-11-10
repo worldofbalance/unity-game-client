@@ -27,7 +27,7 @@ public class MenuScript : MonoBehaviour {
 
     public void OpenWhosOnline(){
         CloseAllMenus ();
-
+        GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
         //Call method to request players 
         CurrentlyOnline online = this.GetComponent<CurrentlyOnline>();
         Debug.Log("Currently Online instantiated");
@@ -50,6 +50,19 @@ public class MenuScript : MonoBehaviour {
             i++;
         }
     }
+
+    public void hideTopBar() {
+      GameObject.Find("dropdown").transform.localScale = new Vector3(1, 1, 1);
+      GameObject.Find("btn_whosOnline").transform.localScale = new Vector3(1, 1, 1);
+      GameObject.Find("btn_status").transform.localScale = new Vector3(1, 1, 1);
+    }
+
+    public void showTopBar() {
+      GameObject.Find("dropdown").transform.localScale = new Vector3(0, 0, 0);
+      GameObject.Find("btn_whosOnline").transform.localScale = new Vector3(0, 0, 0);
+      GameObject.Find("btn_status").transform.localScale = new Vector3(0, 0, 0);
+    }
+
     public void showCoreUI() {
         GameObject.Find("ChatPanel").transform.localScale = new Vector3(1, 1, 1);
         GameObject.Find("dropdown").transform.localScale = new Vector3(1, 1, 1);
@@ -64,6 +77,7 @@ public class MenuScript : MonoBehaviour {
         GameObject.Find("btn_status").transform.localScale = new Vector3(0, 0, 0);
 
         CloseAllMenus ();
+        GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
         statusContainer.SetActive (true);
         Transform t  = statusContainer.GetComponent(typeof (Transform)) as Transform;
         //t.SetAsFirstSibling();
@@ -72,28 +86,34 @@ public class MenuScript : MonoBehaviour {
 
     public void OpenMiniGames() {
         CloseAllMenus ();
+        GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
         Debug.Log ("You Pressed MiniGames");
         menuOpen = true;
     }
 
     public void OpenConvergence() {
         CloseAllMenus();
+        GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
         Debug.Log("You Pressed Convergence");
         this.activeGuiObject =  (Object) gameObject.AddComponent <ConvergeGUI>();
         menuOpen=true;
     }
 
     public void OpenCardsfWild() {
+      
         Debug.Log("You Pressed CardsOfWild");
         menuOpen=true;
     }
 
     public void OpenDontEatMe() {
         CloseAllMenus ();
+        GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
+        menuOpen = true;
         this.activeGuiObject =  (Object)gameObject.AddComponent <DontEatMeGUI>();
     }
     public void OpenMultiplayerGames() {
         CloseAllMenus();
+        GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
         menuOpen = true;
         Debug.Log("You Pressed Open Multiplayer Games");
         this.activeGuiObject =  (Object) gameObject.AddComponent <MultiplayerGames>();
@@ -104,6 +124,7 @@ public class MenuScript : MonoBehaviour {
     public void OpenClashOfSpecies() {
         CloseAllMenus ();
         this.activeGuiObject =  (Object) gameObject.AddComponent <ClashOfSpeciesGUI>();
+        GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
         menuOpen=true;
     }
     
@@ -114,6 +135,7 @@ public class MenuScript : MonoBehaviour {
         }
         whosOnlineMenu.SetActive (false);
         statusContainer.SetActive(false);
+        GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = true;
         menuOpen = false;
         statusOpen = false;
     }
