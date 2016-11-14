@@ -929,9 +929,12 @@ public class MultiplayerGames : MonoBehaviour {
       SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;
       SD.Constants.PLAYER_NUMBER = args.playerNumber;
       Debug.Log ("The SD player number is " + args.playerNumber);
+	  Game.SwitchScene("SDReadyScene");
+		/* Removed by DH 2016-11-12 by suggestion from Rupal. See email. 
       if (SD.Constants.PLAYER_NUMBER == 2) {
           Game.SwitchScene("SDReadyScene");
       }
+      */
   }
     
 }
