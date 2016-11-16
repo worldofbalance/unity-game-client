@@ -58,7 +58,6 @@ public class SpeciesConstants
             range = _range;
             lore = _lore;
             biomass = _biomass;
-            
         }
     };
 
@@ -66,27 +65,24 @@ public class SpeciesConstants
 	private struct Prey
 	{
 		public string name;
-    public string lore; // Lore (i.e. description) taken from 'http://smurf.sfsu.edu/~wob/guide/species.php'
+        public string lore; // Lore (i.e. description) taken from 'http://smurf.sfsu.edu/~wob/guide/species.php'
 		public int speciesID;
 		public int health;
-    public int biomass;
+        public int biomass;
     
-
         // public int[] preyIDLIst; // TODO: create prey list --> includes plants, but might include other prey (TBD)
-    public int[] predatorIDList;
+        public int[] predatorIDList;
 
         // Constructor
-    public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList, string _lore, int _biomass)
+        public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList, string _lore, int _biomass)
 		{
 			name = _name;
 			speciesID = _speciesID;
 			health = _health;
-      predatorIDList = _predatorIDList;
-      lore = _lore;
-      biomass = _biomass;
-  
-
-		}
+            predatorIDList = _predatorIDList;
+            lore = _lore;
+            biomass = _biomass;
+        }
 	};
 
 	// Defines a predator
@@ -97,21 +93,21 @@ public class SpeciesConstants
 		public int speciesID;
 		public int hunger;
 		public int voracity;
-    public int biomass;
+        public int biomass;
 
         public int[] preyIDList;
         // public int[] predatorIDLIst; // TODO: create predator list --> includes larger predators (TBD)
 
         // Constructor
-    public Predator (string _name, int _speciesID, int _hunger, int _voracity, int[] _preyIDList, string _lore, int _biomass)
+        public Predator (string _name, int _speciesID, int _hunger, int _voracity, int[] _preyIDList, string _lore, int _biomass)
 		{
-			name = _name;
+            name = _name;
 			speciesID = _speciesID;
 			hunger = _hunger;
 			voracity = _voracity;
-      preyIDList = _preyIDList;
-      lore = _lore;
-      biomass = _biomass;
+            preyIDList = _preyIDList;
+            lore = _lore;
+            biomass = _biomass;
 		}
 	};
 
@@ -122,14 +118,15 @@ public class SpeciesConstants
         (
             "Acacia",                           // Name
             (int)SPECIES_ID.Acacia,             // Species ID
-            new int[1][]                        // Effect range
+            new int[4][]                        // Effect range
             {
                 // . * .
                 // * O *
                 // . * .
-          
-                new int[2]{0, -1}
-
+                new int[2]{0, 1},
+                new int[2]{1, 0},
+                new int[2]{0, -1},
+                new int[2]{-1, 0}
             },
             // Lore
             "Acacia is a genus of shrubs and trees belonging to the subfamily Mimosoideae of the family Fabaceae, " +
@@ -140,13 +137,15 @@ public class SpeciesConstants
         (
             "Big Tree",                         // Name
             (int)SPECIES_ID.BigTree,            // Species ID
-            new int[1][]                        // Effect range
+            new int[4][]                        // Effect range
             {
                 // * . *
                 // . O .
                 // * . *
-                new int[2]{0, 1},
-
+                new int[2]{1, 1},
+                new int[2]{1, -1},
+                new int[2]{-1, -1},
+                new int[2]{-1, 1}
             },
             // Lore
             "Trees are an important component of the natural landscape because of their prevention of erosion " +
@@ -159,16 +158,19 @@ public class SpeciesConstants
         (
             "Baobab",                           // Name
             (int)SPECIES_ID.Boabab,             // Species ID
-            new int[3][]                        // Effect range
+            new int[8][]                        // Effect range
             {
                 // * * *
                 // * O *
                 // * * *
+                new int[2]{0, 1},
                 new int[2]{1, 1},
-                new int[2]{-1, 1},
+                new int[2]{1, 0},
+                new int[2]{1, -1},
+                new int[2]{0, -1},
+                new int[2]{-1, -1},
                 new int[2]{-1, 0},
-    
-
+                new int[2]{-1, 1}
             },
             // Lore
             "Baobab is a genus of eight species of tree, six native to Madagascar, one native to mainland Africa " +
@@ -180,20 +182,12 @@ public class SpeciesConstants
         (
             "Grains And Seeds",                 // Name
             (int)SPECIES_ID.GrainsAndSeeds,     // Species ID
-            new int[8][]                        // Effect range
+            new int[1][]                        // Effect range
             {
                 // . . .
                 // . O *
                 // . . .
-                new int[2]{-1, 0},
-                new int[2]{-1, 1},
-                new int[2]{-1, 2},
-                new int[2]{-1, 3},
-                new int[2]{1, 0},
-                new int[2]{1, 1},
-                new int[2]{1, 2},
-                new int[2]{1, 3},
-
+                new int[2]{-1, 0}
             },
             // Lore
             "Special",
@@ -203,21 +197,13 @@ public class SpeciesConstants
         (
             "Grass And Herbs",                  // Name
             (int)SPECIES_ID.GrassAndHerbs,      // Species ID
-            new int[10][]                        // Effect range
+            new int[2][]                        // Effect range
             {
                 // . * .
                 // . O .
                 // . * .
                 new int[2]{0, 1},
-                new int[2]{0, -1},
-                new int[2]{1, 1},
-                new int[2]{1, -1},
-                new int[2]{0, 2},
-                new int[2]{0, -2},
-                new int[2]{1, 2},
-                new int[2]{1, -2},
-                new int[2]{1, 3},
-                new int[2]{1, -3}
+                new int[2]{0, -1}
             },
             // Lore
             "Grasses are among the most versatile life forms. They became widespread toward the end of the " +
@@ -229,17 +215,14 @@ public class SpeciesConstants
         (
             "Trees And Shrubs",                 // Name
             (int)SPECIES_ID.TreesAndShrubs,     // Species ID
-            new int[6][]                        // Effect range
+            new int[3][]                        // Effect range
             {
                 // . . * 
                 // . O * 
                 // . . * 
                 new int[2]{-1, 1},
                 new int[2]{-1, 0},
-                new int[2]{-1, -1},
-                new int[2]{-2, 1},
-                new int[2]{-2, 0},
-                new int[2]{-2, -1}
+                new int[2]{-1, -1}
             },
             // Lore
             "Special",
@@ -250,17 +233,14 @@ public class SpeciesConstants
         (
           "Fruits And Nectar",                 // Name
           (int)SPECIES_ID.FruitsAndNectar,     // Species ID
-          new int[6][]                        // Effect range
+          new int[3][]                        // Effect range
           {
-          // . . * 
-          // . O * 
-          // . . * 
-          new int[2]{1, 1},
-          new int[2]{-1, 0},
-          new int[2]{1, -1},
-          new int[2]{1, 3},
-          new int[2]{-3, 0},
-          new int[2]{1, -3},
+              // . . .
+              // . O * * *
+              // . . .
+              new int[2]{-1, 0},
+              new int[2]{-2, 0},
+              new int[2]{-3, 0}
           },
           // Lore
           "Special",
@@ -498,6 +478,9 @@ public class SpeciesConstants
     /* PRIVATE METHODS */
     /**
         Internal method for removing whitespace and hyphen chars from a string.
+
+        @param  s   an input string
+        @return a new string object
     */
     private static string Compact (string s)
     {
@@ -521,6 +504,9 @@ public class SpeciesConstants
 	/* PUBLIC METHODS */
 	/**
 		Returns a species ID associated with a species name.
+
+        @param  name    species name (string)
+        @return species ID (int)
 	*/
 	public static int SpeciesID (string name)
 	{
@@ -529,6 +515,9 @@ public class SpeciesConstants
 
 	/**
 		Returns a name associated with a species ID.
+
+        @param  id  species ID (int)
+        @return species name (string)
 	*/
 	public static string SpeciesName (int id)
 	{
@@ -538,6 +527,9 @@ public class SpeciesConstants
     /**
         Returns a plant's effect range.
         Search by species name.
+
+        @param  name    species name (string)
+        @return 2d int array
     */
     public static int[][] Range (string name)
     {
@@ -552,6 +544,9 @@ public class SpeciesConstants
     /**
         Returns a plant's effect range.
         Search by species ID.
+
+        @param  id  species ID (int)
+        @return 2d int array
     */
     public static int[][] Range (int id)
     {
@@ -566,6 +561,9 @@ public class SpeciesConstants
 	/**
 		Returns a prey's starting health.
 		Search by species name.
+
+        @param  name    species name (string)
+        @return species starting health (int)
 	*/
 	public static int Health (string name)
 	{
@@ -580,6 +578,9 @@ public class SpeciesConstants
 	/**
 		Returns a prey's starting health.
 		Search by species ID.
+
+        @param  id  species ID (int)
+        @return species starting health (int)
 	*/
 	public static int Health (int id)
 	{
@@ -594,6 +595,9 @@ public class SpeciesConstants
 	/**
 		Returns a predator's starting hunger.
 		Search by species name.
+
+        @param  name    species name (string)
+        @return species starting hunger (int)
 	*/
 	public static int Hunger (string name)
 	{
@@ -608,6 +612,9 @@ public class SpeciesConstants
 	/**
 		Returns a predator's starting hunger.
 		Search by species ID.
+
+        @param  id  species ID (int)
+        @return species starting hunger (int)
 	*/
 	public static int Hunger (int id)
 	{
@@ -622,6 +629,9 @@ public class SpeciesConstants
 	/**
 		Returns a predator's starting voracity.
 		Search by species name.
+
+        @param  name    species name (string)
+        @return species starting voracity (int)
 	*/
 	public static int Voracity (string name)
 	{
@@ -636,6 +646,9 @@ public class SpeciesConstants
 	/**
 		Returns a predator's starting voracity.
 		Search by species ID.
+
+        @param  id  species ID (int)
+        @return species starting voracity (int)
 	*/
 	public static int Voracity (int id)
 	{
@@ -650,6 +663,9 @@ public class SpeciesConstants
 	/**
 		Returns a species type.
 		Search by species name.
+
+        @param  name    species name (string)
+        @return species type (short)
 	*/
 	public static short SpeciesType (string name)
 	{
@@ -672,6 +688,9 @@ public class SpeciesConstants
 	/**
 		Returns a species type.
 		Search by species ID.
+
+        @param  id  species ID (int)
+        @return species type (short)
 	*/
 	public static short SpeciesType (int id)
 	{
@@ -694,6 +713,9 @@ public class SpeciesConstants
     /**
         Returns a predator list for a species as species ID values.
         Search by species name.
+
+        @param  name    species name (string)
+        @return an int array
     */
     public static int[] PredatorIDList (string name)
     {
@@ -710,6 +732,9 @@ public class SpeciesConstants
     /**
         Returns a predator list for a species as species ID values.
         Search by species ID.
+
+        @param  id  species ID (int)
+        @return an int array
     */
     public static int[] PredatorIDList (int id)
     {
@@ -726,6 +751,9 @@ public class SpeciesConstants
     /**
         Returns a prey list for a species as species ID values.
         Search by species name.
+
+        @param  name    species name (string)
+        @return an int array
     */
     public static int[] PreyIDList (string name)
     {
@@ -742,6 +770,9 @@ public class SpeciesConstants
     /**
         Returns a prey list for a species as species ID values.
         Search by species ID.
+
+        @param  id  species ID (int)
+        @return an int array
     */
     public static int[] PreyIDList (int id)
     {
@@ -758,6 +789,9 @@ public class SpeciesConstants
     /**
         Returns the lore for a species.
         Search by species name.
+
+        @param  name    species name (string)
+        @return species lore (string)
     */
     public static string SpeciesLore (string name)
     {
@@ -780,6 +814,9 @@ public class SpeciesConstants
     /**
         Returns the lore for a species.
         Search by species name.
+
+        @param  id  species ID (int)
+        @return species lore (string)
     */
     public static string SpeciesLore (int id)
     {
@@ -799,69 +836,82 @@ public class SpeciesConstants
         return DEFAULT_LORE;
     }
 
-  public static int Biomass(string name){
+    /**
+        Returns the biomass for a species.
+        Search by species name.
 
-    foreach (Plant plant in PLANTS)
+        @param  name    species name (string)
+        @return species biomass (int)
+    */
+    public static int Biomass (string name)
     {
-      if (plant.name == name)
-        return plant.biomass;
-    }
-
-    foreach (Prey prey in PREY)
-    {
-      if (prey.name == name)
-        return prey.biomass;
-    }
-    // Search predators
-    foreach (Predator predator in PREDATORS)
-    {
-      if (predator.name == name)
-        return predator.biomass;
-    }
-    // Otherwise return default
-    return 0;
-  }
-
-  public bool EatenBy(string _prey, string _predator)
-  {
-    int predatorID = SpeciesID ( _predator);
-    foreach (Prey prey in PREY)
-    {
-      
-      if (prey.name == _prey) {
-
-        for(int i = 0; i< prey.predatorIDList.Count(); i++){
-          if (prey.predatorIDList [i] == predatorID)
-            return true;
+        // Search plants
+        foreach (Plant plant in PLANTS)
+        {
+            if (plant.name == name)
+                return plant.biomass;
         }
-      
-      }
-        
-        
-    }
-
-    return false;
-  }
-
-  public bool Eats(string _predator, string _prey){
-    
-    int predatorID = SpeciesID ( _predator);
-    foreach (Prey prey in PREY)
-    {
-
-      if (prey.name == _prey) {
-
-        for(int i = 0; i< prey.predatorIDList.Count(); i++){
-          if (prey.predatorIDList [i] == predatorID)
-            return true;
+        // Search prey
+        foreach (Prey prey in PREY)
+        {
+            if (prey.name == name)
+                return prey.biomass;
         }
-
-      }
-
-
+        // Search predators
+        foreach (Predator predator in PREDATORS)
+        {
+            if (predator.name == name)
+                return predator.biomass;
+        }
+        // Otherwise return default
+        return 0;
     }
 
-    return false;
-  }
+    /**
+        Determines if a prey is eaten by a predator.
 
+        @param  _prey       name of prey (string)
+        @param  _predator   name of predator (string)
+        @return true if prey is eaten by predator, false otherwise
+    */
+    public bool EatenBy (string _prey, string _predator)
+    {
+        int predatorID = SpeciesID(_predator);
+        foreach (Prey prey in PREY)
+        {
+            if (prey.name == _prey)
+            {
+                for (int i = 0; i< prey.predatorIDList.Count(); i++)
+                {
+                    if (prey.predatorIDList [i] == predatorID)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+        Determines if a predator eats a prey.
+
+        @param  _predator   name of predator (string)
+        @param  _prey       name of prey (string)
+        @return true if predator eats prey, false otherwise
+    */
+    public bool Eats (string _predator, string _prey)
+    {
+        int predatorID = SpeciesID ( _predator);
+        foreach (Prey prey in PREY)
+        {
+            if (prey.name == _prey)
+            {
+                for (int i = 0; i< prey.predatorIDList.Count(); i++)
+                {
+                    if (prey.predatorIDList [i] == predatorID)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
 }
