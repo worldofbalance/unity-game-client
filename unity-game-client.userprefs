@@ -1,13 +1,11 @@
-﻿<Properties StartupItem="Assembly-CSharp.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleController.cs">
+﻿<Properties StartupConfiguration="{3E4682C0-1E0F-DD6A-6268-0D4E92AB75F1}|Unit Tests">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Config.cs">
     <Files>
-      <File FileName="Assets/Scripts/Config.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Network/NetworkProtocolTable.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/Shop/ClashAttackShop.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Config.cs" Line="3" Column="34" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Shop/ClashAttackShop.cs" Line="17" Column="46" />
       <File FileName="Assets/RRAssets/Network/RRConnectionManager.cs" Line="1" Column="1" />
       <File FileName="Assets/RRAssets/Scripts/SelectionScene/SelectionManager.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/PauseMenu.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/pauseMenu.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleUnit.cs" Line="34" Column="66" />
       <File FileName="Assets/Scripts/MultiplayerGames.cs" Line="1" Column="1" />
       <File FileName="Assets/RRAssets/Scripts/Constants.cs" Line="1" Column="1" />
@@ -21,7 +19,7 @@
       <File FileName="Assets/Scripts/ClashNotificationGUI.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/ClashHintsGUI.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/ClashLeaderboardGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleController.cs" Line="14" Column="13" />
+      <File FileName="Assets/Scripts/ClashOfSpecies/Battle/ClashBattleController.cs" Line="50" Column="1" />
       <File FileName="Assets/Scripts/ClashOfSpeciesGUI.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/Containers/Player.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/GameState.cs" Line="5" Column="1" />
@@ -31,12 +29,15 @@
       <File FileName="Assets/Scripts/Network/Protocol/ClashOfSpecies/ClashEndBattleProtocol.cs" Line="8" Column="36" />
       <File FileName="Assets/Scripts/Network/Protocol/ClashOfSpecies/ClashSpeciesListProtocol.cs" Line="10" Column="38" />
       <File FileName="Assets/Scripts/ClashOfSpecies/ClashSplash.cs" Line="32" Column="47" />
+      <File FileName="Assets/RRAssets/Scripts/SpeciesTable.cs" Line="13" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
   <DisabledProjects>
     <String>Assembly-CSharp-firstpass.csproj</String>
   </DisabledProjects>

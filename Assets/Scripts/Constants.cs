@@ -6,23 +6,14 @@ public class Constants
 {
     public static readonly float UnitColliderRadius = 5.0f;
     //    public static readonly int REMOTE_PORT_COS = 9257;
-    public static readonly int REMOTE_PORT_COS = 9254;
     public static readonly string TAG_HEALTH_BAR = "HealthBar";
     public static string SESSION_ID_COS = "";
 
     // Constants
     public static readonly string CLIENT_VERSION = "1.00";
-
-    // public static readonly string REMOTE_HOST = "localhost";
-    public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
-    // IP address may be 130.212.3.51
-
-    //public static readonly int REMOTE_PORT = 9234;
-    // public static readonly int REMOTE_PORT = 9270;    // 9270 is new port as of 2016-9-13 - cvg account
-    //20041;
-    //    public static readonly int REMOTE_PORT = 9234;
-    //9257 9255 for locahost, 9257 for Anu's server
+    public static readonly string REMOTE_HOST = "localhost";
     public static readonly int REMOTE_PORT = 9255;    // 9255  wob_wob account
+    public static readonly int REMOTE_PORT_COS = 9254;
     public static readonly float HEARTBEAT_RATE = 1f;
 	
     // Other
