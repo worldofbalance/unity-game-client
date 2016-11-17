@@ -194,7 +194,7 @@ public class BarGraph : MonoBehaviour
 		// Handle Mouseover Collisions
 		HandleCollision ();
 
-		GUI.DragWindow ();
+		// GUI.DragWindow ();
 	}
 
 	public void SetMode (int mode)
