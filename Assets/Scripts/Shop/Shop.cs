@@ -83,33 +83,14 @@ public class Shop : MonoBehaviour {
   }
   
   void ShopMakeWindow(int id) {
-    //if (GUI.Button(new Rect(10, 50, width - 20, 30), "Select Tile")) Submit();
-    //GUILayout.Label("Species:");
-    //GUI.SetNextControlName("username_field");
-    //Debug.Log("Reached here!!!");
     if (GUI.Button(new Rect(10, 50, 80, 30), "Species")) {
-      //GUIStyle style = new GUIStyle(GUI.skin.label);
-      //style.fontSize = 18;
-      //Debug.Log("Clicked button!!");
-      
-      //isHidden = true;
-      //GUI.Label(new Rect(30, 30, 80, 50), "Choose Your Species", style);
-      
       GameObject.Find("Cube").GetComponent<ShopPanel>().Show();
       GameObject.Find("Cube").GetComponent<ShopCartPanel>().Show();
       GameObject.Find("Cube").GetComponent<ShopInfoPanel>().Show();
       GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = true;
       GameObject.Find("MenuScript").GetComponent<MenuScript>().disableDropDown();
       GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
-//			GameObject.Find("MapCamera").GetComponent<MapCamera>().enabled = false;
-//			GameObject.Find("MapCamera").GetComponent<MapCamera>().RoamingCursor.SetActive(false);
       Hide();
-      /*
-      //shopObject.GetComponent<ShopPanel>().MakeWindow();
-            //shopObject.GetComponent<ShopInfoPanel>().MakeWindow();
-            //shopObject.GetComponent<ShopCartPanel>().MakeWindow();
-    
-            GUI.DragWindow(); */
     }
   }
   
