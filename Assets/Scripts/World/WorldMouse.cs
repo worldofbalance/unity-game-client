@@ -37,10 +37,13 @@ public class WorldMouse : MonoBehaviour
 
         purchaseCursor = GameObject.Find("PurchaseCursor") as GameObject;
         purchaseCursor.SetActive(false);
-        tileUi.SetActive(false);
+        
+        if (tileUi != null) {
+          tileUi.SetActive(false);
+          purchaseButton = tileUi.transform.GetChild(6).GetComponent<Button>();
+          purchaseButton.interactable = false;
+        }
 
-        purchaseButton = tileUi.transform.GetChild(6).GetComponent<Button>();
-        purchaseButton.interactable = false;
 
         tilePurchaseSuccess = GameObject.Find("Canvas/PurchaseSuccess") as GameObject;
         tilePurchaseSuccess.SetActive(false);
