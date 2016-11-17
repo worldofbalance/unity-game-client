@@ -57,6 +57,7 @@ public class ClashOfSpeciesGUI : MonoBehaviour
     
         if (GUI.Button (new Rect (windowRect.width / 2 + 80, windowRect.height - 40, 100, 30), "Quit")) {
             GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = false;
+            GameObject.Find("MenuScript").GetComponent<MenuScript>().enableDropdown();
             GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = true;
             Submit ();
         }

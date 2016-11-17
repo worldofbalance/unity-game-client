@@ -46,6 +46,7 @@ public class ConvergeGUI : MonoBehaviour {
 		if (GUI.Button(new Rect(windowRect.width / 2 + 80, windowRect.height - 40, 100, 30), "Quit")) {
       GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = false;
       GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = true;
+      GameObject.Find("MenuScript").GetComponent<MenuScript>().enableDropdown();
 			Submit();
 		}
 		

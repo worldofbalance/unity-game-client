@@ -12,13 +12,13 @@ public class DropDownMenu : MonoBehaviour {
     private GameController gameController;
      
 
-	// Use this for initialization
-	void Start () {
-            dropdownMenu.onValueChanged.AddListener (delegate {
-                dropdownMenuValueChangedHandler (dropdownMenu);
-            });
+	  // Use this for initialization
+	    void Start () {
+        dropdownMenu.onValueChanged.AddListener (delegate {
+          dropdownMenuValueChangedHandler (dropdownMenu);
+        });
         GameController.getInstance ();
-    }
+      }
     
         void Update(){
            
@@ -54,5 +54,5 @@ public class DropDownMenu : MonoBehaviour {
             surrenderPanelCanvas.SetActive(false);
         }
 
-}
+    }
 }

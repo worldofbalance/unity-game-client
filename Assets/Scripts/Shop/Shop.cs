@@ -99,6 +99,7 @@ public class Shop : MonoBehaviour {
       GameObject.Find("Cube").GetComponent<ShopCartPanel>().Show();
       GameObject.Find("Cube").GetComponent<ShopInfoPanel>().Show();
       GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = true;
+      GameObject.Find("MenuScript").GetComponent<MenuScript>().disableDropDown();
       GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
 //			GameObject.Find("MapCamera").GetComponent<MapCamera>().enabled = false;
 //			GameObject.Find("MapCamera").GetComponent<MapCamera>().RoamingCursor.SetActive(false);
@@ -130,7 +131,8 @@ public class Shop : MonoBehaviour {
   public void Show() {
     GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = false;
     GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = true;
-    GameObject.Find("MenuScript").GetComponent<MenuScript>().hideTopBar();
+    GameObject.Find("MenuScript").GetComponent<MenuScript>().enableDropdown();
+    // GameObject.Find("MenuScript").GetComponent<MenuScript>().show
     gInshop = false;
     isHidden = false;
   }

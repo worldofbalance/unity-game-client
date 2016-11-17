@@ -435,6 +435,7 @@ public class MultiplayerGames : MonoBehaviour {
     if (GUI.Button(new Rect(windowRect.width - 110, windowRect.height - 40, 100, 30), "Quit")) {
       GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = true;
       GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = false;
+      GameObject.Find("MenuScript").GetComponent<MenuScript>().enableDropdown();
       Quit();
     }
     GUI.enabled = true;

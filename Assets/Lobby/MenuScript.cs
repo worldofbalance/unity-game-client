@@ -28,6 +28,7 @@ public class MenuScript : MonoBehaviour {
     public void OpenWhosOnline(){
         CloseAllMenus ();
         GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
+        disableDropDown();
         //Call method to request players 
         CurrentlyOnline online = this.GetComponent<CurrentlyOnline>();
         Debug.Log("Currently Online instantiated");
@@ -63,6 +64,14 @@ public class MenuScript : MonoBehaviour {
       GameObject.Find("btn_status").transform.localScale = new Vector3(0, 0, 0);
     }
 
+    public void enableDropdown() {
+      GameObject.Find("container").transform.localScale = new Vector3(1, 1, 1);
+    }
+
+    public void disableDropDown() {
+      GameObject.Find("container").transform.localScale = new Vector3(0, 0, 0);
+    }
+
     public void showCoreUI() {
         GameObject.Find("ChatPanel").transform.localScale = new Vector3(1, 1, 1);
         GameObject.Find("dropdown").transform.localScale = new Vector3(1, 1, 1);
@@ -78,6 +87,7 @@ public class MenuScript : MonoBehaviour {
 
         CloseAllMenus ();
         GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
+        disableDropDown();
         statusContainer.SetActive (true);
         Transform t  = statusContainer.GetComponent(typeof (Transform)) as Transform;
         //t.SetAsFirstSibling();
@@ -87,6 +97,7 @@ public class MenuScript : MonoBehaviour {
     public void OpenMiniGames() {
         CloseAllMenus ();
         GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
+        disableDropDown();
         Debug.Log ("You Pressed MiniGames");
         menuOpen = true;
     }
@@ -108,11 +119,13 @@ public class MenuScript : MonoBehaviour {
     public void OpenDontEatMe() {
         CloseAllMenus ();
         GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
+        disableDropDown();
         menuOpen = true;
         this.activeGuiObject =  (Object)gameObject.AddComponent <DontEatMeGUI>();
     }
     public void OpenMultiplayerGames() {
         CloseAllMenus();
+        disableDropDown();
         GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
         menuOpen = true;
         Debug.Log("You Pressed Open Multiplayer Games");
@@ -125,6 +138,7 @@ public class MenuScript : MonoBehaviour {
         CloseAllMenus ();
         this.activeGuiObject =  (Object) gameObject.AddComponent <ClashOfSpeciesGUI>();
         GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
+        disableDropDown();
         menuOpen=true;
     }
     
@@ -136,6 +150,7 @@ public class MenuScript : MonoBehaviour {
         whosOnlineMenu.SetActive (false);
         statusContainer.SetActive(false);
         GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = true;
+        this.enableDropdown();
         menuOpen = false;
         statusOpen = false;
     }
