@@ -52,13 +52,13 @@ public class MenuScript : MonoBehaviour {
         }
     }
 
-    public void hideTopBar() {
+    public void showTopBar() {
       GameObject.Find("dropdown").transform.localScale = new Vector3(1, 1, 1);
       GameObject.Find("btn_whosOnline").transform.localScale = new Vector3(1, 1, 1);
       GameObject.Find("btn_status").transform.localScale = new Vector3(1, 1, 1);
     }
 
-    public void showTopBar() {
+    public void hideTopBar() {
       GameObject.Find("dropdown").transform.localScale = new Vector3(0, 0, 0);
       GameObject.Find("btn_whosOnline").transform.localScale = new Vector3(0, 0, 0);
       GameObject.Find("btn_status").transform.localScale = new Vector3(0, 0, 0);

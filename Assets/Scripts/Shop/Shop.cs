@@ -113,13 +113,15 @@ public class Shop : MonoBehaviour {
     GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = false;
     GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = true;
     GameObject.Find("MenuScript").GetComponent<MenuScript>().enableDropdown();
-    // GameObject.Find("MenuScript").GetComponent<MenuScript>().show
+    GameObject.Find("MenuScript").GetComponent<MenuScript>().showTopBar();
     gInshop = false;
     isHidden = false;
   }
   
   public void Hide() {
-    GameObject.Find("MenuScript").GetComponent<MenuScript>().showTopBar();
+    GameObject.Find("MenuScript").GetComponent<MenuScript>().hideTopBar();
+    GameObject.Find("MenuScript").GetComponent<MenuScript>().disableDropDown();
+    GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
     gInshop = true;
     isHidden = true;
   }
