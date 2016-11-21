@@ -60,8 +60,9 @@ public class MultiConvergeGame : MonoBehaviour
 	private bool prevActive = false;
 	private bool oppGraph = false;
 	// DH change
-	// eliminate blink. Replace isProcessing with betAccepted
-	// private bool isProcessing = true;
+	// eliminate blink. 
+	// isProcessing is just used to control access to prior attempts. Matches Converge
+	private bool isProcessing = false;
 	// private bool blinkOn = true;
 	//public Texture background;
 	private Texture2D bgTexture;
@@ -175,7 +176,6 @@ public class MultiConvergeGame : MonoBehaviour
 	private int[] playerLastImprove;
 	private int improveValue = 0;      // This is the players score. Higher is better. Check BarGraph to determine formula
 	private string buttonText;
-	private bool debug1;
 
 	void Awake ()
 	{
@@ -253,7 +253,6 @@ public class MultiConvergeGame : MonoBehaviour
 		playerId = new int[5];
 		playerWinnings = new int[5];
 		playerLastImprove = new int[5];
-		debug1 = false;
 	}
 	
 	// Use this for initialization
@@ -494,25 +493,6 @@ public class MultiConvergeGame : MonoBehaviour
 			Game.SwitchScene("World");
 		}
 
-		/* Player does not select Ecosystem here. Host selects at beginning. 
-		GUI.BeginGroup (new Rect (bufferBorder, 0, windowRect.width, 100));
-		style.alignment = TextAnchor.LowerLeft;
-		style.fontSize = 14;
-		GUI.Label (new Rect (0, 0, 300, 30), "Select Ecosystem:", style);
-		GUI.SetNextControlName ("ecosystem_idx_field");
-		int new_idx;
-		new_idx = GUI.SelectionGrid (new Rect (0, 35, windowRect.width - 20, 30), ecosystem_idx, 
-                        ecosysDescripts, ecosysDescripts.Length);
-		GUI.EndGroup ();
-		if (!isProcessing && new_idx != ecosystem_idx) {
-			//Debug.Log ("Updating selected ecosystem.");
-			SetIsProcessing (true);
-			new_ecosystem_idx = new_idx;
-			new_ecosystem_id = GetEcosystemId (new_ecosystem_idx);
-			GetPriorAttempts ();
-		}
-		*/
-
 		if (graphs != null) {
 			graphs.DrawGraphs ();
 		}
@@ -594,6 +574,7 @@ public class MultiConvergeGame : MonoBehaviour
 				if (prior == null && currAttempt.ParamsUpdated ()) {
 					betAccepted = true;
 					Submit ();
+					isProcessing = true;  // Block access to prior attempt buttons during simulation
 					// SetIsProcessing (true);
 				} else if (!showPopup && !gameOver) {
 					int prior_idx = attemptList.FindIndex (entry => entry.config == currAttempt.config);
@@ -1053,7 +1034,7 @@ public class MultiConvergeGame : MonoBehaviour
 	{
 		GUI.Label (new Rect (bufferBorder + 270 + screenOffset, height - 30 - bufferBorder, 110, 30), "Reset to:", style);
 		Rect initial = new Rect (bufferBorder * 2 + 330 + screenOffset, height - 30 - bufferBorder, 50, 30);
-		if (GUI.Button (initial, "Initial") && !betAccepted) {
+		if (GUI.Button (initial, "Initial") && !isProcessing) {
 			ResetCurrAttempt (Constants.ID_NOT_SET);
 		}
 		//use slider to accommodate more reset attempt buttons that fit on the screen
@@ -1061,7 +1042,7 @@ public class MultiConvergeGame : MonoBehaviour
 		int sliderWidth = 100;
 		if (!isResetSliderInitialized) {
 			InitializeResetSlider (width - (initial.x + initial.width + sliderWidth + bufferBorder), widthPer);
-			isResetSliderInitialized = !betAccepted;
+			isResetSliderInitialized = !isProcessing;
 		}
 		int maxVal = attemptList.Count - maxResetSliderValue + resetSliderValue;
 		for (int i = resetSliderValue; i < maxVal; i++) {
@@ -1073,7 +1054,7 @@ public class MultiConvergeGame : MonoBehaviour
 			          ), 
 			    String.Format ("#{0}", i + 1)
 				)
-			    && !betAccepted) {
+			    && !isProcessing) {
 				ResetCurrAttempt (i);
 			}
 		}
@@ -1324,6 +1305,7 @@ public class MultiConvergeGame : MonoBehaviour
 		} else {
 			Debug.LogError ("Submission of new attempt failed to produce results.");
 			// betAccepted = false;
+			isProcessing = false;
 			// SetIsProcessing (false);
 		}
 	}
@@ -1577,9 +1559,7 @@ public class MultiConvergeGame : MonoBehaviour
                 ecosystemList[ecosystem_idx].markerEnabled
 			);
 		}
-		debug1 = true;
 		FinalizeAttemptUpdate (attemptIdx, false);
-		debug1 = false;
 	}
 
 	//update variables and graph configuration as necessary with updated attempt info
@@ -1600,6 +1580,7 @@ public class MultiConvergeGame : MonoBehaviour
 		currAttempt.ParseConfig (manager);
 
 		// betAccepted = false;
+		isProcessing = false;
 		// SetIsProcessing (false);
 	}
 	
