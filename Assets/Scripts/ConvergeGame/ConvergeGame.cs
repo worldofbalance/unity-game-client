@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using System;
 using System.Collections;
@@ -763,7 +763,7 @@ public class ConvergeGame : MonoBehaviour
 	{
 		ResponseConvergeEcosystems response = new ResponseConvergeEcosystems ();
 		
-		string filename = "converge-ecosystems.txt";
+		string filename = "converge-ecosystems";
 		ecosystemList = new List<ConvergeEcosystem> ();
 		
 		
