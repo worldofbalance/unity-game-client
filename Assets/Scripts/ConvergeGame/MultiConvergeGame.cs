@@ -1594,7 +1594,7 @@ public class MultiConvergeGame : MonoBehaviour
 		ResponseConvergeEcosystems response = new ResponseConvergeEcosystems ();
 		
 		// string filename = "converge-ecosystems-Ben";  // Problem with file 
-		string filename = "converge-ecosystems.txt";
+		string filename = "converge-ecosystems";
 
         // string filenameR = "converge-ecosystems-Ben-sliders.txt";
 		string filenameR = "";

@@ -910,7 +910,7 @@ public class MultiplayerGames : MonoBehaviour {
   private void ReadConvergeEcosystemsFileCount ()
   {
     // string filename = "converge-ecosystems-Ben";  // Problem with file
-		string filename = "converge-ecosystems.txt";
+		string filename = "converge-ecosystems";   // remove txt extension. It has binary chars. Problems on mac
 		int ecosystemCnt;
 
 		if (!File.Exists (filename)) {
