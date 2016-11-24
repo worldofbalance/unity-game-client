@@ -1,87 +1,61 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/**
+    TODO: proper documentation
+    TODO: clean up the code formatting:
+        - Eliminate superfluous whitespace and newlines
+        - Use proper indentation
+*/
 public class DemMain : MonoBehaviour
 {
-  public  GameObject mainObject;
+    // Public data members
+    public  GameObject mainObject;
+    public  GameObject currentSelection;
+    public  DemBoard boardController;
+    public  DemAnimalFactory[] predators;
 
-	public  GameObject currentSelection;
-
-  private  GameObject gameBoard;
-
-  public  DemBoard boardController;
-
-	private Vector3 buildOrigin;
-
-  public  DemAnimalFactory[] predators;
-
-  private DemTweenManager tweenManager;
-
-  private BuildMenu buildMenu;
-
-  private DemTurnSystem turnSystem;
-
-
-
+    // Private data members
+    private  GameObject gameBoard;
+    private Vector3 buildOrigin;
+    private DemTweenManager tweenManager;
+    private BuildMenu buildMenu;
+    private DemTurnSystem turnSystem;
 
     // Use this for initialization
-    void Awake()
-    {
+    void Awake () {
+        mainObject = GameObject.Find ("MainObject");
+        tweenManager = mainObject.GetComponent<DemTweenManager> ();
+        buildMenu = mainObject.GetComponent<BuildMenu> ();
+        // Setup Play board
+        //boardGroup = new GameObject("GameBoard");
+        gameBoard = GameObject.Find("GameBoard");
+        //Keep track of our tiles
+        boardController = gameBoard.GetComponent<DemBoard> ();
+        // Initialize turn system
+        turnSystem = mainObject.GetComponent<DemTurnSystem> ();
 
-      mainObject = GameObject.Find ("MainObject");
-      tweenManager = mainObject.GetComponent<DemTweenManager> ();
-      buildMenu = mainObject.GetComponent<BuildMenu> ();
-      // Setup Play board
-      //boardGroup = new GameObject("GameBoard");
-      gameBoard = GameObject.Find("GameBoard");
-      //Keep track of our tiles
-      boardController = gameBoard.GetComponent<DemBoard> ();
+        // Initialize predator list
+        currentSelection = null;
+        predators = new DemAnimalFactory[6];
 
-      turnSystem = mainObject.GetComponent<DemTurnSystem> ();
-
-
-      //Pick predators
-
-    
-    	currentSelection = null;
-
-      predators = new DemAnimalFactory[6];
-      predators [0] = new DemAnimalFactory ("Bat-Eared Fox"); 
-      predators [1] =  new DemAnimalFactory ("Black Mamba"); 
-      predators [2] =  new DemAnimalFactory ("Serval Cat"); 
-      predators [3] =  new DemAnimalFactory ("African Wild Dog"); 
-      predators [4] =  new DemAnimalFactory ("Leopard"); 
-      predators [5] =  new DemAnimalFactory ("Lion"); 
-        
-
- 
-
-
-        
-        
-
-  
-
-
+        predators [0] = new DemAnimalFactory ("Bat-Eared Fox"); 
+        predators [1] =  new DemAnimalFactory ("Black Mamba"); 
+        predators [2] =  new DemAnimalFactory ("Serval Cat"); 
+        predators [3] =  new DemAnimalFactory ("African Wild Dog"); 
+        predators [4] =  new DemAnimalFactory ("Leopard"); 
+        predators [5] =  new DemAnimalFactory ("Lion"); 
     }
 
 
-  void Start()
-
-  {
-    DemAudioManager.audioBg.Play();
-
-    for (int x = 0; x < 9; x++)
-    {
-
-      for (int y = 0; y < 5; y++)
-      {
-        boardController.Add (x, y );
-
-      }
-
+    void Start () {
+        DemAudioManager.audioBg.Play();
+        for (int x = 0; x < 9; x++) {
+            for (int y = 0; y < 5; y++) {
+                boardController.Add (x, y);
+            }
+        }
     }
-  }
 
     // Update is called once per frame
     void Update()

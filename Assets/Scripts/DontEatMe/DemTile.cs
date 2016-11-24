@@ -5,6 +5,7 @@ using System.Collections;
 
 /**
     The DemTile class represents a single tile of the Don't Eat Me grid board.
+    TODO: some methods need proper documentation
 */
 public class DemTile : MonoBehaviour
 {
