@@ -3,47 +3,49 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Remoting;
 
+/**
+    TODO: proper documentation
+    TODO: set tab stop to 4 spaces
+*/
 public class DemBoard : MonoBehaviour {
-  public GameObject[,] Tiles = new GameObject[9 , 5];
+    // Public data members
+    public GameObject[,] Tiles;
+    public GameObject gameBoard;
 
-  private float rightEdge ;
+    private float rightEdge ;
+    private float bottomEdge;
 
-  private float bottomEdge;
+    private Material grass1;
+    private Material grass2;
 
-  private Material grass1;
-  private Material grass2;
+    private GameObject mainObject;
 
-  private GameObject mainObject;
+    private Color highlightColor1, highlightColor2; // Highlight colors for available tile pulse
 
-  public GameObject gameBoard;
-
-  private Color highlightColor1, highlightColor2; // Highlight colors for available tile pulse
-
-  private DemMain main;
+    private DemMain main;
 
 	// Use this for initialization
 	void Awake () {
+        Tiles = new GameObject[9, 5];
+        
+        grass1 = (Material)Resources.Load("DontEatMe/Materials/tile_1", typeof(Material));
+        grass2 = (Material)Resources.Load("DontEatMe/Materials/tile_2", typeof(Material));
 
-    grass1 = (Material)Resources.Load("DontEatMe/Materials/tile_1", typeof(Material));
-    grass2 = (Material)Resources.Load("DontEatMe/Materials/tile_2", typeof(Material));
+        mainObject = GameObject.Find ("MainObject");
+        main = mainObject.GetComponent<DemMain> ();
 
-    mainObject = GameObject.Find ("MainObject");
-    main = mainObject.GetComponent<DemMain> ();
+        gameBoard = GameObject.Find("GameBoard");
+        Debug.Log (gameBoard.transform);
 
-    gameBoard = GameObject.Find("GameBoard");
-    Debug.Log (gameBoard.transform);
+        // Calculate the right edge of the screen based on the aspect ratio 
+        rightEdge = Camera.main.orthographicSize * Screen.width / Screen.height;
 
-    // Calculate the right edge of the screen based on the aspect ratio 
-    rightEdge = Camera.main.orthographicSize * Screen.width / Screen.height;
+        // Calculate the bottom edge of the screen based on the aspect ratio
+        bottomEdge = 0 - Camera.main.orthographicSize;
 
-
-    // Calculate the bottom edge of the screen based on the aspect ratio
-    bottomEdge = 0 - Camera.main.orthographicSize;
-
-    // Define highlight colors
-    highlightColor1 = Color.white;
-    highlightColor2 = Color.Lerp(Color.blue, Color.white, 0.25f);
-
+        // Define highlight colors
+        highlightColor1 = Color.white;
+        highlightColor2 = Color.Lerp(Color.blue, Color.white, 0.25f);
 	}
 
     /**
@@ -64,29 +66,24 @@ public class DemBoard : MonoBehaviour {
         }
     }*/
 	
-  public void Add(int x, int y){
+    public void Add (int x, int y) {
 
-    Tiles[x, y] = GameObject.CreatePrimitive(PrimitiveType.Cube);
-    //cube.tag = "Tile"; // Add a "Tile" tag to each cube
-    Debug.Log(gameBoard);
-    Tiles[x, y].transform.parent = gameBoard.transform;
+        Tiles[x, y] = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //cube.tag = "Tile"; // Add a "Tile" tag to each cube
+        Debug.Log(gameBoard);
+        Tiles[x, y].transform.parent = gameBoard.transform;
 
-    Tiles[x, y].transform.position = new Vector3(rightEdge - 1 - x, bottomEdge + 1 + y, -1);
+        Tiles[x, y].transform.position = new Vector3(rightEdge - 1 - x, bottomEdge + 1 + y, -1);
 
-    Tiles[x, y].name = x + "," + y;
+        Tiles[x, y].name = x + "," + y;
 
-    if ((x % 2) == (y % 2))
-    {
-      Tiles[x, y].GetComponent<Renderer>().material = grass1;
-
+        if ((x % 2) == (y % 2)) {
+            Tiles[x, y].GetComponent<Renderer>().material = grass1;
+        } else {
+            Tiles[x, y].GetComponent<Renderer>().material = grass2;
+        }
+        Tiles[x, y].AddComponent<DemTile>(); // Add the DemTile script to each cube
     }
-    else
-    {
-      Tiles[x, y].GetComponent<Renderer>().material = grass2;
-    }
-
-    Tiles[x, y].AddComponent<DemTile>(); // Add the DemTile script to each cube
-  }
 
     
     public void SetAvailableTiles ()
@@ -135,7 +132,8 @@ public class DemBoard : MonoBehaviour {
                         foreach (int[] coord in range)
                         {                        
                             // Range must not extend past grid bounds
-                            if (x + coord[0] < 0 || x + coord[0] > 8 || y + coord[1] < 0 || y + coord[1] > 4)
+                            // NOTE: cannot build a plant or prey in the first (right-most) column
+                            if (x + coord[0] < 1 || x + coord[0] > 8 || y + coord[1] < 0 || y + coord[1] > 4)
                                 continue;
 
                             // Define tile
@@ -159,61 +157,35 @@ public class DemBoard : MonoBehaviour {
         }
     }
 
-  public void ClearAvailableTiles(){
-    for (int x = 0; x < 9; x++){
-
-      for (int y = 0; y < 5; y++){
-        Tiles [x, y].GetComponent<Renderer> ().material.color = Color.white;
-        Tiles [x, y].GetComponent<DemTile> ().currentColor = Color.white;
-        DemTile tile = Tiles [x, y].GetComponent<DemTile>();
-        tile.SignalPulse(false);
-        tile.available = false;
-      }
-
-    }
-    
-  }
-
-
-
-
-  public void AddAnimal(int x , int y, GameObject animal){
-
-    Tiles [x, y].GetComponent<DemTile> ().AddAnimal(animal);
-
-  }
-
-
-  public void AddNewPredator(int x , int y, GameObject animal){
-
-    Tiles [x, y].GetComponent<DemTile> ().AddNewPredator(animal);
-
-  }
-
-  public Dictionary<int, GameObject> GetPredators(){
-    
-    Dictionary<int, GameObject> activePredators = new Dictionary<int, GameObject> ();
-
-
-
-
-     for (int x = 8; x >= 0; x--){
-
-        for (int y = 0; y < 5; y++){
-        if (Tiles [x, y].GetComponent<DemTile> ().ResidentIsPredator() ) {
-          
-          activePredators.Add (Tiles [x, y].GetComponent<DemTile> ().resident.GetInstanceID (), Tiles [x, y].GetComponent<DemTile> ().resident);
-
+    public void ClearAvailableTiles () {
+        for (int x = 0; x < 9; x++) {
+            for (int y = 0; y < 5; y++) {
+                Tiles [x, y].GetComponent<Renderer> ().material.color = Color.white;
+                Tiles [x, y].GetComponent<DemTile> ().currentColor = Color.white;
+                DemTile tile = Tiles [x, y].GetComponent<DemTile>();
+                tile.SignalPulse(false);
+                tile.available = false;
+            }
         }
-
-      }
-
     }
 
+    public void AddAnimal (int x , int y, GameObject animal) {
+        Tiles [x, y].GetComponent<DemTile> ().AddAnimal(animal);
+    }
 
-    return activePredators;
-  }
+    public void AddNewPredator (int x , int y, GameObject animal) {
+        Tiles [x, y].GetComponent<DemTile> ().AddNewPredator(animal);
+    }
 
-
-
+    public Dictionary<int, GameObject> GetPredators () {
+        Dictionary<int, GameObject> activePredators = new Dictionary<int, GameObject> ();
+        for (int x = 8; x >= 0; x--) {
+            for (int y = 0; y < 5; y++) {
+                if (Tiles [x, y].GetComponent<DemTile> ().ResidentIsPredator() ) {
+                    activePredators.Add (Tiles [x, y].GetComponent<DemTile> ().resident.GetInstanceID (), Tiles [x, y].GetComponent<DemTile> ().resident);
+                }
+            }
+        }
+        return activePredators;
+    }
 }
