@@ -4,9 +4,12 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using System;
 
+
+/**
+    Script responsible for creating and managing the menu elements of the UI.
+*/
 public class BuildMenu : MonoBehaviour
 {
-
     // Background material
     public Material backgroundMaterial;
 
@@ -19,72 +22,48 @@ public class BuildMenu : MonoBehaviour
     private GameObject instructionUI; //instance of UI for after pressed how to play button
     private GameObject gameOverUI;  //instance of UI for after pressed quit button
 
-    //statiUI
-    private GameObject statUI;
-    public Statistic statistic;
-    private GameObject t1;  //static text 1 to 6
-    private GameObject t2;
-    private GameObject t3;
-    private GameObject t4;
-    private GameObject t5;
-    private GameObject t6;
+    // Statistics UI components
+    private GameObject statUI; // Main container
+    public Statistic statistic; // Statistical data
+    private GameObject t1, t2, t3, t4, t5, t6; // Text objects for displaying statistical data
 
-    // Toggle counter
-    int toggleCount;
+    // Player build menu components and variables
+    public DemAnimalFactory currentAnimalFactory; // Factory for current player plant/prey selection...
+    public BuildInfo currentlyBuilding; // ... and its info
+    bool selectingPlant = true; // True if the current build menu is plants, false if prey
+    public bool currentlyDeleting = false; // True if currently deleting a game object
 
-    // Currently building...
-    public BuildInfo currentlyBuilding;
+    // Player properties
+    public int currentResources = 250; // Current player resources
+    public int score = 0; // Current player score
 
-    public DemAnimalFactory currentAnimalFactory;
+    // Prefabs 
+    public DemAnimalFactory[] plants; // Plants...
+    public DemAnimalFactory[] prey; // Prey...
 
-    // Currently about to delete?
-    public bool currentlyDeleting = false;
+    // Additional game components
+    public GameObject[] menuButtons; // Menu buttons
+    private GameObject mainObject; // Master game object
+    private DemTurnSystem turnSystem; // Enables turn system functionality
+    private DemMain main; // Main Don't Eat Me script
 
-    // Player's current resource amount
-    public int currentResources = 250;
-
-    // Player's current score amount
-    public int score = 0;
-
-    // Plant prefabs
-    public DemAnimalFactory[] plants;
-
-    // Prey prefabs
-    public DemAnimalFactory[] prey;
-
-    // Menu buttons
-    public GameObject[] menuButtons;
-
-    private GameObject mainObject;
-
-    private DemTurnSystem turnSystem;
-
-    private DemMain main;
-
+    // Biomass levels
     private int plantBiomass;
-
     private int tier2Biomass;
-
     private int tier3Biomass;
 
+    // Other sh!t
+    // TODO: figure out what these are so they can be accurately commented.
+    // Note to future programmers: all code and no documentation makes Jack a dull boy.
     public GameObject panelObject;
-
     public GameObject menuPanel;
-
     public GameObject scoreText;
-
     public GameObject livesText;
-
     public GameObject plantBioText;
-
     public GameObject tier2BioText;
-
     public GameObject tier3BioText;
-
     public GameObject turnSystemText;
-
     private Font fontFamily;
-
     private Sprite popupBackground;
     private Sprite infoWidget;
 
@@ -92,13 +71,10 @@ public class BuildMenu : MonoBehaviour
     public GameObject mainUIObject;
     public GameObject canvasObject;
 
-    // Instructions
-    public GameObject instructionPanelObj;
-    private Sprite page2, page3, page4, page5, page6, page7, page8, page9;
-    private Button continuePageButton;
-    private Sprite[] instructionPages = new Sprite[9];
-    //private int currentPage;
-
+    // Tutorial / instructions
+    public GameObject instructionPanelObj; // Main panel / canvas for tutorial display
+    private Button continuePageButton; // Continue button
+    private Sprite[] instructionPages = new Sprite[9]; // Sequential array of instruction pages
 
     string[] headerText = new string[9]
     {
@@ -131,7 +107,6 @@ public class BuildMenu : MonoBehaviour
     {
         currentResources += 50;
     }
-
 
     //Loading Resources
     void Awake()
@@ -174,23 +149,10 @@ public class BuildMenu : MonoBehaviour
 
         // Instruction Panel
         instructionPanelObj = GameObject.Find("Canvas/InstructionPanel");
-        page2 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p2");
-        page3 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p3");
-        page4 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p4");
-        page5 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p5");
-        page6 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p6");
-        page7 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p7");
-        page8 = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p8");
 
-        instructionPages[0] = page2;
-        instructionPages[1] = page3;
-        instructionPages[2] = page4;
-        instructionPages[3] = page5;
-        instructionPages[4] = page6;
-        instructionPages[5] = page7;
-        instructionPages[6] = page8;
-        instructionPages[7] = page9;
-
+        for (int i = 0; i < 8; i++)
+            instructionPages[i] = Resources.Load<Sprite>("DontEatMe/InstructionPictures/instructions_p" + (i+2));
+        
         /*
             scoreText.GetComponent<Text> ().font = fontFamily;
             //scoreText.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
@@ -256,6 +218,7 @@ public class BuildMenu : MonoBehaviour
 
 
         // Constructing the plants and prey the player can use
+
         plants = new DemAnimalFactory[6];
         plants[0] = new DemAnimalFactory("Acacia");
         plants[1] = new DemAnimalFactory("Baobab");
@@ -264,7 +227,7 @@ public class BuildMenu : MonoBehaviour
         plants[4] = new DemAnimalFactory("Grass And Herbs");
         plants[5] = new DemAnimalFactory("Trees And Shrubs");
 
-
+   
         prey = new DemAnimalFactory[6];
         prey[0] = new DemAnimalFactory("Tree Mouse");
         prey[1] = new DemAnimalFactory("Bat-Eared Fox");
@@ -272,7 +235,6 @@ public class BuildMenu : MonoBehaviour
         prey[3] = new DemAnimalFactory("Crested Porcupine");
         prey[4] = new DemAnimalFactory("Oribi");
         prey[5] = new DemAnimalFactory("Buffalo");
-
 
         // NEW BUTTON CREATION STARTS HERE
         // To use old buttons comment out the following lines (until line 287) and uncomment OnGUI()
@@ -337,12 +299,12 @@ public class BuildMenu : MonoBehaviour
         quitButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 30);
 
 
-        //statistic button 
+        // Statistics button 
         float sBX = Screen.width / 10.0f;
         float sBY = Screen.height / 10.0f;
         demButton.setSize(sBX, sBY);
         GameObject statButton = demButton.CreateButton(Screen.width - qBX * 2, 0, "statistic");
-        demButton.SetButtonText(statButton, "Statistic");
+        demButton.SetButtonText(statButton, "Stats");
         statButton.GetComponent<Button>().onClick.AddListener(() => { selectStatistic(); });
         // quitButton.transform.SetParent(menuPanel.transform); 
 
@@ -387,9 +349,11 @@ public class BuildMenu : MonoBehaviour
     {
         Debug.Log("Clicked " + tButton.name);
 
-        toggleCount = (toggleCount + 1) % 2;
+        //toggleCount = (toggleCount + 1) % 2;
+        selectingPlant = !selectingPlant;
 
-        if (toggleCount == 0)
+        //if (toggleCount == 0)
+        if (selectingPlant)
         {
             tButton.GetComponentInChildren<Text>().text = "Plants";
             for (int i = 0; i < 6; i++)
@@ -427,7 +391,8 @@ public class BuildMenu : MonoBehaviour
     {
         for (int i = 0; i < 6; i++)
         {
-            if (toggleCount == 0)
+            //if (toggleCount == 0)
+            if (selectingPlant)
             {
                 if (SpeciesConstants.Biomass(plants[i].GetName()) > plantBiomass)
                 {
@@ -456,7 +421,8 @@ public class BuildMenu : MonoBehaviour
         DemAnimalFactory[] species;
         short speciesType = 0;
 
-        if (toggleCount % 2 == 0)
+        //if (toggleCount % 2 == 0)
+        if (selectingPlant)
         {
             species = plants;
             speciesType = 0;
@@ -527,8 +493,9 @@ public class BuildMenu : MonoBehaviour
         {
             quitUI = demRectUI.createRectUI("quitUI", 0, 0, Screen.width / 1.5f, Screen.height / 1.5f);
             quitUI.GetComponent<Image>().sprite = popupBackground;
-            demRectUI.setUIText(quitUI, GameState.player.GetName() + "\nAre you sure you want to quit? \nYou currently have "
-                + GameState.player.credits);
+            demRectUI.setUIText(quitUI, (GameState.player != null ? GameState.player.name : "[no name]") 
+                + "\nAre you sure you want to quit? \nYou currently have "
+                + (GameState.player != null ? GameState.player.credits.ToString() : "???"));
 
             //Quit Button on Quit UI
             GameObject yesButton = demButton.CreateButton(0, 0, "Yes");
@@ -656,7 +623,7 @@ public class BuildMenu : MonoBehaviour
     }
 
     // moves on to the next instruction pages
-    void nextPage(int cPage)
+    void nextPage (int cPage)
     {
         // if not the last page
         if (cPage < 9)
@@ -692,9 +659,7 @@ public class BuildMenu : MonoBehaviour
     {
     }
 
-
-
-    //click on statistic button
+    // Invoked on click from statistic button.
     public void selectStatistic()
     {
         DemAudioManager.audioClick.Play();
@@ -709,12 +674,13 @@ public class BuildMenu : MonoBehaviour
         {
             statUI = demRectUI.createRectUI("statUI", 0, 0, Screen.width / 1.2f, Screen.height / 1.2f);
             statUI.GetComponent<Image>().sprite = popupBackground;
-            t1 = demRectUI.setUIText(statUI, "plant used: " + statistic.getTreeDown(), 0, 0);
-            t2 = demRectUI.setUIText(statUI, "prey used: " + statistic.getPreyDown(), 0, 1);
-            t3 = demRectUI.setUIText(statUI, "plant destroyed: " + statistic.getTreeDestroy(), 1, 0);
-            t4 = demRectUI.setUIText(statUI, "prey eaten: " + statistic.getPreyEaten(), 1, 1);
-            t5 = demRectUI.setUIText(statUI, "turns: " + statistic.getTurnCount(), 2, 0);
-			t6 = demRectUI.setUIText(statUI, "your total credits: " + GameState.player.credits , 2, 1);
+            t1 = demRectUI.setUIText(statUI, "Plants placed: " + statistic.getTreeDown(), 0, 0);
+            t2 = demRectUI.setUIText(statUI, "Prey placed: " + statistic.getPreyDown(), 0, 1);
+            t3 = demRectUI.setUIText(statUI, "Plants destroyed: " + statistic.getTreeDestroy(), 1, 0);
+            t4 = demRectUI.setUIText(statUI, "Prey consumed: " + statistic.getPreyEaten(), 1, 1);
+            t5 = demRectUI.setUIText(statUI, "Turns taken: " + statistic.getTurnCount(), 2, 0);
+            t6 = demRectUI.setUIText(statUI, "Player total credits: " + (GameState.player != null ? GameState.player.credits.ToString() : "???"), 2, 1);
+
 
             GameObject backButton = demButton.CreateButton(0, 0, "back");
             backButton.transform.SetParent(statUI.transform);
@@ -734,12 +700,12 @@ public class BuildMenu : MonoBehaviour
             return;
         }
 
-        t1.GetComponent<Text>().text = "plant used: " + statistic.getTreeDown();
-        t2.GetComponent<Text>().text = "prey used: " + statistic.getPreyDown();
-        t3.GetComponent<Text>().text = "plant destroyed: " + statistic.getTreeDestroy();
-        t4.GetComponent<Text>().text = "prey eaten: " + statistic.getPreyEaten();
-        t5.GetComponent<Text>().text = "turns: " + statistic.getTurnCount();
-		t6.GetComponent<Text> ().text = "your total credits: " + GameState.player.credits;
+        t1.GetComponent<Text>().text = "Plants placed: " + statistic.getTreeDown();
+        t2.GetComponent<Text>().text = "Prey placed: " + statistic.getPreyDown();
+        t3.GetComponent<Text>().text = "Plants destroyed: " + statistic.getTreeDestroy();
+        t4.GetComponent<Text>().text = "Prey consumed: " + statistic.getPreyEaten();
+        t5.GetComponent<Text>().text = "Turns taken: " + statistic.getTurnCount();
+        t6.GetComponent<Text> ().text = "Player total credits: " + (GameState.player != null ? GameState.player.credits.ToString() : "???");
 
         if (!statUI.activeInHierarchy)
         {
@@ -784,33 +750,42 @@ public class BuildMenu : MonoBehaviour
     {
         ResponsePlayGame args = response as ResponsePlayGame;
 
-        if (args.status == 1)
+        if (args.status == 1 && GameState.player != null)
         {
-
             GameState.player.credits = args.creditDiff;
             Debug.Log(args.creditDiff);
-
         }
     }
 
 
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
 
-    }
+    }*/
 
-    public DemAnimalFactory GetCurrentAnimalFactory()
+    /**
+        Fetches current animal factory.
+    */
+    public DemAnimalFactory GetCurrentAnimalFactory ()
     {
         return currentAnimalFactory;
     }
 
+    /**
+        Sets the current animal factory.
+
+        @param  newAnimalFactory    a DemAnimalFactory object
+    */
     public void SetCurrentAnimalFactory(DemAnimalFactory newAnimalFactory)
     {
         currentAnimalFactory = newAnimalFactory;
     }
 
-    public void ToggleButtonLocks()
+    /**
+        Toggles button locks based on player or Predator's turn.
+    */
+    public void ToggleButtonLocks ()
     {
         turnSystemText.GetComponent<Text>().text = "Your Turn!";
         if (turnSystem.IsTurnLocked())
@@ -839,7 +814,7 @@ public class BuildMenu : MonoBehaviour
 
     }
 
-    public void UnlockAllMenuItems()
+    public void UnlockAllMenuItems ()
     {
         for (int i = 0; i < 6; i++)
         {
@@ -851,8 +826,7 @@ public class BuildMenu : MonoBehaviour
         }
     }
 
-
-    public void LockMenuButton(int buttonNum)
+    public void LockMenuButton (int buttonNum)
     {
         menuButtons[buttonNum].GetComponent<Button>().interactable = false;
         foreach (Image image in menuButtons[buttonNum].GetComponentsInChildren<Image>())
@@ -861,131 +835,98 @@ public class BuildMenu : MonoBehaviour
         }
     }
 
-
-    public void UpdateLives(int lives)
+    public void UpdateLives (int lives)
     {
-
         livesText.GetComponent<Text>().text = lives.ToString();
-
     }
 
-
-    public void UpdateCredits(int credits)
+    public void UpdateCredits (int credits)
     {
-
         scoreText.GetComponent<Text>().text = credits.ToString();
-
     }
 
-    public void UpdatePlantBiomass()
+    public void UpdatePlantBiomass ()
     {
         plantBioText.GetComponent<Text>().text = plantBiomass.ToString();
     }
 
-    public void UpdatePlantBiomass(int biomass)
+    public void UpdatePlantBiomass (int biomass)
     {
         plantBiomass = biomass;
         UpdatePlantBiomass();
-
     }
 
-    public int getPlantBiomass()
+    public int getPlantBiomass ()
     {
-
         return plantBiomass;
-
     }
 
-    public int GetTier2Biomass()
+    public int GetTier2Biomass ()
     {
-
         return tier2Biomass;
-
     }
 
-    public int GetTier3Biomass()
+    public int GetTier3Biomass ()
     {
-
         return tier3Biomass;
-
     }
 
-    public void UpdateTier2Biomass()
+    public void UpdateTier2Biomass ()
     {
-
         tier2BioText.GetComponent<Text>().text = tier2Biomass.ToString();
-
     }
 
-    public void UpdateTier2Biomass(int biomass)
+    public void UpdateTier2Biomass (int biomass)
     {
-
         tier2Biomass = biomass;
         UpdateTier2Biomass();
-
     }
 
-    public void AddTier2Biomass(int biomass)
+    public void AddTier2Biomass (int biomass)
     {
-
         tier2Biomass += biomass;
         UpdateTier2Biomass();
-
     }
 
-
-    public void SubtractTier2Biomass(int biomass)
+    public void SubtractTier2Biomass (int biomass)
     {
-
         tier2Biomass -= biomass;
         UpdateTier2Biomass();
-
     }
 
-    public void UpdateTier3Biomass()
+    public void UpdateTier3Biomass ()
     {
-
         tier3BioText.GetComponent<Text>().text = tier3Biomass.ToString();
-
     }
 
-    public void UpdateTier3Biomass(int biomass)
+    public void UpdateTier3Biomass (int biomass)
     {
-
         tier3Biomass = biomass;
         UpdateTier3Biomass();
-
     }
 
-    public void AddTier3Biomass(int biomass)
+    public void AddTier3Biomass (int biomass)
     {
-
         tier3Biomass += biomass;
         UpdateTier3Biomass();
-
     }
 
-    public void AddPlantBiomass(int biomass)
+    public void AddPlantBiomass (int biomass)
     {
-
         plantBiomass += biomass;
         UpdatePlantBiomass();
-
     }
 
 
-    public void SubtractTier3Biomass(int biomass)
+    public void SubtractTier3Biomass (int biomass)
     {
-
         tier3Biomass -= biomass;
         UpdateTier3Biomass();
-
     }
 
-    public void SubtractPlantBiomass(int biomass)
+    public void SubtractPlantBiomass (int biomass)
     {
         plantBiomass -= biomass;
         UpdatePlantBiomass();
     }
-
 }
