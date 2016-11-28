@@ -14,15 +14,21 @@ public class ChatPanel : MonoBehaviour {
   bool allowEnter;
   InputField txtMessage;
 	void Start () {
+    // initialize some variables.
     btnSend = this.transform.Find("BtnSend").GetComponent<Button>();
     txtMessage = this.transform.Find("TxtInput").GetComponent<InputField>();
     messagePrefab = this.transform.Find("MessagePrefab").GetComponent<ChatMessage>();
     scrollRect = this.transform.Find("ScrollContent").GetComponent<RectTransform>();
     messages = scrollRect.Find("Messages").GetComponent<RectTransform>();
-    // Debug.Log("Heyyyyyyy!!!!");
+
+    // get the height from the parent, and then make the chatpanel the same height.
+    RectTransform parentTransform = this.transform.parent.gameObject.GetComponent<RectTransform>();
+    RectTransform transform = this.GetComponent<RectTransform>();
+    transform.sizeDelta = new Vector2(transform.sizeDelta.x, parentTransform.sizeDelta.y);
     txtMessage.ActivateInputField();
+  
     btnSend.onClick.AddListener(sendChatMessage);
-	}
+  }
 
   void Awake() {
     try {

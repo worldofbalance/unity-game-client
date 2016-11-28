@@ -53,10 +53,14 @@ public class Map : MonoBehaviour {
   }
 
   void OnDestroy() {
-    Game.networkManager.Ignore(
-      NetworkCode.ZONE_UPDATE,
-      ProcessZoneUpdate
-    );
+    try {
+
+    } catch (Exception ex) {
+      Game.networkManager.Ignore(
+        NetworkCode.ZONE_UPDATE,
+        ProcessZoneUpdate
+      );
+    }
   }
   
   public void ProcessZoneList(NetworkResponse response) {
