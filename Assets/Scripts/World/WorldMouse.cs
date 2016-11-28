@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System;
 
 public class WorldMouse : MonoBehaviour
 {
@@ -44,18 +45,24 @@ public class WorldMouse : MonoBehaviour
           purchaseButton.interactable = false;
         }
 
+        if (tilePurchaseSuccess != null) {
+            tilePurchaseSuccess = GameObject.Find("Canvas/PurchaseSuccess") as GameObject;
+            tilePurchaseSuccess.SetActive(false);
+        }
 
-        tilePurchaseSuccess = GameObject.Find("Canvas/PurchaseSuccess") as GameObject;
-        tilePurchaseSuccess.SetActive(false);
 
         firstPlayUi = GameObject.Find("Canvas/FirstWelcome") as GameObject;
-        firstPlayUi.SetActive(false);
-
-
-        tileUi.SetActive(false);
-        Game.networkManager.Send(
-        TilePriceProtocol.Prepare(1), processWelcome);
-
+        if (firstPlayUi != null) {
+            firstPlayUi.SetActive(false);
+        }
+        if (tileUi != null) {
+            tileUi.SetActive(false);
+        }
+        try {
+            Game.networkManager.Send(TilePriceProtocol.Prepare(1), processWelcome);
+        } catch (Exception ex) {
+            // Debug.LogException(ex);
+        }
     }
     void Awake()
     {

@@ -19,15 +19,19 @@ public class ChatPanel : MonoBehaviour {
     messagePrefab = this.transform.Find("MessagePrefab").GetComponent<ChatMessage>();
     scrollRect = this.transform.Find("ScrollContent").GetComponent<RectTransform>();
     messages = scrollRect.Find("Messages").GetComponent<RectTransform>();
+    // Debug.Log("Heyyyyyyy!!!!");
     txtMessage.ActivateInputField();
     btnSend.onClick.AddListener(sendChatMessage);
 	}
 
   void Awake() {
-    Game.networkManager.Listen(
+    try {
+      Game.networkManager.Listen(
         NetworkCode.CHAT,
         onChatMessage
-		);
+      );
+    } catch (Exception ex) {
+    }  
   }
 
   public void onChatMessage(NetworkResponse response) {
