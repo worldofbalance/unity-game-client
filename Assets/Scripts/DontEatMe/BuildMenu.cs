@@ -47,10 +47,23 @@ public class BuildMenu : MonoBehaviour
     private DemTurnSystem turnSystem; // Enables turn system functionality
     private DemMain main; // Main Don't Eat Me script
 
+    // Typically serves as a center pivot point for button objects.
+    // As this is a commonly-used Vector2, defining a single static entity eliminates the need to construct a new
+    // Vector2 instance in every case, akin to Vector2.zero, eg. 
+    private static Vector2 vector2_half = new Vector2(0.5f, 0.5f);
+    // Property declaration for vector2_half
+    public static Vector2 Vector2_half
+    {
+        get
+        {
+            return vector2_half;
+        }
+    }
+
     // Biomass levels
-    private int plantBiomass;
-    private int tier2Biomass;
-    private int tier3Biomass;
+    private int plantBiomass; // Tier 1 (plant) biomass level (change name to tier1Biomass for consistency)
+    private int tier2Biomass; // Tier 2 (prey) biomass level
+    private int tier3Biomass; // Tier 3 (predator) biomass level
 
     // Other sh!t
     // TODO: figure out what these are so they can be accurately commented.
@@ -102,11 +115,21 @@ public class BuildMenu : MonoBehaviour
         "You can only place plants or prey when it's your turn!"
     };
 
-    // this method increases score every 2s
-    void increaseResources()
+    /**
+        Increases player build resources (i.e. Tier 1 Biomass).
+    */
+    void increaseResources ()
     {
         currentResources += 50;
     }
+
+    /**
+        Displays a fading tooltip at a certain location.
+    */
+    //IEnumerator displayTextBubble (string text, float duration, Vector3 position)
+    //{
+        
+    //}
 
     //Loading Resources
     void Awake()
@@ -127,11 +150,11 @@ public class BuildMenu : MonoBehaviour
         canvasObject = GameObject.Find("Canvas");
         mainUIObject = GameObject.Find("Canvas/mainUI");
         mainUIObject.transform.SetParent(canvasObject.transform);
-        mainUIObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-        mainUIObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
-        mainUIObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
-        mainUIObject.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
-        mainUIObject.GetComponent<RectTransform>().offsetMin = new Vector2(0, 0);
+        mainUIObject.GetComponent<RectTransform>().anchoredPosition = Vector2.zero; // new Vector2(0, 0);
+        mainUIObject.GetComponent<RectTransform>().anchorMin = Vector2.zero; //new Vector2(0, 0);
+        mainUIObject.GetComponent<RectTransform>().anchorMax = Vector2.one; //new Vector2(1, 1);
+        mainUIObject.GetComponent<RectTransform>().offsetMax = Vector2.zero; //new Vector2(0, 0);
+        mainUIObject.GetComponent<RectTransform>().offsetMin = Vector2.zero; //new Vector2(0, 0);
 
         panelObject = GameObject.Find("Canvas/Panel");
         //panelObject = GameObject.Find("Canvas/mainUI/Panel");
@@ -180,8 +203,6 @@ public class BuildMenu : MonoBehaviour
         statistic = new Statistic();
     }
 
-
-
     // Use this for initialization
     void Start()
     {
@@ -194,7 +215,9 @@ public class BuildMenu : MonoBehaviour
 
         currentAnimalFactory = null;
         currentlyBuilding = null;
-        // set resources to grow over time
+
+        // Increases resources (i.e. Tier 1 Biomass) over time
+        // ???: Since Don't Eat Me is turn-based, a time-based increase seems out of place...
         InvokeRepeating("increaseResources", 2, 3.0F);
 
         /**
@@ -241,27 +264,24 @@ public class BuildMenu : MonoBehaviour
 
 
         // Building the buttons
-        gameObject.AddComponent<DemButton>();
-        demButton = gameObject.GetComponent<DemButton>();
+        demButton = gameObject.AddComponent<DemButton>(); // Don't Eat Me button script (consider renaming to DemButtonFactory?)
 
-        // building the RectUI
-        gameObject.AddComponent<DemRectUI>();
-        demRectUI = gameObject.GetComponent<DemRectUI>();
-
+        // building the RectUI (whatever that is)
+        demRectUI = gameObject.AddComponent<DemRectUI>();
 
         // Toggle button to switch between plant and prey menu
-        demButton.setSize(Screen.width * 0.1f, Screen.height / 14);
-        GameObject toggleButton = demButton.CreateButton(0, 0, "Toggle");
+        demButton.Width = 0.1f * Screen.width;
+        demButton.Height = Screen.height / 14;
+        GameObject toggleButton = demButton.CreateButton(0, 0, "toggle_button");
         demButton.SetButtonText(toggleButton, "Plants");
 
 
         // Creates a buttons for plant/prey menu
-        demButton.setSize(Screen.width * 0.1f, Screen.height / 7);
+        demButton.Height = Screen.height / 7;
         menuButtons = new GameObject[6];
         for (int i = 0; i < 6; i++)
         {
-
-            GameObject button = demButton.CreateButton(0, 0 - ((Screen.height / 14) + 10 + i * (demButton.getYSize() - 2)), i.ToString());
+            GameObject button = demButton.CreateButton(0, 0 - ((Screen.height / 14) + 10 + i * (demButton.Height - 2)), i.ToString());
 
             // Set the button images
             demButton.SetButtonImage(plants[i], button);
@@ -272,7 +292,8 @@ public class BuildMenu : MonoBehaviour
 
             // Add an onClick listener to detect button clicks
             button.GetComponent<Button>().onClick.AddListener(() => { selectSpecies(button); });
-            button.AddComponent<DemButton>();
+            // Add a proper pointer handler
+            button.AddComponent<BuildButtonPointerHandler>();
 
             menuButtons[i] = button;
         }
@@ -280,65 +301,96 @@ public class BuildMenu : MonoBehaviour
         // Add an onClick listener to dectect button clicks
         toggleButton.GetComponent<Button>().onClick.AddListener(() => { selectMenu(toggleButton, menuButtons); });
 
-        //quit button 
-        float qBX = Screen.width / 10.0f;
-        float qBY = Screen.height / 10.0f;
-        demButton.setSize(qBX, qBY);
-        GameObject quitButton = demButton.CreateButton(Screen.width - qBX, 0, "Quit");
+
+        // UPPER RIGHT BUTTONS //
+        /*      
+                C1               C0
+
+            R0  [Instructions]  [Quit]
+            R1                  [Stats]
+
+            Orientation is (0,0) @ upper right.
+        */
+
+        float qBX = 0.075f * Screen.width;
+        float qBY = 0.075f * Screen.height;
+        demButton.Width = qBX;
+        demButton.Height = qBY;
+        GameObject quitButton = demButton.CreateButton(Screen.width - qBX, 0, "quit_button");
         demButton.SetButtonText(quitButton, "Quit");
         quitButton.GetComponent<Button>().onClick.AddListener(() => { selectQuit(); });
         // quitButton.transform.SetParent(menuPanel.transform); 
 
-        quitButton.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
-        quitButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
-        quitButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+        /*  Define the quit button's RectTransform properties
 
-        quitButton.GetComponent<RectTransform>().offsetMax = new Vector2(-70, -22);
-        quitButton.GetComponent<RectTransform>().offsetMin = new Vector2(-70, -22);
+                        .-----------o <---- anchorMax
+                        |           |
+                        |     o <---+---- pivot
+                        |           |
+          anchorMin --> o-----------.
+        */
+        RectTransform qbTransform = quitButton.GetComponent<RectTransform>();
+        qbTransform.pivot = vector2_half; // (0.5, 0.5)
+        qbTransform.anchorMin = Vector2.one; // (1, 1)
+        qbTransform.anchorMax = Vector2.one; // (1, 1)
 
-        quitButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 30);
+        Vector2 qbOffset = new Vector2(-0.5f * qBX, -0.5f * qBY);
+        qbTransform.offsetMin = qbOffset;
+        qbTransform.offsetMax = qbOffset;
+
+        qbTransform.sizeDelta = new Vector2(qBX, qBY);
 
 
         // Statistics button 
-        float sBX = Screen.width / 10.0f;
-        float sBY = Screen.height / 10.0f;
-        demButton.setSize(sBX, sBY);
-        GameObject statButton = demButton.CreateButton(Screen.width - qBX * 2, 0, "statistic");
+        // Set dimensions
+        float sBX = 0.075f * Screen.width;
+        float sBY = 0.075f * Screen.height;
+        demButton.Width = sBX;
+        demButton.Height = sBY;
+        // Create button
+        GameObject statButton = demButton.CreateButton(Screen.width - sBX, -sBY, "stats_button");
         demButton.SetButtonText(statButton, "Stats");
         statButton.GetComponent<Button>().onClick.AddListener(() => { selectStatistic(); });
-        // quitButton.transform.SetParent(menuPanel.transform); 
 
-        statButton.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
-        statButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
-        statButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+        RectTransform sbTransform = statButton.GetComponent<RectTransform>();
+        sbTransform.pivot = vector2_half;
+        sbTransform.anchorMin = Vector2.one;
+        sbTransform.anchorMax = Vector2.one;
 
-        statButton.GetComponent<RectTransform>().offsetMax = new Vector2(-70, -22 * 3);
-        statButton.GetComponent<RectTransform>().offsetMin = new Vector2(-70, -22 * 3);
+        Vector2 sbOffset = new Vector2(-0.5f * sBX, -(qBY + 0.5f * sBY));
+        sbTransform.offsetMin = sbOffset;
+        sbTransform.offsetMax = sbOffset;
 
-        statButton.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 30);
-
+        sbTransform.sizeDelta = new Vector2(sBX, sBY);
 
         // Instructions button
-        float iBX = Screen.width / 5.0f;
-        float iBY = Screen.height / 10.0f;
-        demButton.setSize(iBX, iBY);
-        GameObject instructionButton = demButton.CreateButton(Screen.width - iBX, 10, "How to Play");
-        demButton.SetButtonText(instructionButton, "?");
+        // TODO: resize the button and place it in a better spot
+        float iBX = Screen.width / 20.0f;//5.0f;
+        float iBY = Screen.height / 15.0f;
+        demButton.Width = iBX;
+        demButton.Height = iBY;
+        GameObject tutorialButton = demButton.CreateButton(Screen.width - iBX, 10, "tutorial_button");
+        demButton.SetButtonText(tutorialButton, "?");
 
-        instructionButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/buttonBackgroundRound");
-        instructionButton.GetComponent<Button>().onClick.AddListener(() => { selectInstruction(); });
+        tutorialButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/buttonBackgroundRound");
+        tutorialButton.GetComponent<Button>().onClick.AddListener(() => { selectInstruction(); });
 
-        instructionButton.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
-        instructionButton.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
-        instructionButton.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+        tutorialButton.GetComponent<RectTransform>().pivot = vector2_half; // new Vector2(0.5f, 0.5f);
 
-        instructionButton.GetComponent<RectTransform>().offsetMax = new Vector2(-154, -22);
-        instructionButton.GetComponent<RectTransform>().offsetMin = new Vector2(-145, -22);
+        tutorialButton.GetComponent<RectTransform>().anchorMin = Vector2.one; //new Vector2(1, 1);
+        tutorialButton.GetComponent<RectTransform>().anchorMax = Vector2.one; //new Vector2(1, 1);
 
-        instructionButton.GetComponent<RectTransform>().sizeDelta = new Vector2(30, 30);
+        //tutorialButton.GetComponent<RectTransform>().offsetMax = new Vector2(-154, -22);
+        //tutorialButton.GetComponent<RectTransform>().offsetMin = new Vector2(-145, -22);
+        tutorialButton.GetComponent<RectTransform>().offsetMax = new Vector2(-254, -22);
+        tutorialButton.GetComponent<RectTransform>().offsetMin = new Vector2(-245, -22);
+
+        //tutorialButton.GetComponent<RectTransform>().sizeDelta = new Vector2(30, 30);
+        tutorialButton.GetComponent<RectTransform>().sizeDelta = new Vector2(50, 50);
 
         // Reset sizes for quit popup buttons
-        demButton.setSize(qBX, qBY);
+        demButton.Width = qBX;
+        demButton.Height = qBY;
         UpdatePlantBiomass();
         UpdateBuildableAnimals();
     }
@@ -348,6 +400,7 @@ public class BuildMenu : MonoBehaviour
     void selectMenu(GameObject tButton, GameObject[] mButtons)
     {
         Debug.Log("Clicked " + tButton.name);
+
 
         //toggleCount = (toggleCount + 1) % 2;
         selectingPlant = !selectingPlant;
@@ -493,12 +546,12 @@ public class BuildMenu : MonoBehaviour
         {
             quitUI = demRectUI.createRectUI("quitUI", 0, 0, Screen.width / 1.5f, Screen.height / 1.5f);
             quitUI.GetComponent<Image>().sprite = popupBackground;
-            demRectUI.setUIText(quitUI, (GameState.player != null ? GameState.player.name : "[no name]") 
+            demRectUI.setUIText(quitUI, (GameState.player != null ? GameState.player.name : "[anonymous player]") 
                 + "\nAre you sure you want to quit? \nYou currently have "
                 + (GameState.player != null ? GameState.player.credits.ToString() : "???"));
 
             //Quit Button on Quit UI
-            GameObject yesButton = demButton.CreateButton(0, 0, "Yes");
+            GameObject yesButton = demButton.CreateButton(0, 0, "yes_button");
             yesButton.transform.SetParent(quitUI.transform);
             yesButton.GetComponent<RectTransform>().anchoredPosition =
                 new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f,
@@ -507,7 +560,7 @@ public class BuildMenu : MonoBehaviour
             yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("World"); });
 
             //back button on Quit UI
-            GameObject noButton = demButton.CreateButton(0, 0, "No");
+            GameObject noButton = demButton.CreateButton(0, 0, "no_button");
             noButton.transform.SetParent(quitUI.transform);
             noButton.GetComponent<RectTransform>().anchoredPosition =
                 new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f * 3.0f,
@@ -682,7 +735,7 @@ public class BuildMenu : MonoBehaviour
             t6 = demRectUI.setUIText(statUI, "Player total credits: " + (GameState.player != null ? GameState.player.credits.ToString() : "???"), 2, 1);
 
 
-            GameObject backButton = demButton.CreateButton(0, 0, "back");
+            GameObject backButton = demButton.CreateButton(0, 0, "back_button");
             backButton.transform.SetParent(statUI.transform);
             backButton.GetComponent<RectTransform>().anchoredPosition =
                 new Vector2(statUI.GetComponent<RectTransform>().sizeDelta.x / 2.0f - backButton.GetComponent<RectTransform>().sizeDelta.x / 2.0f,
@@ -723,7 +776,7 @@ public class BuildMenu : MonoBehaviour
         demRectUI.setUIText(gameOverUI, "Game Over! Play Again?");
 
         //Quit Button on Quit UI
-        GameObject yesButton = demButton.CreateButton(0, 0, "Yes");
+        GameObject yesButton = demButton.CreateButton(0, 0, "yes_button");
         yesButton.transform.SetParent(gameOverUI.transform);
         yesButton.GetComponent<RectTransform>().anchoredPosition =
           new Vector2(gameOverUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f,
@@ -732,7 +785,7 @@ public class BuildMenu : MonoBehaviour
         yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("DontEatMe"); });
 
         //back button on Quit UI
-        GameObject noButton = demButton.CreateButton(0, 0, "No");
+        GameObject noButton = demButton.CreateButton(0, 0, "no_button");
         noButton.transform.SetParent(gameOverUI.transform);
         noButton.GetComponent<RectTransform>().anchoredPosition =
         new Vector2(gameOverUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f * 3.0f,

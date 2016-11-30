@@ -3,183 +3,216 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 
-public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class DemButton : MonoBehaviour
 {
+    /* DATA MEMBERS */
 
-
-    //Button prefab
-    public GameObject buttonPrefab;
-
-    //Canvas Object
-    //public GameObject canvasObject;
-    public GameObject mainUIObject;
-
-    //Panel Object
-    public GameObject panelObject;
-
-
-    //width of button
-    private float xSize;
-
-    //height of button
-    private float ySize;
-
-    //id of button
-    private int buttonId;
-
-    private float height;
-    private float width;
-
-
-    // Loading Resources and initialize button size
-    void Awake()
+    // Main components
+    public GameObject mainUIObject; // Main UI canvas
+    public GameObject panelObject; // Panel object for tooltips
+    public GameObject buttonPrefab; // Button prefab (background)
+    public GameObject buttonImage; // Button image
+    private int buttonId; // Unique button ID
+    public int ButtonID // Define property accessor
     {
-        buttonPrefab = Resources.Load<GameObject>("DontEatMe/Prefabs/Button");
-
-        //canvasObject = GameObject.Find("Canvas");
-        panelObject = GameObject.Find("Canvas/Panel");
-        mainUIObject = GameObject.Find("Canvas/mainUI");
-        //panelObject = GameObject.Find("Canvas/mainUI/Panel");
-
-        xSize = buttonPrefab.GetComponent<RectTransform>().sizeDelta.x;
-        ySize = buttonPrefab.GetComponent<RectTransform>().sizeDelta.y;
-        buttonId = 0;
-
-        height = Screen.height;
-        width = Screen.width;
+        get { return buttonId; }
     }
 
+    // Dimensional components
+    private float width; // Button width in pixels
+    public float Width // Define property accessor and mutator
+    { 
+        get { return width; }
+        set { width = (value > 0 ? value : width); }
+    }
+    private float height; // Button height in pixels
+    public float Height // Define property accessor and mutator
+    {
+        get { return height; }
+        set { height = (value > 0 ? value : height); }
+    }
 
-    // Instantiate and place the buttons on the scene
-    public GameObject CreateButton(float xPos, float yPos, string name)
+    // Font components
+    private Font buttonFont; // Common font used by all buttons
+    private string fontName; // String of font name used
+    private string fontDirectory; // Relative directory of font asset
+    public int fontSize; // Font size for button text
+
+    /* METHODS */
+
+    /**
+        Initializes components and loads all resources.
+    */
+    void Awake ()
+    {
+        // Initialize main components
+        buttonPrefab = Resources.Load<GameObject>("DontEatMe/Prefabs/Button");
+        panelObject = GameObject.Find("Canvas/Panel");
+        mainUIObject = GameObject.Find("Canvas/mainUI");
+
+        // Initialize secondary components
+        width = buttonPrefab.GetComponent<RectTransform>().sizeDelta.x;
+        height = buttonPrefab.GetComponent<RectTransform>().sizeDelta.y;
+        buttonId = 0;
+        buttonImage = null;
+
+        // Initialize font properties
+        fontName = "Chalkboard";
+        fontDirectory = "Fonts";
+        buttonFont = Resources.Load<Font>(fontDirectory + "/" + fontName);
+        fontSize = (int)(Screen.width / 42);
+    }
+
+    /**
+        Instantiates a button and places it on the scene at a specified position.
+        The position is determined by both an X- and Y-offset in pixels, with (0,0) being the upper left corner.
+
+        @param  xPos    x-axis position relative to top left of screen
+        @param  yPos    y-axis position relative to top left of screen
+        @param  name    the button name (for reference only)
+
+        @return a GameObject representing a button
+    */
+    public GameObject CreateButton (float xPos, float yPos, string name)
     {
         GameObject button = Instantiate(buttonPrefab) as GameObject;
         button.name = name;
         buttonId += 1;
 
-        //button.transform.SetParent(canvasObject.transform);
         button.transform.SetParent(mainUIObject.transform);
 
         // Set the position of the button
-
-        button.GetComponent<RectTransform>().sizeDelta = new Vector2(xSize, ySize);
-        button.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
-        button.GetComponent<RectTransform>().pivot = new Vector2(0, 1);
-
+        RectTransform btnTransform = button.GetComponent<RectTransform>();
+        btnTransform.sizeDelta = new Vector2(width, height);
+        btnTransform.anchoredPosition = new Vector2(xPos, yPos);
+        btnTransform.pivot = Vector2.up;
 
         return button;
     }
 
+    /**
+        Sets a button's displayed image.
+        This version utilizes an associated image specified by a DemAnimalFactory object, thus limiting the type of
+        image to a plant, prey, or predator.
 
-    // Create image for the button
-    public void SetButtonImage(DemAnimalFactory species, GameObject button)
+        @param  species a DemAnimalFactory object
+        @param  button  a button in the form of a GameObject returned by a call to CreateButton
+    */
+    public void SetButtonImage (DemAnimalFactory species, GameObject button)
     {
-        GameObject buttonImage = new GameObject(species.GetName());
+        buttonImage = new GameObject(species.GetName());
         buttonImage.transform.SetParent(button.transform);
 
         // Set the layer to UI layer
         buttonImage.layer = 5;
 
-        // Sets image and its position on the button 
-        buttonImage.AddComponent<Image>();
-        buttonImage.GetComponent<Image>().sprite = species.GetImage();
-        buttonImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-        buttonImage.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
-        buttonImage.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
-
-        buttonImage.GetComponent<RectTransform>().offsetMax = new Vector2(-7, -7);
-        buttonImage.GetComponent<RectTransform>().offsetMin = new Vector2(7, 7);
+        // Sets image and its position on the button
+        buttonImage.AddComponent<Image>().sprite = species.GetImage();
+        RectTransform imgTransform = buttonImage.GetComponent<RectTransform>();
+        imgTransform.anchoredPosition = Vector2.zero;
+        imgTransform.anchorMin = Vector2.zero;
+        imgTransform.anchorMax = Vector2.one;
+        imgTransform.offsetMax = new Vector2(-7, -7);
+        imgTransform.offsetMin = new Vector2(7, 7);
     }
 
+    /**
+        Sets a button's displayed text.
 
-
-
-    // Create text for the button
-    public void SetButtonText(GameObject button, string text)
+        @param  button  a button in the form of a GameObject returned by a call to CreateButton
+        @param  text    a string containing the button's text
+    */
+    public void SetButtonText (GameObject button, string text)
     {
-        GameObject buttonText = new GameObject("buttonTxt");
-        buttonText.transform.SetParent(button.transform);
+        // Create text object and set the parent button
+        GameObject textObject = new GameObject("buttonTxt");
+        textObject.transform.SetParent(button.transform);
 
         // Set the layer to UI layer
-        buttonText.layer = 5;
+        textObject.layer = 5;
 
-        //Set text and its position on the button
-        buttonText.AddComponent<Text>();
-        buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Chalkboard");
-		buttonText.GetComponent<Text> ().fontSize = (int)(Screen.width/42);
-        buttonText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
-        buttonText.GetComponent<Text>().color = Color.white;
-        buttonText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-		buttonText.GetComponent<RectTransform> ().sizeDelta = button.GetComponent<RectTransform> ().sizeDelta;
-
-        buttonText.GetComponent<Text>().text = text;
+        // Add text component to button object and set its properties
+        Text buttonText = textObject.AddComponent<Text>();
+        buttonText.font = buttonFont;
+        buttonText.fontSize = fontSize;
+        buttonText.alignment = TextAnchor.MiddleCenter;
+        buttonText.color = Color.white;
+        buttonText.text = text;
+        // Set text anchor and resize to button object
+        RectTransform textTransform = textObject.GetComponent<RectTransform>();
+        textTransform.anchoredPosition = Vector2.zero;
+        textTransform.sizeDelta = button.GetComponent<RectTransform>().sizeDelta;
     }
 
+    /**
+        Returns the button's Font object.
 
-    // Change the size of the button
-    public void setSize(float newSizeX, float newSizeY)
+        @return a Font object
+    */
+    public Font GetFont ()
     {
-        xSize = newSizeX;
-        ySize = newSizeY;
+        return buttonFont;
     }
 
+    /**
+        Returns the name of the button's font.
 
-    // Return the button id
-    public int getButtonId()
+        @return a string
+    */
+    public string GetFontName ()
     {
-        return buttonId;
+        return fontName;
     }
 
+    /**
+        Returns the relative directory in which the font resides.
 
-    // Return the width of the button
-    public float getXSize()
+        @return a string
+    */
+    public string GetFontDirectory ()
     {
-        return xSize;
+        return fontDirectory;
     }
 
+    /**
+        Sets the button font.
+        Both the font name and font object are updated, as well as the font directory if specified.
+        If a font fails to load properly, the current values will remain unchanged.
 
-    // Return the height of the button
-    public float getYSize()
+        @param  name    a string representing a font name
+
+        @return true if font set successfully, false otherwise
+    */
+    public bool SetFont (string name)
     {
-        return ySize;
-    }
-
-
-    // When mouse cursor is over an object
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        // Set the tooltip as active when mouse cursor is over a button
-        panelObject.SetActive(true);
-        panelObject.transform.position = new Vector3(Input.mousePosition.x + 180, Input.mousePosition.y);
-        if (this.gameObject.transform.GetChild(0).gameObject.activeSelf)
+        if ((buttonFont = Resources.Load<Font>(fontDirectory + "/" + name)) != null)
         {
-      panelObject.transform.GetChild (1).GetComponent<Text> ().text = 
-        this.gameObject.transform.GetChild (0).gameObject.name;
-            //panelObject.transform.GetChild(2).GetComponent<Text>().text = ;
-      panelObject.transform.GetChild (3).GetChild (0).GetComponent<Text> ().text = "Biomass : " +
-        SpeciesConstants.Biomass (this.gameObject.transform.GetChild (0).gameObject.name).ToString();
-        }
-
+            fontName = name;
+            return true;
+        } 
         else
-        {
-            //panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(1).gameObject.name;
-            panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(1).gameObject.name;
+            buttonFont = Resources.Load<Font>(fontDirectory + "/" + fontName);
 
-      panelObject.transform.GetChild (3).GetChild (0).GetComponent<Text> ().text =  "Biomass : " +
-                SpeciesConstants.Biomass (this.gameObject.transform.GetChild(1).gameObject.name).ToString();
-        }
-
-        panelObject.transform.GetChild(1).gameObject.SetActive(true);
+        return false;
     }
 
+    /**
+        Sets the directory in which the button font resides.
+        Note that the directory name specified is by default relative to the root "Assets/Resources/"; thus, specifying
+        a new directory "myFonts" will evaluate to "Assets/Resources/myFonts".
 
-    // When cursor moves away from an object
-    public void OnPointerExit(PointerEventData eventData)
+        @param  dir the name of the new directory
+
+        @return true if the directory set successfully, false otherwise (e.g. doesn't exist)
+    */
+    public bool SetFontDirectory (string dir)
     {
-        // Sets tooltip as inactive
-        panelObject.SetActive(false);
+        if (System.IO.Directory.Exists("Assets/Resources/" + dir))
+        {
+            fontDirectory = dir;
+            return true;
+        }
+        else
+            return false;
     }
-
-
 }
-
