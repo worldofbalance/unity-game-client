@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +15,7 @@ public class DemTurnSystem : MonoBehaviour {
   private DemMain main;
   private GameObject mainObject;
   private DemTweenManager tweenManager;
+  private SpeciesConstants speciesConstants;
   DemTile tile;
   private int lives;
   private BuildMenu buildMenu;
@@ -31,6 +31,7 @@ public class DemTurnSystem : MonoBehaviour {
     main = mainObject.GetComponent<DemMain> ();
     tweenManager = mainObject.GetComponent<DemTweenManager> ();
     buildMenu = mainObject.GetComponent<BuildMenu> ();
+    speciesConstants = new SpeciesConstants();
     lives = 3;
     credits = 0;
     turnNumber = 0;
@@ -42,7 +43,7 @@ public class DemTurnSystem : MonoBehaviour {
   {
     buildMenu.UpdateLives (lives);
   }
-	
+    
 
   public  void PredatorTurn()
   {
@@ -57,7 +58,7 @@ public class DemTurnSystem : MonoBehaviour {
       BuildInfo animal = predator.Value.GetComponent<BuildInfo> ();
       int x = animal.GetTile ().GetIdX ();
       int y = animal.GetTile ().GetIdY ();
-	    
+        
       currentTile = board.Tiles [x, y].GetComponent<DemTile> ();
 
       if (x + 1 == 9) {
@@ -87,8 +88,8 @@ public class DemTurnSystem : MonoBehaviour {
 
     ProcessTweens ();
 
-	// turn count 1++
-	buildMenu.statistic.setTurnCount (1);
+    // turn count 1++
+    buildMenu.statistic.setTurnCount (1);
 
   }
 
@@ -105,30 +106,43 @@ public class DemTurnSystem : MonoBehaviour {
     BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
     Boolean markForDeletion = false;
 
-    if( predator.GetNextTile().resident  != null){
-      
-      BuildInfo nextAnimal = predator.GetNextTile ().resident.GetComponent<BuildInfo> ();
+        if (predator.GetNextTile().resident != null)
+        {
 
-      if(nextAnimal.isPrey() || nextAnimal.isPlant()){
-        predator.GetNextTile ().RemoveAnimal();
-      }
+            BuildInfo nextAnimal = predator.GetNextTile().resident.GetComponent<BuildInfo>();
+            DemTile currTile = currentTile;
 
-      if(nextAnimal.isPrey()){
-        buildMenu.AddTier2Biomass (SpeciesConstants.Biomass (nextAnimal.name));
-        DemAudioManager.audioSelection.Play ();
-        credits++;
-        buildMenu.UpdateCredits (credits);
-        markForDeletion = true;
-      }else if (nextAnimal.isPlant()){
-        buildMenu.AddPlantBiomass (SpeciesConstants.Biomass (nextAnimal.name));
-        buildMenu.SubtractTier2Biomass ((int)(SpeciesConstants.Biomass (nextAnimal.name) * 0.5));
-      }
+            //if(nextAnimal.isPrey() || nextAnimal.isPlant()){
+            Debug.Log(predator.name + " eats " + nextAnimal.name + ": " + speciesConstants.Eats(predator.name, nextAnimal.name));
+            if (speciesConstants.Eats(predator.name, nextAnimal.name) || nextAnimal.isPlant())
+            {
+                predator.GetNextTile().RemoveAnimal();
 
-    }
+                if (nextAnimal.isPrey())
+                {
+                    buildMenu.AddTier2Biomass(SpeciesConstants.Biomass(nextAnimal.name));
+                    DemAudioManager.audioSelection.Play();
+                    credits++;
+                    buildMenu.UpdateCredits(credits);
+                    markForDeletion = true;
+                }
+                else if (nextAnimal.isPlant())
+                {
+                    buildMenu.AddPlantBiomass(SpeciesConstants.Biomass(nextAnimal.name));
+                    if(buildMenu.GetTier2Biomass() - SpeciesConstants.Biomass(nextAnimal.name) >= 0)
+                        buildMenu.SubtractTier2Biomass((int)(SpeciesConstants.Biomass(nextAnimal.name) * 0.5));
+                    else
+                        buildMenu.UpdateTier2Biomass(0);
+                }
+            }
+            else
+            {
+                predator.GetNextTile().RemoveAnimal();
+            }
+       
+        }
 
-
-
-    predator.AdvanceTile ();
+    predator.AdvanceTile();
 
     if(markForDeletion){
       buildMenu.SubtractTier3Biomass (SpeciesConstants.Biomass (predator.name));
