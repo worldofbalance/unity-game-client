@@ -41,11 +41,11 @@ public class ChatPanel : MonoBehaviour {
   }
 
   public void onChatMessage(NetworkResponse response) {
-    ResponseChat args = response as ResponseChat;
-    DateTime time = DateTime.Now;
+    var args = response as ResponseChat;
+    var time = DateTime.Now;
     // clone the prefab message
-    ChatMessage clone = (ChatMessage)Instantiate(messagePrefab);
-    
+    var clone = (ChatMessage)Instantiate(messagePrefab);
+
     // append the new message to the scrollable
     clone.GetComponent<RectTransform>().SetParent(messages, false);
 
