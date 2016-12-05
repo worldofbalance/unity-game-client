@@ -103,25 +103,15 @@ public class MenuScript : MonoBehaviour {
     }
 
     public void OpenConvergence() {
-        CloseAllMenus();
-        GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
-        Debug.Log("You Pressed Convergence");
-        this.activeGuiObject =  (Object) gameObject.AddComponent <ConvergeGUI>();
-        menuOpen=true;
+        Game.SwitchScene("Converge");
     }
 
     public void OpenCardsfWild() {
-      
-        Debug.Log("You Pressed CardsOfWild");
-        menuOpen=true;
+        Game.SwitchScene ("ClashSplash");
     }
 
     public void OpenDontEatMe() {
-        CloseAllMenus ();
-        GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
-        disableDropDown();
-        menuOpen = true;
-        this.activeGuiObject =  (Object)gameObject.AddComponent <DontEatMeGUI>();
+        Game.SwitchScene ("DontEatMe");
     }
     public void OpenMultiplayerGames() {
         CloseAllMenus();
@@ -135,11 +125,8 @@ public class MenuScript : MonoBehaviour {
 
 
     public void OpenClashOfSpecies() {
-        CloseAllMenus ();
-        this.activeGuiObject =  (Object) gameObject.AddComponent <ClashOfSpeciesGUI>();
-        GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
-        disableDropDown();
-        menuOpen=true;
+        Destroy (this);
+        Game.SwitchScene ("ClashSplash");
     }
     
 
