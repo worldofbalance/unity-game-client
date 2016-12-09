@@ -241,23 +241,33 @@ public class BuildMenu : MonoBehaviour
 
 
         // Constructing the plants and prey the player can use
-
         plants = new DemAnimalFactory[6];
+        SpeciesConstants.SortPlantsByBiomass();
+        for (int i = 0; i < SpeciesConstants.NUM_PLANTS; i++)
+            plants[i] = new DemAnimalFactory(SpeciesConstants.PlantNames()[i]);
+
+        /*
         plants[0] = new DemAnimalFactory("Acacia");
         plants[1] = new DemAnimalFactory("Baobab");
         plants[2] = new DemAnimalFactory("Big Tree");
         plants[3] = new DemAnimalFactory("Fruits And Nectar");
         plants[4] = new DemAnimalFactory("Grass And Herbs");
         plants[5] = new DemAnimalFactory("Trees And Shrubs");
+        */
 
    
         prey = new DemAnimalFactory[6];
+        SpeciesConstants.SortPreyByBiomass();
+        for (int i = 0; i < SpeciesConstants.NUM_PREY; i++)
+            prey[i] = new DemAnimalFactory(SpeciesConstants.PreyNames()[i]);
+        /*
         prey[0] = new DemAnimalFactory("Tree Mouse");
         prey[1] = new DemAnimalFactory("Bat-Eared Fox");
         prey[2] = new DemAnimalFactory("Kori Buskard");
         prey[3] = new DemAnimalFactory("Crested Porcupine");
         prey[4] = new DemAnimalFactory("Oribi");
         prey[5] = new DemAnimalFactory("Buffalo");
+        */
 
         // NEW BUTTON CREATION STARTS HERE
         // To use old buttons comment out the following lines (until line 287) and uncomment OnGUI()
@@ -393,6 +403,11 @@ public class BuildMenu : MonoBehaviour
         demButton.Height = qBY;
         UpdatePlantBiomass();
         UpdateBuildableAnimals();
+
+        // TEST //
+        //Transform turnWidget = mainUIObject.transform.Find("TurnWidget");
+        //turnWidget.gameObject.AddComponent<BuildButtonPointerHandler>();
+        // END TEST //
     }
 
 
@@ -982,4 +997,10 @@ public class BuildMenu : MonoBehaviour
         plantBiomass -= biomass;
         UpdatePlantBiomass();
     }
+
+
+
+
+
+   
 }

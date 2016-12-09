@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 /**
 	Static constants and methods for defining and returning species attributes for the Don't Eat Me minigame.
@@ -21,7 +22,7 @@ public class SpeciesConstants
         Acacia              = 1007,
         BigTree             = 1008,
         Boabab              = 1009,
-        GrainsAndSeeds      = 1004,
+        //GrainsAndSeeds      = 1004,
         GrassAndHerbs       = 1005,
         TreesAndShrubs      = 1001,
         FruitsAndNectar     = 1003,
@@ -178,6 +179,7 @@ public class SpeciesConstants
             "but it is not a native of that island.",
             4400
         ),
+        /*
         new Plant
         (
             "Grains And Seeds",                 // Name
@@ -193,6 +195,7 @@ public class SpeciesConstants
             "Special",
             20
         ),
+        */
         new Plant
         (
             "Grass And Herbs",                  // Name
@@ -496,6 +499,7 @@ public class SpeciesConstants
 	public static readonly int NUM_SPECIES = NUM_PLANTS + NUM_PREY + NUM_PREDATORS;
 
     // Names of all available plants, prey, predators, and total species, respectively
+    // NOTE: the lists' orders mirror what is found in the SPECIES_ID enum
     public static readonly string[] PLANT_NAMES = (from plant in PLANTS select plant.name).ToArray();
     public static readonly string[] PREY_NAMES = (from prey in PREY select prey.name).ToArray();
     public static readonly string[] PREDATOR_NAMES = (from predator in PREDATORS select predator.name).ToArray();
@@ -913,5 +917,170 @@ public class SpeciesConstants
             }
         }
         return false;
+    }
+
+    /**
+        Returns plant names in the current order of the PLANTS array.
+        Use this method if the PLANTS array is explicitly sorted by a call to a SortPlantsBy___ method, rather than the
+        readonly PLANT_NAMES array, which is of a fixed order according to the SPECIES_ID enum.
+    */
+    public static string[] PlantNames ()
+    {
+        return (from plant in PLANTS select plant.name).ToArray();
+    }
+
+    /**
+        Returns prey names in the current order of the PREY array.
+        Use this method if the PREY array is explicitly sorted by a call to a SortPreyBy___ method, rather than the
+        readonly PREY_NAMES array, which is of a fixed order according to the SPECIES_ID enum.
+    */
+    public static string[] PreyNames ()
+    {
+        return (from prey in PREY select prey.name).ToArray();
+    }
+
+    /**
+        Returns prey names in the current order of the PREDATOR array.
+        Use this method if the PREDATOR array is explicitly sorted by a call to a SortPredatorsBy___ method, rather 
+        than the readonly PREDATOR_NAMES array, which is of a fixed order according to the SPECIES_ID enum.
+    */
+    public static string[] PredatorNames ()
+    {
+        return (from predator in PREDATORS select predator.name).ToArray();
+    }
+
+    /**
+        Sorts the PLANTS array by plant name (ascending).
+    */
+    public static void SortPlantsByName ()
+    {
+        Array.Sort
+        (
+            PLANTS,
+            delegate (Plant p1, Plant p2)
+            {
+                return p1.name.CompareTo(p2.name);
+            }
+        );
+    }
+
+    /**
+        Sorts the PREY array by prey name (ascending).
+    */
+    public static void SortPreyByName ()
+    {
+        Array.Sort
+        (
+            PREY,
+            delegate (Prey p1, Prey p2)
+            {
+                return p1.name.CompareTo(p2.name);
+            }
+        );
+    }
+
+    /**
+        Sorts the PREDATORS array by predator name (ascending).
+    */
+    public static void SortPredatorsByName ()
+    {
+        Array.Sort
+        (
+            PREDATORS,
+            delegate (Predator p1, Predator p2)
+            {
+                return p1.name.CompareTo(p2.name);
+            }
+        );
+    }
+
+    /**
+        Sorts the PLANTS array by species ID (ascending).
+    */
+    public static void SortPlantsBySpeciesID ()
+    {
+        Array.Sort
+        (
+            PLANTS,
+            delegate (Plant p1, Plant p2)
+            {
+                return p1.speciesID.CompareTo(p2.speciesID);
+            }
+        );
+    }
+
+    /**
+        Sorts the PREY array by species ID (ascending).
+    */
+    public static void SortPreyBySpeciesID ()
+    {
+        Array.Sort
+        (
+            PREY,
+            delegate (Prey p1, Prey p2)
+            {
+                return p1.speciesID.CompareTo(p2.speciesID);
+            }
+        );
+    }
+
+    /**
+        Sorts the PREDATORS array by species ID (ascending).
+    */
+    public static void SortPredatorsBySpeciesID ()
+    {
+        Array.Sort
+        (
+            PREDATORS,
+            delegate (Predator p1, Predator p2)
+            {
+                return p1.speciesID.CompareTo(p2.speciesID);
+            }
+        );
+    }
+
+    /**
+        Sorts the PLANTS array by plant biomass (ascending).
+    */
+    public static void SortPlantsByBiomass ()
+    {
+        Array.Sort
+        (
+            PLANTS,
+            delegate (Plant p1, Plant p2)
+            {
+                return p1.biomass.CompareTo(p2.biomass);
+            }
+        );
+    }
+
+    /**
+        Sorts the PREY array by prey biomass (ascending).
+    */
+    public static void SortPreyByBiomass ()
+    {
+        Array.Sort
+        (
+            PREY,
+            delegate (Prey p1, Prey p2)
+            {
+                return p1.biomass.CompareTo(p2.biomass);
+            }
+        );
+    }
+
+    /**
+        Sorts the PREDATORS array by predator biomass (ascending).
+    */
+    public static void SortPredatorsByBiomass ()
+    {
+        Array.Sort
+        (
+            PREDATORS,
+            delegate (Predator p1, Predator p2)
+            {
+                return p1.biomass.CompareTo(p2.biomass);
+            }
+        );
     }
 }

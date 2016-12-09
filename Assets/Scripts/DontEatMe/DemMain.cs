@@ -40,13 +40,18 @@ public class DemMain : MonoBehaviour
         // Initialize predator list
         currentSelection = null;
         predators = new DemAnimalFactory[6];
+        SpeciesConstants.SortPredatorsByBiomass();
+        for (int i = 0; i < SpeciesConstants.NUM_PREDATORS; i++)
+            predators[i] = new DemAnimalFactory(SpeciesConstants.PredatorNames()[i]);
 
+        /*
         predators [0] =  new DemAnimalFactory ("Bat-Eared Fox"); 
         predators [1] =  new DemAnimalFactory ("Black Mamba"); 
         predators [2] =  new DemAnimalFactory ("Serval Cat"); 
         predators [3] =  new DemAnimalFactory ("African Wild Dog"); 
         predators [4] =  new DemAnimalFactory ("Leopard"); 
         predators [5] =  new DemAnimalFactory ("Lion"); 
+        */
     }
 
 
@@ -60,32 +65,25 @@ public class DemMain : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void Update ()
     {
-    
+        tweenManager.Update();
 
-    tweenManager.Update ();
-    	// If a species is currently selected for building, update its position to the cursor
-        if (buildMenu.GetCurrentAnimalFactory() != null) {
-    		if (currentSelection) {
-          
+        // If a species is currently selected for building, update its position to the cursor
+        if (buildMenu.GetCurrentAnimalFactory() != null) 
+        {
+    		if (currentSelection) 
+            {
     			Vector3 world_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
     			world_pos.z = -1.5f;
     			currentSelection.transform.position = world_pos;
- 
     		}
 
     		// Cancel currently selected species on Escape key press
-    		if (Input.GetKeyDown(KeyCode.Escape)) {
-          //BuildMenu.currentAnimalFactory = null;
-          buildMenu.SetCurrentAnimalFactory (null);
-
-    			//Destroy(currentSelection);
-    			// DEBUG MESSAGE
-    			//Debug.Log("currentlyBuilding reset to 'null', returning object to (" + buildOrigin.x + ", " + buildOrigin.y + ")");
-
-    			// Start easing animation (using defaults)
-    			StartCoroutine(easeReturn());
+    		if (Input.GetKeyDown(KeyCode.Escape)) 
+            {
+                buildMenu.SetCurrentAnimalFactory (null);
+                StartCoroutine(easeReturn());
                 boardController.ClearAvailableTiles();
     		}
 		}
@@ -102,10 +100,9 @@ public class DemMain : MonoBehaviour
     /**
     	Sets the current prey's origin, i.e. the corresponding button
     */
-    public  void setBuildOrigin (Vector3 origin) {
-    
+    public  void setBuildOrigin (Vector3 origin)
+    {
     	buildOrigin = origin;
-
     }
 
     /**
@@ -132,7 +129,6 @@ public class DemMain : MonoBehaviour
         // Ease until threshold reached
     	while (Vector3.Distance(buildOrigin, currentSelection.transform.position) > threshold)
         {
-
 			currentSelection.transform.position = Vector3.Lerp
 			(
 				currentSelection.transform.position,

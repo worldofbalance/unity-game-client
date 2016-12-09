@@ -4,234 +4,203 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DemTurnSystem : MonoBehaviour {
-  
-  private  DemBoard board;
-  private Dictionary<int, GameObject> activePredators;// = new Dictionary<int, GameObject>();
-  private  Queue<DemTween> tweenList = new Queue<DemTween>();
-  private  DemTile nextTile;
-  private  DemTile currentTile;
-  public  bool turnLock = false;
-  //private  GameObject predator;
-  private DemMain main;
-  private GameObject mainObject;
-  private DemTweenManager tweenManager;
-  private SpeciesConstants speciesConstants;
-  DemTile tile;
-  private int lives;
-  private BuildMenu buildMenu;
-  private int credits;
-  private int turnNumber;
+
+    private  DemBoard board;
+    private Dictionary<int, GameObject> activePredators;// = new Dictionary<int, GameObject>();
+    private  Queue<DemTween> tweenList = new Queue<DemTween>();
+    private  DemTile nextTile;
+    private  DemTile currentTile;
+    public  bool turnLock = false;
+    private DemMain main;
+    private GameObject mainObject;
+    private DemTweenManager tweenManager;
+    DemTile tile;
+    private int lives;
+    private BuildMenu buildMenu;
+    private int credits;
+    private int turnNumber;
 
 
-  void Awake()
-  {
-    
-    mainObject = GameObject.Find ("MainObject");
-    board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
-    main = mainObject.GetComponent<DemMain> ();
-    tweenManager = mainObject.GetComponent<DemTweenManager> ();
-    buildMenu = mainObject.GetComponent<BuildMenu> ();
-    speciesConstants = new SpeciesConstants();
-    lives = 3;
-    credits = 0;
-    turnNumber = 0;
-
-
-  }
-
-  void Start()
-  {
-    buildMenu.UpdateLives (lives);
-  }
-    
-
-  public  void PredatorTurn()
-  {
-    turnNumber++;
-    turnLock = true;
-    buildMenu.ToggleButtonLocks ();
-    activePredators = board.GetPredators ();
-    Debug.Log ("Total predators :" + activePredators.Count);
-    foreach(KeyValuePair<int, GameObject> predator in activePredators)
+    void Awake ()
     {
-
-      BuildInfo animal = predator.Value.GetComponent<BuildInfo> ();
-      int x = animal.GetTile ().GetIdX ();
-      int y = animal.GetTile ().GetIdY ();
-        
-      currentTile = board.Tiles [x, y].GetComponent<DemTile> ();
-
-      if (x + 1 == 9) {
-        //Do the bounds checking first instead of last
-        //currentTile.RemoveAnimal (); //remove predator
-          
-        //Debug.Log ("you lost, or whatever, bla bla bla...");
-        Debug.Log("arrived at final tile");
-        tweenList.Enqueue (new DemPredatorExitTween (predator.Value,  500));
-        //continue;
-
-      } else {
-        
-
-        nextTile = board.Tiles [x + 1, y].GetComponent<DemTile> ();
-
-
-        animal.SetNextTile (nextTile);
-        tweenList.Enqueue (new DemTileTransitionTween (predator.Value, nextTile.GetCenter (), 500));
-      }
-
+        mainObject = GameObject.Find ("MainObject");
+        board = GameObject.Find ("GameBoard").GetComponent<DemBoard>();
+        main = mainObject.GetComponent<DemMain> ();
+        tweenManager = mainObject.GetComponent<DemTweenManager> ();
+        buildMenu = mainObject.GetComponent<BuildMenu> ();
+        lives = 3;
+        credits = 0;
+        turnNumber = 0;
     }
 
-    if(turnNumber % 2 == 1){
-      GenerateNewPredators ();
+    void Start()
+    {
+        buildMenu.UpdateLives(lives);
     }
 
-    ProcessTweens ();
+    public void PredatorTurn ()
+    {
+        turnNumber++;
+        turnLock = true;
+        buildMenu.ToggleButtonLocks ();
+        activePredators = board.GetPredators ();
 
-    // turn count 1++
-    buildMenu.statistic.setTurnCount (1);
-
-  }
-
-  public  bool IsTurnLocked(){
-    
-    return !turnLock;
-
-  }
-
-
-  public  void PredatorFinishedMove (GameObject finishedPredator)
-  {
-    
-    BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
-    Boolean markForDeletion = false;
-
-        if (predator.GetNextTile().resident != null)
+        Debug.Log ("Total predators :" + activePredators.Count);
+        foreach (KeyValuePair<int, GameObject> predator in activePredators)
         {
+            BuildInfo animal = predator.Value.GetComponent<BuildInfo>();
+            int x = animal.GetTile().GetIdX();
+            int y = animal.GetTile().GetIdY();
 
-            BuildInfo nextAnimal = predator.GetNextTile().resident.GetComponent<BuildInfo>();
-            DemTile currTile = currentTile;
+            currentTile = board.Tiles [x, y].GetComponent<DemTile>();
 
-            //if(nextAnimal.isPrey() || nextAnimal.isPlant()){
-            Debug.Log(predator.name + " eats " + nextAnimal.name + ": " + speciesConstants.Eats(predator.name, nextAnimal.name));
-            if (speciesConstants.Eats(predator.name, nextAnimal.name) || nextAnimal.isPlant())
+            if (x > 9)
             {
-                predator.GetNextTile().RemoveAnimal();
+                //Do the bounds checking first instead of last
+                //currentTile.RemoveAnimal (); //remove predator
 
-                if (nextAnimal.isPrey())
-                {
-                    buildMenu.AddTier2Biomass(SpeciesConstants.Biomass(nextAnimal.name));
-                    DemAudioManager.audioSelection.Play();
-                    credits++;
-                    buildMenu.UpdateCredits(credits);
-                    markForDeletion = true;
-                }
-                else if (nextAnimal.isPlant())
-                {
-                    buildMenu.AddPlantBiomass(SpeciesConstants.Biomass(nextAnimal.name));
-                    if(buildMenu.GetTier2Biomass() - SpeciesConstants.Biomass(nextAnimal.name) >= 0)
-                        buildMenu.SubtractTier2Biomass((int)(SpeciesConstants.Biomass(nextAnimal.name) * 0.5));
-                    else
-                        buildMenu.UpdateTier2Biomass(0);
-                }
+                Debug.Log("arrived at final tile");
+                tweenList.Enqueue(new DemPredatorExitTween (predator.Value, 500));
+                //continue;
             }
             else
             {
-                predator.GetNextTile().RemoveAnimal();
+                nextTile = board.Tiles [x + 1, y].GetComponent<DemTile>();
+                animal.SetNextTile (nextTile);
+                tweenList.Enqueue (new DemTileTransitionTween (predator.Value, nextTile.GetCenter (), 500));
             }
-       
         }
 
-    predator.AdvanceTile();
+        if (turnNumber % 2 == 1)
+            GenerateNewPredators();
 
-    if(markForDeletion){
-      buildMenu.SubtractTier3Biomass (SpeciesConstants.Biomass (predator.name));
-      DemTile tempTile = predator.GetTile ();
-      activePredators.Remove(finishedPredator.GetInstanceID());
-      tempTile.RemoveAnimal ();
+        ProcessTweens();
 
-
+        // turn count 1++
+        buildMenu.statistic.setTurnCount(1);
     }
 
-      
-    ProcessTweens ();
-
-
-  }
-
-
-  public void PredatorExit(GameObject finishedPredator){
-
-    BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
-    predator.GetTile ().RemoveAnimal ();
-    lives--;
-    buildMenu.UpdateLives (lives);
-
-    if (lives == 0) {
-      activePredators.Remove(finishedPredator.GetInstanceID());
-      tweenList.Clear();
-      GameOver ();
-    
-    } else {
-      buildMenu.SubtractTier3Biomass (SpeciesConstants.Biomass (predator.name));
-      activePredators.Remove(finishedPredator.GetInstanceID());
-      ProcessTweens ();
-
+    public bool IsTurnLocked ()
+    {
+        return !turnLock;
     }
 
-  }
+    public  void PredatorFinishedMove (GameObject finishedPredator)
+    {
+        PredatorInfo predator = finishedPredator.GetComponent<BuildInfo>() as PredatorInfo;
+        Boolean markForDeletion = false;
 
-  public  void GenerateNewPredators()
-  {
+        if (predator.GetNextTile().resident != null)
+        {
+            BuildInfo nextAnimal = predator.GetNextTile().resident.GetComponent<BuildInfo>();
+            DemTile currTile = currentTile;
 
-    //For Testing
-    int random = UnityEngine.Random.Range (0, 5);
+            Debug.Log(predator.name + (predator.IsPredatorOf(nextAnimal.speciesId) ? " eats " : " does not eat ") + nextAnimal.name);
 
+            // If the next animal is a plant, restore its Tier 1 biomass
+            if (nextAnimal.isPlant())
+            {
+                buildMenu.AddPlantBiomass(SpeciesConstants.Biomass(nextAnimal.name));
 
-    int randomPredator = UnityEngine.Random.Range (0, main.predators.Length);
+                if (buildMenu.GetTier2Biomass() - SpeciesConstants.Biomass(nextAnimal.name) >= 0)
+                    buildMenu.SubtractTier2Biomass((int)(SpeciesConstants.Biomass(nextAnimal.name) * 0.5));
+                else
+                    buildMenu.UpdateTier2Biomass(0);
+            }
+            // If the predator preys on the next animal, update pertinent game data
+            else if (predator.IsPredatorOf(nextAnimal.speciesId))
+            {
+                buildMenu.AddTier2Biomass(SpeciesConstants.Biomass(nextAnimal.name));
+                DemAudioManager.audioSelection.Play();
+                credits++;
+                buildMenu.UpdateCredits(credits);
+                markForDeletion = true;
+            }
+            // Lastly, remove plant or animal
+            predator.GetNextTile().RemoveAnimal();
+        }
 
-    GameObject newPredator = main.predators [randomPredator].Create ();
-    newPredator.GetComponent<BuildInfo> ().speciesType = 2;
+        // Advance predator to next tile
+        predator.AdvanceTile();
 
-    //activePredators.Add (newPredator.GetInstanceID() , newPredator);
+        if (markForDeletion)
+        {
+            buildMenu.SubtractTier3Biomass(SpeciesConstants.Biomass(predator.name));
+            DemTile tempTile = predator.GetTile();
+            activePredators.Remove(finishedPredator.GetInstanceID());
+            tempTile.RemoveAnimal();
+        }
 
-    board.AddNewPredator(0, random, newPredator );
-    //board.AddNewPredator(8, random, newPredator );
-
-    tweenList.Enqueue(new DemPredatorEnterTween (newPredator, 700));
-    buildMenu.AddTier3Biomass (SpeciesConstants.Biomass (newPredator.GetComponent<BuildInfo> ().name));
-    //tweenList.Clear ();
-
-    //turnLock = false;
-
-  }
-
-  public void ProcessTweens()
-  {
-    
-    if (tweenList.Count > 0) {
-      tweenManager.AddTween (tweenList.Dequeue ());
-    } else {
-      //GenerateNewPredators ();
-      tweenList.Clear();
-      turnLock = false;
-      buildMenu.ToggleButtonLocks ();
-      buildMenu.UpdateMenuLocks ();
+        ProcessTweens();
     }
 
-  }
 
-  public int GetLives(){
-    return lives;
-  }
+    public void PredatorExit (GameObject finishedPredator)
+    {
+        BuildInfo predator = finishedPredator.GetComponent<BuildInfo>();
+        predator.GetTile().RemoveAnimal();
+        lives--;
+        buildMenu.UpdateLives(lives);
 
+        if (lives == 0)
+        {
+            activePredators.Remove(finishedPredator.GetInstanceID());
+            tweenList.Clear();
+            GameOver();
+        }
+        else
+        {
+            buildMenu.SubtractTier3Biomass(SpeciesConstants.Biomass(predator.name));
+            activePredators.Remove(finishedPredator.GetInstanceID());
+            ProcessTweens();
+        }
+    }
 
+    public void GenerateNewPredators ()
+    {
+        //For Testing
+        int random = UnityEngine.Random.Range(0, 5);
 
-  public void GameOver(){
-    //turnLock = true;
-    Debug.Log ("game Over");
-    buildMenu.EndGame ();
-  }
+        int randomPredator = UnityEngine.Random.Range(0, main.predators.Length);
 
+        GameObject newPredator = main.predators [randomPredator].Create();
+        newPredator.GetComponent<BuildInfo>().speciesType = 2;
 
+        //activePredators.Add (newPredator.GetInstanceID() , newPredator);
+
+        board.AddNewPredator(0, random, newPredator);
+        //board.AddNewPredator(8, random, newPredator );
+
+        tweenList.Enqueue(new DemPredatorEnterTween(newPredator, 700));
+        buildMenu.AddTier3Biomass(SpeciesConstants.Biomass(newPredator.GetComponent<BuildInfo>().name));
+
+        //tweenList.Clear ();
+        //turnLock = false;
+    }
+
+    public void ProcessTweens ()
+    {
+        if (tweenList.Count > 0)
+            tweenManager.AddTween(tweenList.Dequeue());
+        else
+        {
+            //GenerateNewPredators ();
+            tweenList.Clear();
+            turnLock = false;
+            buildMenu.ToggleButtonLocks();
+            buildMenu.UpdateMenuLocks();
+        }
+    }
+
+    public int GetLives ()
+    {
+        return lives;
+    }
+
+    public void GameOver ()
+    {
+        //turnLock = true;
+        Debug.Log ("game Over");
+        buildMenu.EndGame ();
+    }
 }
