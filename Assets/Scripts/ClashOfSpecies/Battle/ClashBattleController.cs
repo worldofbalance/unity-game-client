@@ -19,8 +19,8 @@ public class ClashBattleController : MonoBehaviour
     public HorizontalLayoutGroup unitList;
     public GameObject attackItemPrefab;
     public GameObject healthBar;
-	public AudioClip[] audioClip;
-	public AudioSource audioSource;
+    public AudioClip[] audioClip;
+    public AudioSource audioSource;
 
     public List<ClashBattleUnit> enemiesList = new List<ClashBattleUnit>();
     public List<ClashBattleUnit> alliesList = new List<ClashBattleUnit>();
@@ -32,13 +32,13 @@ public class ClashBattleController : MonoBehaviour
     public Text dmgBuffValue;
     public Text spdBuffValue;
 
-	public Text typeSpecies1, typeSpecies2, typeSpecies3, typeSpecies4, typeSpecies5;
-	public Text nameSpecies1, nameSpecies2, nameSpecies3, nameSpecies4, nameSpecies5;
-	public Text countSpecies1, countSpecies2, countSpecies3, countSpecies4, countSpecies5;
+    public Text typeSpecies1, typeSpecies2, typeSpecies3, typeSpecies4, typeSpecies5;
+    public Text nameSpecies1, nameSpecies2, nameSpecies3, nameSpecies4, nameSpecies5;
+    public Text countSpecies1, countSpecies2, countSpecies3, countSpecies4, countSpecies5;
 
-	public Text enemyTypeSpecies1, enemyTypeSpecies2, enemyTypeSpecies3, enemyTypeSpecies4, enemyTypeSpecies5;
-	public Text enemyNameSpecies1, enemyNameSpecies2, enemyNameSpecies3, enemyNameSpecies4, enemyNameSpecies5;
-	public Text enemyCountSpecies1, enemyCountSpecies2, enemyCountSpecies3, enemyCountSpecies4, enemyCountSpecies5;
+    public Text enemyTypeSpecies1, enemyTypeSpecies2, enemyTypeSpecies3, enemyTypeSpecies4, enemyTypeSpecies5;
+    public Text enemyNameSpecies1, enemyNameSpecies2, enemyNameSpecies3, enemyNameSpecies4, enemyNameSpecies5;
+    public Text enemyCountSpecies1, enemyCountSpecies2, enemyCountSpecies3, enemyCountSpecies4, enemyCountSpecies5;
 
     private Boolean finished = false;
     private bool isStarted = false;
@@ -81,8 +81,8 @@ public class ClashBattleController : MonoBehaviour
     private float timeTouchPhaseEnded;
     private Vector3 oldTouchPos;
 
-	public Dictionary<string, int> enemySpecies = new Dictionary<string, int> ();
-	public Dictionary<string, int> allySpecies = new Dictionary<string, int> ();
+    public Dictionary<string, int> enemySpecies = new Dictionary<string, int> ();
+    public Dictionary<string, int> allySpecies = new Dictionary<string, int> ();
 
     COSAbstractInputController cosInController;
 
@@ -139,11 +139,11 @@ public class ClashBattleController : MonoBehaviour
 
                     var unit = speciesObject.AddComponent<ClashBattleUnit>();
 
-					var key = unit.name.Split ('(') [0];
+                    var key = unit.name.Split ('(') [0];
 
-					enemySpecies [key] = 5;
+                    enemySpecies [key] = 5;
 
-					enemiesList.Add(unit);
+                    enemiesList.Add(unit);
                     unit.species = species;
 
                     var trigger = speciesObject.AddComponent<SphereCollider>();
@@ -167,57 +167,57 @@ public class ClashBattleController : MonoBehaviour
                 }
             }
 
-			List<string> enemyKeyList = new List<string>(this.enemySpecies.Keys);
-			if (enemyKeyList.Count () == 1) {
-				if (enemySpecies.ContainsKey (enemyKeyList [0])) {
-					if (enemyTypeSpecies1.text == "") {
-						enemyTypeSpecies1.text = species.type.ToString();
-					}
-					enemyNameSpecies1.text = enemyKeyList [0].ToString();
-					enemyCountSpecies1.text = enemySpecies[enemyKeyList[0]].ToString();
-				}
-			}
-			if (enemyKeyList.Count () == 2) {
-			
-				if (enemySpecies.ContainsKey (enemyKeyList [1])) {
-					if (enemyTypeSpecies2.text == "") {
-						enemyTypeSpecies2.text = species.type.ToString();
-					}
-					enemyNameSpecies2.text = enemyKeyList [1].ToString();
-					enemyCountSpecies2.text = enemySpecies[enemyKeyList[1]].ToString();
-				}
-			}
+            List<string> enemyKeyList = new List<string>(this.enemySpecies.Keys);
+            if (enemyKeyList.Count () == 1) {
+                if (enemySpecies.ContainsKey (enemyKeyList [0])) {
+                    if (enemyTypeSpecies1.text == "") {
+                        enemyTypeSpecies1.text = species.type.ToString();
+                    }
+                    enemyNameSpecies1.text = enemyKeyList [0].ToString();
+                    enemyCountSpecies1.text = enemySpecies[enemyKeyList[0]].ToString();
+                }
+            }
+            if (enemyKeyList.Count () == 2) {
+            
+                if (enemySpecies.ContainsKey (enemyKeyList [1])) {
+                    if (enemyTypeSpecies2.text == "") {
+                        enemyTypeSpecies2.text = species.type.ToString();
+                    }
+                    enemyNameSpecies2.text = enemyKeyList [1].ToString();
+                    enemyCountSpecies2.text = enemySpecies[enemyKeyList[1]].ToString();
+                }
+            }
 
-			if (enemyKeyList.Count () == 3) {
-			
-				if (enemySpecies.ContainsKey (enemyKeyList [2])) {
-					if (enemyTypeSpecies3.text == "") {
-						enemyTypeSpecies3.text = species.type.ToString();
-					}
-					enemyNameSpecies3.text = enemyKeyList [2].ToString();
-					enemyCountSpecies3.text = enemySpecies[enemyKeyList[2]].ToString();
-				}
-			}
+            if (enemyKeyList.Count () == 3) {
+            
+                if (enemySpecies.ContainsKey (enemyKeyList [2])) {
+                    if (enemyTypeSpecies3.text == "") {
+                        enemyTypeSpecies3.text = species.type.ToString();
+                    }
+                    enemyNameSpecies3.text = enemyKeyList [2].ToString();
+                    enemyCountSpecies3.text = enemySpecies[enemyKeyList[2]].ToString();
+                }
+            }
 
-			if (enemyKeyList.Count () == 4) {
-				if (enemySpecies.ContainsKey (enemyKeyList [3])) {
-					if (enemyTypeSpecies4.text == "") {
-						enemyTypeSpecies4.text = species.type.ToString();
-					}
-					enemyNameSpecies4.text = enemyKeyList [3].ToString();
-					enemyCountSpecies4.text = enemySpecies[enemyKeyList[3]].ToString();
-				}
-			}
+            if (enemyKeyList.Count () == 4) {
+                if (enemySpecies.ContainsKey (enemyKeyList [3])) {
+                    if (enemyTypeSpecies4.text == "") {
+                        enemyTypeSpecies4.text = species.type.ToString();
+                    }
+                    enemyNameSpecies4.text = enemyKeyList [3].ToString();
+                    enemyCountSpecies4.text = enemySpecies[enemyKeyList[3]].ToString();
+                }
+            }
 
-			if (enemyKeyList.Count () == 5) {
-				if (enemySpecies.ContainsKey (enemyKeyList [4])) {
-					if (enemyTypeSpecies5.text == "") {
-						enemyTypeSpecies5.text = species.type.ToString();
-					}
-					enemyNameSpecies5.text = enemyKeyList [4].ToString();
-					enemyCountSpecies5.text = enemySpecies[enemyKeyList[4]].ToString();
-				}
-			}			
+            if (enemyKeyList.Count () == 5) {
+                if (enemySpecies.ContainsKey (enemyKeyList [4])) {
+                    if (enemyTypeSpecies5.text == "") {
+                        enemyTypeSpecies5.text = species.type.ToString();
+                    }
+                    enemyNameSpecies5.text = enemyKeyList [4].ToString();
+                    enemyCountSpecies5.text = enemySpecies[enemyKeyList[4]].ToString();
+                }
+            }			
         }
 
         // Populate user's selected unit panel.
@@ -298,12 +298,12 @@ public class ClashBattleController : MonoBehaviour
                 }
                 
                 var unit = allyObject.AddComponent<ClashBattleUnit>();
-				var key = unit.name.Split ('(') [0];
-				if (!allySpecies.ContainsKey(key)) {
-					allySpecies [key] = 1;
-				} else {
-					allySpecies [key] += 1;
-				}
+                var key = unit.name.Split ('(') [0];
+                if (!allySpecies.ContainsKey(key)) {
+                    allySpecies [key] = 1;
+                } else {
+                    allySpecies [key] += 1;
+                }
 
                 alliesList.Add(unit);
                 unit.species = selected;
@@ -362,109 +362,109 @@ public class ClashBattleController : MonoBehaviour
             }
         }
 
-		List<string> keyList = new List<string>(this.allySpecies.Keys);
+        List<string> keyList = new List<string>(this.allySpecies.Keys);
 
-		if (keyList.Count () > 0) {
-			if (allySpecies.ContainsKey (keyList [0])) {
-				if (typeSpecies1.text == "") {
-					typeSpecies1.text = selected.type.ToString();
+        if (keyList.Count () > 0) {
+            if (allySpecies.ContainsKey (keyList [0])) {
+                if (typeSpecies1.text == "") {
+                    typeSpecies1.text = selected.type.ToString();
 
-				}
-				nameSpecies1.text = keyList [0].ToString();
-				countSpecies1.text = allySpecies[keyList[0]].ToString();
-			}
-		}
-
-
-		if (keyList.Count () > 1) {
-			if (allySpecies.ContainsKey (keyList [1])) {
-				if (typeSpecies2.text == "") {
-					typeSpecies2.text = selected.type.ToString();
-
-				}
-				nameSpecies2.text = keyList [1].ToString();
-				countSpecies2.text = allySpecies[keyList[1]].ToString();
-			}
-
-		}
-
-		if (keyList.Count () > 2) {
-			if (allySpecies.ContainsKey (keyList [2])) {
-				if (typeSpecies3.text == "") {
-					typeSpecies3.text = selected.type.ToString();
-
-				}
-				nameSpecies3.text = keyList [2].ToString();
-				countSpecies3.text = allySpecies[keyList[2]].ToString();
-			}
-		}
+                }
+                nameSpecies1.text = keyList [0].ToString();
+                countSpecies1.text = allySpecies[keyList[0]].ToString();
+            }
+        }
 
 
-		if (keyList.Count () > 3) {
-			if (allySpecies.ContainsKey (keyList [3])) {
-				if (typeSpecies4.text == "") {
-					typeSpecies4.text = selected.type.ToString();
+        if (keyList.Count () > 1) {
+            if (allySpecies.ContainsKey (keyList [1])) {
+                if (typeSpecies2.text == "") {
+                    typeSpecies2.text = selected.type.ToString();
 
-				}
-				nameSpecies4.text = keyList [3].ToString();
-				countSpecies4.text = allySpecies[keyList[3]].ToString();
-			}
-		}
+                }
+                nameSpecies2.text = keyList [1].ToString();
+                countSpecies2.text = allySpecies[keyList[1]].ToString();
+            }
 
+        }
 
-		if (keyList.Count () > 4) {
-			if (allySpecies.ContainsKey (keyList [4])) {
-				if (typeSpecies5.text == "") {
-					typeSpecies5.text = selected.type.ToString();
+        if (keyList.Count () > 2) {
+            if (allySpecies.ContainsKey (keyList [2])) {
+                if (typeSpecies3.text == "") {
+                    typeSpecies3.text = selected.type.ToString();
 
-				}
-				nameSpecies5.text = keyList [4].ToString();
-				countSpecies5.text = allySpecies[keyList[4]].ToString();
-			}
-		}
-
-
-
-		List<string> enemyKeyList = new List<string>(this.enemySpecies.Keys);
-
-		if (enemyKeyList.Count () > 0) {
-			if (enemySpecies.ContainsKey (enemyKeyList [0])) {
-				enemyNameSpecies1.text = enemyKeyList [0].ToString();
-				enemyCountSpecies1.text = enemySpecies[enemyKeyList[0]].ToString();
-			}
-		}
+                }
+                nameSpecies3.text = keyList [2].ToString();
+                countSpecies3.text = allySpecies[keyList[2]].ToString();
+            }
+        }
 
 
-		if (enemyKeyList.Count () > 1) {
-			if (enemySpecies.ContainsKey (enemyKeyList [1])) {
-				enemyNameSpecies2.text = enemyKeyList [1].ToString();
-				enemyCountSpecies2.text = enemySpecies[enemyKeyList[0]].ToString();
-			}
-		}
+        if (keyList.Count () > 3) {
+            if (allySpecies.ContainsKey (keyList [3])) {
+                if (typeSpecies4.text == "") {
+                    typeSpecies4.text = selected.type.ToString();
+
+                }
+                nameSpecies4.text = keyList [3].ToString();
+                countSpecies4.text = allySpecies[keyList[3]].ToString();
+            }
+        }
 
 
-		if (enemyKeyList.Count () > 2) {
-			if (enemySpecies.ContainsKey (enemyKeyList [2])) {
-				enemyNameSpecies3.text = enemyKeyList [2].ToString();
-				enemyCountSpecies3.text = enemySpecies[enemyKeyList[2]].ToString();
-			}
-		}
+        if (keyList.Count () > 4) {
+            if (allySpecies.ContainsKey (keyList [4])) {
+                if (typeSpecies5.text == "") {
+                    typeSpecies5.text = selected.type.ToString();
+
+                }
+                nameSpecies5.text = keyList [4].ToString();
+                countSpecies5.text = allySpecies[keyList[4]].ToString();
+            }
+        }
 
 
-		if (enemyKeyList.Count () > 3) {
-			if (enemySpecies.ContainsKey (enemyKeyList [3])) {
-				enemyNameSpecies4.text = enemyKeyList [3].ToString();
-				enemyCountSpecies4.text = enemySpecies[enemyKeyList[3]].ToString();
-			}
-		}
+
+        List<string> enemyKeyList = new List<string>(this.enemySpecies.Keys);
+
+        if (enemyKeyList.Count () > 0) {
+            if (enemySpecies.ContainsKey (enemyKeyList [0])) {
+                enemyNameSpecies1.text = enemyKeyList [0].ToString();
+                enemyCountSpecies1.text = enemySpecies[enemyKeyList[0]].ToString();
+            }
+        }
 
 
-		if (enemyKeyList.Count () > 4) {
-			if (enemySpecies.ContainsKey (enemyKeyList [4])) {
-				enemyNameSpecies5.text = enemyKeyList [4].ToString();
-				enemyCountSpecies5.text = enemySpecies[enemyKeyList[4]].ToString();
-			}
-		}
+        if (enemyKeyList.Count () > 1) {
+            if (enemySpecies.ContainsKey (enemyKeyList [1])) {
+                enemyNameSpecies2.text = enemyKeyList [1].ToString();
+                enemyCountSpecies2.text = enemySpecies[enemyKeyList[0]].ToString();
+            }
+        }
+
+
+        if (enemyKeyList.Count () > 2) {
+            if (enemySpecies.ContainsKey (enemyKeyList [2])) {
+                enemyNameSpecies3.text = enemyKeyList [2].ToString();
+                enemyCountSpecies3.text = enemySpecies[enemyKeyList[2]].ToString();
+            }
+        }
+
+
+        if (enemyKeyList.Count () > 3) {
+            if (enemySpecies.ContainsKey (enemyKeyList [3])) {
+                enemyNameSpecies4.text = enemyKeyList [3].ToString();
+                enemyCountSpecies4.text = enemySpecies[enemyKeyList[3]].ToString();
+            }
+        }
+
+
+        if (enemyKeyList.Count () > 4) {
+            if (enemySpecies.ContainsKey (enemyKeyList [4])) {
+                enemyNameSpecies5.text = enemyKeyList [4].ToString();
+                enemyCountSpecies5.text = enemySpecies[enemyKeyList[4]].ToString();
+            }
+        }
 
     }
 
@@ -589,18 +589,18 @@ public class ClashBattleController : MonoBehaviour
         }
     }
 
-	public void Surrender () {
-		ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.LOSS);
-	}
+    public void Surrender () {
+        ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.LOSS);
+    }
 
     public void GetBuffs(ClashBattleUnit attributes, string tag)
     {
         var team = GameObject.FindGameObjectsWithTag(tag);
-		
+        
         foreach (var teammate in team)
         {
             var teammateAttribute = teammate.GetComponent<ClashBattleUnit>();
-			
+            
             //found a plant
             //teammate != attributes.gameObject so it doesn't get a buff from itself
             if (teammateAttribute.species.type == UnitType.PLANT && teammate != attributes.gameObject
@@ -698,13 +698,13 @@ public class ClashBattleController : MonoBehaviour
     {
         if (outcome == ClashEndBattleProtocol.BattleResult.WIN)
         {
-			PlaySound (0);
+            PlaySound (0);
             messageCanvas.SetActive(true);
             messageText.text = "You Won!\n\nKeep on fighting!";
         }
         else
         {
-			PlaySound (1);
+            PlaySound (1);
             messageCanvas.SetActive(true);
             messageText.text = "You Lost!\n\nTry again next time!";
         }
@@ -729,11 +729,11 @@ public class ClashBattleController : MonoBehaviour
             });
     }
 
-	public void PlaySound (int clip) {
-	
-		audioSource.clip = audioClip [clip];
-		audioSource.Play ();
-	}
+    public void PlaySound (int clip) {
+    
+        audioSource.clip = audioClip [clip];
+        audioSource.Play ();
+    }
 
     public bool isSpawningSpecies()
     {
