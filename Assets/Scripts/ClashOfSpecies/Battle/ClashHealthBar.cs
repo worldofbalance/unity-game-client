@@ -7,6 +7,7 @@ public class ClashHealthBar : MonoBehaviour
 {
     private Transform cameraTransform;
     private ClashBattleUnit unit;
+    private ClashBattleController controller;
     private Slider slider;
 
     void Start()
@@ -14,7 +15,7 @@ public class ClashHealthBar : MonoBehaviour
         cameraTransform = Camera.main.transform;
         unit = GetComponentInParent<ClashBattleUnit>();
         slider = GetComponentInChildren<Slider>();
-
+        controller = GameObject.Find ("Battle Menu").GetComponent<ClashBattleController> ();
         var colors = new ColorBlock();
         switch (unit.species.type)
         {
@@ -34,12 +35,27 @@ public class ClashHealthBar : MonoBehaviour
                 break;
         }
 
-        if (unit.gameObject.tag == "Enemy")
+        if (unit.gameObject.tag == "Enemy") {
             colors.normalColor = Color.red;
-        else
-            colors.normalColor = Color.blue;
+            controller.selectedSpeciesText.text = unit.species.name;
+        }
+        else {
+           if (controller.activeHealthBar != null) {
+             controller.activeHealthBar.hideBar();
+           }
+           colors.normalColor = Color.blue;
+           controller.activeHealthBar = this;
+           controller.selectedSpeciesText.text = unit.species.name;
+        }
             
         colors.colorMultiplier = 1.0f;
+        slider.colors = colors;
+    }
+
+    public void hideBar() {
+        var colors = new ColorBlock();
+        colors.normalColor = Color.blue;
+        colors.colorMultiplier = 0f;
         slider.colors = colors;
     }
 	

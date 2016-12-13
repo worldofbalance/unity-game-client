@@ -19,6 +19,7 @@ public class ClashBattleController : MonoBehaviour
     public HorizontalLayoutGroup unitList;
     public GameObject attackItemPrefab;
     public GameObject healthBar;
+    public ClashHealthBar activeHealthBar;
     public AudioClip[] audioClip;
     public AudioSource audioSource;
 
@@ -27,6 +28,7 @@ public class ClashBattleController : MonoBehaviour
 
     public GameObject messageCanvas;
     public Text messageText;
+    public Text selectedSpeciesText;
 
     public Text hpBuffValue;
     public Text dmgBuffValue;
@@ -92,10 +94,10 @@ public class ClashBattleController : MonoBehaviour
 
     void Awake()
     {
+        selectedSpeciesText = GameObject.Find("txtSelectedSpecies").GetComponent<Text>();
         manager = GameObject.Find("MainObject").GetComponent<ClashGameManager>();
         toggleGroup = unitList.gameObject.GetComponent<ToggleGroup>();
-
-    }
+    } 
 
     int walkableAreaMask;
 
