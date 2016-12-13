@@ -487,7 +487,15 @@ public class ClashBattleController : MonoBehaviour
 
         if (timeLeft < 0 && !finished)
         {
-            ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.LOSS);
+            // if there are more enemies than me. I lose
+           if (enemiesList.Count() > alliesList.Count()) {
+               ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.LOSS);
+           }
+           // otherwise I win.
+           else {
+                ReportBattleOutcome(ClashEndBattleProtocol.BattleResult.WIN);
+           }
+
         }
         else
             timer.text = min + ":" + seconds;
