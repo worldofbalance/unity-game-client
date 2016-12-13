@@ -117,7 +117,7 @@ public class ClashDefenseShop : MonoBehaviour
             }
 
             item.transform.position = new Vector3 (item.transform.position.x, item.transform.position.y, 0.0f);
-            item.transform.localScale = Vector3.one;
+            item.transform.localScale = new Vector3(1, 1, 1);
         }
 
         // Setup the terrain items list.
@@ -161,8 +161,8 @@ public class ClashDefenseShop : MonoBehaviour
             });
 
             item.transform.SetParent (terrainGroup.transform);
+            item.transform.localScale = new Vector3 (0.75f, 1.25f, 0.0f);
             item.transform.position = new Vector3 (item.transform.position.x, item.transform.position.y, 0.0f);
-            item.transform.localScale = Vector3.one;
         }
 
         // Populate the selected unit and terrain lists if the user has a pending or existing defense configuration.
