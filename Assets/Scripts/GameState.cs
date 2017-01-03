@@ -93,6 +93,18 @@ public class GameState : MonoBehaviour
 		CreateSpecies (args.group_id, args.biomass, args.name, species);
 	}
 
+	// This is used to update the memory species list when you buy from ShopCartPanel
+	public void PurchaseSpecies (int group_id, int species_id, int biomass) {
+		if (speciesList.ContainsKey (species_id)) {
+			speciesList [species_id].biomass += biomass;
+		} else {
+			SpeciesData speciesData = new SpeciesData (species_id);
+			speciesData.organism_type = SpeciesTable.speciesList[species_id].organism_type;
+			string name = SpeciesTable.speciesList [species_id].name;
+			CreateSpecies (group_id, biomass, name, speciesData);
+		}
+	}
+		
 	public void CreateSpecies (int group_id, int biomass, string name, SpeciesData sdata)
 	{
 //		if (speciesList.ContainsKey(species_id)) {

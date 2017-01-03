@@ -11,7 +11,7 @@ public class Database : MonoBehaviour
 	private float left;
 	private float top;
 	private float width = 640;
-	private float height = Screen.height;
+	private float height;
 	private bool isActive = false;
 	// Other
 	public string title { get; set; }
@@ -50,6 +50,9 @@ public class Database : MonoBehaviour
 	private bool activatedBySpeciesClick = false;
 	private bool openedDetails = true;
 	private bool closedDetails = false;
+	private Dictionary<int, int> ownedSpeciesList = new Dictionary<int, int> ();
+	private GameObject globalObject;
+	private GameState gs;
 
 	//Factory method for creating new Database component with specified mode
 	public static Database NewDatabase (GameObject gameObject, int mode, ConvergeManager manager)
@@ -58,11 +61,21 @@ public class Database : MonoBehaviour
 		//calls Start() on the object and initializes it.
 		thisObj.mode = mode;
 		thisObj.manager = manager;
+		Debug.Log ("Database NewDatabase, mode = " + thisObj.mode);
+
+		if (mode == Constants.MODE_OWNED) {			
+			int action = 2;
+			Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action), thisObj.ProcessSpeciesAction);
+		}
+			
 		return thisObj;
 	}
-
+		
 	void Awake ()
 	{
+		globalObject = GameObject.Find ("Global Object");
+		gs = globalObject.GetComponent<GameState> ();
+		height = Screen.height;
 		title = "Species";
 
 		left = -(windowRect.width - 45);
@@ -82,6 +95,23 @@ public class Database : MonoBehaviour
 		cardHighlightFullTexture = Resources.Load<Texture2D> ("card_highlight_full");
 		font = Resources.Load<Font> ("Fonts/" + "Chalkboard");
 	}
+
+	public void ProcessSpeciesAction (NetworkResponse response)
+	{
+		ResponseSpeciesAction args = response as ResponseSpeciesAction;
+		// Debug.Log ("ResponseSpeciesAction");
+		int action = args.action;
+		int status = args.status;
+		if ((action != 2) || (status != 0)) {
+			Debug.Log ("ResponseSpeciesAction unexpected result");
+			Debug.Log ("action, status = " + action + " " + status);
+		}
+		ownedSpeciesList = args.speciesList;
+		// Debug.Log ("ResponseSpeciesAction count = " + ownedSpeciesList.Count);
+		Refresh ();
+		SetActive (true, "");
+	}
+
 
 	// Use this for initialization
 	void Start ()
@@ -113,16 +143,21 @@ public class Database : MonoBehaviour
 			style.richText = true;
 
 			styleExists = true;
-		}
+		}			
 		
 		if (isActive) {
 			windowRect = GUI.Window (window_id, (new Rect (0, 0, 700, 1000)), MakeWindow, "Window", GUIStyle.none);
 			openWindowButton = GUI.Button ((new Rect (620, 250, 15, 100)), "");
-		} else {
+		} else if (mode != Constants.MODE_OWNED) {
 			openWindowButton = GUI.Button ((new Rect (10, 250, 15, 100)), "");
 		}
 
-		if (openWindowButton || (activatedBySpeciesClick && closedDetails)) {
+		if ((mode == Constants.MODE_OWNED) && openWindowButton) {
+			SetActive (false, null);
+			GameObject shopObject = GameObject.Find("Cube");
+			shopObject.GetComponent<Shop>().Show();
+			Destroy (this);
+		} else if (!(mode == Constants.MODE_OWNED) && (openWindowButton || (activatedBySpeciesClick && closedDetails))) {
 			SetActive (!isActive, null);
 			activatedBySpeciesClick = false;
 			closedDetails = false;
@@ -145,7 +180,7 @@ public class Database : MonoBehaviour
 		style.alignment = TextAnchor.UpperCenter;
 		GUI.Label (new Rect (0, 10, rect ["subWin"].width, 30), "<size=20>" + title + "</size>", style);
 
-		if (mode != Constants.MODE_CONVERGE_GAME) {
+		if ((mode == Constants.MODE_ECOSYSTEM) || (mode == Constants.MODE_SHOP)) {
 			mode = GUI.SelectionGrid (new Rect (rect ["content"].x + 20, rect ["content"].y - 40, 200, 30), 
 		                          mode, 
 		                          btnStrings, 
@@ -153,12 +188,14 @@ public class Database : MonoBehaviour
 		}
 
 		switch (mode) {
-		case 0:  //Constants.MODE_ECOSYSTEM:
-		case 2:  //Constants.MODE_CONVERGE_GAME:
+		case Constants.MODE_ECOSYSTEM:  //Constants.MODE_ECOSYSTEM:  0
+		case Constants.MODE_CONVERGE_GAME:  //Constants.MODE_CONVERGE_GAME:  2
 			Switch (mode);
 			viewList = ecoList;
 			break;
-		case 1:  //Constants.MODE_SHOP:
+
+		case Constants.MODE_SHOP:  //Constants.MODE_SHOP:  1
+		case Constants.MODE_OWNED:
 			viewList = shopList;
 			break;
 		}
@@ -202,7 +239,7 @@ public class Database : MonoBehaviour
 				scrollStyle [1]
 			);
 			for (int j = 0; j < page.contents.Count; j++) {
-				Card card = cardList [page.contents [j]];
+				Card card = cardList [page.contents [j].ToUpper()];
 				card.x = j * (card.width + 12);
 				card.y = 12;
 
@@ -227,7 +264,7 @@ public class Database : MonoBehaviour
 
 				if (mode == Constants.MODE_SHOP) {
 					if (GUI.Button (new Rect (83, 0, 70, 30), "Buy")) {
-						GameObject.Find ("Global Object").GetComponent<GameState> ().CreateSpecies (-1, card.species.biomass, card.name, card.species);
+						gs.CreateSpecies (-1, card.species.biomass, card.name, card.species);
 					}
 				}
 				GUI.EndGroup ();
@@ -268,8 +305,16 @@ public class Database : MonoBehaviour
 		} else {
 			card.color = color;
 		}
-
-		card.Draw ();
+			
+		if (mode == Constants.MODE_OWNED) {
+			int biomass = ownedSpeciesList [card.species.species_id];
+			card.Draw (biomass);
+		} else if (mode == Constants.MODE_ECOSYSTEM) {
+			int biomass = gs.speciesList [card.species.species_id].biomass;
+			card.Draw (biomass);
+		} else {
+			card.Draw ();
+		}
 
 		// Selection
 		if (color != Color.clear) {
@@ -312,35 +357,45 @@ public class Database : MonoBehaviour
 		winDT = 0;
 	}
 
+	public bool getActive() {
+		return isActive;
+	}
+		
 	public void Switch (int view)
 	{
 		switch (view) {
-		case 0:  //Constants.MODE_ECOSYSTEM:
-		case 2:  //Constants.MODE_CONVERGE_GAME:
+		case Constants.MODE_ECOSYSTEM:  //Constants.MODE_ECOSYSTEM:  0
+		case Constants.MODE_CONVERGE_GAME:  //Constants.MODE_CONVERGE_GAME:  2
 			List<string> contents = new List<string> ();
-			GameObject globalObject = GameObject.Find("Global Object");
-			GameState gs = globalObject.GetComponent<GameState> ();
 
+			// Debug.Log ("Database, Switch: count = " + gs.speciesList.Count);
 			foreach (Species species in gs.speciesList.Values) {
+				// Debug.Log ("Database, Switch: name = :" + species.name + ":");
 				contents.Add (species.name);
-			}
-				
+			}	
+			// Debug.Log ("Database, Switch: done with contents");
 			ecoList.Clear ();
 			contents.Sort (SortByTrophicLevels);
 			Prepare (contents, ecoList);
 			break;
-		case 1:  //Constants.MODE_SHOP:
+
+		case Constants.MODE_SHOP:  //Constants.MODE_SHOP:  1
+		case Constants.MODE_OWNED:
 			break;
 		}
 	}
 	
 	public void Refresh ()
 	{
+		cardList.Clear ();
+		// Debug.Log ("Refresh");
 		foreach (SpeciesData species in speciesTable.Values) {
 			Texture2D image = Resources.Load (Constants.IMAGE_RESOURCES_PATH + species.name) as Texture2D;
-
-			Card card = new Card (species.name, image, species, new Rect (0, 0, 160, 200));
-			cardList [species.name] = card;
+			if ((mode != Constants.MODE_OWNED) || (ownedSpeciesList.ContainsKey (species.species_id))) {
+				Card card = new Card (species.name, image, species, new Rect (0, 0, 160, 200));
+				cardList [species.name.ToUpper()] = card;
+				// Debug.Log ("species.name = :" + species.name + ":");
+			}
 		}
 		
 		shopList.Clear ();
@@ -357,7 +412,7 @@ public class Database : MonoBehaviour
 
 		int index = 0;
 		for (float trophic = 3.5f; trophic >= 1f; trophic -= 0.5f) {
-			Card card = cardList [from [index]];
+			Card card = cardList [from [index].ToUpper()];
 
 			if (card.species.trophic_level < trophic) {
 				continue;
@@ -370,7 +425,7 @@ public class Database : MonoBehaviour
 				index++;
 
 				if (index < from.Count) {
-					card = cardList [from [index]];
+					card = cardList [from [index].ToUpper()];
 				} else {
 					break;
 				}
@@ -387,7 +442,7 @@ public class Database : MonoBehaviour
 	
 	public int SortByTrophicLevels (string x, string y)
 	{
-		return cardList [y].species.trophic_level.CompareTo (cardList [x].species.trophic_level);
+		return cardList [y.ToUpper()].species.trophic_level.CompareTo (cardList [x.ToUpper()].species.trophic_level);
 	}
 
 	public void SetExcludeSpecies (string name, bool exclude)

@@ -8,13 +8,14 @@ public class Shop : MonoBehaviour {
   private GameObject worldObject;
   private GameObject shopObject;
   private GameObject mainObject;
+  private ConvergeManager manager;
   
   public Dictionary<int, SpeciesData> itemList { get; set; }
   public SpeciesData selectedSpecies { get; set; }
   
   // Window Properties
-  private float width = 280;
-  private float height = 100;
+  private float width = 120;
+  private float height = 135;
   // Other
   private Rect windowRect;
   private Rect avatarRect;
@@ -23,10 +24,12 @@ public class Shop : MonoBehaviour {
   private GameObject messageBox;
   private Vector2 scrollPosition = Vector2.zero;
   private bool isHidden { get; set; }
+  private Database foodWeb = null;
 
   static public bool gInshop = false;
   
   void Awake() {
+	manager = new ConvergeManager();
     buttonRectList = new Rect[3];
     
     itemList = new Dictionary<int, SpeciesData>();
@@ -76,14 +79,14 @@ public class Shop : MonoBehaviour {
   
   void OnGUI() {
     if (!isHidden) {
-      windowRect = new Rect(25, Screen.height - height - 10f, 100, height);
+      windowRect = new Rect(25, Screen.height - height - 10f, width, height);
       windowRect = GUI.Window(Constants.SHOP_WIN, windowRect, ShopMakeWindow, "Shop");
     }
     
   }
   
   void ShopMakeWindow(int id) {
-    if (GUI.Button(new Rect(10, 50, 80, 30), "Species")) {
+    if (GUI.Button(new Rect(20, 35, 80, 30), "Purchase")) {
       GameObject.Find("Cube").GetComponent<ShopPanel>().Show();
       GameObject.Find("Cube").GetComponent<ShopCartPanel>().Show();
       GameObject.Find("Cube").GetComponent<ShopInfoPanel>().Show();
@@ -92,6 +95,17 @@ public class Shop : MonoBehaviour {
       GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
       Hide();
     }
+	
+	if (GUI.Button(new Rect(20, 85, 80, 30), "Owned")) {
+	  Debug.Log ("Clicked owned button");
+	  GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = true;
+	  GameObject.Find("MenuScript").GetComponent<MenuScript>().disableDropDown();
+	  GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
+	  foodWeb = Database.NewDatabase (gameObject, Constants.MODE_OWNED, manager);
+	  foodWeb.SetActive (true, "");
+	  // Hide();
+	}
+			
   }
   
   public void Initialize(string[] config, int[] speciesList) {

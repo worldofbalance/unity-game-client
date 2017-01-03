@@ -1,4 +1,4 @@
-using UnityEngine;
+	using UnityEngine;
 
 using System.Collections;
 
@@ -30,13 +30,14 @@ public class EcosystemCamera : MonoBehaviour {
     private Vector3 nUpperBound;
     private Vector3 zLowerBound;
     private Vector3 zUpperBound;
+	private Database database;
 
     void Awake() {
         TriggerEntering();
     }
 
     // Use this for initialization
-    void Start() {
+    void Start() {		
         cameraStartPos = transform.position;
         Setup();
     }
@@ -46,6 +47,10 @@ public class EcosystemCamera : MonoBehaviour {
         if (PerformCameraEntrance()) {
             return;
         }
+			
+		if (database.getActive()) {
+			return;
+		}
 
         switch (InputExtended.GetMouseNumClick(0)) {
             case 1: // Single Click
@@ -142,6 +147,7 @@ public class EcosystemCamera : MonoBehaviour {
     }
 
     public void Setup() {
+		database = GameObject.Find("Local Object").GetComponent<EcosystemController>().getDatabase();
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(GetComponent<Camera>().ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit)) {
             cameraOffset = transform.position.z - hit.point.z;

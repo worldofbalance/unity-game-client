@@ -19,6 +19,7 @@ public class WorldMouse : MonoBehaviour
 
     GameObject mapTileSelected;
     public GameObject tileUi;
+	public GameObject tilePC;
     public GameObject purchaseCursor;
     Button purchaseButton;
     GameObject tilePurchaseSuccess;
@@ -35,6 +36,7 @@ public class WorldMouse : MonoBehaviour
         tileInfoGUI = gameObject.AddComponent<TileInfoGUI>();
         mapCamera = GameObject.Find("MapCamera").GetComponent<MapCamera>();
         tileUi = GameObject.Find("Canvas/Tilepurchasedialog") as GameObject;
+		tilePC = GameObject.Find("Canvas/PurchaseSuccess") as GameObject;
 
         purchaseCursor = GameObject.Find("PurchaseCursor") as GameObject;
         purchaseCursor.SetActive(false);
@@ -45,11 +47,14 @@ public class WorldMouse : MonoBehaviour
           purchaseButton.interactable = false;
         }
 
+		if (tilePC != null) {
+			tilePC.SetActive(false);
+		} 
+			
         if (tilePurchaseSuccess != null) {
             tilePurchaseSuccess = GameObject.Find("Canvas/PurchaseSuccess") as GameObject;
             tilePurchaseSuccess.SetActive(false);
         }
-
 
         firstPlayUi = GameObject.Find("Canvas/FirstWelcome") as GameObject;
         if (firstPlayUi != null) {
@@ -66,7 +71,6 @@ public class WorldMouse : MonoBehaviour
     }
     void Awake()
     {
-
     }
     public bool popOversEnabled = true;
     // Update is called once per frame
@@ -175,7 +179,6 @@ public class WorldMouse : MonoBehaviour
                         else if (currentTile.player_id == 0 && !tileUi.activeSelf) // check to see if tile can be purchased 
                                                                                    // **NOTE** if the tile's owner is "NULL" in the db, player_id = 0
                         {
-                            Debug.Log(tileUi.name);
                             currentSelectedTile = currentTile;
                             //purchase cursor
                             purchaseCursor.transform.position = currentTile.transform.position + new Vector3(0, 0.1f, 0);
@@ -209,7 +212,6 @@ public class WorldMouse : MonoBehaviour
     public void processPrice(NetworkResponse response)
     {
         TilePrice args = response as TilePrice;
-        Debug.Log("inside process TilePrice Process ");
         if (args.status == 0)
         {
             // set price to free

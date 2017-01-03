@@ -16,21 +16,14 @@ public class EcosystemController : MonoBehaviour {
     public bool isLeaving;
     public Vector3 lowerBound { get; set; }
     public Vector3 upperBound { get; set; }
+	private ConvergeManager manager;
+	private Database database;
 
     void Awake() {
-			Game.networkManager.Send(
-				EcosystemProtocol.Prepare(GameState.world.world_id, GameState.player.GetID())
-			);
-			
-			Game.networkManager.Send(
-				SpeciesCreateProtocol.Prepare()
-			);
-
-			Database.NewDatabase (
-				gameObject, 
-		    Constants.MODE_ECOSYSTEM,
-				null
-			);
+		Game.networkManager.Send(EcosystemProtocol.Prepare(GameState.world.world_id, GameState.player.GetID()));			
+		// Game.networkManager.Send(SpeciesCreateProtocol.Prepare());  // DH There is no protocol on server side  - see GameState.cs
+		manager = new ConvergeManager ();
+		database = Database.NewDatabase (gameObject, Constants.MODE_ECOSYSTEM, manager);
     }
 
     // Use this for initialization
@@ -41,13 +34,14 @@ public class EcosystemController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-			if(ecosystem == null) {
-        if (GameState.ecosystem != null) {
-            ecosystem = GameState.ecosystem;
-        }
-
-        Generate(ecosystem.zones, ecosystem.player.color);
+		if(ecosystem == null) {
+			if (GameState.ecosystem != null) {
+				ecosystem = GameState.ecosystem;
+				Generate (ecosystem.zones, ecosystem.player.color);
+			} else {
+				Debug.Log("EcosystemController: GameState.ecosystem is null");
 			}
+		}
     }
 
     void OnGUI() {
@@ -129,4 +123,8 @@ public class EcosystemController : MonoBehaviour {
         scale.x *= Mathf.Max(1, Mathf.Abs(upperBound.x - lowerBound.x) / 150);
         scale.z *= Mathf.Max(1, Mathf.Abs(upperBound.z - lowerBound.z) / 150);
     }
+
+	public Database getDatabase() {
+		return database;
+	}
 }
