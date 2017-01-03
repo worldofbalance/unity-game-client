@@ -14,7 +14,8 @@ public class Constants
     public static readonly string CLIENT_VERSION = "1.00";
 
     // public static readonly string REMOTE_HOST = "localhost";
-    public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
+    // public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
+	public static readonly string REMOTE_HOST = "smurf.sfsu.edu";
     // IP address may be 130.212.3.51
 
     //public static readonly int REMOTE_PORT = 9234;
@@ -36,11 +37,12 @@ public class Constants
     public static readonly Font FONT_01 = Resources.Load<Font>("Fonts/" + "Chalkboard");
     public static readonly Texture2D BG_TEXTURE_01 = Resources.Load<Texture2D>(Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
 
-    // Converge game
+	// Converge game - foodweb (Database.cs) constants
     public static readonly int ID_NOT_SET = -1;
-    public static readonly int MODE_ECOSYSTEM = 0;
-    public static readonly int MODE_SHOP = 1;
-    public static readonly int MODE_CONVERGE_GAME = 2;
+    public const int MODE_ECOSYSTEM = 0;
+	public const int MODE_SHOP = 1;
+	public const int MODE_CONVERGE_GAME = 2;
+	public const int MODE_OWNED = 3;
 
     //author: Lobby Team
     public static readonly float BATTLE_REQUEST_RATE = 1f;

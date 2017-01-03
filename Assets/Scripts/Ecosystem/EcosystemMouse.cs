@@ -7,18 +7,18 @@ public class EcosystemMouse : MonoBehaviour {
     public string type = "";
     public GameObject roamingCursor;
     public Zone zone { get; set; }
-		private Database database;
+	private Database database;
 
     // Use this for initialization
     void Start() {
         roamingCursor.GetComponent<Renderer>().material.color = new Color32(0, 181, 248, 255);
         roamingCursor.transform.localScale *= Constants.ECO_HEX_SCALE;
-				database = gameObject.GetComponent<Database> ();
+		database = gameObject.GetComponent<Database> ();
     }
 
     // Update is called once per frame
     void Update() {
-				type = database.selected != null ? database.selected : "";
+		type = database.selected != null ? database.selected : "";
 
         if (Input.GetKeyDown(KeyCode.Escape)) {
             type = "";
@@ -30,7 +30,7 @@ public class EcosystemMouse : MonoBehaviour {
             roamingCursor.SetActive(true);
         }
 
-        if (roamingCursor.activeInHierarchy) {
+		if (roamingCursor.activeInHierarchy && !database.getActive()) {
             RaycastHit hit = new RaycastHit();
 
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit)) {
@@ -41,7 +41,11 @@ public class EcosystemMouse : MonoBehaviour {
 
             if (Input.GetMouseButtonDown(0)) {
                 roamingCursor.SetActive(false);
-                Create(type, roamingCursor.transform.position);
+				if ((type != null) && (!type.Equals(""))) {
+					// To prevent null pointer errors
+					Create(type, roamingCursor.transform.position);
+				}   
+				database.selected = null;
                 type = "";
             }
         }
@@ -54,6 +58,7 @@ public class EcosystemMouse : MonoBehaviour {
     }
 
     public void Create(string type, Vector3 position) {
+		Debug.Log ("EcosystemMouse/Create: type = :" + type + ":");
         GameObject species = Instantiate(Resources.Load("Prefabs/" + type)) as GameObject;
         species.transform.position = position + new Vector3(0, 0.1f, 0);
         species.transform.GetChild(0).localEulerAngles = new Vector3(40, 180, 0);

@@ -24,6 +24,7 @@ public class Card {
 	private Vector2 currentPos;
 	private float speed = 1f;
 	public bool isMoving { get; set; }
+	private int biomass;
 	
 	public Card(string name, Texture2D image, SpeciesData species, Rect rect, Color color) {
 		this.name = name;
@@ -44,6 +45,8 @@ public class Card {
 
 		startPos.x = currentPos.x = rect.x;
 		startPos.y = currentPos.y = rect.y;
+
+		biomass = -1;
 	}
 
 	public Card(string name, Texture2D image, SpeciesData species, Rect rect) : this(name, image, species, rect, Color.black) {}
@@ -74,10 +77,16 @@ public class Card {
 				GUI.DrawTexture(new Rect((imageRect.width - imageRect.height) / 2, 0, imageRect.height, imageRect.height), image);
 			GUI.EndGroup();
 
-			GUI.color = Color.green;
-			GUI.DrawTexture(new Rect(imageRect.x, 130, imageRect.width, 10), imgTexture);
-			GUI.color = Color.white;
-
+			if (biomass == -1) {
+				GUI.color = Color.green;
+				GUI.DrawTexture(new Rect(imageRect.x, 130, imageRect.width, 10), imgTexture);
+				GUI.color = Color.white;
+			} else {
+				GUI.BeginGroup(new Rect((rect.width - nameWidth) / 2, 120, nameWidth, 30));
+					GUI.Label(new Rect(0, 0, nameWidth, 24), "Biomass: " + biomass, style);
+				GUI.EndGroup();
+			}
+			
 			GUI.BeginGroup(new Rect(25, 150, 150, 30));
 				style.normal.textColor = Color.white;
 
@@ -101,6 +110,11 @@ public class Card {
 		GUI.EndGroup();
 	}
 
+	public void Draw(int biomass) {
+		this.biomass = biomass;
+		Draw ();
+	}
+		
 	public Rect GetRect() {
 		return rect;
 	}

@@ -14,12 +14,14 @@ public class ShopCartPanel : MonoBehaviour {
     public ProgressBar biomassMeter;
     public int totalBiomass;
     private bool isAnHidden { get; set; }
+	private GameState gs;
     
     // Use this for initialization
     void Start () {
         shopObject = GameObject.Find("Cube");
         shop = shopObject.GetComponent<Shop>();
         cartList = new Dictionary<int, int>();
+		gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
         Hide();
         
     }
@@ -113,11 +115,18 @@ public class ShopCartPanel : MonoBehaviour {
                 }
 
                 if (GUI.Button(new Rect(630, 550, 70, 30), "Finish", style) ) {
+					// Need to change to do 1 by 1, in case player runs out of money
                     Game.networkManager.Send(
                         ShopActionProtocol.Prepare(0, cartList),
                         ResponseShopAction
                         );
-                    
+
+					int group_id = 0;
+					foreach (KeyValuePair<int, int> entry in cartList) {
+						gs.PurchaseSpecies (group_id, entry.Key, entry.Value);
+						Debug.Log("" + entry.Key + " " + entry.Value);
+					}
+
                     shopObject.GetComponent<Shop>().Show();
                     GameObject.Find("Cube").GetComponent<ShopPanel>().Hide();
                     GameObject.Find("Cube").GetComponent<ShopCartPanel>().Hide();
