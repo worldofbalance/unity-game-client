@@ -78,6 +78,9 @@ public class Constants
     public static readonly int CONVERGE_NONHOST_CONFIG = 15;
 	public static readonly int CONVERGE_POPUP_WIN2 = 16;
 	public static readonly int CONVERGE_SHOW_WINNERS = 17;
+	public static readonly int SHOP_PURCHASE_POPUP = 18;
+	public static readonly int SHOP_PURCHASE_ERROR = 19;
+	public static readonly int SHOP_PURCHASE_COMPLETE = 20;
 
     public static readonly float ECO_HEX_SCALE = 3;
 

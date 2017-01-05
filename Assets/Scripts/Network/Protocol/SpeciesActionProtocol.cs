@@ -24,6 +24,16 @@ public class SpeciesActionProtocol {
 		
 		return request;
 	}
+
+	// action = 3
+	// Obtains the cost and server biomass (float) for a given species id
+	public static NetworkRequest Prepare(short action, short index, int species_id) {
+		NetworkRequest request = new NetworkRequest(NetworkCode.SPECIES_ACTION);
+		request.AddShort16(action);
+		request.AddInt32(species_id);
+		request.AddShort16(index);
+		return request;
+	}
 	
 	public static NetworkRequest Prepare(short action, Dictionary<int, int> speciesList) {
 		NetworkRequest request = new NetworkRequest(NetworkCode.SPECIES_ACTION);
@@ -55,8 +65,13 @@ public class SpeciesActionProtocol {
 				biomass = DataReader.ReadInt (dataStream);
 				response.speciesList.Add (species_id, biomass);
 			}
+		} else if (response.action == 3) {
+			response.species_id = DataReader.ReadInt (dataStream);
+			response.cost = DataReader.ReadInt (dataStream);
+			response.biomassServer = DataReader.ReadFloat (dataStream);
+			response.index = DataReader.ReadShort (dataStream);
 		}
-
+			
 		return response;
 	}
 }
@@ -66,6 +81,10 @@ public class ResponseSpeciesAction : NetworkResponse {
 	public short action { get; set; }
 	public short status { get; set; }
 	public short type { get; set; }
+	public int species_id { get; set; }
+	public short index { get; set; }
+	public int cost { get; set; }
+	public float biomassServer { get; set; }
 	public string selectionList { get; set; }
 	public Dictionary<int, int> speciesList;
 	

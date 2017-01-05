@@ -173,7 +173,8 @@ public class WorldMouse : MonoBehaviour
                         //Launch the ecosystem if they are clicking on owned tiles 
                         if (currentTile.player_id == GameState.player.GetID())
                         {
-                            mapCamera.Move(currentTile.transform.position);
+							// Disabled for now. Leave to develop more later
+                            // mapCamera.Move(currentTile.transform.position);
 
                         }
                         else if (currentTile.player_id == 0 && !tileUi.activeSelf) // check to see if tile can be purchased 

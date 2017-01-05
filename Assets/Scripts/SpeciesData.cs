@@ -6,9 +6,11 @@ public class SpeciesData {
 	
 	public int species_id { get; set; }
 	public string name { get; set; }
+	public int cost { get; set; }
 	public short organism_type { get; set; }
 	public string description { get; set; }
 	public int biomass { get; set; }
+	public float biomassServer { get; set; }
 	public short diet_type { get; set; }
 	public float trophic_level { get; set; }
 	public Dictionary<int, string> predatorList { get; set; }
@@ -24,6 +26,7 @@ public class SpeciesData {
 		predatorList = new Dictionary<int, string>();
 		preyList = new Dictionary<int, string>();
 		categoryList = new string[0];
+		biomassServer = -1;
 	}
 	
 	public SpeciesData(SpeciesData species) {
@@ -50,5 +53,7 @@ public class SpeciesData {
 		categoryList = new string[0];
 
 		image = species.image;
+
+		biomassServer = -1;
 	}
 }

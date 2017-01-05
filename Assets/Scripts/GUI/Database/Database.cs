@@ -61,7 +61,6 @@ public class Database : MonoBehaviour
 		//calls Start() on the object and initializes it.
 		thisObj.mode = mode;
 		thisObj.manager = manager;
-		Debug.Log ("Database NewDatabase, mode = " + thisObj.mode);
 
 		if (mode == Constants.MODE_OWNED) {			
 			int action = 2;
@@ -99,7 +98,6 @@ public class Database : MonoBehaviour
 	public void ProcessSpeciesAction (NetworkResponse response)
 	{
 		ResponseSpeciesAction args = response as ResponseSpeciesAction;
-		// Debug.Log ("ResponseSpeciesAction");
 		int action = args.action;
 		int status = args.status;
 		if ((action != 2) || (status != 0)) {
@@ -107,7 +105,6 @@ public class Database : MonoBehaviour
 			Debug.Log ("action, status = " + action + " " + status);
 		}
 		ownedSpeciesList = args.speciesList;
-		// Debug.Log ("ResponseSpeciesAction count = " + ownedSpeciesList.Count);
 		Refresh ();
 		SetActive (true, "");
 	}
@@ -238,6 +235,7 @@ public class Database : MonoBehaviour
 				scrollStyle [0], 
 				scrollStyle [1]
 			);
+
 			for (int j = 0; j < page.contents.Count; j++) {
 				Card card = cardList [page.contents [j].ToUpper()];
 				card.x = j * (card.width + 12);
@@ -365,19 +363,17 @@ public class Database : MonoBehaviour
 	{
 		switch (view) {
 		case Constants.MODE_ECOSYSTEM:  //Constants.MODE_ECOSYSTEM:  0
-		case Constants.MODE_CONVERGE_GAME:  //Constants.MODE_CONVERGE_GAME:  2
+		case Constants.MODE_CONVERGE_GAME:  //Constants.MODE_CONVERGE_GAME:  2			
 			List<string> contents = new List<string> ();
 
-			// Debug.Log ("Database, Switch: count = " + gs.speciesList.Count);
 			foreach (Species species in gs.speciesList.Values) {
-				// Debug.Log ("Database, Switch: name = :" + species.name + ":");
 				contents.Add (species.name);
-			}	
-			// Debug.Log ("Database, Switch: done with contents");
+			}				
 			ecoList.Clear ();
 			contents.Sort (SortByTrophicLevels);
 			Prepare (contents, ecoList);
 			break;
+
 
 		case Constants.MODE_SHOP:  //Constants.MODE_SHOP:  1
 		case Constants.MODE_OWNED:
@@ -388,13 +384,11 @@ public class Database : MonoBehaviour
 	public void Refresh ()
 	{
 		cardList.Clear ();
-		// Debug.Log ("Refresh");
 		foreach (SpeciesData species in speciesTable.Values) {
 			Texture2D image = Resources.Load (Constants.IMAGE_RESOURCES_PATH + species.name) as Texture2D;
 			if ((mode != Constants.MODE_OWNED) || (ownedSpeciesList.ContainsKey (species.species_id))) {
 				Card card = new Card (species.name, image, species, new Rect (0, 0, 160, 200));
 				cardList [species.name.ToUpper()] = card;
-				// Debug.Log ("species.name = :" + species.name + ":");
 			}
 		}
 		

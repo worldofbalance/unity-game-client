@@ -7,6 +7,8 @@ using System;
 
 public class WorldController : MonoBehaviour {
 
+	private Dictionary<int, int> results = new Dictionary<int, int>();
+
   void Awake() {
     try {
       Game.networkManager.Send(WorldProtocol.Prepare(), ProcessWorld);
@@ -39,6 +41,8 @@ public class WorldController : MonoBehaviour {
       SwitchToTileSelect(1);
 
       LoadComponents();
+	  Debug.Log("WorldController: Send PredictionProtocol");
+	  // Game.networkManager.Send (PredictionProtocol.Prepare (), ProcessPrediction);
     }
   }
 
@@ -75,4 +79,22 @@ public class WorldController : MonoBehaviour {
       gameObject.AddComponent<TileSelectGUI>();
     }
   }
+
+
+	public void ProcessPrediction(NetworkResponse response) {
+		ResponsePrediction args = response as ResponsePrediction;
+		Debug.Log("WorldController, ProcessPrediction: status = " + args.status);
+
+		if (args.status == 0) {
+			results = args.results;
+		}
+
+
+		foreach (KeyValuePair<int, int> entry in results) {
+			Debug.Log("WorldController, ProcessPrediction: k/v:" + entry.Key + " " + entry.Value);
+		}
+
+
+
+	}
 }

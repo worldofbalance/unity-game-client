@@ -108,11 +108,11 @@ public class Game : MonoBehaviour
                 //on non-initial login, need to reset isFading 1->0
                     StartEnterTransition();
                     break;
-			case "ClashNotification":
+				case "ClashNotification":
 					gObject.AddComponent <ClashNotificationGUI>();
 					break;
                 case "World":
-                    Debug.Log("The client is requesting for quiting...");
+                    Debug.Log("The client is going to the World scene...");
                     networkManager.Send(BackToLobbyProtocol.Prepare());
                     break;
                 case "Ecosystem":

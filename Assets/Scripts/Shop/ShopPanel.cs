@@ -61,21 +61,53 @@ public class ShopPanel : MonoBehaviour {
 					SelectSpecies(species);
 				}
 				GUI.backgroundColor = Color.white;
-				
+
 				GUI.DrawTexture(new Rect(10, 25, 60, 55), species.image);
-				
+								
 				GUIStyle style = new GUIStyle(GUI.skin.button);
 				style.alignment = TextAnchor.MiddleLeft;
 				style.normal.textColor = Color.white;
 				style.normal.background = null;
 				
 				GUI.Label(new Rect(5, -3, 70, 30), species.name, style);
+
+				string costLine = "";
+				if (species.biomassServer == -1) {
+					int action = 3;
+					Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action, (short) i, species.species_id), ProcessSpeciesAction);
+					species.biomassServer = -2;
+				} else if (species.biomassServer > -1) {
+					costLine = "c/b: " + species.cost / species.biomassServer + "                   ";
+					costLine = costLine.Substring (0, 11);
+				}
+
+				GUI.Label(new Rect(0, 80, 80, 30), costLine, style);
+
 				GUI.EndGroup();
 			}
 			GUI.EndScrollView();
-		}
-		
+		}		
 	}
+
+	public void ProcessSpeciesAction (NetworkResponse response)
+	{
+		ResponseSpeciesAction args = response as ResponseSpeciesAction;
+		int action = args.action;
+		int status = args.status;
+		if ((action != 3) || (status != 0)) {
+			Debug.Log ("ResponseSpeciesAction unexpected result");
+			Debug.Log ("action, status = " + action + " " + status);
+		}
+
+		SpeciesData speciesData = SpeciesTable.speciesList [args.species_id];
+		speciesData.cost = args.cost;
+		speciesData.biomassServer = args.biomassServer;
+		itemList [args.index].cost = args.cost;
+		itemList [args.index].biomassServer = args.biomassServer;
+		Debug.Log ("ResponseSpeciesAction, id/c/b/index: " 
+				+ args.species_id + " " + args.cost + " " + args.biomassServer + " " + args.index);
+	}
+
 	/*
 	public void ShopPanelMakeWindow(int id) {
 		//Debug.Log("Reached Here!!!");
