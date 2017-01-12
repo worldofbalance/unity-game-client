@@ -105,6 +105,10 @@ public class Database : MonoBehaviour
 			Debug.Log ("action, status = " + action + " " + status);
 		}
 		ownedSpeciesList = args.speciesList;
+		Debug.Log ("Database, ProcessSpeciesAction, size = " + ownedSpeciesList.Count);
+		foreach (KeyValuePair<int, int> entry in ownedSpeciesList) {
+			Debug.Log ("k,v = " + entry.Key + " " + entry.Value);
+		}
 		Refresh ();
 		SetActive (true, "");
 	}

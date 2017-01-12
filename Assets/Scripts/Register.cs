@@ -132,12 +132,12 @@ public class Register : MonoBehaviour {
 
 		switch (args.status) {
 			case 0:
-//				NetworkManager.Send(
+//				    Game.networkManager.Send(    // Seems only works after login. Did in GameClient.select() on server
 //					SpeciesActionProtocol.Prepare(0, 0),
 //					ProcessSpeciesAction
 //				);
 
-				SwitchToLogin();
+				SwitchToLogin();   
 				break;
 			case 1:
 //				mainObject.GetComponent<Main>().CreateMessageBox("Email Taken");
@@ -161,21 +161,23 @@ public class Register : MonoBehaviour {
 		ResponseSpeciesAction args = response as ResponseSpeciesAction;
 		
 		if (args.action == 0) {
-			Dictionary<int, int> speciesList = new Dictionary<int, int>();
+			Dictionary<int, int> speciesList = new Dictionary<int, int> ();
 			
 			foreach (string item in args.selectionList.Split(',')) {
-				string[] pair = item.Split(':');
-				int species_id = int.Parse(pair[0]);
-				int biomass = int.Parse(pair[1]);
+				string[] pair = item.Split (':');
+				int species_id = int.Parse (pair [0]);
+				int biomass = int.Parse (pair [1]);
 				
-				speciesList.Add(species_id, biomass);
-				Debug.Log(species_id + " " + biomass);
+				speciesList.Add (species_id, biomass);
+				Debug.Log (species_id + " " + biomass);
 			}
 
-			Game.networkManager.Send(
-				SpeciesActionProtocol.Prepare(1, speciesList),
+			Game.networkManager.Send (
+				SpeciesActionProtocol.Prepare (1, speciesList),
 				ProcessSpeciesAction
 			);
+		} else {
+			SwitchToLogin();
 		}
 	}
 }
