@@ -93,6 +93,8 @@ public class Shop : MonoBehaviour {
       GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = true;
       GameObject.Find("MenuScript").GetComponent<MenuScript>().disableDropDown();
       GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
+	  GameObject.Find("Local Object").GetComponent<Graph>().HideButton();
+	  GameObject.Find("Local Object").GetComponent<Graph>().Hide();
       Hide();
     }
 	
@@ -101,6 +103,7 @@ public class Shop : MonoBehaviour {
 	  GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = true;
 	  GameObject.Find("MenuScript").GetComponent<MenuScript>().disableDropDown();
 	  GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
+	  GameObject.Find("Local Object").GetComponent<Graph>().Hide();
 	  foodWeb = Database.NewDatabase (gameObject, Constants.MODE_OWNED, manager);
 	  foodWeb.SetActive (true, "");
 	  // Hide();

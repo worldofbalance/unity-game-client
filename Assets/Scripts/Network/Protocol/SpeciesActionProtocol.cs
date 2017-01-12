@@ -20,8 +20,7 @@ public class SpeciesActionProtocol {
 	public static NetworkRequest Prepare(short action, short type) {
 		NetworkRequest request = new NetworkRequest(NetworkCode.SPECIES_ACTION);
 		request.AddShort16(action);
-		request.AddShort16(type);
-		
+		request.AddShort16(type);		
 		return request;
 	}
 
@@ -47,7 +46,16 @@ public class SpeciesActionProtocol {
 		
 		return request;
 	}
-	
+
+	// action = 4
+	// Obtains the history of changes to the biomass value
+	public static NetworkRequest Prepare(short action, int species_id) {
+		NetworkRequest request = new NetworkRequest(NetworkCode.SPECIES_ACTION);
+		request.AddShort16(action);
+		request.AddInt32(species_id);
+		return request;
+	}
+		
 	public static NetworkResponse Parse(MemoryStream dataStream) {
 		ResponseSpeciesAction response = new ResponseSpeciesAction();
 		response.action = DataReader.ReadShort(dataStream);
@@ -56,13 +64,16 @@ public class SpeciesActionProtocol {
 		if (response.action == 0) {
 			response.type = DataReader.ReadShort (dataStream);
 			response.selectionList = DataReader.ReadString (dataStream);
-		} else if (response.action == 2) {			
+			// Debug.Log ("SpeciesAction Response, action = 0, selectionList = " + response.selectionList);
+		} else if (response.action == 2) {		
 			response.speciesList = new Dictionary<int,int> ();
 			int count = DataReader.ReadShort (dataStream);
+			Debug.Log ("SpeciesAction Response, action = 2, count = " + count);	
 			int species_id, biomass;
 			for (int i = 0; i < count; i++) {
 				species_id = DataReader.ReadInt (dataStream);
 				biomass = DataReader.ReadInt (dataStream);
+				Debug.Log ("id, biomass = " + species_id + " " + biomass);
 				response.speciesList.Add (species_id, biomass);
 			}
 		} else if (response.action == 3) {
@@ -70,6 +81,17 @@ public class SpeciesActionProtocol {
 			response.cost = DataReader.ReadInt (dataStream);
 			response.biomassServer = DataReader.ReadFloat (dataStream);
 			response.index = DataReader.ReadShort (dataStream);
+		} else if (response.action == 4) {
+			response.species_id = DataReader.ReadInt (dataStream);
+			int count = DataReader.ReadShort (dataStream);
+			response.speciesHistoryList = new Dictionary<int,int> ();
+			int day, biomass;
+			for (int i = 0; i < count; i++) {
+				day = DataReader.ReadInt (dataStream);
+				biomass = DataReader.ReadInt (dataStream);
+				// Debug.Log ("day, biomass = " + day + " " + biomass);
+				response.speciesHistoryList.Add (day, biomass);
+			}
 		}
 			
 		return response;
@@ -87,6 +109,7 @@ public class ResponseSpeciesAction : NetworkResponse {
 	public float biomassServer { get; set; }
 	public string selectionList { get; set; }
 	public Dictionary<int, int> speciesList;
+	public Dictionary<int, int> speciesHistoryList;
 	
 	public ResponseSpeciesAction() {
 		protocol_id = NetworkCode.SPECIES_ACTION;

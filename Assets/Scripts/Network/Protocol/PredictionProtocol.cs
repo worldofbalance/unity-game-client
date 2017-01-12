@@ -34,6 +34,7 @@ public class PredictionProtocol : NetworkResponse {
 }
 
 public class ResponsePrediction : NetworkResponse {
+	
 	public short status { get; set; }
 	public Dictionary<int, int> results { get; set; }
 	

@@ -14,6 +14,7 @@ public class Graph : MonoBehaviour {
 	private float height = 400;
 	private bool isActive = false;
 	private bool isLegendActive = true;
+	private bool buttonActive = true;
 	// Other
 	private string title;
 	private Rect windowRect;
@@ -62,7 +63,7 @@ public class Graph : MonoBehaviour {
 		yTitle = "Score";
 		yTitle = "Biomass";
 
-		left = (Screen.width - width) / 2;//20;
+		left = (Screen.width - width) / 2;
 		top = 100;
 
 		windowRect = new Rect(left, top, width, height);
@@ -109,8 +110,10 @@ public class Graph : MonoBehaviour {
 	}
 	
 	void OnGUI() {
-		if (GUI.Button(new Rect(10, 70, 80, 30), "Graph")) {
-			isActive = !isActive;
+		if (buttonActive) {
+			if (GUI.Button(new Rect(200, Screen.height - 100f, 80, 30), "Graph")) {
+				isActive = !isActive;
+			}
 		}
 
 		if (isActive) {
@@ -163,6 +166,14 @@ public class Graph : MonoBehaviour {
 	
 	public void Hide() {
 		isActive = false;
+	}
+
+	public void ShowButton() {
+		buttonActive = true;
+	}
+
+	public void HideButton() {
+		buttonActive = false;
 	}
 
 	private void DrawGrid() {
