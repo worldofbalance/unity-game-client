@@ -52,9 +52,9 @@ public class WorldController : MonoBehaviour {
 	  // Debug.Log("WorldController: Send PredictionProtocol");
 	  // Game.networkManager.Send (PredictionProtocol.Prepare (), ProcessPrediction);
 
-	  Debug.Log("WorldController: Send SpeciesActionProtocol");
-	  int action = 2;
-	  Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action), ProcessSpeciesAction);
+	  // Debug.Log("WorldController: Send SpeciesActionProtocol");
+	  // int action = 2;
+	  // Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action), ProcessSpeciesAction);
     }
   }
 

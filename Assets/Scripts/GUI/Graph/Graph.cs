@@ -7,12 +7,26 @@ using System.Globalization;
 public class Graph : MonoBehaviour {
 
 	private int window_id = Constants.GRAPH_WIN;
+	// MakeDayCounts parameters
+	private const int NUM_YEARS = 50;
+	private const int START_YEAR = 2015;
+	private int[] dayCount = new int[NUM_YEARS * 12];
+	private int[] months = new int[] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	// Species Biomass parameters
+	private Dictionary<int,int> biomassValues;
+	private List<int> speciesIds;
+	private List<Dictionary<int,int>> biomassHistory;
+	int maxMonth, minMonth;
+	int speciesCount;
+	private Dictionary<int, SpeciesData> speciesTable = SpeciesTable.speciesList;
+
 	// Window Properties
 	private float left;
 	private float top;
 	private float width = 805;
 	private float height = 400;
 	private bool isActive = false;
+	private bool isReady = false;
 	private bool isLegendActive = true;
 	private bool buttonActive = true;
 	// Other
@@ -88,18 +102,19 @@ public class Graph : MonoBehaviour {
 
 		bgTexture = Resources.Load<Texture2D>(Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
 		font = Resources.Load<Font>("Fonts/" + "Chalkboard");
+		MakeDayCounts ();
 	}
 
 	// Use this for initialization
 	void Start() {
-		UpdateData();
+		// UpdateData();
 //		StartCoroutine(UpdateDataRoutine(10f));
 	}
 
 	// Update is called once per frame
 	void Update() {
 		if (Input.GetKeyDown("1")) {
-			UpdateData();
+			GetData ();
 		}
 		if (Input.GetKeyDown("2")) {
 			ShowMonth(1);
@@ -113,10 +128,13 @@ public class Graph : MonoBehaviour {
 		if (buttonActive) {
 			if (GUI.Button(new Rect(200, Screen.height - 100f, 80, 30), "Graph")) {
 				isActive = !isActive;
+				if (isActive) {
+					GetData ();
+				}
 			}
 		}
 
-		if (isActive) {
+		if (isActive && isReady) {
 			windowRect = GUI.Window(window_id, windowRect, MakeWindow, title);
 		}
 	}
@@ -162,6 +180,7 @@ public class Graph : MonoBehaviour {
 	
 	public void Show() {
 		isActive = true;
+		GetData ();
 	}
 	
 	public void Hide() {
@@ -187,6 +206,7 @@ public class Graph : MonoBehaviour {
 			// X-Axis
 			Drawing.DrawLine(hStart, hEnd, color, thickness, false);
 			// X-Axis Markers
+			string tStr;
 			for (int i = 0; i < xNumMarkers; i++) {
 				float xPos = hStart.x + xUnitLength * (i + 1), yPos = hStart.y - 5;
 				// Unit Line
@@ -194,7 +214,11 @@ public class Graph : MonoBehaviour {
 				// Unit Label
 				style.alignment = TextAnchor.UpperCenter;
 				if (i < xAxisLabels.Count) {
-					GUI.Label(new Rect(xPos - 42, yPos + 10, 80, 70), xAxisLabels[xMin + i], style);
+				tStr = xAxisLabels [xMin + i];
+				if ((i != 0) && (!tStr.Contains("Jan"))) {
+					tStr = tStr.Substring (0, 3);
+				}
+					GUI.Label(new Rect(xPos - 42, yPos + 10, 80, 70), tStr, style);
 				}
 			}
 			// X-Axis Label
@@ -244,21 +268,41 @@ public class Graph : MonoBehaviour {
 			List<float> values = series.values;
 			Color color = (series.label == selected) ? Color.white : series.color;
 			
-			{ // Draw First Point
+			if (values [xMin] >= 0) {
+				// Draw First Point
 				string text = ("<color=#" + series.colorHex + ">" + series.label + "</color>" + '\n' + values[xMin].ToString("F2"));
 				DrawMarker(series.label, new Rect(hStart.x + xUnitLength - 7, hStart.y - (values[xMin] / yRange * yAxisLength) - 7, 14, 14), color, text);
 			}
-			
+
 			for (int i = 1; i < Mathf.Min(series.values.Count, xNumMarkers); i++) {
+				if (values [xMin + i - 1] < 0) {
+					continue;
+				}
 				// Previous Point
 				float xPos = hStart.x + xUnitLength * i, yPos = hStart.y - (values[xMin + i - 1] / yRange * yAxisLength);
-				// Current Point
-				float xPosNext = hStart.x + xUnitLength * (i + 1), yPosNext = hStart.y - (values[xMin + i] / yRange * yAxisLength);
-				// Connect the Points by Drawing Line
-				Drawing.DrawLine(new Vector2(xPos, yPos), new Vector2(xPosNext, yPosNext), color, 1.5f, true);
-				// Draw End Point
-				string text = ("<color=#" + series.colorHex + ">" + series.label + "</color>" + '\n' + values[xMin + i].ToString("F2"));
-				DrawMarker(series.label, new Rect(xPosNext - 7, yPosNext - 7, 14, 14), color, text);
+				string text = ("<color=#" + series.colorHex + ">" + series.label + "</color>" + '\n' + values[xMin + i - 1].ToString("F2"));
+				DrawMarker(series.label, new Rect(xPos - 7, yPos - 7, 14, 14), color, text);
+				int j = i;
+				while ((j < Mathf.Min(series.values.Count, xNumMarkers)) && (values[xMin + j] < 0)) {
+					j++;
+				}
+				if (j < Mathf.Min (series.values.Count, xNumMarkers)) {
+					// Current Point
+					float xPosNext = hStart.x + xUnitLength * (j + 1), yPosNext = hStart.y - (values[xMin + j] / yRange * yAxisLength);
+					// Connect the Points by Drawing Line
+					Drawing.DrawLine(new Vector2(xPos, yPos), new Vector2(xPosNext, yPosNext), color, 1.5f, true);
+					// Draw End Point
+					text = ("<color=#" + series.colorHex + ">" + series.label + "</color>" + '\n' + values[xMin + j].ToString("F2"));
+					DrawMarker(series.label, new Rect(xPosNext - 7, yPosNext - 7, 14, 14), color, text);
+				}
+			}
+
+			if (values [xMin + Mathf.Min(series.values.Count, xNumMarkers) - 1] >= 0) {
+				// Draw Last Point
+				float xPos = hStart.x + xUnitLength * (Mathf.Min(series.values.Count, xNumMarkers));
+				float yPos = hStart.y - (values[xMin + Mathf.Min(series.values.Count, xNumMarkers) - 1 ] / yRange * yAxisLength);
+				string text = ("<color=#" + series.colorHex + ">" + series.label + "</color>" + '\n' + values[xMin].ToString("F2"));
+				DrawMarker(series.label, new Rect(xPos - 7, yPos - 7, 14, 14), color, text);
 			}
 		GUI.EndGroup();
 	}
@@ -285,7 +329,7 @@ public class Graph : MonoBehaviour {
 	}
 
 	private void DrawMonthSlider() {
-		monthSliderValue = Mathf.RoundToInt(GUI.HorizontalSlider(monthSliderRect, monthSliderValue, 0, Mathf.Max(0, xAxisLabels.Count - xNumMarkers - 1)));
+		monthSliderValue = Mathf.RoundToInt(GUI.HorizontalSlider(monthSliderRect, monthSliderValue, 0, Mathf.Max(0, xAxisLabels.Count - xNumMarkers)));
 		xMin = (int) monthSliderValue;
 		
 		if (scrollToMonth != -1) {
@@ -298,13 +342,17 @@ public class Graph : MonoBehaviour {
 	}
 	
 	public void ShowMonth(int month) {
-		monthSliderStart = monthSliderValue;
-		monthSliderDT = 0;
-		scrollToMonth = Mathf.Clamp(month, 1, xAxisLabels.Count - xNumMarkers) - 1;
+		if (xAxisLabels.Count > xNumMarkers) {
+			monthSliderStart = monthSliderValue;
+			monthSliderDT = 0;
+			scrollToMonth = Mathf.Clamp(month, 1, xAxisLabels.Count - xNumMarkers + 1) - 1;
+		}
 	}
 	
 	public void ShowLastMonth() {
-		ShowMonth(xAxisLabels.Count);
+		if (xAxisLabels.Count > xNumMarkers) {
+			ShowMonth(xAxisLabels.Count - xNumMarkers + 1);
+		}
 	}
 
 	private void DrawLegend() {
@@ -401,26 +449,46 @@ public class Graph : MonoBehaviour {
 
 	public void UpdateData() {
 		// Update X-Axis Labels
-		List<string> labels = GameState.csvList.xLabels;
-		for (int i = 0; i < labels.Count; i++) {
-			int month = int.Parse(labels[i]);
+		// List<string> labels = GameState.csvList.xLabels;
+		xAxisLabels.Clear();
+		for (int i = minMonth; i <= maxMonth; i++) {
+			// Debug.Log("Graph: i, labels[i] = " + i + " " + labels[i]);
+			int month = i + 1 + 14*12;   // int.Parse(labels[i]);
 			string name = DateTimeFormatInfo.CurrentInfo.GetMonthName((month - 1) % 12 + 1).Substring(0, 3);
-			
-			if (xAxisLabels.Count != labels.Count) {
-				xAxisLabels.Add(name + ((month - 1) % 12 == 0 ? "\n'0" + (month / 12 + 1) : ""));
-			} else if (xAxisLabels[i] != name) {
-				xAxisLabels[i] = name;
+			xAxisLabels.Add(name + "\n'" + ((month - 1) / 12 + 1).ToString("00"));
+			/*
+			if ((i == minMonth) || (((month - 1) % 12) == 0) ) {
+				xAxisLabels.Add(name + "\n'" + (month / 12 + 1).ToString("00"));
+			} else {
+				xAxisLabels.Add(name);
 			}
+			*/
+			Debug.Log("Graph: i, xAxisLabels[i] = " + (i-minMonth) + " " + xAxisLabels[i-minMonth]);
 		}
 		
 		// Update Values
 		float yMaxValue = 1;
 
 		CSVObject csv = GameState.csvList;
-		foreach (KeyValuePair<string, List<string>> entry in csv.csvList) {
-			string name = entry.Key;
-			List<string> values = entry.Value;
 
+		for (int idx2 = 0; idx2 < speciesIds.Count; idx2++) {
+		// foreach (KeyValuePair<string, List<string>> entry in csv.csvList) {
+			string name = speciesTable[speciesIds[idx2]].name;            // entry.Key;
+			List<string> values = new List<string>();    // entry.Value;
+
+			for (int idx = minMonth; idx <= maxMonth; idx++) {
+				if (biomassHistory[idx2].ContainsKey(idx)) {
+					values.Add ((biomassHistory [idx2]) [idx].ToString());
+				} else {
+					values.Add ("");
+				}
+			}
+				
+			Debug.Log("Graph: KeyValuePair, key = " + name);
+			for (int i2 = 0; i2 < values.Count; i2++) {
+				Debug.Log("Graph: KeyValuePair, i, value[i] = " + i2 + " :" + values[i2] + ":");
+			}
+				
 			if (name == ".xLabels") {
 				continue;
 			}
@@ -437,24 +505,30 @@ public class Graph : MonoBehaviour {
 				}
 			}
 
-			List<float> temp = seriesList[name].values;
-			for (int i = 0; i < values.Count - 1; i++) { // Exclude Last Point
+			List<float> temp = new List<float>();
+			for (int i = 0; i < values.Count; i++) {
 				float value = (values[i] == "" ? -1f : float.Parse(values[i]));
-				
+				temp.Add(value);
+
+				/*
 				if (temp.Count != values.Count) {
 					temp.Add(value);
 				} else if (!Mathf.Approximately(temp[i], value)) {
 					temp[i] = value;
 				}
+				*/
 
 				yMaxValue = Mathf.Max(value, yMaxValue);
 			}
+			seriesList [name].values = temp;
+			Debug.Log ("Graph, UpdateData: seriesList[name].values.Count = " + seriesList [name].values.Count);
 		}
 
 		seriesLabels.Sort();
 
 		int roundTo = int.Parse("5".PadRight(((int) yMaxValue).ToString().Length - 1, '0'));
 		yRange = Mathf.CeilToInt(yMaxValue / roundTo) * roundTo;
+		isReady = true;
 	}
 	
 	public IEnumerator UpdateDataRoutine(float time) {
@@ -463,4 +537,140 @@ public class Graph : MonoBehaviour {
 			yield return new WaitForSeconds(time);
 		}
 	}
+		
+	void MakeDayCounts() {
+		int month;
+		int year = START_YEAR;
+		int value;
+		dayCount [0] = 0;
+		for (int idx = 1; idx < NUM_YEARS * 12; idx++) {
+			month = (idx - 1) % 12;
+			value = months [month];
+			if ((month == 1) && ((year % 100) != 0) && ((year % 4) == 0)) {
+				value++;
+			}
+			dayCount [idx] = dayCount [idx - 1] + value;
+			if (month == 10) {
+				year++;
+			}
+		}
+	}
+
+	int GetMonth(int day) {
+		int result = -1;
+		int idx = 1;
+		while (result == -1) {
+			if (dayCount [idx] > day) {
+				result = idx - 1;
+			}
+			idx++;
+		}
+		return result;
+	}
+		
+	void GetData() {
+		isReady = false;
+		biomassValues = new Dictionary<int,int> ();
+		speciesIds = new List<int> ();
+		biomassHistory = new List<Dictionary<int,int>> ();
+		minMonth = NUM_YEARS * 12;
+		maxMonth = 0;
+		Debug.Log("Graph: Send SpeciesActionProtocol, action = 2");
+		int action = 2;
+		Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action), ProcessSpeciesAction);
+	}
+		
+	public void ProcessSpeciesAction (NetworkResponse response)
+	{
+		ResponseSpeciesAction args = response as ResponseSpeciesAction;
+		int action = args.action;
+		int status = args.status;
+		if ((action != 2) || (status != 0)) {
+			Debug.Log ("Graph: ResponseSpeciesAction unexpected result2");
+			Debug.Log ("action, status = " + action + " " + status);
+		}
+		Dictionary<int, int> speciesList = args.speciesList;
+		speciesCount = speciesList.Count;
+		Debug.Log ("Graph, ProcessSpeciesAction, size = " + speciesCount);
+		foreach (KeyValuePair<int, int> entry in speciesList) {
+			Debug.Log ("Graph: species, biomass = " + entry.Key + " " + entry.Value);
+			int action2 = 4;
+			biomassValues.Add (entry.Key, entry.Value);
+			Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, entry.Key), ProcessSpeciesHistory);
+		}
+	}
+		
+	public void ProcessSpeciesHistory (NetworkResponse response)
+	{
+		List<int> keys = new List<int> ();
+		int idx;
+		Dictionary<int, int> values = new Dictionary<int, int> ();
+		ResponseSpeciesAction args = response as ResponseSpeciesAction;
+		int action = args.action;
+		int status = args.status;
+		int species_id = args.species_id;
+		if ((action != 4) || (status != 0)) {
+			Debug.Log ("Graph: ResponseSpeciesAction unexpected result4");
+			Debug.Log ("action, status = " + action + " " + status);
+		}
+		Dictionary<int, int> speciesList = args.speciesHistoryList;
+		Debug.Log ("Graph: ProcessSpeciesHistory, species_id = " + species_id);
+		Debug.Log ("Graph: ProcessSpeciesHistory, size = " + speciesList.Count);
+		if (speciesList.Count > 0) {
+			foreach (KeyValuePair<int, int> entry in speciesList) {
+				Debug.Log ("day, biomass change = " + entry.Key + " " + entry.Value);
+				keys.Add (entry.Key);
+				values.Add (entry.Key, entry.Value);
+			}
+			keys.Sort ();
+			for (int i = 0; i < keys.Count; i++) {
+				Debug.Log ("species_id, i, keys[i], biomass change: " + species_id + " " + i + " " + keys [i] + " " + values[keys[i]]);
+			}
+			int size = keys.Count;
+			int[] day = new int[size];
+			int[] dayValue = new int[size];
+			day [0] = keys [size - 1];
+			dayValue [0] = biomassValues [species_id];
+			for (idx = 1; idx < size; idx++) {
+				day [idx] = keys [size - idx - 1];
+				dayValue [idx] = dayValue [idx - 1] - values [keys[size - idx]];
+			}
+			Debug.Log ("Sorted values, species_id = " + species_id);
+			for (idx = 0; idx < size; idx++) {
+				Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
+			}
+			List<int> mKeys = new List<int> ();
+			List<int> mValues = new List<int> ();
+			int month = GetMonth(day [0]);
+			mKeys.Add (month);
+			mValues.Add (dayValue [0]);
+			for (idx = 1; idx < size; idx++) {
+				if (GetMonth (day [idx]) < month) {
+					month = GetMonth (day [idx]);
+					mKeys.Add (month);
+					mValues.Add (dayValue [idx]);
+				}
+			}
+			if (mKeys [0] > maxMonth) {
+				maxMonth = mKeys [0];
+			}
+			if (mKeys [mKeys.Count - 1] < minMonth) {
+				minMonth = mKeys [mKeys.Count - 1];
+			}
+			values = new Dictionary<int, int> ();				
+			Debug.Log ("Sorted month values, species_id = " + species_id);
+			for (idx = 0; idx < mKeys.Count; idx++) {
+				values.Add (mKeys [idx], mValues [idx]);
+				Debug.Log ("idx, mKeys[idx], mValues[idx]: " + idx + " " + mKeys [idx] + " " + mValues [idx]);
+			}			
+			speciesIds.Add(species_id);
+			biomassHistory.Add(values);
+		}
+		speciesCount--;
+		if (speciesCount == 0) {
+			Debug.Log ("Graph: Processed last species history");
+			UpdateData ();
+		}
+	}
+		
 }
