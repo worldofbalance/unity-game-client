@@ -148,7 +148,7 @@ public class ShopCartPanel : MonoBehaviour {
                 {
                     cartList.Clear();
                     shopObject.GetComponent<Shop>().Show();
-					GameObject.Find("Local Object").GetComponent<Graph>().ShowButton();
+					GameObject.Find("Cube").GetComponent<Graph>().ShowButton();
                     GameObject.Find("Cube").GetComponent<ShopPanel>().Hide();
                     GameObject.Find("Cube").GetComponent<ShopCartPanel>().Hide();
                     GameObject.Find("Cube").GetComponent<ShopInfoPanel>().Hide();
@@ -310,7 +310,7 @@ public class ShopCartPanel : MonoBehaviour {
 		Debug.Log("ResponseShopAction, new credit: " + args.credits);
 		GameState.player.credits = args.credits;
 		showPurchaseComplete = true;
-		GameObject.Find("Local Object").GetComponent<Graph>().ShowButton();
+		GameObject.Find("Cube").GetComponent<Graph>().ShowButton();
     }
 
     public void Show() {

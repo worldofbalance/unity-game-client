@@ -81,6 +81,7 @@ public class Constants
 	public static readonly int SHOP_PURCHASE_POPUP = 18;
 	public static readonly int SHOP_PURCHASE_ERROR = 19;
 	public static readonly int SHOP_PURCHASE_COMPLETE = 20;
+	public static readonly int GRAPH_WIN2 = 21;
 
     public static readonly float ECO_HEX_SCALE = 3;
 

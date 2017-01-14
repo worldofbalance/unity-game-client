@@ -6,7 +6,7 @@ using System.Globalization;
 
 public class Graph : MonoBehaviour {
 
-	private int window_id = Constants.GRAPH_WIN;
+	private int window_id = Constants.GRAPH_WIN2;
 	// MakeDayCounts parameters
 	private const int NUM_YEARS = 50;
 	private const int START_YEAR = 2015;
@@ -129,12 +129,19 @@ public class Graph : MonoBehaviour {
 			if (GUI.Button(new Rect(200, Screen.height - 100f, 80, 30), "Graph")) {
 				isActive = !isActive;
 				if (isActive) {
+					GameObject.Find ("MenuScript").GetComponent<MenuScript> ().menuOpen = true;
+					GameObject.Find ("MenuScript").GetComponent<MenuScript> ().disableDropDown ();
+					GameObject.Find ("Local Object").GetComponent<WorldMouse> ().popOversEnabled = false;
 					GetData ();
+				} else {
+					GameObject.Find ("MenuScript").GetComponent<MenuScript> ().menuOpen = false;
+					GameObject.Find ("MenuScript").GetComponent<MenuScript> ().enableDropdown ();
+					GameObject.Find ("Local Object").GetComponent<WorldMouse> ().popOversEnabled = true;
 				}
 			}
 		}
 
-		if (isActive && isReady) {
+		if (isActive) {
 			windowRect = GUI.Window(window_id, windowRect, MakeWindow, title);
 		}
 	}
@@ -146,7 +153,13 @@ public class Graph : MonoBehaviour {
 		style.alignment = TextAnchor.UpperCenter;
 		style.font = font;
 		style.fontSize = 16;
-		
+
+		if (!isReady) {
+			style.fontSize = 20;
+			GUI.Label(new Rect((windowRect.width - 500) / 2, windowRect.height/2-25, 500, 40), "Please wait while graph prepares", style);
+			return;
+		}
+
 		GUI.Label(new Rect((windowRect.width - 100) / 2, 0, 100, 30), "Graph", style);
 
 		DrawGrid();
@@ -180,11 +193,17 @@ public class Graph : MonoBehaviour {
 	
 	public void Show() {
 		isActive = true;
+		GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = true;
+		GameObject.Find("MenuScript").GetComponent<MenuScript>().disableDropDown();
+		GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
 		GetData ();
 	}
 	
 	public void Hide() {
 		isActive = false;
+		GameObject.Find ("MenuScript").GetComponent<MenuScript> ().menuOpen = false;
+		GameObject.Find ("MenuScript").GetComponent<MenuScript> ().enableDropdown ();
+		GameObject.Find ("Local Object").GetComponent<WorldMouse> ().popOversEnabled = true;
 	}
 
 	public void ShowButton() {

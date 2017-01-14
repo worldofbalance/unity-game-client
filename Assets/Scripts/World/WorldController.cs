@@ -81,6 +81,10 @@ public class WorldController : MonoBehaviour {
       if (GameObject.Find("Cube").GetComponent<Shop>() == null) {
         GameObject.Find("Cube").AddComponent<Shop>();
       }
+	
+	  if (GameObject.Find("Cube").GetComponent<Graph>() == null) {
+		GameObject.Find("Cube").AddComponent<Graph>();
+	  }
     }
   }
   

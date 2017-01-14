@@ -87,23 +87,23 @@ public class Shop : MonoBehaviour {
   
   void ShopMakeWindow(int id) {
     if (GUI.Button(new Rect(20, 35, 80, 30), "Purchase")) {
+	  GameObject.Find("Cube").GetComponent<Graph>().Hide();
       GameObject.Find("Cube").GetComponent<ShopPanel>().Show();
       GameObject.Find("Cube").GetComponent<ShopCartPanel>().Show();
       GameObject.Find("Cube").GetComponent<ShopInfoPanel>().Show();
       GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = true;
       GameObject.Find("MenuScript").GetComponent<MenuScript>().disableDropDown();
       GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
-	  GameObject.Find("Local Object").GetComponent<Graph>().HideButton();
-	  GameObject.Find("Local Object").GetComponent<Graph>().Hide();
+	  GameObject.Find("Cube").GetComponent<Graph>().HideButton();
       Hide();
     }
 	
 	if (GUI.Button(new Rect(20, 85, 80, 30), "Owned")) {
+  	  GameObject.Find("Cube").GetComponent<Graph>().Hide();
 	  Debug.Log ("Clicked owned button");
 	  GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = true;
 	  GameObject.Find("MenuScript").GetComponent<MenuScript>().disableDropDown();
 	  GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
-	  GameObject.Find("Local Object").GetComponent<Graph>().Hide();
 	  foodWeb = Database.NewDatabase (gameObject, Constants.MODE_OWNED, manager);
 	  foodWeb.SetActive (true, "");
 	  // Hide();

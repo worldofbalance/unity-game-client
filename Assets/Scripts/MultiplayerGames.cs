@@ -601,6 +601,7 @@ public class MultiplayerGames : MonoBehaviour {
 
 
 
+	/*
   void MakeWindowHost(int id) {
     Functions.DrawBackground(new Rect(0, 0, widthConfig, heightConfig), bgTexture);
     string hdr1 = "Multiplayer Convergence";
@@ -689,6 +690,7 @@ public class MultiplayerGames : MonoBehaviour {
       SubmitHostConfig();
     }
   }
+	*/
 
   private void SubmitHostConfig() {
     Debug.Log ("SubmitHostConfig called");
@@ -788,6 +790,7 @@ public class MultiplayerGames : MonoBehaviour {
                 room.addPlayer (userID);
             }
 
+
             // switch scene
             if (args.gameID == Constants.MINIGAME_RUNNING_RHINO) {
                 RR.RRConnectionManager cManager = RR.RRConnectionManager.getInstance ();
@@ -810,9 +813,9 @@ public class MultiplayerGames : MonoBehaviour {
                     Game.SwitchScene("SDReadyScene");
                 }
             } else if (args.gameID == Constants.MINIGAME_MULTI_CONVERGENCE) {
-        // DH change
-        MultiConvergeGame.matchID = args.id;   // game id
-        host = 0;  // Default - not the host
+        		// DH change
+        		MultiConvergeGame.matchID = args.id;   // game id
+        		host = 0;  // Default - not the host
 
                 string playerName = GameState.player.GetName ();
                 if (playerName == room.host) {
@@ -824,8 +827,8 @@ public class MultiplayerGames : MonoBehaviour {
                 Debug.Log("MC notice sent to server(game id, player id): " + args.id + " " + playerName);
                 Debug.Log ("Player Name: " + playerName);
                 Debug.Log ("userID: " + userID);
-        Debug.Log ("This player host value is: " + host);
-      }
+        		Debug.Log ("This player host value is: " + host);
+      		}
     } else {
       Debug.Log("New room allocated [room id=" + args.id + "]");
       room = RoomManager.getInstance().addRoom(args.id, args.gameID);
