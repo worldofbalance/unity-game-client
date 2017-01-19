@@ -139,6 +139,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private string name_otherPlayer;   // name for other player for graph
 	private List<int> otherScores;
     private int pixelPerChar = 15;
+	private short numPlayers;
     private short curRound; 
     // Parameters that host specifies
     private short numRounds = 0;
@@ -180,6 +181,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private string buttonText;
 	private long lastSubmit, nowMS; 
 	private long finalMS = 0;
+	private long namesMS = 0;
 
 	void Awake ()
 	{
@@ -266,7 +268,8 @@ public class MultiConvergeGame : MonoBehaviour
 		// Debug.Log ("Screen width/height " + Screen.width + " " + Screen.height);
 		var room = RoomManager.getInstance().getRoom(matchID);
 		Debug.Log("MC: room id / host name / player_id: " + matchID + " " + room.host + " " + player_id);
-		Debug.Log("MC: Number of players: " + room.numPlayers());
+		numPlayers = (short) room.numPlayers ();
+		Debug.Log("MC: Number of players: " + numPlayers);
 		// Read parameters from Room object
 		numRounds = room.numRounds;
 		bet = room.betAmt;
@@ -352,11 +355,16 @@ public class MultiConvergeGame : MonoBehaviour
 				if (timeRemain > timeRemainMax) {
 					timeRemainMax = timeRemain;
 				}
-				if ((!haveNames) && (timeRemainMax > timeRemain + 3)) {
-					haveNames = true;   // Wait about 2 seconds to get the player names - to make sure everyone is there 
-					GetNames ();   // All players setup at the beginning. None are added later.
-				}
 
+				if (!haveNames) {
+					if (timeRemainMax > timeRemain + 10) {
+						haveNames = true;   // After 10 seconds assume missing person dropped 
+						GetNames ();  
+					} else if (((DateTime.Now.Ticks - namesMS) / TimeSpan.TicksPerMillisecond) > 1000) {
+						namesMS = DateTime.Now.Ticks;
+						GetNames ();  
+					}
+				}
 
 				if (timeRemain > timePrevious) {
 					timePrevious = timeRemain;
@@ -373,12 +381,12 @@ public class MultiConvergeGame : MonoBehaviour
 					alarm5Sec = false;
 				}
 
-				if ((timeRemain <= 10) && !alarm10Sec && !betAccepted) {
+				if ((timeRemain <= 11) && !alarm10Sec && !betAccepted) {
 					alarm10Sec = true;
 					audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/alarm_10sec"));
 				}
 
-				if ((timeRemain <= 5) && !alarm5Sec && !betAccepted) {
+				if ((timeRemain <= 6) && !alarm5Sec && !betAccepted) {
 					alarm5Sec = true;
 					audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/alarm_5sec"));
 				}
@@ -452,7 +460,7 @@ public class MultiConvergeGame : MonoBehaviour
 			GUI.BringWindowToFront(host_config_id);
 		}
 
-		if ((finalMS > 0) && (((finalMS - DateTime.Now.Ticks) / TimeSpan.TicksPerMillisecond) > 500)) {
+		if ((finalMS > 0) && (((DateTime.Now.Ticks - finalMS) / TimeSpan.TicksPerMillisecond) > 500)) {
 			finalMS = DateTime.Now.Ticks;
 			Debug.Log ("ProcessConvergeGetFinalScores submitted again");
 			Game.networkManager.Send (
@@ -1361,9 +1369,11 @@ public class MultiConvergeGame : MonoBehaviour
 		Debug.Log ("In responseconvergetbetupdate");
 		int roundComplete = args.roundComplete;
 		int round = args.round;
+		Debug.Log ("roundComplete, round, curRound = " + roundComplete + " " + round + " " + curRound);
 		if ((roundComplete != 1) || (round != curRound)) {
 			return;
 		}
+		Debug.Log ("#1 Winning player id: " + playerWinner);
 		curRound++;
 		won = args.winStatus;
 		wonAmount = args.wonAmount; 
@@ -1373,7 +1383,7 @@ public class MultiConvergeGame : MonoBehaviour
 		} else {
 			playerWinnerName = "";
 		}
-		Debug.Log ("Winning player id: " + playerWinner);
+		Debug.Log ("#2 Winning player id: " + playerWinner);
 		winners.Add (playerWinner);   // Add winner to the list as winner of this round
 		if ((playerWinner != 0) && (roundsWon.Count > 0)) {   // If there is actually a winner (At least one played)			
 			// Increment count of rounds won 
@@ -1424,6 +1434,8 @@ public class MultiConvergeGame : MonoBehaviour
 				),
 				ProcessConvergeGetFinalScores
 			);
+			audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/gameOver"));
+			Debug.Log ("Game over");
         }
 		Debug.Log ("new balance: " + balance);
 	}
@@ -1454,8 +1466,6 @@ public class MultiConvergeGame : MonoBehaviour
 		for (int i = 0; i < 5; i++) {
 			Debug.Log (playerId [i] + " " + playerWinnings [i] + " " + playerLastImprove [i]);
 		}
-		audio.PlayOneShot ((AudioClip)Resources.Load ("Audio/gameOver"));
-		Debug.Log ("Game over");
 	}
 		
 	// Not used in MC 	
@@ -2040,15 +2050,28 @@ public class MultiConvergeGame : MonoBehaviour
 	{
 		ResponseConvergeGetNames args = response as ResponseConvergeGetNames;
 		// Debug.Log ("ResponseConvergeGetNames received");
-		roundsWon.Add (player_id, 0);
-		playerNames.Add (args.player1ID, args.player1Name);
-		roundsWon.Add (args.player1ID, 0);
-		playerNames.Add (args.player2ID, args.player2Name);
-		roundsWon.Add (args.player2ID, 0);
-		playerNames.Add (args.player3ID, args.player3Name);
-		roundsWon.Add (args.player3ID, 0);
-		playerNames.Add (args.player4ID, args.player4Name);
-		roundsWon.Add (args.player4ID, 0);
+		if (!roundsWon.Contains(player_id)) {
+			roundsWon.Add (player_id, 0);
+		}
+		if (!roundsWon.Contains (args.player1ID) && (args.player1ID > 0)) {
+			playerNames.Add (args.player1ID, args.player1Name);
+			roundsWon.Add (args.player1ID, 0);
+		}
+		if (!roundsWon.Contains (args.player2ID) && (args.player2ID > 0)) {
+			playerNames.Add (args.player2ID, args.player2Name);
+			roundsWon.Add (args.player2ID, 0);
+		}
+		if (!roundsWon.Contains (args.player3ID) && (args.player3ID > 0)) {
+			playerNames.Add (args.player3ID, args.player3Name);
+			roundsWon.Add (args.player3ID, 0);
+		}
+		if (!roundsWon.Contains (args.player4ID) && (args.player4ID > 0)) {
+			playerNames.Add (args.player4ID, args.player4Name);
+			roundsWon.Add (args.player4ID, 0);
+		}
+		if (roundsWon.Count == numPlayers) {
+			haveNames = true;
+		}
 
 		Debug.Log ("Other player id / name"); 
 
