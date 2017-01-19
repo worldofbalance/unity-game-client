@@ -10,6 +10,7 @@ using System.Text;
 
 public class MultiConvergeGame : MonoBehaviour
 {
+	private const long SUBMIT_WAIT_MS = 700;
 	private int player_id;
 	private string player_name;
 	// Window Properties
@@ -124,8 +125,9 @@ public class MultiConvergeGame : MonoBehaviour
 	private short won;    // 1 -> won, 0 -> lost,  -1 -> did not play
 	private int wonAmount;  // amount won (pot) 
 	private bool betAccepted = false;
+	private bool scoresReady = false;
 	private bool windowClosed = false;
-	private bool closedResponseSent = false;
+	// private bool closedResponseSent = false;
 	private IDictionary playerNames;
 	private IDictionary betStatusList;
 	private int betCount = 0;
@@ -137,7 +139,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private string name_otherPlayer;   // name for other player for graph
 	private List<int> otherScores;
     private int pixelPerChar = 15;
-    private short curRound = 1; 
+    private short curRound; 
     // Parameters that host specifies
     private short numRounds = 0;
     private string numRoundsS = "";
@@ -176,6 +178,8 @@ public class MultiConvergeGame : MonoBehaviour
 	private int[] playerLastImprove;
 	private int improveValue = 0;      // This is the players score. Higher is better. Check BarGraph to determine formula
 	private string buttonText;
+	private long lastSubmit, nowMS; 
+	private long finalMS = 0;
 
 	void Awake ()
 	{
@@ -234,11 +238,10 @@ public class MultiConvergeGame : MonoBehaviour
 		balanceX = width - buttonWidth - bufferBorder;      // balance, bet msgs, oppo buttons, species slider X coordinate
 		sliderY = balanceY + 65;                    // slider Y coordinate 
         curRound = 1;   // Start with Round 1
-        // numRounds = 5;    // Over written by user input 
 		topBG = windowRect.height - heightBG - bottomMargin - topGraph;
 		heightGraph = Math.Min (windowRect.height * 0.50f, topBG);
 		heightGraph = Math.Max (heightGraph, sliderY + 0.0f);
-		Debug.Log ("windowRect.height, topBG, sliderY: " + windowRect.height + " " + topBG + " " + sliderY);
+		// Debug.Log ("windowRect.height, topBG, sliderY: " + windowRect.height + " " + topBG + " " + sliderY);
 		// last 35 taken to allocate room for multiplayer convergence text 
 		entryHeight = height - heightGraph - 30 * 3 - bufferBorder * 2 - 35;
 		speciesRowCount = Math.Max((int)((entryHeight-40)/35)+1,1);
@@ -248,7 +251,7 @@ public class MultiConvergeGame : MonoBehaviour
 		// This is the column # where display begins (slider output) range: 0 to SpeciesColCount - speciesColFit
 		speciesColIndex = 0;    
 		sliderSRect = new Rect (balanceX, sliderY, buttonWidth, 30); 
-		Debug.Log ("=== Awake: sRC/sCF/eH: " + speciesRowCount + " " + speciesColFit + " " + entryHeight);
+		// Debug.Log ("=== Awake: sRC/sCF/eH: " + speciesRowCount + " " + speciesColFit + " " + entryHeight);
 		audio = gameObject.AddComponent<AudioSource> ();
 		playerId = new int[5];
 		playerWinnings = new int[5];
@@ -260,7 +263,7 @@ public class MultiConvergeGame : MonoBehaviour
 	{
 		// DH change
 		// Get room that player is in
-		Debug.Log ("Screen width/height " + Screen.width + " " + Screen.height);
+		// Debug.Log ("Screen width/height " + Screen.width + " " + Screen.height);
 		var room = RoomManager.getInstance().getRoom(matchID);
 		Debug.Log("MC: room id / host name / player_id: " + matchID + " " + room.host + " " + player_id);
 		Debug.Log("MC: Number of players: " + room.numPlayers());
@@ -289,8 +292,8 @@ public class MultiConvergeGame : MonoBehaviour
 		//set default ecosystem values
 		new_ecosystem_id = Constants.ID_NOT_SET;
 
-		ecosystem_idx = 0;     // Initially set to first ecosystem
-		ecosystem_id = GetEcosystemId (ecosystem_idx);
+		// ecosystem_idx = 0;     // Initially set to first ecosystem
+		// ecosystem_id = GetEcosystemId (ecosystem_idx);
 		//get player's most recent prior attempts 
 		// DH change - start everyone at beginning to make equal
 		// GetPriorAttempts ();
@@ -340,7 +343,7 @@ public class MultiConvergeGame : MonoBehaviour
 			moment = DateTime.Now;
 			timeNowNew = moment.Millisecond;
 			int delta = timeNowNew - timeNow;
-			Debug.Log ("New Time/Delta = " + timeNowNew + " " + delta);
+			// Debug.Log ("New Time/Delta = " + timeNowNew + " " + delta);
 			// check if more than 300 msec have passed 
 			if ((delta < 0) || (delta > 400)) {
 				timeNow = timeNowNew;
@@ -386,22 +389,30 @@ public class MultiConvergeGame : MonoBehaviour
 			}
 		}
 
+		/*
 		if ((timeRemain < timeCheck) && (checkCount < 2) && isActive && (!gameOver)) {  // waiting too long for some client(s). Check Server
             checkCount++;
             CheckPlayers();
         }
-            
-			
+        */
+
 		// Check if betting window closed and no bet entered
-		if (!betAccepted && windowClosed && !closedResponseSent && isActive && (!gameOver)) {
+		nowMS = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+		if (!betAccepted && windowClosed && isActive && !gameOver && ((nowMS - lastSubmit) > SUBMIT_WAIT_MS)) {
+			lastSubmit = nowMS;
 			short betEntered = 0;	
 			// improveValue = 0;    // Use previous value
-			closedResponseSent = true;
-			ObtainScores();
-
+			// closedResponseSent = true;
+			if (!scoresReady) {
+				ObtainScores();
+				scoresReady = true;
+			}
+			Debug.Log ("MC: Submitting windowClosed timeout ConvergeBetUpdateProtocol");
+			Debug.Log ("nowMS, lastSubmit, difference: " + nowMS + " " + lastSubmit + " " + (nowMS - lastSubmit));
 			Game.networkManager.Send (
 				ConvergeBetUpdateProtocol.Prepare (
 					betEntered, 
+					curRound,
 					improveValue,
 					formattedScores[0],
 					formattedScores[1],
@@ -441,6 +452,15 @@ public class MultiConvergeGame : MonoBehaviour
 			GUI.BringWindowToFront(host_config_id);
 		}
 
+		if ((finalMS > 0) && (((finalMS - DateTime.Now.Ticks) / TimeSpan.TicksPerMillisecond) > 500)) {
+			finalMS = DateTime.Now.Ticks;
+			Debug.Log ("ProcessConvergeGetFinalScores submitted again");
+			Game.networkManager.Send (
+				ConvergeGetFinalScoresProtocol.Prepare (
+				),
+				ProcessConvergeGetFinalScores
+			);
+		}
 	}
 	
 	void MakeWindow (int id)
@@ -558,6 +578,26 @@ public class MultiConvergeGame : MonoBehaviour
 
 		if (betAccepted) {
 			buttonTitle = "Entered";
+			nowMS = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+			if (((nowMS - lastSubmit) > SUBMIT_WAIT_MS) && scoresReady) {
+				lastSubmit = nowMS;
+				short betEntered = 1;	
+				Debug.Log ("MC: Submitting betAccepted ConvergeBetUpdateProtocol");
+				Debug.Log ("bet: nowMS, lastSubmit, difference: " + nowMS + " " + lastSubmit + " " + (nowMS - lastSubmit));
+				Game.networkManager.Send (
+					ConvergeBetUpdateProtocol.Prepare (
+						betEntered, 
+						curRound,
+						improveValue,
+						formattedScores[0],
+						formattedScores[1],
+						formattedScores[2],
+						formattedScores[3],
+						formattedScores[4]
+					),
+					ProcessConvergeBetUpdate
+				);
+			}
 		} else {
 			buttonTitle = windowClosed ? "Closed" : "Accept";
 		}
@@ -572,6 +612,7 @@ public class MultiConvergeGame : MonoBehaviour
 				currAttempt.UpdateConfig ();  //update config based on user data entry changes
 				ConvergeAttempt prior = attemptList.Find (entry => entry.config == currAttempt.config);
 				if (prior == null && currAttempt.ParamsUpdated ()) {
+					nowMS = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 					betAccepted = true;
 					Submit ();
 					isProcessing = true;  // Block access to prior attempt buttons during simulation
@@ -1183,8 +1224,6 @@ public class MultiConvergeGame : MonoBehaviour
 			ProcessConvergeNewAttempt
 		);
 		//Debug.Log ("Submit RequestConvergeNewAttempt");
-
-
 	}
 
 	// Used for multiplayer Convergence so that all players start at same point 
@@ -1225,6 +1264,7 @@ public class MultiConvergeGame : MonoBehaviour
 	
 	public void ProcessConvergeNewAttempt (NetworkResponse response)
 	{
+		Debug.Log ("ProcessConvergeNewAttempt");
 		ConvergeAttempt attempt;
 		ResponseConvergeNewAttempt args = response as ResponseConvergeNewAttempt;
 		attempt = args.attempt;
@@ -1288,10 +1328,15 @@ public class MultiConvergeGame : MonoBehaviour
 
 			short betEntered = 1;	
 			ObtainScores ();
+			scoresReady = true;
+
+			Debug.Log ("MC: Submitting initial submit() ConvergeBetUpdateProtocol");
+			lastSubmit = nowMS;
 
             Game.networkManager.Send (
 				ConvergeBetUpdateProtocol.Prepare (
 					betEntered, 
+					curRound,
 					improveValue,
 					formattedScores[0],
 					formattedScores[1],
@@ -1301,7 +1346,7 @@ public class MultiConvergeGame : MonoBehaviour
 				),
 				ProcessConvergeBetUpdate
 			);
-
+			lastSubmit = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 		} else {
 			Debug.LogError ("Submission of new attempt failed to produce results.");
 			// betAccepted = false;
@@ -1309,12 +1354,17 @@ public class MultiConvergeGame : MonoBehaviour
 			// SetIsProcessing (false);
 		}
 	}
-
-	// DH change
+		
 	public void ProcessConvergeBetUpdate (NetworkResponse response)
 	{
 		ResponseConvergeBetUpdate args = response as ResponseConvergeBetUpdate;
 		Debug.Log ("In responseconvergetbetupdate");
+		int roundComplete = args.roundComplete;
+		int round = args.round;
+		if ((roundComplete != 1) || (round != curRound)) {
+			return;
+		}
+		curRound++;
 		won = args.winStatus;
 		wonAmount = args.wonAmount; 
 		playerWinner = args.playerWinner;
@@ -1350,8 +1400,8 @@ public class MultiConvergeGame : MonoBehaviour
 		results = true;
 		betAccepted = false; 
 		windowClosed = false;
-		closedResponseSent = false;
-        curRound++;    // Needs to be replaced by adding round number from server 
+		scoresReady = false;
+		// closedResponseSent = false;           
         if (curRound > numRounds) {
 			// Update database with new player balance
 			Debug.Log ("Submit EndGameProtocol with new balance: " + balance);
@@ -1367,6 +1417,7 @@ public class MultiConvergeGame : MonoBehaviour
 			// Game over - switch to game over display 
             // isActive = false;    // We keep active to allow player to check things 
 			gameOver = true;
+			finalMS = DateTime.Now.Ticks;
 			Debug.Log ("ProcessConvergeGetFinalScores submitted");
 			Game.networkManager.Send (
 				ConvergeGetFinalScoresProtocol.Prepare (
@@ -1384,11 +1435,14 @@ public class MultiConvergeGame : MonoBehaviour
 		Debug.Log ("Credit difference: " + args.creditDiff);
 	}
 
-
 	public void ProcessConvergeGetFinalScores (NetworkResponse response)
 	{
 		ResponseConvergeGetFinalScores args = response as ResponseConvergeGetFinalScores;
 		Debug.Log ("Inside ProcessConvergeGetFinalScores");
+		if (args.status == 1) {
+			Debug.Log ("Scores are final");
+			finalMS = 0;
+		}
 		playerId = args.playerId;
 		playerWinnings = args.playerWinnings;
 		playerLastImprove = args.playerLastImprove;
@@ -1451,7 +1505,6 @@ public class MultiConvergeGame : MonoBehaviour
 		if (attemptList.Count == attemptCount) {
 			FinalizeLoadPriorAttempts ();
 		}
-
 	}
 
 	private void UpdateEcosystemIds ()
@@ -1915,7 +1968,7 @@ public class MultiConvergeGame : MonoBehaviour
 	{
 		Debug.Log ("Get time request sent");
         Game.networkManager.Send (
-			ConvergeGetTimeProtocol.Prepare (),
+			ConvergeGetTimeProtocol.Prepare (curRound),
 			ProcessGetTime
 		);
 	}
@@ -1986,7 +2039,7 @@ public class MultiConvergeGame : MonoBehaviour
 	public void ProcessGetNames (NetworkResponse response)
 	{
 		ResponseConvergeGetNames args = response as ResponseConvergeGetNames;
-		Debug.Log ("ResponseConvergeGetNames received");
+		// Debug.Log ("ResponseConvergeGetNames received");
 		roundsWon.Add (player_id, 0);
 		playerNames.Add (args.player1ID, args.player1Name);
 		roundsWon.Add (args.player1ID, 0);

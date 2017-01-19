@@ -201,7 +201,7 @@ public class MultiplayerGames : MonoBehaviour {
       }
     }
     foreach (var key in counts.Keys) {
-      Debug.Log("updating roomcount for " + key + " to " + counts[key]);
+      // Debug.Log("updating roomcount for " + key + " to " + counts[key]);
       this.games[key].numRooms = counts[key];
     }
   }
@@ -442,6 +442,7 @@ public class MultiplayerGames : MonoBehaviour {
   }
 
 
+  /*
   void MakeWindowMC(int id) {
     Color newColor = new Color(1,1,1,1.0f);
     GUI.color = newColor;
@@ -598,9 +599,11 @@ public class MultiplayerGames : MonoBehaviour {
     GUI.BringWindowToFront(window_id);
     GUI.DragWindow();
   }		
+  */
 
 
 
+	/*
   void MakeWindowHost(int id) {
     Functions.DrawBackground(new Rect(0, 0, widthConfig, heightConfig), bgTexture);
     string hdr1 = "Multiplayer Convergence";
@@ -689,6 +692,7 @@ public class MultiplayerGames : MonoBehaviour {
       SubmitHostConfig();
     }
   }
+	*/
 
   private void SubmitHostConfig() {
     Debug.Log ("SubmitHostConfig called");
@@ -732,6 +736,7 @@ public class MultiplayerGames : MonoBehaviour {
     }
   }
 
+  /*
   public void ProcessConvergeHostConfig (NetworkResponse response)
   {
     ResponseConvergeHostConfig args = response as ResponseConvergeHostConfig;
@@ -740,7 +745,7 @@ public class MultiplayerGames : MonoBehaviour {
     Debug.Log ("status: " + status);
     Game.SwitchScene ("MultiConverge");
   }
-
+  */
 
 
   public void setMessage(string message) {
@@ -787,7 +792,7 @@ public class MultiplayerGames : MonoBehaviour {
             if (!room.containsPlayer (userID)) {
                 room.addPlayer (userID);
             }
-
+				
             // switch scene
             if (args.gameID == Constants.MINIGAME_RUNNING_RHINO) {
                 RR.RRConnectionManager cManager = RR.RRConnectionManager.getInstance ();
@@ -810,9 +815,9 @@ public class MultiplayerGames : MonoBehaviour {
                     Game.SwitchScene("SDReadyScene");
                 }
             } else if (args.gameID == Constants.MINIGAME_MULTI_CONVERGENCE) {
-        // DH change
-        MultiConvergeGame.matchID = args.id;   // game id
-        host = 0;  // Default - not the host
+        		// DH change
+        		MultiConvergeGame.matchID = args.id;   // game id
+        		host = 0;  // Default - not the host
 
                 string playerName = GameState.player.GetName ();
                 if (playerName == room.host) {
@@ -821,11 +826,11 @@ public class MultiplayerGames : MonoBehaviour {
                 Game.networkManager.Send (MCMatchInitProtocol.Prepare 
                     (GameState.player.GetID (), args.id, host, playerName), 
                     MCProcessMatchInit);
-                Debug.Log("MC notice sent to server(game id, player id): " + args.id + " " + playerName);
+                Debug.Log("MultiplayerGames: MC notice sent to server(game id, player id): " + args.id + " " + playerName);
                 Debug.Log ("Player Name: " + playerName);
                 Debug.Log ("userID: " + userID);
-        Debug.Log ("This player host value is: " + host);
-      }
+        		Debug.Log ("This player host value is: " + host);
+      		}
     } else {
       Debug.Log("New room allocated [room id=" + args.id + "]");
       room = RoomManager.getInstance().addRoom(args.id, args.gameID);
@@ -865,6 +870,8 @@ public class MultiplayerGames : MonoBehaviour {
       Debug.Log("MC MatchID set to: " + args.matchID + " Player id is: " + GameState.player.GetID ());
       Debug.Log("numRounds, timeWindow, betAmount, ecoNumber, allowSlliders");
       Debug.Log (numRounds + " " + timeWindow + " " + betAmount + " " + ecoNumber + " " + allowSliders);
+	  Game.SwitchScene ("MultiConverge");
+	  /* Handled by RoomManager
       if (host == 1) {
         Game.networkManager.Send (
           ConvergeHostConfigProtocol.Prepare (numRounds, timeWindow, betAmount, ecoNumber, allowSliders), 
@@ -872,10 +879,12 @@ public class MultiplayerGames : MonoBehaviour {
       } else {
         MCWaitForParams ();
       }
+      */
 
     }
   }
     
+  /*
   public void MCWaitForParams() {
     Game.networkManager.Send (
       ConvergeNonHostConfigProtocol.Prepare (), ProcessConvergeNonHostConfig);
@@ -899,6 +908,7 @@ public class MultiplayerGames : MonoBehaviour {
       MCWaitForParams ();
     }
   }
+  */
 
   public RR.RequestRaceInit RR_RequestRaceInit ()
   {

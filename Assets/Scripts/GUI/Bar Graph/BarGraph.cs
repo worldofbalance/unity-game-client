@@ -176,7 +176,7 @@ public class BarGraph : MonoBehaviour
         } else {
             GUI.Label (new Rect ((windowRect.width - 650) / 2, 0, 600, 30), title, style);
         }
-        Debug.Log ("BG: oppName : " + oppName);
+        // Debug.Log ("BG: oppName : " + oppName);
 		// Draw Axes
 		DrawGrid (graphRect);
 		// Draw Slider
@@ -298,10 +298,10 @@ public class BarGraph : MonoBehaviour
 				DrawSeriesSet (seriesSet, series);
 			}
 		} else if ((oppScores [0] != -1) && oppGraph) {
-            Debug.Log ("BG: Drawing oppGraph");
+            // Debug.Log ("BG: Drawing oppGraph");
 			for (int i = 0; i < 5; i++) {
 				if (oppScores [i] != -1) {
-                    Debug.Log ("BG: i/oppScores: " + i + " " + oppScores [i]);
+                    // Debug.Log ("BG: i/oppScores: " + i + " " + oppScores [i]);
 					DrawOppBar (oppScores [i], i);
 				}
 			}
@@ -326,8 +326,8 @@ public class BarGraph : MonoBehaviour
 		GUIUtility.RotateAroundPivot (-90, origin);
 		// Draw Series Set
 		GUI.BeginGroup (seriesSet.rect.GetRect ());
-        Debug.Log ("BG: seriesSet.rect: x,y,width,height: " + seriesSet.rect.x + " " + seriesSet.rect.y + " " +
-            seriesSet.rect.width + " " + seriesSet.rect.height);
+        // Debug.Log ("BG: seriesSet.rect: x,y,width,height: " + seriesSet.rect.x + " " + seriesSet.rect.y + " " +
+        //     seriesSet.rect.width + " " + seriesSet.rect.height);
 		float yNext = 0;
 
 		foreach (BarSeries series in seriesSet.seriesList) {
@@ -339,8 +339,8 @@ public class BarGraph : MonoBehaviour
 			// Next stacking position
 			yNext += barHeight - 1f;
 			
-            Debug.Log ("BG: barRect.rect: x,y,width,height: " + barRect.GetRect().x + " " + barRect.GetRect().y + " " +
-                barRect.GetRect().width + " " + barRect.GetRect().height);
+            // Debug.Log ("BG: barRect.rect: x,y,width,height: " + barRect.GetRect().x + " " + barRect.GetRect().y + " " +
+            //     barRect.GetRect().width + " " + barRect.GetRect().height);
 			Functions.DrawBackground (barRect.GetRect (), barTexture, series.color);
 		}
 		GUI.EndGroup ();
@@ -383,7 +383,7 @@ public class BarGraph : MonoBehaviour
 
 		rectO.x = xPos;
 		rectO.y = hStart.y - 1;
-        Debug.Log ("BG: rectO: x,y, width, height: " + rectO.x + " " + rectO.y + " " + rectO.width + " " + rectO.height);
+        // Debug.Log ("BG: rectO: x,y, width, height: " + rectO.x + " " + rectO.y + " " + rectO.width + " " + rectO.height);
 
 		GUI.color = (false) ? Color.gray : Color.white;
 
@@ -401,7 +401,7 @@ public class BarGraph : MonoBehaviour
         DynamicRect barRect = new DynamicRect (0, 0, 0, barWidth);
 		barRect.x = yNext;
 		barRect.width = barHeight;
-        Debug.Log ("BG: barRect: x,y, width, height: " + barRect.x + " " + barRect.y + " " + barRect.width + " " + barRect.height);
+        // Debug.Log ("BG: barRect: x,y, width, height: " + barRect.x + " " + barRect.y + " " + barRect.width + " " + barRect.height);
         // barRect.height = barWidth;
 		// Next stacking position
 
@@ -618,7 +618,7 @@ public class BarGraph : MonoBehaviour
 			//}
 		}
 		scores.Add (maxValue);
-		Debug.Log ("BG: BarGraph add score, score / count: " + maxValue + " " + scores.Count);
+		// Debug.Log ("BG: BarGraph add score, score / count: " + maxValue + " " + scores.Count);
 
 		
 		// Adjust Max Y-Range
@@ -674,15 +674,15 @@ public class BarGraph : MonoBehaviour
 		if (numScores < 2) {
 			return 0;
 		}
-		Debug.Log ("BG improvement, 0 value: " + scores[0]);
+		// Debug.Log ("BG improvement, 0 value: " + scores[0]);
 		int minValue = scores[0];
 		for (int i = 1; i < (numScores - 1); i++) {
-			Debug.Log ("BG: #/value: " + i + " " + scores [i]);
+			// Debug.Log ("BG: #/value: " + i + " " + scores [i]);
 			if (scores[i] < minValue)
 				minValue = scores[i];
 		}
-		Debug.Log ("BarGraph, minValue/count/latest/improve: " + minValue + " " + numScores + " " + scores [numScores - 1] + 
-			" " + (minValue - scores[numScores - 1]));
+		// Debug.Log ("BarGraph, minValue/count/latest/improve: " + minValue + " " + numScores + " " + scores [numScores - 1] + 
+		// 	" " + (minValue - scores[numScores - 1]));
 		return minValue - scores[numScores - 1];
 	}
 
