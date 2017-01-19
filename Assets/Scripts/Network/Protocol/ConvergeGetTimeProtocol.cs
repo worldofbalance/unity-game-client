@@ -7,8 +7,10 @@ using System.Text;
 public class ConvergeGetTimeProtocol
 {
 
-	public static NetworkRequest Prepare() {
+	public static NetworkRequest Prepare(short round) {
 		NetworkRequest request = new NetworkRequest(NetworkCode.MC_GET_TIME);
+
+		request.AddShort16(round);
 		
 		return request;
 	}

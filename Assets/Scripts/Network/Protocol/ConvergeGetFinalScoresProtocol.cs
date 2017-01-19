@@ -18,6 +18,7 @@ public class ConvergeGetFinalScoresProtocol
 		ResponseConvergeGetFinalScores response = new ResponseConvergeGetFinalScores();
 		
 		using (BinaryReader br = new BinaryReader(dataStream, Encoding.UTF8)) {
+			response.status = br.ReadInt16 ();
 			for (int i = 0; i < 5; i++) {
 				response.playerId[i] = br.ReadInt32 ();
 				response.playerWinnings[i] = br.ReadInt32 ();
@@ -30,6 +31,7 @@ public class ConvergeGetFinalScoresProtocol
 
 public class ResponseConvergeGetFinalScores : NetworkResponse {
 
+	public short status { get; set; }
 	public int[] playerId { get; set; }
 	public int[] playerWinnings { get; set; }
 	public int[] playerLastImprove { get; set; }
