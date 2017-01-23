@@ -79,6 +79,7 @@ public class Map : MonoBehaviour {
       Camera.main.GetComponent<MapCamera>().Setup();
       Camera.main.GetComponent<MapCamera>().Center(GameState.player.GetID());
     }
+    WorldController.speciesLocCurrent = false;
   }
 
   public void Generate(short height, short width, List<Zone> zones) {
@@ -155,12 +156,14 @@ public class Map : MonoBehaviour {
   }
 
   public GameObject FindPlayerOwnedTile(int player_id){
+    if (zoneList == null) {
+      return null;
+    }
     foreach (GameObject zoneObject in zoneList.Values) {
       if (zoneObject.GetComponent<Zone>().player_id == player_id) {
         return zoneObject;
       }
     }
-
     return null;
   }
 

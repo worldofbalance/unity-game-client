@@ -113,13 +113,13 @@ public class Graph : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
-		if (Input.GetKeyDown("1")) {
+		if (isActive && Input.GetKeyDown("1")) {
 			GetData ();
 		}
-		if (Input.GetKeyDown("2")) {
+		if (isActive && Input.GetKeyDown("2")) {
 			ShowMonth(1);
 		}
-		if (Input.GetKeyDown("3")) {
+		if (isActive && Input.GetKeyDown("3")) {
 			ShowLastMonth();
 		}
 	}
@@ -552,7 +552,7 @@ public class Graph : MonoBehaviour {
 	
 	public IEnumerator UpdateDataRoutine(float time) {
 		while (true) {
-			UpdateData();
+			// UpdateData();
 			yield return new WaitForSeconds(time);
 		}
 	}
@@ -617,6 +617,9 @@ public class Graph : MonoBehaviour {
 			biomassValues.Add (entry.Key, entry.Value);
 			Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, entry.Key), ProcessSpeciesHistory);
 		}
+		if (speciesCount == 0) {
+			UpdateData ();
+		}
 	}
 		
 	public void ProcessSpeciesHistory (NetworkResponse response)
@@ -634,7 +637,7 @@ public class Graph : MonoBehaviour {
 		}
 		Dictionary<int, int> speciesList = args.speciesHistoryList;
 		Debug.Log ("Graph: ProcessSpeciesHistory, species_id = " + species_id);
-		Debug.Log ("Graph: ProcessSpeciesHistory, size = " + speciesList.Count);
+		// Debug.Log ("Graph: ProcessSpeciesHistory, size = " + speciesList.Count);  // null pointer in some cases 
 		if (speciesList.Count > 0) {
 			foreach (KeyValuePair<int, int> entry in speciesList) {
 				Debug.Log ("day, biomass change = " + entry.Key + " " + entry.Value);
