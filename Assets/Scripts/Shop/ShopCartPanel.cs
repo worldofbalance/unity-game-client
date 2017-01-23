@@ -283,6 +283,7 @@ public class ShopCartPanel : MonoBehaviour {
 			GameObject.Find("Cube").GetComponent<ShopInfoPanel>().Hide();
 
 			cartList = new Dictionary<int, int>();
+			WorldController.speciesLocCurrent = false;
 		}			
 	}
 

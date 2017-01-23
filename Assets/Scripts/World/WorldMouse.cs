@@ -76,9 +76,17 @@ public class WorldMouse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		if (Input.GetKeyDown("1")) {
+			mapCamera.ZoomIn ();
+		}
+		if (Input.GetKeyDown("2")) {
+			mapCamera.ZoomOut ();
+		}    
+
         if (!popOversEnabled) {
           return;
         }
+
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit) && (!EventSystem.current.IsPointerOverGameObject()))
         {

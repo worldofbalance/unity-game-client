@@ -9,8 +9,10 @@ public class WorldController : MonoBehaviour {
 
 	private GameObject globalObject;
 	private GameState gs;
-
 	private Dictionary<int, int> results = new Dictionary<int, int>();
+
+	public static bool speciesLocCurrent = false;
+
 
   void Awake() {
     try {
@@ -33,10 +35,12 @@ public class WorldController : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    
   }
 
   void OnGUI() {
+		if (!speciesLocCurrent) {
+			UpdateSpeciesLoc ();
+		}
   }
   
   public void ProcessWorld(NetworkResponse response) {
@@ -49,12 +53,9 @@ public class WorldController : MonoBehaviour {
 
       LoadComponents();
 
+	  // This is to run simulation of the user's ecosystem upon login
 	  // Debug.Log("WorldController: Send PredictionProtocol");
 	  // Game.networkManager.Send (PredictionProtocol.Prepare (), ProcessPrediction);
-
-	  // Debug.Log("WorldController: Send SpeciesActionProtocol");
-	  // int action = 2;
-	  // Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action), ProcessSpeciesAction);
     }
   }
 
@@ -114,41 +115,28 @@ public class WorldController : MonoBehaviour {
 			}
 		}
 	}
-
-	public void ProcessSpeciesAction (NetworkResponse response)
-	{
-		ResponseSpeciesAction args = response as ResponseSpeciesAction;
-		int action = args.action;
-		int status = args.status;
-		if ((action != 2) || (status != 0)) {
-			Debug.Log ("ResponseSpeciesAction unexpected result2");
-			Debug.Log ("action, status = " + action + " " + status);
+		
+	void UpdateSpeciesLoc() {
+		Species.xIdx = 0;
+		Species.zIdx = 0;
+		int player_id = GameState.player.GetID ();
+		GameObject zoneObject = GameObject.Find ("Map").GetComponent<Map> ().FindPlayerOwnedTile (player_id);
+		if (zoneObject == null) {
+			speciesLocCurrent = true;
+			return;
 		}
-		Dictionary<int, int> speciesList = args.speciesList;
-		Debug.Log ("WorldController, ProcessSpeciesAction, size = " + speciesList.Count);
-		foreach (KeyValuePair<int, int> entry in speciesList) {
-			Debug.Log ("species, biomass = " + entry.Key + " " + entry.Value);
-			int action2 = 4;
-			Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, entry.Key), ProcessSpeciesHistory);
+		Zone zone = zoneObject.GetComponent<Zone> ();
+		float baseX = (zone.column - 20) * 13.85f + (zone.row % 2 == 0 ? 7 : 0) - 1;
+		float baseZ = (zone.row - 19) * -11.95f + 3.5f;
+		Debug.Log ("WorldController: zone.row, zone.column: " + zone.row + " " + zone.column);
+		foreach (KeyValuePair<int, Species> entry in GameObject.Find("Global Object").GetComponent<GameState>().speciesList) {
+			Species species = entry.Value;
+			foreach (var organism in species.speciesList) {
+				organism.transform.position = 
+						new Vector3 (baseX + Species.xIdx * Species.step, 0, baseZ + Species.zIdx * Species.step);
+				Species.UpdateIdx ();
+			}
 		}
-	}
-
-
-	public void ProcessSpeciesHistory (NetworkResponse response)
-	{
-		ResponseSpeciesAction args = response as ResponseSpeciesAction;
-		int action = args.action;
-		int status = args.status;
-		int species_id = args.species_id;
-		if ((action != 4) || (status != 0)) {
-			Debug.Log ("ResponseSpeciesAction unexpected result4");
-			Debug.Log ("action, status = " + action + " " + status);
-		}
-		Dictionary<int, int> speciesList = args.speciesHistoryList;
-		Debug.Log ("WorldController, ProcessSpeciesHistory, species_id = " + species_id);
-		Debug.Log ("WorldController, ProcessSpeciesHistory, size = " + speciesList.Count);
-		foreach (KeyValuePair<int, int> entry in speciesList) {
-			Debug.Log ("day, biomass change = " + entry.Key + " " + entry.Value);
-		}
+		speciesLocCurrent = true;
 	}
 }

@@ -16,7 +16,11 @@ public class MapCamera : MonoBehaviour {
   private float cameraZoomed = 10f;
   private float cameraNormal = 60f;
   private float cameraPulled = 70f;
+  private float cameraZoomedMin = 10f;
+  private float cameraZoomedMax = 120f;
+  private float cameraZoomTarget;
   private float cameraSmoothing = 3f;
+  private float cameraSmoothingZoom = 9f;
   public bool isPanning { get; set; }
   public bool isZooming { get; set; }
   public bool isZoomed { get; set; }
@@ -103,6 +107,14 @@ public class MapCamera : MonoBehaviour {
         transform.position = new Vector3(oldCameraPos.x + (mouseDownPos.x - Input.mousePosition.x) * .25f, oldCameraPos.y, oldCameraPos.z + (mouseDownPos.y - Input.mousePosition.y) * .25f);
       }
     }
+
+	if (isZooming && !Mathf.Approximately(GetComponent<Camera>().fieldOfView, cameraZoomTarget)) {
+	  GetComponent<Camera>().fieldOfView = 
+	      Mathf.Lerp(GetComponent<Camera>().fieldOfView, cameraZoomTarget, Time.deltaTime * cameraSmoothingZoom);
+	} else {
+	  isZooming = false;
+	}
+
   }
 
   public void Center(int player_id) {
@@ -135,6 +147,7 @@ public class MapCamera : MonoBehaviour {
     if (Physics.Raycast(GetComponent<Camera>().ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2)), out hit)) {
       cameraOffset = transform.position.z - hit.point.z;
     }
+    isZooming = false;
   }
 
   public void reset() {
@@ -156,5 +169,22 @@ public class MapCamera : MonoBehaviour {
 
   public void FirstTileProcess(bool ongoing) {
     choosingFirstTile = ongoing;
+  }
+
+
+  public void ZoomIn() {
+    if (GetComponent<Camera> ().fieldOfView > cameraZoomedMin) {
+      cameraZoomTarget = Mathf.Max (Mathf.Floor((GetComponent<Camera> ().fieldOfView - 11) / 10) * 10, cameraZoomedMin);
+      // Debug.Log ("MapCamera: fieldOfView, cameraZoomTarget: " + GetComponent<Camera> ().fieldOfView + " " + cameraZoomTarget);
+	  isZooming = true;
+	}
+  }
+
+  public void ZoomOut() {
+    if (GetComponent<Camera> ().fieldOfView < cameraZoomedMax) {
+      cameraZoomTarget = Mathf.Min (Mathf.Floor((GetComponent<Camera> ().fieldOfView + 20) / 10) * 10, cameraZoomedMax);
+      // Debug.Log ("MapCamera: fieldOfView, cameraZoomTarget: " + GetComponent<Camera> ().fieldOfView + " " + cameraZoomTarget);
+      isZooming = true;
+    }
   }
 }

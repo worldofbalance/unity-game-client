@@ -11,6 +11,11 @@ public class Species : MonoBehaviour {
 	public int biomass { get; set; }
 	public int size { get; set; }
 	public List<GameObject> speciesList = new List<GameObject>();
+
+	public static int xIdx = 0;
+	public static int zIdx = 0; 
+	public static int step = 2;
+	private static int idxMax = 5;
 	
 	// Use this for initialization
 	void Start() {
@@ -37,17 +42,20 @@ public class Species : MonoBehaviour {
 		if (Physics.Raycast(position, Vector3.down, out hit, 100)) {
 			position = hit.point;
 		}
-		
+
 		position[1] += 1;*/
 //		Vector3 position = playerTiles[Random.Range(0, playerTiles.Count - 1)].transform.position;
 //		position.Set (position.x + Random.Range(-5f,5f), 5, position.z + Random.Range(-5f,5f)+2.5f);
-		Vector3 position = Vector3.zero;
+		// Vector3 position = Vector3.zero;
+		Vector3 position = new Vector3(xIdx * step, 0, zIdx * step);
+		UpdateIdx ();
 		GameObject organism = CreateOrganism(position);
 		
 		// Assign Leader
 		if (speciesList.Count == 0) {
 //			organism.GetComponent<AI>().alphaLeader = organism;
-			organism.transform.localScale *= 1.25f;
+			organism.transform.localScale *= 1.25f;    // default
+			organism.transform.localScale *= 0.50f;    // scaled to fit on one tile
 //			organism.GetComponent<CapsuleCollider>().enabled = true;
 			organism.name = name + " (Alpha)_" + species_id;
 		} else {
@@ -56,6 +64,7 @@ public class Species : MonoBehaviour {
 		}
 
 		speciesList.Add(organism);
+		WorldController.speciesLocCurrent = false;
 
 		return organism;
 	}
@@ -76,6 +85,7 @@ public class Species : MonoBehaviour {
 
 		if (name.Equals("Acacia")) {
 			organism.transform.localScale *= 1.75f;
+			organism.transform.localScale *= 0.50f;    // scaled to fit on one tile
 		}
 
 		return organism;
@@ -109,5 +119,12 @@ public class Species : MonoBehaviour {
 	public void updateTerritoryPos(Vector3 position) {
 		GameObject organism = speciesList[0];
 		//organism.GetComponent<AnimalAI>().territoryPos = position;
+	}
+
+	public static void UpdateIdx() {
+		xIdx = (xIdx + 1) % idxMax;
+		if (xIdx == 0) {
+			zIdx = (zIdx + 1) % idxMax;
+		}
 	}
 }
