@@ -29,6 +29,7 @@ public class WorldMouse : MonoBehaviour
     private int prevPlayerID;
 
     private MapCamera mapCamera;
+	private Graph graph;
 
     // Use this for initialization
     void Start()
@@ -37,6 +38,10 @@ public class WorldMouse : MonoBehaviour
         mapCamera = GameObject.Find("MapCamera").GetComponent<MapCamera>();
         tileUi = GameObject.Find("Canvas/Tilepurchasedialog") as GameObject;
 		tilePC = GameObject.Find("Canvas/PurchaseSuccess") as GameObject;
+		if (GameObject.Find("Cube").GetComponent<Graph>() == null) {
+			GameObject.Find("Cube").AddComponent<Graph>();
+		}
+		graph = GameObject.Find("Cube").GetComponent<Graph>();
 
         purchaseCursor = GameObject.Find("PurchaseCursor") as GameObject;
         purchaseCursor.SetActive(false);
@@ -76,10 +81,10 @@ public class WorldMouse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		if (Input.GetKeyDown("1")) {
+		if (Input.GetKeyDown(KeyCode.UpArrow) && !graph.isActive) {
 			mapCamera.ZoomIn ();
 		}
-		if (Input.GetKeyDown("2")) {
+		if (Input.GetKeyDown(KeyCode.DownArrow) && !graph.isActive) {
 			mapCamera.ZoomOut ();
 		}    
 

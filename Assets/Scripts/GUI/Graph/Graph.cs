@@ -16,6 +16,7 @@ public class Graph : MonoBehaviour {
 	private Dictionary<int,int> biomassValues;
 	private List<int> speciesIds;
 	private List<Dictionary<int,int>> biomassHistory;
+	int minDay, maxDay;
 	int maxMonth, minMonth;
 	int speciesCount;
 	private Dictionary<int, SpeciesData> speciesTable = SpeciesTable.speciesList;
@@ -25,7 +26,7 @@ public class Graph : MonoBehaviour {
 	private float top;
 	private float width = 805;
 	private float height = 400;
-	private bool isActive = false;
+	public bool isActive = false;
 	private bool isReady = false;
 	private bool isLegendActive = true;
 	private bool buttonActive = true;
@@ -66,14 +67,17 @@ public class Graph : MonoBehaviour {
 	private float monthSliderValue;
 	private float monthSliderStart;
 	private float monthSliderDT;
+	private float monthSliderMax;
 	private int scrollToMonth = -1;
 	private Dictionary<string, Series> seriesList = new Dictionary<string, Series>();
 	private Texture2D bgTexture;
 	private Font font;
+	private int zoom = 1;
+	private int lastGridX;
 	
 	void Awake() {
 		title = "Graph";
-		xTitle = "Month";
+		xTitle = "Day";
 		yTitle = "Score";
 		yTitle = "Biomass";
 
@@ -122,6 +126,20 @@ public class Graph : MonoBehaviour {
 		if (isActive && Input.GetKeyDown("3")) {
 			ShowLastMonth();
 		}
+		if (Input.GetKeyDown(KeyCode.UpArrow) && isActive) {
+			if (zoom > 1) {
+				zoom /= 2;
+				monthSliderValue = 0;
+				xMin = 0;
+			}
+		}
+		if (Input.GetKeyDown(KeyCode.DownArrow) && isActive) {
+			if ((xAxisLabels != null) && (xAxisLabels.Count / zoom > xNumMarkers)) {
+				zoom *= 2;
+				monthSliderValue = 0;
+				xMin = 0;
+			}
+		}    
 	}
 	
 	void OnGUI() {
@@ -232,13 +250,17 @@ public class Graph : MonoBehaviour {
 				Drawing.DrawLine(new Vector2(xPos, yPos), new Vector2(xPos, yPos + 10), color, thickness, false);
 				// Unit Label
 				style.alignment = TextAnchor.UpperCenter;
-				if (i < xAxisLabels.Count) {
-				tStr = xAxisLabels [xMin + i];
-				if ((i != 0) && (!tStr.Contains("Jan"))) {
-					tStr = tStr.Substring (0, 3);
-				}
+				if ((xMin + i * zoom) < xAxisLabels.Count) {
+					lastGridX = i;
+					tStr = xAxisLabels [xMin + i * zoom];
+					/*
+					if ((i != 0) && (!tStr.Contains("Jan"))) {
+						tStr = tStr.Substring (0, 3);
+					}
+					*/
 					GUI.Label(new Rect(xPos - 42, yPos + 10, 80, 70), tStr, style);
 				}
+
 			}
 			// X-Axis Label
 			style.alignment = TextAnchor.UpperCenter;
@@ -272,7 +294,7 @@ public class Graph : MonoBehaviour {
 				DrawSeries(seriesList[label]);
 			}
 			// Front Series Drawn Last
-			if (!excludeList.Contains(lastSeriesToDraw)) {
+			if (!excludeList.Contains(lastSeriesToDraw) && (seriesList.Count > 0)) {
 				DrawSeries(seriesList[lastSeriesToDraw]);
 			}
 		GUI.EndGroup();
@@ -293,28 +315,66 @@ public class Graph : MonoBehaviour {
 				DrawMarker(series.label, new Rect(hStart.x + xUnitLength - 7, hStart.y - (values[xMin] / yRange * yAxisLength) - 7, 14, 14), color, text);
 			}
 
-			for (int i = 1; i < Mathf.Min(series.values.Count, xNumMarkers); i++) {
-				if (values [xMin + i - 1] < 0) {
+			int lastIdx = 0;
+			for (int i = 1; i <= Mathf.Min(series.values.Count/zoom + 3, xNumMarkers); i++) {
+				if (((xMin + (i - 1) * zoom) >= values.Count) || (values [xMin + (i - 1) * zoom] < 0)) {
 					continue;
 				}
 				// Previous Point
-				float xPos = hStart.x + xUnitLength * i, yPos = hStart.y - (values[xMin + i - 1] / yRange * yAxisLength);
-				string text = ("<color=#" + series.colorHex + ">" + series.label + "</color>" + '\n' + values[xMin + i - 1].ToString("F2"));
+				float xPos = hStart.x + xUnitLength * i, yPos = hStart.y - (values[xMin + (i - 1) * zoom] / yRange * yAxisLength);
+				string text = ("<color=#" + series.colorHex + ">" + series.label + "</color>" + '\n' + values[xMin + (i - 1) * zoom].ToString("F2"));
+				lastIdx = i;
 				DrawMarker(series.label, new Rect(xPos - 7, yPos - 7, 14, 14), color, text);
 				int j = i;
-				while ((j < Mathf.Min(series.values.Count, xNumMarkers)) && (values[xMin + j] < 0)) {
+				while (((xMin + j * zoom) < series.values.Count) && (j < xNumMarkers) && (values[xMin + j * zoom] < 0)) {
 					j++;
 				}
-				if (j < Mathf.Min (series.values.Count, xNumMarkers)) {
+				if (i == Mathf.Min(series.values.Count/zoom + 3, xNumMarkers)) {
+					continue;
+				}
+				if (((xMin + j * zoom) < series.values.Count) && (j < xNumMarkers)) {
 					// Current Point
-					float xPosNext = hStart.x + xUnitLength * (j + 1), yPosNext = hStart.y - (values[xMin + j] / yRange * yAxisLength);
+					float xPosNext = hStart.x + xUnitLength * (j + 1), yPosNext = hStart.y - (values[xMin + j * zoom] / yRange * yAxisLength);
 					// Connect the Points by Drawing Line
 					Drawing.DrawLine(new Vector2(xPos, yPos), new Vector2(xPosNext, yPosNext), color, 1.5f, true);
 					// Draw End Point
 					text = ("<color=#" + series.colorHex + ">" + series.label + "</color>" + '\n' + values[xMin + j].ToString("F2"));
+					lastIdx = j + 1;
 					DrawMarker(series.label, new Rect(xPosNext - 7, yPosNext - 7, 14, 14), color, text);
 				}
 			}
+
+			if (((monthSliderMax - monthSliderValue) < 0.5) && ((xMin + (lastIdx - 1) * zoom) < (values.Count - 1))) {
+				int lastVIdx = values.Count - 1;
+				bool found = false;
+				while (!found && ((xMin + (lastIdx - 1) * zoom) < lastVIdx)) {
+					if (values [lastVIdx] >= 0) {
+						found = true;
+					} else {
+						lastVIdx--;
+					}
+				}
+				if (found) {
+					float xPosNext = hStart.x + xUnitLength * (lastGridX + 2), 
+							yPosNext = hStart.y - (values[lastVIdx] / yRange * yAxisLength);
+					if (lastIdx > 0) {
+						float xPos = hStart.x + xUnitLength * lastIdx, 
+						yPos = hStart.y - (values[xMin + (lastIdx - 1) * zoom] / yRange * yAxisLength);
+						Drawing.DrawLine(new Vector2(xPos, yPos), new Vector2(xPosNext, yPosNext), color, 1.5f, true);
+					}
+					string text = ("<color=#" + series.colorHex + ">" + series.label + "</color>" + '\n' + values[lastVIdx].ToString("F2"));
+					DrawMarker(series.label, new Rect(xPosNext - 7, yPosNext - 7, 14, 14), color, text);
+					yPosNext = hStart.y - 5;
+					GUIStyle style = new GUIStyle(GUI.skin.label);
+					style.normal.textColor = Color.white;
+					// style.richText = true;
+					GUI.Label(new Rect(xPosNext + xUnitLength - 42, yPosNext + 10, 80, 70), ("last"), style);
+					// yPosNext = hStart.y - 5;
+					// Drawing.DrawLine(new Vector2(xPosNext, yPosNext), new Vector2(xPosNext, yPosNext + 10), color, thickness, false);
+				}
+			}
+
+			/*
 
 			if (values [xMin + Mathf.Min(series.values.Count, xNumMarkers) - 1] >= 0) {
 				// Draw Last Point
@@ -323,6 +383,19 @@ public class Graph : MonoBehaviour {
 				string text = ("<color=#" + series.colorHex + ">" + series.label + "</color>" + '\n' + values[xMin].ToString("F2"));
 				DrawMarker(series.label, new Rect(xPos - 7, yPos - 7, 14, 14), color, text);
 			}
+
+
+
+
+
+			if (values [xMin + Mathf.Min(series.values.Count, (xNumMarkers-1) *zoom)] >= 0) {
+				// Draw Last Point
+				float xPos = hStart.x + xUnitLength * (Mathf.Min(series.values.Count, xNumMarkers));
+				float yPos = hStart.y - (values[xMin + Mathf.Min(series.values.Count, xNumMarkers) - 1 ] / yRange * yAxisLength);
+				string text = ("<color=#" + series.colorHex + ">" + series.label + "</color>" + '\n' + values[xMin].ToString("F2"));
+				DrawMarker(series.label, new Rect(xPos - 7, yPos - 7, 14, 14), color, text);
+			}
+			*/
 		GUI.EndGroup();
 	}
 
@@ -348,8 +421,10 @@ public class Graph : MonoBehaviour {
 	}
 
 	private void DrawMonthSlider() {
-		monthSliderValue = Mathf.RoundToInt(GUI.HorizontalSlider(monthSliderRect, monthSliderValue, 0, Mathf.Max(0, xAxisLabels.Count - xNumMarkers)));
-		xMin = (int) monthSliderValue;
+		int offset = (zoom > 1) ? 1 : 0;
+		monthSliderMax = Mathf.Max (0, 1 + offset + xAxisLabels.Count / zoom - xNumMarkers);
+		monthSliderValue = Mathf.RoundToInt(GUI.HorizontalSlider(monthSliderRect, monthSliderValue, 0, monthSliderMax));
+		xMin = (int) monthSliderValue * zoom;
 		
 		if (scrollToMonth != -1) {
 			if (Mathf.Abs(monthSliderValue - scrollToMonth) > 0.1f) {
@@ -470,11 +545,11 @@ public class Graph : MonoBehaviour {
 		// Update X-Axis Labels
 		// List<string> labels = GameState.csvList.xLabels;
 		xAxisLabels.Clear();
-		for (int i = minMonth; i <= maxMonth; i++) {
+		for (int i = minDay; i <= maxDay; i++) {
 			// Debug.Log("Graph: i, labels[i] = " + i + " " + labels[i]);
-			int month = i + 1 + 14*12;   // int.Parse(labels[i]);
-			string name = DateTimeFormatInfo.CurrentInfo.GetMonthName((month - 1) % 12 + 1).Substring(0, 3);
-			xAxisLabels.Add(name + "\n'" + ((month - 1) / 12 + 1).ToString("00"));
+			// int month = i + 1 + 14*12;   // int.Parse(labels[i]);
+			// string name = DateTimeFormatInfo.CurrentInfo.GetMonthName((month - 1) % 12 + 1).Substring(0, 3);
+			xAxisLabels.Add("" + i);      // .ToString("00"));
 			/*
 			if ((i == minMonth) || (((month - 1) % 12) == 0) ) {
 				xAxisLabels.Add(name + "\n'" + (month / 12 + 1).ToString("00"));
@@ -482,7 +557,7 @@ public class Graph : MonoBehaviour {
 				xAxisLabels.Add(name);
 			}
 			*/
-			Debug.Log("Graph: i, xAxisLabels[i] = " + (i-minMonth) + " " + xAxisLabels[i-minMonth]);
+			Debug.Log("Graph: i, xAxisLabels[i] = " + (i-minDay) + " " + xAxisLabels[i-minDay]);
 		}
 		
 		// Update Values
@@ -495,7 +570,7 @@ public class Graph : MonoBehaviour {
 			string name = speciesTable[speciesIds[idx2]].name;            // entry.Key;
 			List<string> values = new List<string>();    // entry.Value;
 
-			for (int idx = minMonth; idx <= maxMonth; idx++) {
+			for (int idx = minDay; idx <= maxDay; idx++) {
 				if (biomassHistory[idx2].ContainsKey(idx)) {
 					values.Add ((biomassHistory [idx2]) [idx].ToString());
 				} else {
@@ -592,6 +667,8 @@ public class Graph : MonoBehaviour {
 		biomassValues = new Dictionary<int,int> ();
 		speciesIds = new List<int> ();
 		biomassHistory = new List<Dictionary<int,int>> ();
+		minDay = 1000000;
+		maxDay = 0;
 		minMonth = NUM_YEARS * 12;
 		maxMonth = 0;
 		Debug.Log("Graph: Send SpeciesActionProtocol, action = 2");
@@ -661,6 +738,14 @@ public class Graph : MonoBehaviour {
 			for (idx = 0; idx < size; idx++) {
 				Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
 			}
+			if (day [0] > maxDay) {
+				maxDay = day [0];
+			}
+			if (day [size - 1] < minDay) {
+				minDay = day [size - 1];
+			}
+
+			/*
 			List<int> mKeys = new List<int> ();
 			List<int> mValues = new List<int> ();
 			int month = GetMonth(day [0]);
@@ -679,11 +764,12 @@ public class Graph : MonoBehaviour {
 			if (mKeys [mKeys.Count - 1] < minMonth) {
 				minMonth = mKeys [mKeys.Count - 1];
 			}
+			*/
 			values = new Dictionary<int, int> ();				
 			Debug.Log ("Sorted month values, species_id = " + species_id);
-			for (idx = 0; idx < mKeys.Count; idx++) {
-				values.Add (mKeys [idx], mValues [idx]);
-				Debug.Log ("idx, mKeys[idx], mValues[idx]: " + idx + " " + mKeys [idx] + " " + mValues [idx]);
+			for (idx = 0; idx < size; idx++) {
+				values.Add (day[idx], dayValue [idx]);
+				Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
 			}			
 			speciesIds.Add(species_id);
 			biomassHistory.Add(values);

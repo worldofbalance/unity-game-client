@@ -9,8 +9,8 @@ public class WorldController : MonoBehaviour {
 
 	private GameObject globalObject;
 	private GameState gs;
+	private Graph graph;
 	private Dictionary<int, int> results = new Dictionary<int, int>();
-
 	public static bool speciesLocCurrent = false;
 
 
@@ -86,6 +86,7 @@ public class WorldController : MonoBehaviour {
 	  if (GameObject.Find("Cube").GetComponent<Graph>() == null) {
 		GameObject.Find("Cube").AddComponent<Graph>();
 	  }
+	  graph = GameObject.Find("Cube").GetComponent<Graph>();
     }
   }
   
