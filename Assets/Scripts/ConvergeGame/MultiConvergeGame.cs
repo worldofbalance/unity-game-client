@@ -515,9 +515,9 @@ public class MultiConvergeGame : MonoBehaviour
 			}
 			Destroy (this);
 			Destroy (foodWeb);
-			GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
-			Species[] s = gs.GetComponents<Species>();
-			foreach (Species sp in s) Destroy (sp); //destroy the "species" objects
+			// GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
+			// Species[] s = gs.GetComponents<Species>();
+			// foreach (Species sp in s) Destroy (sp); //destroy the "species" objects
 			Game.SwitchScene("World");
 		}
 

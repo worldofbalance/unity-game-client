@@ -52,10 +52,12 @@ public class Species : MonoBehaviour {
 		GameObject organism = CreateOrganism(position);
 		
 		// Assign Leader
+		organism.transform.localScale *= 0.50f;    // scaled to fit on one tile
+		organism.transform.localScale *= 1.25f;    // default
 		if (speciesList.Count == 0) {
 //			organism.GetComponent<AI>().alphaLeader = organism;
-			organism.transform.localScale *= 1.25f;    // default
-			organism.transform.localScale *= 0.50f;    // scaled to fit on one tile
+			// organism.transform.localScale *= 1.25f;    // default
+			// organism.transform.localScale *= 0.50f;    // scaled to fit on one tile
 //			organism.GetComponent<CapsuleCollider>().enabled = true;
 			organism.name = name + " (Alpha)_" + species_id;
 		} else {
@@ -122,6 +124,7 @@ public class Species : MonoBehaviour {
 	}
 
 	public static void UpdateIdx() {
+		Debug.Log ("Species: UpdateIdx(), x,zIdz: " + xIdx + " " + zIdx);
 		xIdx = (xIdx + 1) % idxMax;
 		if (xIdx == 0) {
 			zIdx = (zIdx + 1) % idxMax;

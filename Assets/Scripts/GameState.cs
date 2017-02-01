@@ -16,14 +16,20 @@ public class GameState : MonoBehaviour
 
 	public Dictionary<int, Species> speciesList { get; set; }
 
+	// speciesListSave does not get destroyed or changed by Convergence / MC
+	public Dictionary<int, Species> speciesListSave { get; set; }
+
 	public static CSVObject csvList { get; set; }
 
 	public static int matchID { get; set; }
+
+	private bool sLSaveFlag = false;
 	
 	// Use this for initialization
 	void Awake ()
 	{
 		speciesList = new Dictionary<int, Species> ();
+		speciesListSave = new Dictionary<int, Species> ();
 
 //
 //		Game.networkManager.Send(
@@ -90,19 +96,27 @@ public class GameState : MonoBehaviour
 			return;
 		}
 
-		CreateSpecies (args.group_id, args.biomass, args.name, species);
+		CreateSpecies (args.group_id, args.biomass, args.name, species, true);
 	}
 
 	// This is used to update the memory species list when you buy from ShopCartPanel
 	public void PurchaseSpecies (int group_id, int species_id, int biomass) {
 		if (speciesList.ContainsKey (species_id)) {
 			speciesList [species_id].biomass += biomass;
+			speciesListSave [species_id].biomass += biomass;
 		} else {
 			SpeciesData speciesData = new SpeciesData (species_id);
 			speciesData.organism_type = SpeciesTable.speciesList[species_id].organism_type;
 			string name = SpeciesTable.speciesList [species_id].name;
-			CreateSpecies (group_id, biomass, name, speciesData);
+			CreateSpecies (group_id, biomass, name, speciesData, true);
 		}
+	}
+
+	public void CreateSpecies (int group_id, int biomass, string name, SpeciesData sdata, bool flag)
+	{
+		sLSaveFlag = flag;
+		CreateSpecies (group_id, biomass, name, sdata);
+		sLSaveFlag = false;
 	}
 		
 	public void CreateSpecies (int group_id, int biomass, string name, SpeciesData sdata)
@@ -110,13 +124,23 @@ public class GameState : MonoBehaviour
 //		if (speciesList.ContainsKey(species_id)) {
 //			UpdateSpecies(species_id, biomass);
 //		} else {
-		Species species = gameObject.AddComponent<Species> ();
+		// Species species = gameObject.AddComponent<Species> ();
+		Species species = new Species();
+		// Species speciesSave = new Species();
 		species.species_id = sdata.species_id;
 		species.name = name;
 		species.organism_type = sdata.organism_type;
 		species.biomass = biomass;
+
+		/*
+		speciesSave.species_id = sdata.species_id;
+		speciesSave.name = name;
+		speciesSave.organism_type = sdata.organism_type;
+		speciesSave.biomass = biomass;
+		*/
 	
 		GameObject organism = species.CreateAnimal ();
+		// GameObject organismSave = speciesSave.CreateAnimal ();
 
 		Dictionary<int, GameObject> zoneList = null;
 		if (GameObject.Find ("Local Object")) {
@@ -127,9 +151,13 @@ public class GameState : MonoBehaviour
 		if (zoneList != null) {
 			int zone_id = new List<int> (zoneList.Keys) [Random.Range (0, zoneList.Count)];
 
-			organism.transform.position = zoneList [zone_id].transform.position + new Vector3 (Random.Range (-10f, 10f), 0, Random.Range (-10f, 10f));
+			organism.transform.position = zoneList [zone_id].transform.position + new Vector3 (0, 0, 0);
+			// organismSave.transform.position = zoneList [zone_id].transform.position + new Vector3 (-1000, 0, -1000);
 		}
 		speciesList [species.species_id] = species;
+		if (sLSaveFlag) {
+			speciesListSave [species.species_id] = species;
+		}
 
 		if (zoneList != null) {
 			GameObject.Find ("Global Object").GetComponent<EcosystemScore> ().Calculate ();
