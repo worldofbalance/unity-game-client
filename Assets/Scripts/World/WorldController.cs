@@ -103,7 +103,7 @@ public class WorldController : MonoBehaviour {
 		ResponsePrediction args = response as ResponsePrediction;
 		Debug.Log("WorldController, ProcessPrediction: status = " + args.status);
 		if (args.status == 0) {
-			Dictionary<int, Species> speciesList = gs.speciesList;
+			Dictionary<int, Species> speciesList = gs.speciesListSave;
 			results = args.results;
 			foreach (KeyValuePair<int, int> entry in results) {
 				Debug.Log("WorldController, ProcessPrediction: k/v:" + entry.Key + " " + entry.Value);
@@ -130,12 +130,52 @@ public class WorldController : MonoBehaviour {
 		float baseX = (zone.column - 20) * 13.85f + (zone.row % 2 == 0 ? 7 : 0) - 1;
 		float baseZ = (zone.row - 19) * -11.95f + 3.5f;
 		Debug.Log ("WorldController: zone.row, zone.column: " + zone.row + " " + zone.column);
-		foreach (KeyValuePair<int, Species> entry in GameObject.Find("Global Object").GetComponent<GameState>().speciesList) {
+		GameObject gO = GameObject.Find ("Global Object");
+		if (gO == null) {
+			Debug.Log ("WorldController: gO is null");
+		}
+		Dictionary<int, Species> sL = gO.GetComponent<GameState> ().speciesListSave;
+		if (sL == null) {
+			Debug.Log ("WorldController: sL is null");
+		}
+		Debug.Log ("WorldController: sL count = " + sL.Count);
+		foreach (KeyValuePair<int, Species> entry in sL) {
 			Species species = entry.Value;
-			foreach (var organism in species.speciesList) {
+			Debug.Log ("WorldController: species assignment");
+			if (species == null) {
+				Debug.Log ("WorldController: species == null");
+			}
+
+			List<GameObject> organisms = new List<GameObject> ();
+			bool organismCreated = false;
+			foreach (GameObject organism in species.speciesList) {
+				Debug.Log ("WorldController: organism assignment");
+				if (organism == null) {
+					Debug.Log ("WorldController: organism == null");
+				}
+				organisms.Add (organism);
+				/*
 				organism.transform.position = 
 						new Vector3 (baseX + Species.xIdx * Species.step, 0, baseZ + Species.zIdx * Species.step);
 				Species.UpdateIdx ();
+				*/
+			}
+			for (int i = 0; i < organisms.Count; i++) {
+				if (!organismCreated) {
+					if (organisms[i] == null) {
+						Debug.Log ("WorldController: organisms, organism == null");
+						int tX = Species.xIdx;
+						int tZ = Species.zIdx;
+						Destroy (organisms [i]);
+						organisms[i] = species.CreateAnimal ();
+						organismCreated = true;
+						Species.xIdx = tX;
+						Species.zIdx = tZ;
+					}
+					organisms[i].transform.position = 
+						new Vector3 (baseX + Species.xIdx * Species.step, 0, baseZ + Species.zIdx * Species.step);
+					Species.UpdateIdx ();
+				}
 			}
 		}
 		speciesLocCurrent = true;
