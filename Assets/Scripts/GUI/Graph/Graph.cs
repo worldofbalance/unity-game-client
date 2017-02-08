@@ -120,12 +120,14 @@ public class Graph : MonoBehaviour {
 		if (isActive && Input.GetKeyDown("1")) {
 			GetData ();
 		}
+		/* These have a bug with the new zoom feature. They need to be fixed.  
 		if (isActive && Input.GetKeyDown("2")) {
 			ShowMonth(1);
 		}
 		if (isActive && Input.GetKeyDown("3")) {
 			ShowLastMonth();
 		}
+		*/
 		if (Input.GetKeyDown(KeyCode.UpArrow) && isActive) {
 			if (zoom > 1) {
 				zoom /= 2;
