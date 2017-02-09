@@ -4,7 +4,8 @@ namespace RR {
 		// Constants
 		public static readonly string CLIENT_VERSION = "1.00";
 		//public static readonly string REMOTE_HOST = "localhost";
-		public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
+		// public static readonly string REMOTE_HOST = "thecity.sfsu.edu";
+		public static readonly string REMOTE_HOST = "54.153.66.118";   // AWS from Ben, 2-2017
 		public static readonly int REMOTE_PORT = 9253;
 		
 		// Request (1xx) + Response (2xx)
