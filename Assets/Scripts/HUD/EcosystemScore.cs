@@ -6,6 +6,7 @@ public class EcosystemScore : MonoBehaviour {
 	public GUISkin skin;
 	
 	public int score { get; set; }
+	public int highScore { get; set; }
 
 	// Use this for initialization
 	void Start() {
@@ -19,7 +20,7 @@ public class EcosystemScore : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
-		Calculate();
+		// Calculate();   // We're getting the Environment score from the server
 	}
 
 	void OnDestroy() {
@@ -76,5 +77,6 @@ public class EcosystemScore : MonoBehaviour {
 		ResponseUpdateEnvScore args = response as ResponseUpdateEnvScore;
 
 		SetScore(args.score);
+		highScore = args.highScore;
 	}
 }

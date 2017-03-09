@@ -13,6 +13,7 @@ public class UpdateEnvScoreProtocol {
 		ResponseUpdateEnvScore response = new ResponseUpdateEnvScore();
 		response.env_id = DataReader.ReadInt(dataStream);
 		response.score = DataReader.ReadInt(dataStream);
+		response.highScore = DataReader.ReadInt(dataStream);
 
 		return response;
 	}
@@ -22,6 +23,7 @@ public class ResponseUpdateEnvScore : NetworkResponse {
 
 	public int env_id { get; set; }
 	public int score { get; set; }
+	public int highScore { get; set; }
 	
 	public ResponseUpdateEnvScore() {
 		protocol_id = NetworkCode.UPDATE_ENV_SCORE;

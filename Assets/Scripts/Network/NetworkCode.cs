@@ -56,7 +56,6 @@
 	public static readonly short UPDATE_SEASON = 142;
 	public static readonly short UPDATE_CURRENT_EVENT = 143;
 	public static readonly short BATTLE_END = 144;
-
 	public static readonly short PLAYER_SELECT = 145;
 
 	public static readonly short CONVERGE_ECOSYSTEMS = 146;
@@ -67,21 +66,7 @@
 	public static readonly short CONVERGE_HINT_COUNT = 151;
 	public static readonly short CONVERGE_NEW_ATTEMPT_SCORE = 152;
 
-	// DH change
-	// Multiplayer Convergence
-	public static readonly short MC_MATCH_INIT = 180;
-	public static readonly short MC_GET_TIME = 181;
-	public static readonly short MC_BET_UPDATE = 182;
-	public static readonly short MC_GET_NAMES = 183;
-	public static readonly short MC_GET_OTHER_SCORE = 184;
-    public static readonly short MC_CHECK_PLAYERS = 185;
-    public static readonly short MC_HOST_CONFIG = 186;
-    public static readonly short MC_NONHOST_CONFIG = 187;
-	public static readonly short MC_SETUP = 188;    // Equivalent of PAIR for setup MC 
-	public static readonly short MC_GET_FINAL_SCORES = 189;
-
 	public static readonly short TOPLIST = 153;
-
 	public static readonly short WAITFORGAME = 154;
 	public static readonly short NOWAITFORGAME = 155;
 	public static readonly short WAITLIST = 156;
@@ -107,7 +92,17 @@
 	public static readonly short CLASH_LEADERBOARD = 170;
 	public static readonly short CLASH_NOTIFICATION = 171;
 
-
+	// Multiplayer Convergence
+	public static readonly short MC_MATCH_INIT = 180;
+	public static readonly short MC_GET_TIME = 181;
+	public static readonly short MC_BET_UPDATE = 182;
+	public static readonly short MC_GET_NAMES = 183;
+	public static readonly short MC_GET_OTHER_SCORE = 184;
+	public static readonly short MC_CHECK_PLAYERS = 185;
+	public static readonly short MC_HOST_CONFIG = 186;
+	public static readonly short MC_NONHOST_CONFIG = 187;
+	public static readonly short MC_SETUP = 188;    // Equivalent of PAIR for setup MC 
+	public static readonly short MC_GET_FINAL_SCORES = 189;
 
 	// Cards of the wild 
 	public static readonly short MATCH_INIT= 201;
