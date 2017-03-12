@@ -92,6 +92,7 @@ public class MenuScript : MonoBehaviour {
         Transform t  = statusContainer.GetComponent(typeof (Transform)) as Transform;
         //t.SetAsFirstSibling();
         menuOpen = true;
+		GameObject.Find ("BarChart").GetComponent<BarCharScript>().ReloadData ();
     }
 
     public void OpenMiniGames() {
@@ -101,6 +102,16 @@ public class MenuScript : MonoBehaviour {
         Debug.Log ("You Pressed MiniGames");
         menuOpen = true;
     }
+
+
+	public void TogglePressed() {
+		Debug.Log ("Toggle Pressed: Inside MenuScript");
+		GameObject.Find ("BarChart").GetComponent<BarCharScript>().ToggleScores ();
+
+	}
+
+
+
 
     public void OpenConvergence() {
         Game.SwitchScene("Converge");

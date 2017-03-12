@@ -7,9 +7,11 @@ using System.IO;
 
 public class SpeciesActionProtocol {
 
-	// action = 2
-	// Obtains the current species_id and biomass for all the species that in the ecosystem
+	// action = 2 or 5 or 6
+	// action 2: Obtains the current species_id and biomass for all the species that in the ecosystem
 	// This is the data found in eco_species, not the data in the tiles
+	// action 5: Just returns the count
+	// action 6: Returns 3 day counts; current day, first day for player, last simulation day for player
 	public static NetworkRequest Prepare(short action) {
 		NetworkRequest request = new NetworkRequest(NetworkCode.SPECIES_ACTION);
 		request.AddShort16(action);
@@ -68,12 +70,12 @@ public class SpeciesActionProtocol {
 		} else if (response.action == 2) {		
 			response.speciesList = new Dictionary<int,int> ();
 			int count = DataReader.ReadShort (dataStream);
-			Debug.Log ("SpeciesAction Response, action = 2, count = " + count);	
+			// Debug.Log ("SpeciesAction Response, action = 2, count = " + count);	
 			int species_id, biomass;
 			for (int i = 0; i < count; i++) {
 				species_id = DataReader.ReadInt (dataStream);
 				biomass = DataReader.ReadInt (dataStream);
-				Debug.Log ("id, biomass = " + species_id + " " + biomass);
+				// Debug.Log ("id, biomass = " + species_id + " " + biomass);
 				response.speciesList.Add (species_id, biomass);
 			}
 		} else if (response.action == 3) {
@@ -92,6 +94,15 @@ public class SpeciesActionProtocol {
 				// Debug.Log ("day, biomass = " + day + " " + biomass);
 				response.speciesHistoryList.Add (day, biomass);
 			}
+		} else if (response.action == 5) {
+			response.count = DataReader.ReadShort (dataStream);
+			Debug.Log ("SpeciesAction Response, action = 5, count = " + response.count);	
+		} else if (response.action == 6) {
+			response.cDay = DataReader.ReadInt (dataStream);
+			response.fDay = DataReader.ReadInt (dataStream);
+			response.lDay = DataReader.ReadInt (dataStream);
+			Debug.Log ("SpeciesAction Response, action = 6, the 3 days are = " + 
+				response.cDay + " " + response.fDay + " " + response.lDay);	
 		}
 			
 		return response;
@@ -103,10 +114,14 @@ public class ResponseSpeciesAction : NetworkResponse {
 	public short action { get; set; }
 	public short status { get; set; }
 	public short type { get; set; }
+	public short count { get; set; }
 	public int species_id { get; set; }
 	public short index { get; set; }
 	public int cost { get; set; }
 	public float biomassServer { get; set; }
+	public int cDay { get; set; }
+	public int fDay { get; set; }
+	public int lDay { get; set; }
 	public string selectionList { get; set; }
 	public Dictionary<int, int> speciesList;
 	public Dictionary<int, int> speciesHistoryList;

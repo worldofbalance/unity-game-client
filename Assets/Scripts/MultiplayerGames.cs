@@ -5,6 +5,9 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
+// RR does not work presently. It has been commented out. The comment statement denotes the lines changed
+// RR comment out
+
 public class MultiplayerGame {
   public String name;
   public int numRooms = 0;
@@ -126,7 +129,7 @@ public class MultiplayerGames : MonoBehaviour {
 
     StartCoroutine(RequestGetRooms(1f));
     Games.Add("Multiplayer Convergence", new MultiplayerGame("Multiplayer Convergence"));
-    Games.Add("Running Rhino", new MultiplayerGame("Running Rhino"));
+    // Games.Add("Running Rhino", new MultiplayerGame("Running Rhino"));     // RR comment out
     Games.Add("Sea Divided", new MultiplayerGame("Sea Divided"));
     Games.Add("Cards of Wild", new MultiplayerGame("Cards of Wild"));
     setActiveGame(games["Multiplayer Convergence"]);
