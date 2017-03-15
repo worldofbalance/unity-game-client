@@ -25,7 +25,7 @@ public class Graph : MonoBehaviour {
 	private float left;
 	private float top;
 	private float width = 805;
-	private float height = 400;
+	private float height = 430;   // 2017-3-15  was 420
 	public bool isActive = false;
 	private bool isReady = false;
 	private bool isLegendActive = true;
@@ -43,7 +43,7 @@ public class Graph : MonoBehaviour {
 	private Texture2D lineMarkerTex;
 	private Rect graphRect;
 	private Rect monthSliderRect;
-	private Rect legendRect;
+	private Rect legendRect, buttonRect;
 	private Rect legendScrollRect;
 	private Vector2 legendScrollPos = Vector2.zero;
 	private bool isLegendContentHidden = false;
@@ -88,6 +88,7 @@ public class Graph : MonoBehaviour {
 		graphRect = new Rect(20, 30, 550, 325);
 		monthSliderRect = new Rect(graphRect.x, graphRect.x + graphRect.height + 20, graphRect.width, 30);
 		legendRect = new Rect(width - 200 - 20, 30, 200, 325);
+		buttonRect = new Rect(width - 200 - 20, 365, 200, 35);  
 		legendScrollRect = new Rect(legendRect.width * 0.05f, 40, legendRect.width * 0.9f, legendRect.height * 0.75f);
 
 		hStart = new Vector2(85, graphRect.height - 75);
@@ -129,35 +130,36 @@ public class Graph : MonoBehaviour {
 		}
 		*/
 		if (Input.GetKeyDown(KeyCode.UpArrow) && isActive) {
-			if (zoom > 1) {
-				zoom /= 2;
-				monthSliderValue = 0;
-				xMin = 0;
-			}
+			ZoomIn();
 		}
-		if (Input.GetKeyDown(KeyCode.DownArrow) && isActive) {
-			if ((xAxisLabels != null) && (xAxisLabels.Count / zoom > xNumMarkers)) {
-				zoom *= 2;
-				monthSliderValue = 0;
-				xMin = 0;
-			}
-		}    
+		if (Input.GetKeyDown (KeyCode.DownArrow) && isActive) {
+			ZoomOut();
+		}
 	}
+
+
+	void ZoomIn() {
+		if (zoom > 1) {
+			zoom /= 2;
+			monthSliderValue = 0;
+			xMin = 0;
+		}
+	}
+
+
+	void ZoomOut() {
+		if ((xAxisLabels != null) && (xAxisLabels.Count / zoom > xNumMarkers)) {
+			zoom *= 2;
+			monthSliderValue = 0;
+			xMin = 0;
+		}
+	}
+		
 	
 	void OnGUI() {
 		if (buttonActive) {
 			if (GUI.Button(new Rect(200, Screen.height - 100f, 80, 30), "Graph")) {
-				isActive = !isActive;
-				if (isActive) {
-					GameObject.Find ("MenuScript").GetComponent<MenuScript> ().menuOpen = true;
-					GameObject.Find ("MenuScript").GetComponent<MenuScript> ().disableDropDown ();
-					GameObject.Find ("Local Object").GetComponent<WorldMouse> ().popOversEnabled = false;
-					GetData ();
-				} else {
-					GameObject.Find ("MenuScript").GetComponent<MenuScript> ().menuOpen = false;
-					GameObject.Find ("MenuScript").GetComponent<MenuScript> ().enableDropdown ();
-					GameObject.Find ("Local Object").GetComponent<WorldMouse> ().popOversEnabled = true;
-				}
+				ToggleGraph();
 			}
 		}
 
@@ -165,6 +167,21 @@ public class Graph : MonoBehaviour {
 			windowRect = GUI.Window(window_id, windowRect, MakeWindow, title);
 		}
 	}
+
+	void ToggleGraph() {
+		isActive = !isActive;
+		if (isActive) {
+			GameObject.Find ("MenuScript").GetComponent<MenuScript> ().menuOpen = true;
+			GameObject.Find ("MenuScript").GetComponent<MenuScript> ().disableDropDown ();
+			GameObject.Find ("Local Object").GetComponent<WorldMouse> ().popOversEnabled = false;
+			GetData ();
+		} else {
+			GameObject.Find ("MenuScript").GetComponent<MenuScript> ().menuOpen = false;
+			GameObject.Find ("MenuScript").GetComponent<MenuScript> ().enableDropdown ();
+			GameObject.Find ("Local Object").GetComponent<WorldMouse> ().popOversEnabled = true;
+		}
+	}
+
 	
 	void MakeWindow(int id) {
 		Functions.DrawBackground(new Rect(0, 0, width, height), bgTexture);
@@ -527,7 +544,26 @@ public class Graph : MonoBehaviour {
 					}
 				}
 			}
+
 		GUI.EndGroup();
+
+		// GUI.BeginGroup(buttonRect, GUI.skin.box);
+
+		if (GUI.Button (new Rect (width - 300, 385, 70, 25), "Zoom In") && isActive) {
+			ZoomIn();
+		}
+
+		if (GUI.Button (new Rect (width - 200, 385, 80, 25), "Zoom Out") && isActive) {
+			ZoomOut();
+		}
+
+		if (GUI.Button (new Rect (width - 90, 385, 65, 25), "Close") && isActive) {
+			ToggleGraph();
+		}
+
+
+
+		// GUI.EndGroup();
 	}
 
 	public void SetSeriesActive(string label, bool active) {
