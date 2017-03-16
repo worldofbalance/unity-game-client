@@ -47,6 +47,11 @@ public class GameState : MonoBehaviour
 			ProcessSpeciesCreate
 		);
 
+		Game.networkManager.Listen (
+			NetworkCode.SPECIES_INFO,
+			ProcessSpeciesInfo
+		);
+
 		string csv = ",1,2,3,4,5,6,7,8,9,10,11,12\nTree Mouse,5000.0,4348.049640655518,3498.2125759124756,2587.291717529297,1743.8188791275024,1097.4494218826294,643.5683965682983,354.99313473701477,176.78679525852203,91.19854867458344,40.83816707134247,17.714429646730423\nFlies,5000.0,3011.394739151001,1221.3971614837646,257.5061619281769,1.336263376288116,1.0892114987726131E-6,1.3877543862325648E-10,7.128640401399624E-13,2.956730960663441E-14,7.831051207937521E-15,0,\nDwarf Puddle Frog,5000.0,5539.774417877197,5473.539352416992,4501.90544128418,3035.2282524108887,1794.481635093689,979.7311425209045,500.2158284187317,226.70242190361023,109.04326289892197,44.129449874162674,17.338458448648453";
 //		csv = ",1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25\nEcosystem Score,100,200,300,400,500,400,300,200,300,400,500,600,700,800,900,1000,2000,1200,600,500,400,700,900,1000,1100";
 
@@ -71,6 +76,11 @@ public class GameState : MonoBehaviour
 			NetworkCode.SPECIES_CREATE,
 			ProcessSpeciesCreate
 		);
+
+		Game.networkManager.Ignore (
+			NetworkCode.SPECIES_INFO,
+			ProcessSpeciesInfo
+		);
 	}
 	
 	public void ProcessEcosystem (NetworkResponse response)
@@ -80,6 +90,20 @@ public class GameState : MonoBehaviour
 			GameState.ecosystem = args.ecosystem;
 		}
 	}
+
+	public void ProcessSpeciesInfo (NetworkResponse response)
+	{
+		ResponseSpeciesInfo args = response as ResponseSpeciesInfo;
+		Debug.Log ("GameState, ProcessSpeciesInfo: received message");
+		Debug.Log ("ZoneX, ZoneY = " + args.zoneX + " " + args.zoneY);
+		List<int> tList = args.speciesIds;
+		Debug.Log ("Species id count = " + tList.Count);
+		for (int idx = 0; idx < tList.Count; idx++) {
+			Debug.Log(tList [idx]);
+		}
+		Debug.Log ("");
+	}
+		
 	
 	public void ProcessSpeciesCreate (NetworkResponse response)
 	{

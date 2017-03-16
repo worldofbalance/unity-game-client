@@ -124,7 +124,7 @@ public class Species : MonoBehaviour {
 	}
 
 	public static void UpdateIdx() {
-		Debug.Log ("Species: UpdateIdx(), x,zIdz: " + xIdx + " " + zIdx);
+		// Debug.Log ("Species: UpdateIdx(), x,zIdz: " + xIdx + " " + zIdx);
 		xIdx = (xIdx + 1) % idxMax;
 		if (xIdx == 0) {
 			zIdx = (zIdx + 1) % idxMax;
