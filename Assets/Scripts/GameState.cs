@@ -1,6 +1,7 @@
 using UnityEngine;
 
 using System.Collections.Generic;
+using System;
 
 public class GameState : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class GameState : MonoBehaviour
 
 	public static int matchID { get; set; }
 
+	static List<SpData> spDatas { get; set; }
+
 	private bool sLSaveFlag = false;
 	
 	// Use this for initialization
@@ -30,6 +33,7 @@ public class GameState : MonoBehaviour
 	{
 		speciesList = new Dictionary<int, Species> ();
 		speciesListSave = new Dictionary<int, Species> ();
+		spDatas = new List<SpData>();
 
 //
 //		Game.networkManager.Send(
@@ -98,10 +102,34 @@ public class GameState : MonoBehaviour
 		Debug.Log ("ZoneX, ZoneY = " + args.zoneX + " " + args.zoneY);
 		List<int> tList = args.speciesIds;
 		Debug.Log ("Species id count = " + tList.Count);
+		SpData spData = new SpData();
+		spData.zoneX = args.zoneX;
+		spData.zoneY = args.zoneY;
+		spData.spIds = new List<int>();
 		for (int idx = 0; idx < tList.Count; idx++) {
 			Debug.Log(tList [idx]);
+			spData.spIds.Add(tList [idx]);
+			Species.otherSpecie (args.zoneX, args.zoneY, tList [idx]);
 		}
+		spDatas.Add(spData);
 		Debug.Log ("");
+	}
+
+
+	public static void UpdateSpDisplay() {
+		Debug.Log("Entered GameState: UpdateSpDisplay(), count = " + spDatas.Count);
+		if (spDatas.Count > 0) {
+			Species.zoneXLocs = new int[Species.zoneSize, Species.zoneSize];
+			Species.zoneYLocs = new int[Species.zoneSize, Species.zoneSize];
+			for (int i = 0; i < spDatas.Count; i++) {
+				int zX = spDatas[i].zoneX;
+				int zY = spDatas[i].zoneY;
+				List<int> spList = spDatas[i].spIds;
+				for (int j = 0; j < spList.Count; j++) {
+					Species.otherSpecie (zX, zY, spList[j]);
+				}
+			}
+		}
 	}
 		
 	
@@ -173,7 +201,7 @@ public class GameState : MonoBehaviour
 			}
 		}
 		if (zoneList != null) {
-			int zone_id = new List<int> (zoneList.Keys) [Random.Range (0, zoneList.Count)];
+			int zone_id = new List<int> (zoneList.Keys) [UnityEngine.Random.Range (0, zoneList.Count)];
 
 			organism.transform.position = zoneList [zone_id].transform.position + new Vector3 (0, 0, 0);
 			// organismSave.transform.position = zoneList [zone_id].transform.position + new Vector3 (-1000, 0, -1000);
@@ -207,4 +235,10 @@ public class GameState : MonoBehaviour
 	{
 		return speciesList.ContainsKey (group_id) ? speciesList [group_id] : null;
 	}
+}
+
+public class SpData {
+	public int zoneX { get; set; }
+	public int zoneY { get; set; }
+	public List<int> spIds { get; set; }
 }

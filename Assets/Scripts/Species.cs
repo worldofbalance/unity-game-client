@@ -11,16 +11,20 @@ public class Species : MonoBehaviour {
 	public int biomass { get; set; }
 	public int size { get; set; }
 	public List<GameObject> speciesList = new List<GameObject>();
+	public static List<GameObject> otherSpecies = new List<GameObject>();
 
 	public static int xIdx = 0;
 	public static int zIdx = 0; 
 	public static int step = 2;
 	private static int idxMax = 5;
+	public static int zoneSize = 40;
+	public static int[,] zoneXLocs = new int[zoneSize, zoneSize];
+	public static int[,] zoneYLocs = new int[zoneSize, zoneSize];
 	
 	// Use this for initialization
 	void Start() {
-
 	}
+
 
 	public GameObject CreateAnimal() {
 
@@ -74,6 +78,29 @@ public class Species : MonoBehaviour {
 	public GameObject createPlant() {
 		return null;
 	}
+
+	public static void otherSpecie(int zoneX, int zoneY, int speciesId) {
+		string name = SpeciesTable.speciesList [speciesId].name;
+		int xOff = zoneXLocs[zoneX, zoneY];
+		int yOff = zoneYLocs[zoneX, zoneY];
+		UpdateOther(zoneX, zoneY);
+		float baseX = (zoneY - 20) * 13.85f + (zoneX % 2 == 0 ? 7 : 0) - 1;
+		float baseZ = (zoneX - 19) * -11.95f + 3.5f;
+		GameObject organism = Instantiate(Resources.Load("Prefabs/Dummy")) as GameObject;
+		organism.transform.position = 
+			new Vector3 (baseX + xOff * step, 0, baseZ + yOff * step);
+		organism.transform.FindChild("Quad").GetComponent<Renderer>().material.mainTexture = Resources.Load(Constants.TEXTURE_RESOURCES_PATH + "Species/" + name) as Texture;
+		organism.transform.localScale *= 0.50f;    // scaled to fit on one tile
+		organism.transform.localScale *= 1.25f;    // default
+		if (name.Equals("Acacia")) {
+			organism.transform.localScale *= 1.75f;
+			organism.transform.localScale *= 0.50f;    // scaled to fit on one tile
+		}
+		otherSpecies.Add(organism);
+	}
+
+
+
 	
 	private GameObject CreateOrganism(Vector3 position) {
 //		GameObject organism = Instantiate(WorldController.speciesPrefabs["African Elephant"]) as GameObject;
@@ -128,6 +155,14 @@ public class Species : MonoBehaviour {
 		xIdx = (xIdx + 1) % idxMax;
 		if (xIdx == 0) {
 			zIdx = (zIdx + 1) % idxMax;
+		}
+	}
+
+	public static void UpdateOther(int zoneX, int zoneY) {
+		int xIdx = (zoneXLocs [zoneX, zoneY] + 1) % idxMax;
+		zoneXLocs [zoneX, zoneY] = xIdx;
+		if (xIdx == 0) {
+			zoneYLocs [zoneX, zoneY] = (zoneYLocs [zoneX, zoneY] + 1) % idxMax;			
 		}
 	}
 }
