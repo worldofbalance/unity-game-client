@@ -58,6 +58,8 @@
 	public static readonly short BATTLE_END = 144;
 	public static readonly short PLAYER_SELECT = 145;
 
+	public static readonly short SPECIES_INFO = 190;
+
 	public static readonly short CONVERGE_ECOSYSTEMS = 146;
 	public static readonly short CONVERGE_NEW_ATTEMPT = 147;
 	public static readonly short CONVERGE_PRIOR_ATTEMPT = 148;

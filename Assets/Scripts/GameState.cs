@@ -1,6 +1,7 @@
 using UnityEngine;
 
 using System.Collections.Generic;
+using System;
 
 public class GameState : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class GameState : MonoBehaviour
 
 	public static int matchID { get; set; }
 
+	static List<SpData> spDatas { get; set; }
+
 	private bool sLSaveFlag = false;
 	
 	// Use this for initialization
@@ -30,6 +33,7 @@ public class GameState : MonoBehaviour
 	{
 		speciesList = new Dictionary<int, Species> ();
 		speciesListSave = new Dictionary<int, Species> ();
+		spDatas = new List<SpData>();
 
 //
 //		Game.networkManager.Send(
@@ -45,6 +49,11 @@ public class GameState : MonoBehaviour
 		Game.networkManager.Listen (
 			NetworkCode.SPECIES_CREATE,
 			ProcessSpeciesCreate
+		);
+
+		Game.networkManager.Listen (
+			NetworkCode.SPECIES_INFO,
+			ProcessSpeciesInfo
 		);
 
 		string csv = ",1,2,3,4,5,6,7,8,9,10,11,12\nTree Mouse,5000.0,4348.049640655518,3498.2125759124756,2587.291717529297,1743.8188791275024,1097.4494218826294,643.5683965682983,354.99313473701477,176.78679525852203,91.19854867458344,40.83816707134247,17.714429646730423\nFlies,5000.0,3011.394739151001,1221.3971614837646,257.5061619281769,1.336263376288116,1.0892114987726131E-6,1.3877543862325648E-10,7.128640401399624E-13,2.956730960663441E-14,7.831051207937521E-15,0,\nDwarf Puddle Frog,5000.0,5539.774417877197,5473.539352416992,4501.90544128418,3035.2282524108887,1794.481635093689,979.7311425209045,500.2158284187317,226.70242190361023,109.04326289892197,44.129449874162674,17.338458448648453";
@@ -71,6 +80,11 @@ public class GameState : MonoBehaviour
 			NetworkCode.SPECIES_CREATE,
 			ProcessSpeciesCreate
 		);
+
+		Game.networkManager.Ignore (
+			NetworkCode.SPECIES_INFO,
+			ProcessSpeciesInfo
+		);
 	}
 	
 	public void ProcessEcosystem (NetworkResponse response)
@@ -80,6 +94,44 @@ public class GameState : MonoBehaviour
 			GameState.ecosystem = args.ecosystem;
 		}
 	}
+
+	public void ProcessSpeciesInfo (NetworkResponse response)
+	{
+		ResponseSpeciesInfo args = response as ResponseSpeciesInfo;
+		Debug.Log ("GameState, ProcessSpeciesInfo: received message");
+		Debug.Log ("ZoneX, ZoneY = " + args.zoneX + " " + args.zoneY);
+		List<int> tList = args.speciesIds;
+		Debug.Log ("Species id count = " + tList.Count);
+		SpData spData = new SpData();
+		spData.zoneX = args.zoneX;
+		spData.zoneY = args.zoneY;
+		spData.spIds = new List<int>();
+		for (int idx = 0; idx < tList.Count; idx++) {
+			Debug.Log(tList [idx]);
+			spData.spIds.Add(tList [idx]);
+			Species.otherSpecie (args.zoneX, args.zoneY, tList [idx]);
+		}
+		spDatas.Add(spData);
+		Debug.Log ("");
+	}
+
+
+	public static void UpdateSpDisplay() {
+		Debug.Log("Entered GameState: UpdateSpDisplay(), count = " + spDatas.Count);
+		if (spDatas.Count > 0) {
+			Species.zoneXLocs = new int[Species.zoneSize, Species.zoneSize];
+			Species.zoneYLocs = new int[Species.zoneSize, Species.zoneSize];
+			for (int i = 0; i < spDatas.Count; i++) {
+				int zX = spDatas[i].zoneX;
+				int zY = spDatas[i].zoneY;
+				List<int> spList = spDatas[i].spIds;
+				for (int j = 0; j < spList.Count; j++) {
+					Species.otherSpecie (zX, zY, spList[j]);
+				}
+			}
+		}
+	}
+		
 	
 	public void ProcessSpeciesCreate (NetworkResponse response)
 	{
@@ -149,7 +201,7 @@ public class GameState : MonoBehaviour
 			}
 		}
 		if (zoneList != null) {
-			int zone_id = new List<int> (zoneList.Keys) [Random.Range (0, zoneList.Count)];
+			int zone_id = new List<int> (zoneList.Keys) [UnityEngine.Random.Range (0, zoneList.Count)];
 
 			organism.transform.position = zoneList [zone_id].transform.position + new Vector3 (0, 0, 0);
 			// organismSave.transform.position = zoneList [zone_id].transform.position + new Vector3 (-1000, 0, -1000);
@@ -183,4 +235,10 @@ public class GameState : MonoBehaviour
 	{
 		return speciesList.ContainsKey (group_id) ? speciesList [group_id] : null;
 	}
+}
+
+public class SpData {
+	public int zoneX { get; set; }
+	public int zoneY { get; set; }
+	public List<int> spIds { get; set; }
 }

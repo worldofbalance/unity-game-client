@@ -30,6 +30,7 @@ public class WorldController : MonoBehaviour {
     Game.StartEnterTransition ();
     if (GameState.world != null) {
       LoadComponents();
+	  GameState.UpdateSpDisplay ();
     }
   }
 

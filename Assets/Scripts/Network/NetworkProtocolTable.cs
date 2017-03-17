@@ -27,6 +27,8 @@ public class NetworkProtocolTable {
         Add(NetworkCode.TILE_PRICE, "TilePrice");
         Add(NetworkCode.TILE_PURCHASE, "TilePurchase");
 
+		Add(NetworkCode.SPECIES_INFO, "SpeciesInfo");
+
         Add(NetworkCode.UPDATE_RESOURCES, "UpdateResources");
 		Add(NetworkCode.SPECIES_ACTION, "SpeciesAction");
 		Add(NetworkCode.PREDICTION, "Prediction");
