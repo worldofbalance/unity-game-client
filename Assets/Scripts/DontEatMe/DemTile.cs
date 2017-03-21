@@ -10,10 +10,10 @@ public class DemTile : MonoBehaviour
 {
   	public int idX; // X-coord for DemTile
   	public int idY; // Y-coord for DemTile
-    public Color currentColor;
+    public Color currentColor; // Current tile color
     public Color rangeColor; // Color for plant range indicator pulse
 
-    public bool available;
+    public bool available;  // True if tile available for building
 
     private Vector3 center;
 
@@ -41,7 +41,9 @@ public class DemTile : MonoBehaviour
     private static float masterPulseFrequency; // Master pulse frequency
     private static bool masterPulseEnabled; // True if master pulse clock enabled
 
-    // Use this for initialization
+    /**
+        Initializes the DemTile object's properties upon game load.
+    */
     void Start ()
     {
         mainObject = GameObject.Find ("MainObject");
@@ -64,8 +66,6 @@ public class DemTile : MonoBehaviour
         center = this.GetComponent<Renderer>().bounds.center;
         center.z = -1.5f;
 
-        
-
         currentColor = Color.white;
 
         // Set initial pulse parameters
@@ -87,6 +87,8 @@ public class DemTile : MonoBehaviour
 
     /**
         Static method for DemTile pulse synchronization.
+
+        @return an IEnumerator
     */
     static IEnumerator EnableMasterPulse ()
     {
@@ -103,6 +105,15 @@ public class DemTile : MonoBehaviour
         An optional delay to start the coroutine may be specified in seconds.
         Note that by default, the pulse is synced with the master clock defined by EnableMasterPulse.
         Also note that defining a non-positive pulse factor will set the tile to a solid color specified by 'color1'.
+
+        @param  color1          (Color) starting color
+        @param  color2          (Color) ending color
+        @param  frequency       (float) specifies the pulse frequency (larger values => faster pulse)
+        @param  pulseFactor     (float) a multiplier for adjusting the colors' Lerp increment length (maller values =
+                                smoother transitions)
+        @param  syncWithMaster  (bool) true to sync with the master pulse clock, false to pulse independent of master
+
+        @return an IEnumerator
     */
     IEnumerator Pulse
     (
@@ -138,6 +149,13 @@ public class DemTile : MonoBehaviour
     /**
         Sets the pulse parameters.
         Changes will affect both active and inactive pulses.
+
+        @param  color1          (Color) starting color
+        @param  color2          (Color) ending color
+        @param  frequency       (float) specifies the pulse frequency (larger values => faster pulse)
+        @param  pulseFactor     (float) a multiplier for adjusting the colors' Lerp increment length (maller values =
+                                smoother transitions)
+        @param  syncWithMaster  (bool) true to sync with the master pulse clock, false to pulse independent of master
     */
     public void SetPulse
     (
@@ -183,6 +201,10 @@ public class DemTile : MonoBehaviour
 
     /**
         Defines the restore pulse.
+
+        @param  color1          (Color) starting color
+        @param  color2          (Color) ending color
+        @param  frequency       (float) specifies the pulse frequency (larger values => faster pulse)
     */
     public void SetRestorePulse (Color color1, Color color2, float frequency = defaultPulseFrequency)
     {
@@ -193,6 +215,8 @@ public class DemTile : MonoBehaviour
 
     /**
         Returns a pulse instance as a restore.
+
+        @return an IEnumerator 
     */
     IEnumerator GetRestorePulse ()
     {
@@ -351,41 +375,36 @@ public class DemTile : MonoBehaviour
     */
     void OnMouseDown ()
     {
-        // Get center coords of tile, set z offset for resident placement
-        
-
         // DEBUG
         Debug.Log("Tile (" + idX + ", " + idY + ") clicked, center @ (" + center.x + ", " + center.y + ", " + center.z + ")");
 
-        
-            // If a creature is flagged for building...
-      if (buildMenu.currentAnimalFactory != null) {
-                // Set the resident as the DemMain's current selection if clicked within the tile; center resident on tile
-
-      // If tile is empty...
-          if (available) {
-
+        // If a creature is flagged for building...
+        if (buildMenu.currentAnimalFactory != null)
+        {
+            // If tile is empty...
+            if (available)
+            {
                 DemAudioManager.audioUiLoad.Play ();
                 //resident = DemMain.currentSelection;
                 
                 //resident.transform.position = center;
                 AddAnimal(main.currentSelection);
-                
-                if (buildMenu.currentAnimalFactory.isPlant ()) {
+
+                // If building a plant:
+                if (buildMenu.currentAnimalFactory.isPlant ())
+                {
                     int currentBiomass = buildMenu.getPlantBiomass ();
                     int newBiomass = SpeciesConstants.Biomass (main.currentSelection.name);
                     buildMenu.UpdatePlantBiomass (currentBiomass - newBiomass);
                     buildMenu.AddTier2Biomass ((int)(newBiomass * 0.5));
 
-                } else { //Else it is prey
+                }
+                // If building a prey:
+                else
+                {
                     int currentBiomass = buildMenu.GetTier2Biomass();
                     buildMenu.SubtractTier2Biomass (SpeciesConstants.Biomass (main.currentSelection.name));
                 }
-
-                
-
-    
-
 
                 // Set BuildMenu.currentlyBuilding to null after successful placement
                 buildMenu.currentAnimalFactory = null;
@@ -396,16 +415,21 @@ public class DemTile : MonoBehaviour
                 // DEBUG 
                 if (resident)
                     Debug.Log("Placed " + resident.name + " @ " + resident.GetComponent<Transform>().position);
-           }else {
-              DemAudioManager.audioFail2.Play ();
            }
-
+           // Play fail sound on invalid build attempt
+           else
+              DemAudioManager.audioFail2.Play ();
         }
-        // If tile is inhabited...
-        
     }
 
 
+    /* TODO: 
+        a) add required documentation omitted by original author/authors
+        b) fix indentation per agreed coding conventions (4-space expanded tabs)
+        c) clean up superfluous code
+        d) fix naming inconsistencies (e.g. hasPlant vs ResidentIsPredator)
+    */
+    /*
   public bool hasPlant(){
     
     if (this.resident) {
@@ -415,6 +439,11 @@ public class DemTile : MonoBehaviour
     }
 
   }
+  */
+    public bool hasPlant ()
+    {
+        return this.resident && this.resident.GetComponent<BuildInfo>().isPlant();
+    }
 
   public GameObject GetResident(){
     return resident;
