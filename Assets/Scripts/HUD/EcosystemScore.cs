@@ -34,6 +34,10 @@ public class EcosystemScore : MonoBehaviour {
         GUIStyle scoreStyle = new GUIStyle ();
         scoreStyle.fontSize = 28;
         scoreStyle.alignment= TextAnchor.LowerCenter;
+		if (score == 0) {
+			score = GameState.envScore;
+			highScore = GameState.envHighScore;
+		}
         GUIExtended.Label (new Rect(250, 650, 200, 50), "Environment Score: " + score , scoreStyle, Color.black, Color.black);
 
 
@@ -78,5 +82,8 @@ public class EcosystemScore : MonoBehaviour {
 
 		SetScore(args.score);
 		highScore = args.highScore;
+
+		GameState.envScore = args.score;
+		GameState.envHighScore = args.highScore;
 	}
 }

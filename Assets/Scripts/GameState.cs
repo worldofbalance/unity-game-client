@@ -27,6 +27,11 @@ public class GameState : MonoBehaviour
 	static List<SpData> spDatas { get; set; }
 
 	private bool sLSaveFlag = false;
+
+	// Holds environment score & high score to keep these for when player returns from game
+	public static int envScore { get; set; }
+	public static int envHighScore { get; set; } 
+
 	
 	// Use this for initialization
 	void Awake ()
