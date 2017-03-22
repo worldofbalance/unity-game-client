@@ -181,6 +181,7 @@ public class MultiConvergeGame : MonoBehaviour
 	private string buttonText;
 	private long lastSubmit, nowMS; 
 	private long finalMS = 0;
+	private int finalMSCnt = 0;
 	private long namesMS = 0;
 
 	void Awake ()
@@ -460,8 +461,9 @@ public class MultiConvergeGame : MonoBehaviour
 			GUI.BringWindowToFront(host_config_id);
 		}
 
-		if ((finalMS > 0) && (((DateTime.Now.Ticks - finalMS) / TimeSpan.TicksPerMillisecond) > 500)) {
+		if ((finalMSCnt < 20) && (finalMS > 0) && (((DateTime.Now.Ticks - finalMS) / TimeSpan.TicksPerMillisecond) > 500)) {
 			finalMS = DateTime.Now.Ticks;
+			finalMSCnt++;
 			Debug.Log ("ProcessConvergeGetFinalScores submitted again");
 			Game.networkManager.Send (
 				ConvergeGetFinalScoresProtocol.Prepare (
@@ -610,7 +612,7 @@ public class MultiConvergeGame : MonoBehaviour
 			buttonTitle = windowClosed ? "Closed" : "Accept";
 		}
 		if (!gameOver) {
-			if (GUI.Button (new Rect (bufferBorder, height - 30 - bufferBorder, 80, 30), buttonTitle) &&
+			if (GUI.Button (new Rect (bufferBorder, height - 30 - bufferBorder, 70, 30), buttonTitle) &&
 				!betAccepted && !windowClosed) {
 				audio.Stop ();
 				alarm10Sec = true;
@@ -619,6 +621,13 @@ public class MultiConvergeGame : MonoBehaviour
 				//make sure new config is distinct from prior attempts and initial value
 				currAttempt.UpdateConfig ();  //update config based on user data entry changes
 				ConvergeAttempt prior = attemptList.Find (entry => entry.config == currAttempt.config);
+				nowMS = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+				betAccepted = true;
+				Submit ();
+				isProcessing = true;  // Block access to prior attempt buttons during simulation
+
+
+				/*
 				if (prior == null && currAttempt.ParamsUpdated ()) {
 					nowMS = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 					betAccepted = true;
@@ -637,23 +646,35 @@ public class MultiConvergeGame : MonoBehaviour
 					//Debug.Log (popupMessage);
 					showPopup = true;
 				}
+				*/
+
+
+
 			}
 		}
 
 		if (gameOver) {
 			buttonTitle = "Scores";
-			if (GUI.Button (new Rect (bufferBorder, height - 30 - bufferBorder, 80, 30), buttonTitle)) {
+			if (GUI.Button (new Rect (bufferBorder, height - 30 - bufferBorder, 70, 30), buttonTitle)) {
 				showScores = !showScores;
-
 			}
 
 		}
+
+		if (GUI.Button (new Rect (bufferBorder + 80, height - 30 - bufferBorder, 70, 30), "Preview")) {
+			// Runs simulation & updates graph, but does not submit bet or do anything else
+			// This allows the player to see the impact of a potential bet
+			if (!gameOver) {
+				currAttempt.UpdateConfig ();  //update config based on user data entry changes
+				Preview ();
+			}
+		}
 			
-		if (GUI.Button (new Rect (bufferBorder + 90, height - 30 - bufferBorder, 80, 30), "Progress")) {
+		if (GUI.Button (new Rect (bufferBorder + 160, height - 30 - bufferBorder, 70, 30), "Progress")) {
 			GenerateBarGraph ();
 		}
 
-		if (GUI.Button (new Rect (bufferBorder + 180, height - 30 - bufferBorder, 80, 30), "Winners")) {
+		if (GUI.Button (new Rect (bufferBorder + 240, height - 30 - bufferBorder, 70, 30), "Winners")) {
 			Debug.Log ("showWinners set to true");
 			showWinners = !showWinners;
 		}
@@ -1081,8 +1102,8 @@ public class MultiConvergeGame : MonoBehaviour
 
 	void DrawResetButtons (int screenOffset, GUIStyle style)
 	{
-		GUI.Label (new Rect (bufferBorder + 270 + screenOffset, height - 30 - bufferBorder, 110, 30), "Reset to:", style);
-		Rect initial = new Rect (bufferBorder * 2 + 330 + screenOffset, height - 30 - bufferBorder, 50, 30);
+		GUI.Label (new Rect (bufferBorder + 270 + screenOffset + 50, height - 30 - bufferBorder, 110, 30), "Reset to:", style);
+		Rect initial = new Rect (bufferBorder * 2 + 330 + screenOffset + 50, height - 30 - bufferBorder, 50, 30);
 		if (GUI.Button (initial, "Initial") && !isProcessing) {
 			ResetCurrAttempt (Constants.ID_NOT_SET);
 		}
@@ -1097,7 +1118,7 @@ public class MultiConvergeGame : MonoBehaviour
 		for (int i = resetSliderValue; i < maxVal; i++) {
 			int slideNo = i - resetSliderValue;
 			if (GUI.Button (
-				new Rect (bufferBorder * 2 + 390 + (slideNo * widthPer) + screenOffset, height - 30 - bufferBorder, 
+				new Rect (bufferBorder * 2 + 390 + (slideNo * widthPer) + screenOffset + 50, height - 30 - bufferBorder, 
 			          widthPer - 5, 
 			          30
 			          ), 
@@ -1216,6 +1237,95 @@ public class MultiConvergeGame : MonoBehaviour
 			}
 		}
 	}
+
+	public void Preview () {
+		simRunning = true;
+		Game.networkManager.Send (
+			ConvergeNewAttemptProtocol.Prepare (
+				player_id, 
+				ecosystem_id + 1000,    // Offset by 1000 to seperate from single player game. This is only for DB
+				currAttempt.attempt_id,
+				currAttempt.allow_hints,
+				currAttempt.hint_id,
+				ecosystemList [ecosystem_idx].timesteps,
+				currAttempt.config),
+			ProcessConvergeNewAttemptPreview
+		);
+	}
+
+
+
+
+	public void ProcessConvergeNewAttemptPreview (NetworkResponse response)
+	{
+		Debug.Log ("ProcessConvergeNewAttemptPreview");
+		ConvergeAttempt attempt;
+		ResponseConvergeNewAttempt args = response as ResponseConvergeNewAttempt;
+		attempt = args.attempt;
+
+		//if the submission resulted in a valid attempt, add to attempt list and reinitialize 
+		//currAttempt for next attempt.  Otherwise, keep current attempt
+		if (attempt != null && attempt.attempt_id != Constants.ID_NOT_SET) {
+			currAttempt.attempt_id = attempt.attempt_id;
+			currAttempt.SetCSV (attempt.csv_string);
+			attemptList.Add (currAttempt);
+			attemptCount = attemptList.Count;
+
+			//calculate score and send back to server.
+			CSVObject target = ecosystemList[ecosystem_idx].csv_target_object;
+			int score = currAttempt.csv_object.CalculateScore (target);
+			Game.networkManager.Send (
+				ConvergeNewAttemptScoreProtocol.Prepare (
+					player_id, 
+					ecosystem_id + 1000, 
+					attempt.attempt_id, 
+					score
+				),
+				ProcessConvergeNewAttemptScore
+			);
+
+			//update pertinent variables with new data
+			if (currAttempt.hint_id != Constants.ID_NOT_SET) {
+				priorHintIdList.Add (currAttempt.hint_id);
+			}
+			//need to recalc reset slider config due to additional attempt
+			isResetSliderInitialized = false;
+
+			if (barGraph != null) {
+				barGraph.InputToCSVObject (currAttempt.csv_string, manager);
+			}
+
+			currAttempt = new ConvergeAttempt (
+				player_id, 
+				ecosystem_id,     // Don't add 1000 here. This is not updating the DB
+				attempt.attempt_id + 1,
+				allowHintsMaster,
+				Constants.ID_NOT_SET,
+				attempt.config,
+				null,
+				ecosystemList[ecosystem_idx].sliderRanges,
+				ecosystemList[ecosystem_idx].markerEnabled
+				//manager
+			);
+
+			FinalizeAttemptUpdate (attemptCount - 1, false);
+
+		} else {
+			Debug.LogError ("Submission of new attempt failed to produce results.");
+			// betAccepted = false;
+			isProcessing = false;
+			// SetIsProcessing (false);
+		}
+	}
+
+
+
+
+
+
+
+
+
 		
 	public void Submit ()
 	{
@@ -1453,7 +1563,7 @@ public class MultiConvergeGame : MonoBehaviour
 		Debug.Log ("Inside ProcessConvergeGetFinalScores");
 		if (args.status == 1) {
 			Debug.Log ("Scores are final");
-			finalMS = 0;
+			// finalMS = 0;
 		}
 		playerId = args.playerId;
 		playerWinnings = args.playerWinnings;
