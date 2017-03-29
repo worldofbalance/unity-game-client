@@ -107,16 +107,37 @@ public class GameState : MonoBehaviour
 		Debug.Log ("ZoneX, ZoneY = " + args.zoneX + " " + args.zoneY);
 		List<int> tList = args.speciesIds;
 		Debug.Log ("Species id count = " + tList.Count);
-		SpData spData = new SpData();
-		spData.zoneX = args.zoneX;
-		spData.zoneY = args.zoneY;
-		spData.spIds = new List<int>();
-		for (int idx = 0; idx < tList.Count; idx++) {
-			Debug.Log(tList [idx]);
-			spData.spIds.Add(tList [idx]);
-			Species.otherSpecie (args.zoneX, args.zoneY, tList [idx]);
+		SpData spData = null;
+		SpData spData2;
+		for (int idx = 0; idx < spDatas.Count; idx++) {
+			spData2 = spDatas [idx];
+			if ((spData2.zoneX == args.zoneX) && (spData2.zoneY == args.zoneY)) {
+				spData = spData2;
+				break;
+			}
 		}
-		spDatas.Add(spData);
+		if (spData == null) {
+			spData = new SpData();
+			spData.zoneX = args.zoneX;
+			spData.zoneY = args.zoneY;
+			spData.spIds = new List<int>();
+			spDatas.Add(spData);
+		}
+
+		for (int idx = 0; idx < tList.Count; idx++) {
+			// Debug.Log(tList [idx]);
+			Boolean addFlag = true;
+			for (int idxL = 0; idxL < spData.spIds.Count; idxL++) {
+				if (spData.spIds [idxL] == tList [idx]) {
+					addFlag = false;
+					break;
+				}
+			}
+			if (addFlag) {
+				spData.spIds.Add(tList [idx]);
+				Species.otherSpecie (args.zoneX, args.zoneY, tList [idx]);
+			}
+		}
 		Debug.Log ("");
 	}
 

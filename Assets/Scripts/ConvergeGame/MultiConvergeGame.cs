@@ -78,6 +78,7 @@ public class MultiConvergeGame : MonoBehaviour
 	//attempts
 	private int referenceAttemptIdx;
 	private ConvergeAttempt currAttempt = null;
+	private ConvergeAttempt currAttemptTarget = null;
 	private List<ConvergeAttempt> attemptList = null;
 	private int attemptCount = 0;
 	private String config_field_default;
@@ -183,6 +184,8 @@ public class MultiConvergeGame : MonoBehaviour
 	private long finalMS = 0;
 	private int finalMSCnt = 0;
 	private long namesMS = 0;
+	CSVObject graph1CSV, graph2CSV;
+	private List<int> acceptedAttempts;
 
 	void Awake ()
 	{
@@ -259,6 +262,7 @@ public class MultiConvergeGame : MonoBehaviour
 		playerId = new int[5];
 		playerWinnings = new int[5];
 		playerLastImprove = new int[5];
+		acceptedAttempts = new List<int> ();
 	}
 	
 	// Use this for initialization
@@ -1117,6 +1121,11 @@ public class MultiConvergeGame : MonoBehaviour
 		int maxVal = attemptList.Count - maxResetSliderValue + resetSliderValue;
 		for (int i = resetSliderValue; i < maxVal; i++) {
 			int slideNo = i - resetSliderValue;
+			if (acceptedAttempts.Contains(i)) {
+				GUI.color = Color.yellow;
+			} else {
+				GUI.color = Color.white;
+			}
 			if (GUI.Button (
 				new Rect (bufferBorder * 2 + 390 + (slideNo * widthPer) + screenOffset + 50, height - 30 - bufferBorder, 
 			          widthPer - 5, 
@@ -1128,6 +1137,7 @@ public class MultiConvergeGame : MonoBehaviour
 				ResetCurrAttempt (i);
 			}
 		}
+		GUI.color = Color.white;
 
 		if (maxResetSliderValue > 0) {
 			Rect sliderRect = new Rect (width - sliderWidth - bufferBorder, initial.y, sliderWidth, 30); 
@@ -1252,9 +1262,7 @@ public class MultiConvergeGame : MonoBehaviour
 			ProcessConvergeNewAttemptPreview
 		);
 	}
-
-
-
+		
 
 	public void ProcessConvergeNewAttemptPreview (NetworkResponse response)
 	{
@@ -1272,8 +1280,8 @@ public class MultiConvergeGame : MonoBehaviour
 			attemptCount = attemptList.Count;
 
 			//calculate score and send back to server.
-			CSVObject target = ecosystemList[ecosystem_idx].csv_target_object;
-			int score = currAttempt.csv_object.CalculateScore (target);
+			// CSVObject target = ecosystemList[ecosystem_idx].csv_target_object;
+			int score = currAttempt.csv_object.CalculateScore (graph2CSV);
 			Game.networkManager.Send (
 				ConvergeNewAttemptScoreProtocol.Prepare (
 					player_id, 
@@ -1317,16 +1325,58 @@ public class MultiConvergeGame : MonoBehaviour
 			// SetIsProcessing (false);
 		}
 	}
-
-
-
-
-
-
-
-
-
 		
+
+	public void SubmitTarget ()
+	{
+		int attempt_id = 0;
+		currAttemptTarget = new ConvergeAttempt (
+			player_id,
+			ecosystem_id, 
+			attempt_id,
+			allowHintsMaster,
+			Constants.ID_NOT_SET,
+			ecosystemList [ecosystem_idx].config_target,
+			ecosystemList [ecosystem_idx].csv_target_string,
+			ecosystemList [ecosystem_idx].sliderRanges,
+			ecosystemList [ecosystem_idx].markerEnabled
+		);
+
+		Game.networkManager.Send (
+			ConvergeNewAttemptProtocol.Prepare (
+				player_id, 
+				ecosystem_id + 1000,    // Offset by 1000 to seperate from single player game. This is only for DB
+				currAttemptTarget.attempt_id,
+				currAttemptTarget.allow_hints,
+				currAttemptTarget.hint_id,
+				ecosystemList [ecosystem_idx].timesteps,
+				currAttemptTarget.config),
+			ProcessConvergeNewAttemptTarget
+		);
+		Debug.Log ("Submit RequestConvergeNewAttemptTarget");
+	}
+
+
+	public void ProcessConvergeNewAttemptTarget (NetworkResponse response)
+	{
+		Debug.Log ("ProcessConvergeNewAttemptTarget");
+		ConvergeAttempt attempt;
+		ResponseConvergeNewAttempt args = response as ResponseConvergeNewAttempt;
+		attempt = args.attempt;
+
+		//if the submission resulted in a valid attempt, add to attempt list and reinitialize 
+		//currAttempt for next attempt.  Otherwise, keep current attempt
+		if (attempt != null) {
+			currAttemptTarget.attempt_id = attempt.attempt_id;
+			currAttemptTarget.SetCSV (attempt.csv_string);
+			graph2CSV = currAttemptTarget.csv_object;
+			graphs.UpdateGraph2Data (graph2CSV);	
+		} else {
+			Debug.LogError ("Submission of new attempt failed to produce results for target.");
+		}
+	}
+		
+
 	public void Submit ()
 	{
 		simRunning = true;
@@ -1394,10 +1444,11 @@ public class MultiConvergeGame : MonoBehaviour
 			currAttempt.SetCSV (attempt.csv_string);
 			attemptList.Add (currAttempt);
 			attemptCount = attemptList.Count;
+			acceptedAttempts.Add (attemptCount - 1);
 
 			//calculate score and send back to server.
-			CSVObject target = ecosystemList[ecosystem_idx].csv_target_object;
-			int score = currAttempt.csv_object.CalculateScore (target);
+			// CSVObject target = ecosystemList[ecosystem_idx].csv_target_object;
+			int score = currAttempt.csv_object.CalculateScore (graph2CSV);
             Game.networkManager.Send (
 				ConvergeNewAttemptScoreProtocol.Prepare (
 				player_id, 
@@ -1473,6 +1524,7 @@ public class MultiConvergeGame : MonoBehaviour
 		}
 	}
 		
+
 	public void ProcessConvergeBetUpdate (NetworkResponse response)
 	{
 		ResponseConvergeBetUpdate args = response as ResponseConvergeBetUpdate;
@@ -1568,13 +1620,15 @@ public class MultiConvergeGame : MonoBehaviour
 		playerId = args.playerId;
 		playerWinnings = args.playerWinnings;
 		playerLastImprove = args.playerLastImprove;
-		showScores = true;
-		showPopup = false;
-		showPopup2 = false; 
-		Debug.Log ("ProcessConvergeGetFinalScores");
-		Debug.Log ("playerId/winnings/lastImprove");
-		for (int i = 0; i < 5; i++) {
-			Debug.Log (playerId [i] + " " + playerWinnings [i] + " " + playerLastImprove [i]);
+		if (finalMSCnt == 0) {
+			showScores = true;
+			showPopup = false;
+			showPopup2 = false; 
+			Debug.Log ("ProcessConvergeGetFinalScores");
+			Debug.Log ("playerId/winnings/lastImprove");
+			for (int i = 0; i < 5; i++) {
+				Debug.Log (playerId [i] + " " + playerWinnings [i] + " " + playerLastImprove [i]);
+			}
 		}
 	}
 		
@@ -1873,8 +1927,6 @@ public class MultiConvergeGame : MonoBehaviour
 			String.Format ("Attempt #{0}", referenceAttemptIdx + 1)
 			);  //hide 0 start from user
 
-		CSVObject graph1CSV;
-
 		graph1CSV = (referenceAttemptIdx == Constants.ID_NOT_SET) ? 
 			ecosystemList [ecosystem_idx].csv_default_object :   
 			attemptList [referenceAttemptIdx].csv_object;
@@ -1888,10 +1940,12 @@ public class MultiConvergeGame : MonoBehaviour
 			}
 
 			GenerateFoodWeb ();
-			
+
+
 			graphs = new GraphsCompare (
 				graph1CSV, 
-				ecosystemList [ecosystem_idx].csv_target_object, 
+				// ecosystemList [ecosystem_idx].csv_target_object, 
+				graph1CSV,
 				leftGraph, 
 				topGraph, 
 				widthGraph,
@@ -1902,6 +1956,8 @@ public class MultiConvergeGame : MonoBehaviour
 				foodWeb,
 				manager
 			);
+
+			SubmitTarget ();
 
 		} else {
 			graphs.UpdateGraph1Data (graph1CSV, title);			
