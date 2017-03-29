@@ -183,6 +183,13 @@ public class GraphsCompare
 		NormalizeYScale ();
 	}
 
+	public void UpdateGraph2Data(CSVObject graph2CSV) 
+	{
+		graph2.csv = graph2CSV;
+		graph2.UpdateData ();
+		NormalizeYScale ();
+	}
+
 	private void NormalizeYScale ()
 	{
 		//force graphs to have consistent scale for y axis
