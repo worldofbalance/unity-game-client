@@ -10,6 +10,7 @@ public class Graph : MonoBehaviour {
 	// MakeDayCounts parameters
 	private const int NUM_YEARS = 50;
 	private const int START_YEAR = 2015;
+	private const string ES_LABEL = "*Environment Score";
 	private int[] dayCount = new int[NUM_YEARS * 12];
 	private int[] months = new int[] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 	// Species Biomass parameters
@@ -24,7 +25,7 @@ public class Graph : MonoBehaviour {
 	// Window Properties
 	private float left;
 	private float top;
-	private float width = 805;
+	private float width = 835;    // 2017-3-31  was 805
 	private float height = 430;   // 2017-3-15  was 420
 	public bool isActive = false;
 	private bool isReady = false;
@@ -36,6 +37,7 @@ public class Graph : MonoBehaviour {
 	private List<string> xAxisLabels = new List<string>();
 	private int xRange;
 	private int yRange;
+	private int yRangeES;
 	private List<string> seriesLabels = new List<string>();
 	private int xMin;
 	private int xMax;
@@ -60,6 +62,8 @@ public class Graph : MonoBehaviour {
 	private float yUnitLength;
 	private Vector2 vStart;
 	private Vector2 vEnd;
+	private Vector2 vStartES;
+	private Vector2 vEndES;
 	private string selected;
 	private Vector3 lastMousePosition = Vector3.zero;
 	private List<string> mouseOverLabels = new List<string>();
@@ -74,31 +78,36 @@ public class Graph : MonoBehaviour {
 	private Font font;
 	private int zoom = 1;
 	private int lastGridX;
+	private float yMaxValueES;
+	private bool esFlag;
 	
 	void Awake() {
 		title = "Graph";
 		xTitle = "Day";
-		yTitle = "Score";
+		// yTitle = "Score";
 		yTitle = "Biomass";
 
 		left = (Screen.width - width) / 2;
 		top = 100;
 
 		windowRect = new Rect(left, top, width, height);
-		graphRect = new Rect(20, 30, 550, 325);
+		graphRect = new Rect(20, 30, 580, 325);     // 2017-3-31 width (x) was 550
 		monthSliderRect = new Rect(graphRect.x, graphRect.x + graphRect.height + 20, graphRect.width, 30);
 		legendRect = new Rect(width - 200 - 20, 30, 200, 325);
 		buttonRect = new Rect(width - 200 - 20, 365, 200, 35);  
 		legendScrollRect = new Rect(legendRect.width * 0.05f, 40, legendRect.width * 0.9f, legendRect.height * 0.75f);
 
 		hStart = new Vector2(85, graphRect.height - 75);
-		hEnd = new Vector2(graphRect.width - 50, hStart.y);
+		hEnd = new Vector2(graphRect.width - 80, hStart.y);    // 2017-3-31 was graphRect.width - 50
 		
 		xAxisLength = Vector2.Distance(hStart, hEnd) * 0.95f;
 		xUnitLength = xAxisLength / xNumMarkers;
 		
 		vStart = new Vector2(hStart.x, hStart.y);
 		vEnd = new Vector2(vStart.x, 30);
+
+		vStartES = new Vector2(hEnd.x, hStart.y);
+		vEndES = new Vector2(vStartES.x, 30);
 
 		yAxisLength = Vector2.Distance(vStart, vEnd) * 0.95f;
 		yUnitLength = yAxisLength / yNumMarkers;
@@ -108,6 +117,7 @@ public class Graph : MonoBehaviour {
 		bgTexture = Resources.Load<Texture2D>(Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
 		font = Resources.Load<Font>("Fonts/" + "Chalkboard");
 		MakeDayCounts ();
+		yMaxValueES = -1;
 	}
 
 	// Use this for initialization
@@ -303,9 +313,33 @@ public class Graph : MonoBehaviour {
 			GUIUtility.RotateAroundPivot(-90, new Vector2(hStart.x - 35, graphRect.height / 2));
 			GUI.Label(new Rect(hStart.x - 50, graphRect.height / 2 - 35, 80, 30), "<color=orange>" + yTitle + "</color>", style);
 			GUI.matrix = matrix;
-			
+
+
+			if (yMaxValueES != -1) {  // Draw Environment score axis only if we have data
+				// Y-Axis for Environment score
+				Drawing.DrawLine(vStartES, vEndES, color, thickness, false);
+				// Y-Axis Markers
+				for (int i = 0; i <= yNumMarkers; i++) {
+					float xPos = vStartES.x - 5, yPos = vStartES.y - yUnitLength * i;
+					// Unit Line
+					Drawing.DrawLine(new Vector2(xPos, yPos), new Vector2(xPos + 10, yPos), color, thickness, false);
+					// Unit Label
+					style.alignment = TextAnchor.UpperRight;
+					GUI.Label(new Rect(xPos - 25, yPos - 11, 80, 30), (i * yRangeES / 5).ToString(), style);
+				}
+				// Y-Axis Label
+				style.alignment = TextAnchor.UpperCenter;
+
+				Matrix4x4 matrixES = GUI.matrix;
+				GUIUtility.RotateAroundPivot(-90, new Vector2(hEnd.x + 60, graphRect.height / 2 - 60));
+				GUI.Label(new Rect(hEnd.x - 45, graphRect.height / 2 - 60, 130, 30), "<color=orange>" + ES_LABEL + "</color>", style);
+				GUI.matrix = matrixES;				
+			}
+
+
 			// Draw Behind Series Only
 			foreach (string label in seriesLabels) {
+				esFlag = (label == ES_LABEL) ? true : false;
 				if (label == lastSeriesToDraw || excludeList.Contains(label)) {
 					continue;
 				}
@@ -314,6 +348,7 @@ public class Graph : MonoBehaviour {
 			}
 			// Front Series Drawn Last
 			if (!excludeList.Contains(lastSeriesToDraw) && (seriesList.Count > 0)) {
+				esFlag = (lastSeriesToDraw == ES_LABEL) ? true : false;
 				DrawSeries(seriesList[lastSeriesToDraw]);
 			}
 		GUI.EndGroup();
@@ -323,7 +358,11 @@ public class Graph : MonoBehaviour {
 		if (Mathf.Abs(series.width - graphRect.width) > 0.1f) {
 			series.width = Mathf.Lerp(0, graphRect.width, series.deltaTime += Time.deltaTime * 0.5f);
 		}
-		
+		int yRangeSave = 0;
+		if (esFlag) {
+			yRangeSave = yRange;
+			yRange = yRangeES;
+		}
 		GUI.BeginGroup(series.GetRect());
 			List<float> values = series.values;
 			Color color = (series.label == selected) ? Color.white : series.color;
@@ -415,6 +454,10 @@ public class Graph : MonoBehaviour {
 				DrawMarker(series.label, new Rect(xPos - 7, yPos - 7, 14, 14), color, text);
 			}
 			*/
+
+			if (esFlag) {
+				yRange = yRangeSave;
+			}
 		GUI.EndGroup();
 	}
 
@@ -600,12 +643,21 @@ public class Graph : MonoBehaviour {
 		
 		// Update Values
 		float yMaxValue = 1;
+		yMaxValueES = -1;
 
 		CSVObject csv = GameState.csvList;
 
 		for (int idx2 = 0; idx2 < speciesIds.Count; idx2++) {
-		// foreach (KeyValuePair<string, List<string>> entry in csv.csvList) {
-			string name = speciesTable[speciesIds[idx2]].name;            // entry.Key;
+		// foreach (KeyValuePair<string, List<string>> entry in csv.csvList) 
+			string name;
+			float localMax;
+			Debug.Log ("Graph: UpdateData(): idx2, speciesIds [idx2] = " + idx2 + " " + speciesIds [idx2]);
+			if (speciesIds [idx2] == -1) {
+				name = ES_LABEL;
+			} else {
+				name = speciesTable[speciesIds[idx2]].name;            // entry.Key;
+			}
+			Debug.Log ("Graph: UpdateData(): name = " + name);
 			List<string> values = new List<string>();    // entry.Value;
 
 			for (int idx = minDay; idx <= maxDay; idx++) {
@@ -628,6 +680,9 @@ public class Graph : MonoBehaviour {
 			if (!seriesList.ContainsKey(name)) {
 				Rect seriesRect = new Rect(0, 0, 0, graphRect.height);
 				Color color = new Color(Random.Range(0.5f, 0.9f), Random.Range(0.5f, 0.9f), Random.Range(0.5f, 0.9f));
+				if (speciesIds [idx2] == -1) {
+					color = Color.magenta;
+				}
 
 				seriesList[name] = new Series(name, seriesRect, color);
 				seriesLabels.Add(name);
@@ -637,10 +692,12 @@ public class Graph : MonoBehaviour {
 				}
 			}
 
+			localMax = 0;
 			List<float> temp = new List<float>();
 			for (int i = 0; i < values.Count; i++) {
-				float value = (values[i] == "" ? -1f : float.Parse(values[i]));
-				temp.Add(value);
+				float value = (values [i] == "" ? -1f : float.Parse (values [i]));
+				temp.Add (value);
+				localMax = Mathf.Max(value, localMax);
 
 				/*
 				if (temp.Count != values.Count) {
@@ -650,7 +707,12 @@ public class Graph : MonoBehaviour {
 				}
 				*/
 
-				yMaxValue = Mathf.Max(value, yMaxValue);
+				if (speciesIds [idx2] == -1) {
+					yMaxValueES = localMax;
+				} else {
+					yMaxValue = Mathf.Max(value, yMaxValue);
+				}
+					
 			}
 			seriesList [name].values = temp;
 			Debug.Log ("Graph, UpdateData: seriesList[name].values.Count = " + seriesList [name].values.Count);
@@ -660,6 +722,10 @@ public class Graph : MonoBehaviour {
 
 		int roundTo = int.Parse("5".PadRight(((int) yMaxValue).ToString().Length - 1, '0'));
 		yRange = Mathf.CeilToInt(yMaxValue / roundTo) * roundTo;
+
+		roundTo = int.Parse("5".PadRight(((int) yMaxValueES).ToString().Length - 1, '0'));
+		yRangeES = Mathf.CeilToInt(yMaxValueES / roundTo) * roundTo;
+
 		isReady = true;
 	}
 	
@@ -724,14 +790,17 @@ public class Graph : MonoBehaviour {
 			Debug.Log ("action, status = " + action + " " + status);
 		}
 		Dictionary<int, int> speciesList = args.speciesList;
-		speciesCount = speciesList.Count;
+		speciesCount = speciesList.Count + 1;  // Add 1 for Environment score
 		Debug.Log ("Graph, ProcessSpeciesAction, size = " + speciesCount);
+		int action2 = 4;
 		foreach (KeyValuePair<int, int> entry in speciesList) {
 			Debug.Log ("Graph: species, biomass = " + entry.Key + " " + entry.Value);
-			int action2 = 4;
 			biomassValues.Add (entry.Key, entry.Value);
 			Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, entry.Key), ProcessSpeciesHistory);
 		}
+		// Get environment score changeS
+		Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, -1), ProcessSpeciesHistory);
+		biomassValues.Add (-1, GameState.envScore);
 		if (speciesCount == 0) {
 			UpdateData ();
 		}
