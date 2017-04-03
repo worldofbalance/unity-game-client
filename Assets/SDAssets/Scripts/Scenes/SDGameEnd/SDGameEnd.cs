@@ -16,6 +16,7 @@ namespace SD {
             txtScore = GameObject.Find ("TxtScore").GetComponent<Text> ();
             txtOpponentScore = GameObject.Find ("TxtOpponentScore").GetComponent<Text> ();
             displayResult ();
+            Constants.PLAYER_NUMBER = 0;
         }
 
         void displayResult() {
