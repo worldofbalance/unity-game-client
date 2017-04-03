@@ -25,7 +25,7 @@ public class Graph : MonoBehaviour {
 	// Window Properties
 	private float left;
 	private float top;
-	private float width = 835;    // 2017-3-31  was 805
+	private float width = 855;    // 2017-3-31  was 805
 	private float height = 430;   // 2017-3-15  was 420
 	public bool isActive = false;
 	private bool isReady = false;
@@ -91,14 +91,14 @@ public class Graph : MonoBehaviour {
 		top = 100;
 
 		windowRect = new Rect(left, top, width, height);
-		graphRect = new Rect(20, 30, 580, 325);     // 2017-3-31 width (x) was 550
+		graphRect = new Rect(20, 30, 600, 325);     // 2017-3-31 width (x) was 550
 		monthSliderRect = new Rect(graphRect.x, graphRect.x + graphRect.height + 20, graphRect.width, 30);
 		legendRect = new Rect(width - 200 - 20, 30, 200, 325);
 		buttonRect = new Rect(width - 200 - 20, 365, 200, 35);  
 		legendScrollRect = new Rect(legendRect.width * 0.05f, 40, legendRect.width * 0.9f, legendRect.height * 0.75f);
 
 		hStart = new Vector2(85, graphRect.height - 75);
-		hEnd = new Vector2(graphRect.width - 80, hStart.y);    // 2017-3-31 was graphRect.width - 50
+		hEnd = new Vector2(graphRect.width - 100, hStart.y);    // 2017-3-31 was graphRect.width - 50
 		
 		xAxisLength = Vector2.Distance(hStart, hEnd) * 0.95f;
 		xUnitLength = xAxisLength / xNumMarkers;
