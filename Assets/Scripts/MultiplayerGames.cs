@@ -814,7 +814,19 @@ public class MultiplayerGames : MonoBehaviour {
                         SD.SDPlayInitProtocol.Prepare (SD.Constants.USER_ID, this.room_id), 
                         SDProcessPlayInit
                     );
+                    /* Added by Rupal. 2017-31-3. Not relying on the server's response to determine this.
+                    Need to set this after the Protocol request is sent and before the scene is switched. */
+                    if (room.host == GameState.player.GetName()) {
+                        SD.Constants.PLAYER_NUMBER = 1;
+                    } else {
+                        SD.Constants.PLAYER_NUMBER = 2;
+                    }
                 } else {
+                    if (room.host == GameState.player.GetName()) {
+                        SD.Constants.PLAYER_NUMBER = 1;
+                    } else {
+                        SD.Constants.PLAYER_NUMBER = 2;
+                    }
                     Game.SwitchScene("SDReadyScene");
                 }
             } else if (args.gameID == Constants.MINIGAME_MULTI_CONVERGENCE) {
@@ -941,9 +953,10 @@ public class MultiplayerGames : MonoBehaviour {
   }
   public void SDProcessPlayInit(NetworkResponse response) {
       SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;
-      SD.Constants.PLAYER_NUMBER = args.playerNumber;
-      Debug.Log ("The SD player number is " + args.playerNumber);
-	  Game.SwitchScene("SDReadyScene");
+      /* Modified by Rupal 2017-31-3. We are now assigning the player number based on the host player info. */
+      //SD.Constants.PLAYER_NUMBER = args.playerNumber;
+      Debug.Log ("The SD player number is " + SD.Constants.PLAYER_NUMBER);
+	    Game.SwitchScene("SDReadyScene");
 		/* Removed by DH 2016-11-12 by suggestion from Rupal. See email. 
       if (SD.Constants.PLAYER_NUMBER == 2) {
           Game.SwitchScene("SDReadyScene");
