@@ -24,8 +24,8 @@ public class DemBoard : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-    grass1 = (Material)Resources.Load("DontEatMe/Materials/tile_1", typeof(Material));
-    grass2 = (Material)Resources.Load("DontEatMe/Materials/tile_2", typeof(Material));
+    grass1 = (Material)Resources.Load("DontEatMe/Materials/tile_1_border", typeof(Material));
+    grass2 = (Material)Resources.Load("DontEatMe/Materials/tile_2_border", typeof(Material));
 
     mainObject = GameObject.Find ("MainObject");
     main = mainObject.GetComponent<DemMain> ();
@@ -88,7 +88,10 @@ public class DemBoard : MonoBehaviour {
     Tiles[x, y].AddComponent<DemTile>(); // Add the DemTile script to each cube
   }
 
-    
+
+    /**
+        Determines which tiles are available for building.
+    */
     public void SetAvailableTiles ()
     {
         // Determine next tile
@@ -176,7 +179,6 @@ public class DemBoard : MonoBehaviour {
 
 
 
-
   public void AddAnimal(int x , int y, GameObject animal){
 
     Tiles [x, y].GetComponent<DemTile> ().AddAnimal(animal);
@@ -209,7 +211,7 @@ public class DemBoard : MonoBehaviour {
       }
 
     }
-
+    // Random empty line's pen pal
 
     return activePredators;
   }

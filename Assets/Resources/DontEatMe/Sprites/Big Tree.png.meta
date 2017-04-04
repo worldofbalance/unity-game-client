@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 6b64e6c56a407d8418e7db14d8ff8f47
-timeCreated: 1460052091
+timeCreated: 1491222029
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -47,40 +47,25 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
+  spriteTessellationDetail: -1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: Big Tree_0
+    - serializedVersion: 2
+      name: Big Tree_0
       rect:
         serializedVersion: 2
-        x: 11
-        y: 5
-        width: 239
-        height: 235
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 9
+      pivot: {x: 0.5258799, y: 0.16528636}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: 119.5, y: -58.5}
-        - {x: 119.5, y: 21.5}
-        - {x: 109.5, y: 78.5}
-        - {x: 88.5, y: 111.5}
-        - {x: 34.5, y: 114.5}
-        - {x: 30.5, y: 95.5}
-        - {x: -11.5, y: 117.5}
-        - {x: -64.5, y: 117.5}
-        - {x: -119.5, y: 53.5}
-        - {x: -119.5, y: -29.5}
-        - {x: -117.5, y: -50.5}
-        - {x: -96.5, y: -71.5}
-        - {x: -103.5, y: -101.5}
-        - {x: -98.5, y: -103.5}
-        - {x: -49.5, y: -117.5}
-        - {x: 73.5, y: -117.5}
-        - {x: 119.5, y: -110.5}
-        - {x: 119.5, y: -96.5}
-        - {x: 114.5, y: -69.5}
+      outline: []
+      tessellationDetail: -1
     outline: []
   spritePackingTag: 
   userData: 

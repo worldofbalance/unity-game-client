@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: a706bd320976d6b41b4fae030523673c
-timeCreated: 1460052118
+timeCreated: 1491220459
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -47,27 +47,25 @@ TextureImporter:
   spriteBorder: {x: 94, y: 0, z: 87, w: 187}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
+  spriteTessellationDetail: -1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: Grass and Herbs_0
+    - serializedVersion: 2
+      name: Grass and Herbs_0
       rect:
         serializedVersion: 2
-        x: 92
-        y: 3
-        width: 74
-        height: 60
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 80
+        y: 0
+        width: 100
+        height: 80
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -36, y: 30}
-        - {x: -36, y: -29}
-        - {x: -34, y: -30}
-        - {x: 37, y: -30}
-        - {x: 37, y: 11}
-        - {x: 30, y: 30}
+      outline: []
+      tessellationDetail: -1
     outline: []
   spritePackingTag: 
   userData: 

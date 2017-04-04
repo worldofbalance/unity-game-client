@@ -2,10 +2,12 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
+using System.ComponentModel;
 
-public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-
+    // Button layer level
+    public static int BUTTON_LAYER = 5;
 
     //Button prefab
     public GameObject buttonPrefab;
@@ -30,6 +32,10 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     private float height;
     private float width;
 
+
+    Color disabledColor = new Color32(120, 120, 120, 255); // Custom "disabled" button color
+    Color highlightedColor = new Color32(218, 165, 32, 255); // Custom "highlighted" button color
+    Color pressedColor = new Color32(173, 255, 47, 255); // Custom "pressed" button color
 
     // Loading Resources and initialize button size
     void Awake()
@@ -66,32 +72,99 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         button.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
         button.GetComponent<RectTransform>().pivot = new Vector2(0, 1);
 
+        // Set custom ColorBlock
+        ColorBlock cb = button.GetComponent<Button>().colors;
+        cb.disabledColor = disabledColor;
+        cb.highlightedColor = highlightedColor;
+        cb.pressedColor = pressedColor;
+        button.GetComponent<Button>().colors = cb;
 
         return button;
     }
 
+    /**
+        Sets the normal color for a specified button.
+        The normal color is defined by the Button component's ColorBlock.normalColor variable.
+
+        @param  button  a GameObject representing a button
+        @param  color   a new Color or Color32 object
+    */
+    public void SetButtonNormalColor (GameObject button, Color color)
+    {
+        ColorBlock cb = button.GetComponent<Button>().colors;
+        cb.normalColor = color;
+        button.GetComponent<Button>().colors = cb;
+    }
+
+    /**
+        Sets the highlighted color for a specified button.
+        The highlighted color is defined by the Button component's ColorBlock.highlightedColor variable.
+
+        @param  button  a GameObject representing a button
+        @param  color   a new Color or Color32 object
+    */
+    public void SetButtonHighlightedColor (GameObject button, Color color)
+    {
+        ColorBlock cb = button.GetComponent<Button>().colors;
+        cb.highlightedColor = color;
+        button.GetComponent<Button>().colors = cb;
+    }
+
 
     // Create image for the button
+    // TODO: consider swapping order of parameters to match SetButtonText and SetButtonIcon methods
     public void SetButtonImage(DemAnimalFactory species, GameObject button)
     {
         GameObject buttonImage = new GameObject(species.GetName());
         buttonImage.transform.SetParent(button.transform);
 
         // Set the layer to UI layer
-        buttonImage.layer = 5;
+        buttonImage.layer = DemButtonFactory.BUTTON_LAYER;
 
         // Sets image and its position on the button 
         buttonImage.AddComponent<Image>();
         buttonImage.GetComponent<Image>().sprite = species.GetImage();
-        buttonImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-        buttonImage.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
-        buttonImage.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+        buttonImage.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        buttonImage.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+        buttonImage.GetComponent<RectTransform>().anchorMax = Vector2.one;
 
         buttonImage.GetComponent<RectTransform>().offsetMax = new Vector2(-7, -7);
         buttonImage.GetComponent<RectTransform>().offsetMin = new Vector2(7, 7);
+
     }
 
+    /** Sets the icon image for the button.
+        This method is similar in outcome to SetButtonImage but allows for an arbitrary icon to be specified.
 
+        @param  button      a GameObject representing a button
+        @param  iconPath    path to the desired icon image relative to 'Assets/Resources/' (string)
+                            Note: the image texture type must be set to "Sprite (2D and UI)"
+    */
+    public void SetButtonIcon (GameObject button, string iconPath, Color colorOverlay)
+    {
+        // Create icon image, set parent
+        GameObject buttonIcon = new GameObject("buttonIcon");
+        buttonIcon.transform.SetParent(button.transform);
+        // Place on button layer
+        buttonIcon.layer = DemButtonFactory.BUTTON_LAYER;
+
+        // Position icon on button
+        buttonIcon.AddComponent<Image>();
+        buttonIcon.GetComponent<Image>().sprite = Resources.Load<Sprite>(iconPath);
+        buttonIcon.GetComponent<Image>().color = colorOverlay;
+        RectTransform rt = buttonIcon.GetComponent<RectTransform>();
+        // Set anchor => justify left, keep icon proportionally correct
+        rt.anchoredPosition = Vector2.left;
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = new Vector2
+        (
+            (float)(button.transform as RectTransform).sizeDelta.y /
+            (float)(button.transform as RectTransform).sizeDelta.x,
+            1
+        );
+        rt.offsetMin = new Vector2(7, 7);
+        rt.offsetMax = new Vector2(-7, -7);
+    }
 
 
     // Create text for the button
@@ -101,26 +174,54 @@ public class DemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         buttonText.transform.SetParent(button.transform);
 
         // Set the layer to UI layer
-        buttonText.layer = 5;
+        buttonText.layer = DemButtonFactory.BUTTON_LAYER;
 
         //Set text and its position on the button
         buttonText.AddComponent<Text>();
-        buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Chalkboard");
-		buttonText.GetComponent<Text> ().fontSize = (int)(Screen.width/42);
+        buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Dresden Elektronik");
+		buttonText.GetComponent<Text> ().fontSize = (int)(Screen.width/45);
         buttonText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
         buttonText.GetComponent<Text>().color = Color.white;
-        buttonText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-		buttonText.GetComponent<RectTransform> ().sizeDelta = button.GetComponent<RectTransform> ().sizeDelta;
-
+        buttonText.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+		buttonText.GetComponent<RectTransform> ().sizeDelta = button.GetComponent<RectTransform>().sizeDelta;
+        // Apply button text
         buttonText.GetComponent<Text>().text = text;
     }
 
+    /**
+        Sets the button text color.
+
+        @param  button  a GameObject representing a button
+        @param  color   a Color object
+    */
+    public void SetButtonTextColor (GameObject button, Color color)
+    {
+        //button.GetComponent<Text>().color = color;
+        button.transform.GetComponentInChildren<Text>().color = color;
+    }
+
+
+    /**
+        Sets the button text font size.
+
+        @param  button  a GameObject representing a button
+        @param size font size in points (int)
+    */
+    public void SetButtonTextFontSize (GameObject button, int size)
+    {
+        button.GetComponent<Text>().fontSize = size > 0 ? size : 1; 
+    }
 
     // Change the size of the button
     public void setSize(float newSizeX, float newSizeY)
     {
         xSize = newSizeX;
         ySize = newSizeY;
+    }
+
+    public void setSize (GameObject button, float newSizeX, float newSizeY)
+    {
+        button.GetComponent<RectTransform>().sizeDelta = new Vector2(newSizeX, newSizeY);
     }
 
 

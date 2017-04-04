@@ -2,6 +2,11 @@
 using UnityEngine.UI;
 using System.Collections;
 
+
+/*
+    TODO: Add proper documentation.
+    (original author not specified)
+*/
 public class DemRectUI : MonoBehaviour {
 
 	GameObject canvasObject;
@@ -84,5 +89,3 @@ public class DemRectUI : MonoBehaviour {
 	}
 
 }
-
-

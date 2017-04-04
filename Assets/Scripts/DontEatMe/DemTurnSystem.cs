@@ -120,7 +120,7 @@ public class DemTurnSystem : MonoBehaviour {
         buildMenu.UpdateCredits (credits);
         markForDeletion = true;
       }else if (nextAnimal.isPlant()){
-        buildMenu.AddPlantBiomass (SpeciesConstants.Biomass (nextAnimal.name));
+        buildMenu.AddTier1Biomass (SpeciesConstants.Biomass (nextAnimal.name));
         buildMenu.SubtractTier2Biomass ((int)(SpeciesConstants.Biomass (nextAnimal.name) * 0.5));
       }
 

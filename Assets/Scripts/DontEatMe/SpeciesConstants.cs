@@ -6,8 +6,19 @@ using System;
 
 /**
 	Static constants and methods for defining and returning species attributes for the Don't Eat Me minigame.
+    NOTE: this script is intended as a stand-in for the remote database to provide local functionality for debugging and
+    local-system database access in the event the remote database is not usable.
+    The bulk of the data (with a few necessary exceptions) were parsed directly from the official game website, meaning
+    most data will be consistent with the remote database when used.
+    Refer to the official site for more information on specific data.
 
-	@author: Jeremy Erickson
+	@author     Jeremy Erickson
+    @version    2.1
+    @see        http://smurf.sfsu.edu/~wob/guide/species.php
+
+    NOTE: the original script was modified by others after its initial creation; thus, the original author cannot 
+    guarantee data consistency and accuracy, and certain supplementary methods/code may lack proper annotations,
+    comments, documentation, or formatting.
 */
 public class SpeciesConstants
 {
@@ -41,7 +52,11 @@ public class SpeciesConstants
         ServalCat           = 69
     };
 
-    // Defines a plant
+    /**
+        Defines pertinent plant data for Plant object creation.
+
+        @author Jeremy Erickson
+    */
     private struct Plant
     {
         public string name;
@@ -50,7 +65,16 @@ public class SpeciesConstants
         public int[][] range; // Array of [x,y] offset pairs with [0,0] @ plant origin, denoting relative effect range
         public int biomass;
 
-        // Constructor
+        /**
+            Constructor.
+            NOTE: all parameters should be consistent with the remote database whenever possible.
+
+            @param  _name       species name (string)
+            @param  _speciesID  a unique species ID (int)
+            @param  _range      represents a plant's effect range on a grid (int[][])
+            @param  _lore       species lore (i.e. small factoids) (string)
+            @param  _biomass    amount of plant (Tier 1) biomass a plant produces (int)
+        */
         public Plant (string _name, int _speciesID, int[][] _range, string _lore , int _biomass)
         {
             name = _name;
@@ -62,60 +86,93 @@ public class SpeciesConstants
         }
     };
 
-	// Defines a prey
+    /**
+        Defines all available prey data in the script.
+
+        @author Jeremy Erickson
+    */
 	private struct Prey
 	{
 		public string name;
-    public string lore; // Lore (i.e. description) taken from 'http://smurf.sfsu.edu/~wob/guide/species.php'
-		public int speciesID;
-		public int health;
-    public int biomass;
-    
+        public string lore; // Lore (i.e. description) taken from 'http://smurf.sfsu.edu/~wob/guide/species.php'
+        public int speciesID;
+        public int health;
+        public int biomass;
+
 
         // public int[] preyIDLIst; // TODO: create prey list --> includes plants, but might include other prey (TBD)
-    public int[] predatorIDList;
+        public int[] predatorIDList;
 
-        // Constructor
-    public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList, string _lore, int _biomass)
-		{
-			name = _name;
-			speciesID = _speciesID;
-			health = _health;
-      predatorIDList = _predatorIDList;
-      lore = _lore;
-      biomass = _biomass;
-  
+        /**
+            Constructor.
+            NOTE: all parameters should be consistent with the remote database whenever possible.
 
-		}
+            @param  _name           species name (string)
+            @param  _speciesID      a unique species ID (int)
+            @param  _health         a Prey's starting health (int)
+            @param  _predatorIDList list of a prey's natural predators defined by speciesID (int[])
+            @param  _lore           species lore (i.e. small factoids) (string)
+            @param  _biomass        amount of prey (Tier 2) biomass a prey produces (int)
+        */
+        public Prey (string _name, int _speciesID, int _health, int[] _predatorIDList, string _lore, int _biomass)
+        {
+            name = _name;
+            speciesID = _speciesID;
+            health = _health;
+            predatorIDList = _predatorIDList;
+            lore = _lore;
+            biomass = _biomass;
+        }
 	};
 
-	// Defines a predator
+    /**
+        Defines pertinent predator data for Predator object creation.
+
+        @author Jeremy Erickson
+    */
 	private struct Predator
 	{
-		public string name;
+        public string name;
         public string lore; // Lore (i.e. description) taken from 'http://smurf.sfsu.edu/~wob/guide/species.php'
-		public int speciesID;
-		public int hunger;
-		public int voracity;
-    public int biomass;
+        public int speciesID;
+        public int hunger;
+        public int voracity;
+        public int biomass;
 
         public int[] preyIDList;
         // public int[] predatorIDLIst; // TODO: create predator list --> includes larger predators (TBD)
 
-        // Constructor
-    public Predator (string _name, int _speciesID, int _hunger, int _voracity, int[] _preyIDList, string _lore, int _biomass)
-		{
-			name = _name;
-			speciesID = _speciesID;
-			hunger = _hunger;
-			voracity = _voracity;
-      preyIDList = _preyIDList;
-      lore = _lore;
-      biomass = _biomass;
-		}
+        /**
+            Constructor.
+            NOTE: all parameters should be consistent with the remote database whenever possible.
+
+            @param  _name           species name (string)
+            @param  _speciesID      a unique species ID (int)
+            @param  _hunger         a Predator's starting hunger required to satisfy (int)
+            @param  _voracity       a Predator's starting voracity, or max nutrition comsumed per turn (int)
+            @param  _preyIDList     list of a predator's natural prey defined by speciesID (int[])
+            @param  _lore           species lore (i.e. small factoids) (string)
+            @param  _biomass        amount of predator (Tier 3) biomass a predator produces (int)
+        */
+        public Predator (string _name, int _speciesID, int _hunger, int _voracity, int[] _preyIDList, string _lore, int _biomass)
+        {
+            name = _name;
+            speciesID = _speciesID;
+            hunger = _hunger;
+            voracity = _voracity;
+            preyIDList = _preyIDList;
+            lore = _lore;
+            biomass = _biomass;
+        }
 	};
 
-    // All available plants
+    /**
+        Defines all plants found in the script.
+
+        NOTE: the effect ranges are NOT accurate to their visual examples; effect ranges were modified by another author
+        after the initial SpeciesConstants script creation but their visual examples were not updated to reflect these
+        changes.
+    */
     private static Plant[] PLANTS = 
     {
         new Plant
@@ -269,7 +326,12 @@ public class SpeciesConstants
 
     };
 
-	// All available prey
+    /**
+        Defines all available prey found in the script.
+
+        NOTE: as with the Plant array above, subsequent changes not made by the original author may exist. Data consistency
+        cannot not be guaranteed.
+    */
 	private static Prey[] PREY = 
     {
 		new Prey
@@ -366,7 +428,12 @@ public class SpeciesConstants
         )
 	}; 
 
-	// All available predators
+    /**
+        Defines all available predators found in the script.
+
+        NOTE: as with the Plant and Prey arrays above, subsequent changes not made by the original author may exist.
+        Data consistency cannot not be guaranteed.
+    */
 	private static Predator[] PREDATORS = 
     {
         new Predator
@@ -498,6 +565,9 @@ public class SpeciesConstants
     /* PRIVATE METHODS */
     /**
         Internal method for removing whitespace and hyphen chars from a string.
+
+        @param  s   a string to modify
+        @return a new string object
     */
     private static string Compact (string s)
     {
@@ -521,6 +591,9 @@ public class SpeciesConstants
 	/* PUBLIC METHODS */
 	/**
 		Returns a species ID associated with a species name.
+
+        @param  name    a species name (string)
+        @return a unique species ID (int)
 	*/
 	public static int SpeciesID (string name)
 	{
@@ -529,6 +602,9 @@ public class SpeciesConstants
 
 	/**
 		Returns a name associated with a species ID.
+
+        @param  id  a unique species ID (int)
+        @return a species name (string)
 	*/
 	public static string SpeciesName (int id)
 	{
@@ -538,6 +614,9 @@ public class SpeciesConstants
     /**
         Returns a plant's effect range.
         Search by species name.
+
+        @param  name    a species name (string)
+        @return a plant's effect range as a 2D array (int[][])
     */
     public static int[][] Range (string name)
     {
@@ -552,6 +631,9 @@ public class SpeciesConstants
     /**
         Returns a plant's effect range.
         Search by species ID.
+
+        @param  id  a unique species id (int)
+        @return a plant's effect range as a 2D array (int[][])
     */
     public static int[][] Range (int id)
     {
@@ -566,6 +648,9 @@ public class SpeciesConstants
 	/**
 		Returns a prey's starting health.
 		Search by species name.
+
+        @param  name    a species name (string)
+        @return a prey's starting health (int)
 	*/
 	public static int Health (string name)
 	{
@@ -580,6 +665,9 @@ public class SpeciesConstants
 	/**
 		Returns a prey's starting health.
 		Search by species ID.
+
+        @param  id  a unique species id (int)
+        @return a prey's starting health (int)
 	*/
 	public static int Health (int id)
 	{
@@ -594,7 +682,10 @@ public class SpeciesConstants
 	/**
 		Returns a predator's starting hunger.
 		Search by species name.
-	*/
+
+        @param  name    a species name (string)
+        @return a predator's starting hunger (int)
+    */
 	public static int Hunger (string name)
 	{
 		foreach (Predator predator in PREDATORS)
@@ -608,6 +699,9 @@ public class SpeciesConstants
 	/**
 		Returns a predator's starting hunger.
 		Search by species ID.
+
+        @param  id  a unique species id (int)
+        @return a predator's starting hunger (int)
 	*/
 	public static int Hunger (int id)
 	{
@@ -622,6 +716,9 @@ public class SpeciesConstants
 	/**
 		Returns a predator's starting voracity.
 		Search by species name.
+
+        @param  name    a species name (string)
+        @return a predator's starting voracity (int)
 	*/
 	public static int Voracity (string name)
 	{
@@ -636,6 +733,9 @@ public class SpeciesConstants
 	/**
 		Returns a predator's starting voracity.
 		Search by species ID.
+
+        @param  id  a unique species id (int)
+        @return a predator's starting voracity (int)
 	*/
 	public static int Voracity (int id)
 	{
@@ -650,6 +750,11 @@ public class SpeciesConstants
 	/**
 		Returns a species type.
 		Search by species name.
+
+        NOTE: this is NOT currently consistent with the database.
+
+        @param  name    a species name (string)
+        @return a species' type: 0 => plant, 1 => prey, 2 => predator (int)
 	*/
 	public static short SpeciesType (string name)
 	{
@@ -672,6 +777,11 @@ public class SpeciesConstants
 	/**
 		Returns a species type.
 		Search by species ID.
+
+        NOTE: this is NOT currently consistent with the database.
+
+        @param  id  a unique species id (int)
+        @return a species' type: 0 => plant, 1 => prey, 2 => predator (int)
 	*/
 	public static short SpeciesType (int id)
 	{
@@ -694,6 +804,9 @@ public class SpeciesConstants
     /**
         Returns a predator list for a species as species ID values.
         Search by species name.
+
+        @param  name    a species name (string)
+        @return a species ID list (int[]{})
     */
     public static int[] PredatorIDList (string name)
     {
@@ -710,6 +823,9 @@ public class SpeciesConstants
     /**
         Returns a predator list for a species as species ID values.
         Search by species ID.
+
+        @param  id  a unique species id (int)
+        @return a species ID list (int[]{})
     */
     public static int[] PredatorIDList (int id)
     {
@@ -726,6 +842,9 @@ public class SpeciesConstants
     /**
         Returns a prey list for a species as species ID values.
         Search by species name.
+
+        @param  name    a species name (string)
+        @return a species ID list (int[]{})
     */
     public static int[] PreyIDList (string name)
     {
@@ -742,6 +861,9 @@ public class SpeciesConstants
     /**
         Returns a prey list for a species as species ID values.
         Search by species ID.
+
+        @param  id  a unique species id (int)
+        @return a species ID list (int[]{})
     */
     public static int[] PreyIDList (int id)
     {
@@ -758,6 +880,9 @@ public class SpeciesConstants
     /**
         Returns the lore for a species.
         Search by species name.
+
+        @param  name    a species name (string)
+        @return a species' lore (string)
     */
     public static string SpeciesLore (string name)
     {
@@ -779,7 +904,10 @@ public class SpeciesConstants
 
     /**
         Returns the lore for a species.
-        Search by species name.
+        Search by species ID.
+
+        @param  id  a unique species id (int)
+        @return a species' lore (string)
     */
     public static string SpeciesLore (int id)
     {
@@ -799,6 +927,10 @@ public class SpeciesConstants
         return DEFAULT_LORE;
     }
 
+/*
+    SUPPLEMENTARY METHODS (unknown author/s)
+*/
+
   public static int Biomass(string name){
 
     foreach (Plant plant in PLANTS)
@@ -812,13 +944,11 @@ public class SpeciesConstants
       if (prey.name == name)
         return prey.biomass;
     }
-    // Search predators
     foreach (Predator predator in PREDATORS)
     {
       if (predator.name == name)
         return predator.biomass;
     }
-    // Otherwise return default
     return 0;
   }
 

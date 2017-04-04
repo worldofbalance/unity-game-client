@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 66ad3357e4a15874dbb87b23c42a5da2
-timeCreated: 1460052322
+timeCreated: 1491220127
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -47,29 +47,25 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
+  spriteTessellationDetail: -1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: Fruits and Nectar_0
+    - serializedVersion: 2
+      name: Fruits and Nectar_0
       rect:
         serializedVersion: 2
-        x: 97
+        x: 85
         y: 0
-        width: 73
-        height: 73
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        width: 100
+        height: 89
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -29.5, y: 36.5}
-        - {x: -36.5, y: 19.5}
-        - {x: -36.5, y: -34.5}
-        - {x: -31.5, y: -35.5}
-        - {x: 32.5, y: -35.5}
-        - {x: 36.5, y: -23.5}
-        - {x: 36.5, y: 29.5}
-        - {x: 20.5, y: 36.5}
+      outline: []
+      tessellationDetail: 0
     outline: []
   spritePackingTag: 
   userData: 

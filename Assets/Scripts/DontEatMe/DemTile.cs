@@ -393,9 +393,9 @@ public class DemTile : MonoBehaviour
                 // If building a plant:
                 if (buildMenu.currentAnimalFactory.isPlant ())
                 {
-                    int currentBiomass = buildMenu.getPlantBiomass ();
+                    int currentBiomass = buildMenu.GetTier1Biomass ();
                     int newBiomass = SpeciesConstants.Biomass (main.currentSelection.name);
-                    buildMenu.UpdatePlantBiomass (currentBiomass - newBiomass);
+                    buildMenu.UpdateTier1Biomass (currentBiomass - newBiomass);
                     buildMenu.AddTier2Biomass ((int)(newBiomass * 0.5));
 
                 }

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: a6a3a828f3bc7034ba31a0ca7578a3a9
-timeCreated: 1460252692
+timeCreated: 1491255958
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -47,30 +47,25 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
+  spriteTessellationDetail: -1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: Kori Buskard_0
+    - serializedVersion: 2
+      name: Kori Buskard_0
       rect:
         serializedVersion: 2
-        x: 63
+        x: 50
         y: 1
-        width: 130
-        height: 130
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        width: 159
+        height: 148
+      alignment: 9
+      pivot: {x: 0.49722221, y: 0.2433458}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -8, y: 65}
-        - {x: -54, y: 18}
-        - {x: -57, y: 3}
-        - {x: -57, y: -46}
-        - {x: -49, y: -51}
-        - {x: -24, y: -64}
-        - {x: 37, y: -64}
-        - {x: 48, y: -13}
-        - {x: 48, y: 65}
+      outline: []
+      tessellationDetail: -1
     outline: []
   spritePackingTag: 
   userData: 

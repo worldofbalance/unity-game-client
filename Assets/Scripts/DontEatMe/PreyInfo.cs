@@ -5,6 +5,7 @@ using System.Linq;      // AsEnumerable
 	Extends BuildInfo.cs to add prey-specific content.
 
 	@author Jeremy Erickson
+    @see    BuildInfo.cs
 */
 public class PreyInfo : BuildInfo {
 	private int currentHealth; // Current health of prey (<=0 implies prey is dead / consumed)
@@ -18,6 +19,10 @@ public class PreyInfo : BuildInfo {
 
         A typical example of how to optimally attach a PreyInfo component to a parent object would be:
         PreyInfo preyInfo = parentObject.AddComponent<PreyInfo>().Initialize(speciesID);
+
+        @param  _speciesID  a unique species identifier (should match database)
+
+        @return the calling (PreyInfo) object
 	*/
     public PreyInfo Initialize (int _speciesID) {
         // Initialize critical species-dependent data
@@ -30,7 +35,9 @@ public class PreyInfo : BuildInfo {
 	}
 
 	/**
-		Return current health.
+		Returns a prey's current health.
+
+        @return an integer
 	*/
 	public int GetHealth ()
 	{
@@ -39,6 +46,10 @@ public class PreyInfo : BuildInfo {
 
 	/**
 		Reduces current health and returns amount of health reduced.
+
+        @param  damage  the amount of damage to inflict (int)
+
+        @return the amount of damage actually inflicted (int)
 	*/
     public int Injure (int damage)
     {
@@ -59,6 +70,8 @@ public class PreyInfo : BuildInfo {
 
 	/**
 		Returns true if prey is consumed, false otherwise.
+
+        @return a boolean value
 	*/
 	public bool Consumed ()
 	{
@@ -68,6 +81,10 @@ public class PreyInfo : BuildInfo {
     /**
         Returns true if a species is a natural predator.
         Search by species name.
+
+        @param  predName    a species name (string)
+
+        @return a boolean value
     */
     public bool IsPreyOf (string predName)
     {
@@ -77,25 +94,33 @@ public class PreyInfo : BuildInfo {
     /**
         Returns true if a species is a natural predator.
         Search by species ID.
+
+        @param  predID  a species' unique ID (should match database)
+
+        @return a boolean value
     */
     public bool IsPreyOf (int predID)
     {
         return SpeciesConstants.PreyIDList(this.speciesId).AsEnumerable().Contains(predID);
     }
 
-
-	// Methods for potential later use //
 	/**
 		Increase current health and return fully healed status
+
+        @param  health  amount of health to restore as a non-negative integer
+
+        @return true if fully healed after method call, false otherwise
 	*/
 	public bool Heal (int health)
 	{
-		this.currentHealth = Math.Min(this.currentHealth + health, SpeciesConstants.Health(this.speciesId));
+		this.currentHealth = Math.Min(this.currentHealth + Math.Max(health, 0), SpeciesConstants.Health(this.speciesId));
 		return this.Healed();
 	}
 
 	/**
 		Returns true if prey is at max health, false otherwise.
+
+        @return a boolean value
 	*/
 	public bool Healed ()
 	{

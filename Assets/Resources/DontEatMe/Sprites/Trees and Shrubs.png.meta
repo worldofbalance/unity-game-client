@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: f1fca3835206de648b7da320b2eb4b72
-timeCreated: 1460052138
+timeCreated: 1491221353
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -47,29 +47,25 @@ TextureImporter:
   spriteBorder: {x: 100, y: 0, z: 88, w: 197}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
+  spriteTessellationDetail: -1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: Trees and Shrubs_0
+    - serializedVersion: 2
+      name: Trees and Shrubs_0
       rect:
         serializedVersion: 2
-        x: 110
+        x: 86
         y: 0
-        width: 46
-        height: 55
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 93
+        height: 86
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -8, y: 27.5}
-        - {x: -23, y: 19.5}
-        - {x: -23, y: -26.5}
-        - {x: -18, y: -27.5}
-        - {x: 21, y: -27.5}
-        - {x: 23, y: -24.5}
-        - {x: 23, y: 23.5}
-        - {x: 22, y: 27.5}
+      outline: []
+      tessellationDetail: -1
     outline: []
   spritePackingTag: 
   userData: 

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.EventSystems;
 using System;
+using System.Runtime.Remoting;
 
 public class BuildMenu : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class BuildMenu : MonoBehaviour
     // Background material
     public Material backgroundMaterial;
 
-    // Access to DemButton script for button creation
-    public DemButton demButton;
+    // Access to DemButtonFactory script for button creation
+    public DemButtonFactory demButtonFactory;
 
     //Access to DemRectUI script for RectUI creation
     public DemRectUI demRectUI;
@@ -53,7 +54,27 @@ public class BuildMenu : MonoBehaviour
     public DemAnimalFactory[] prey;
 
     // Menu buttons
-    public GameObject[] menuButtons;
+    public GameObject[] plantBuildButtons;
+    public GameObject[] preyBuildButtons;
+    public GameObject plantMenuButton;
+    public GameObject preyMenuButton;
+
+    // COLOR CONSTANTS //
+    public Color activeColor; // Active button color
+    public Color inactiveColor; // Inactive / deactivated button color
+    public Color inactiveIconColor; // Inactive / deactivated button icon (e.g. species image) color
+
+    public Color lockedColor; // Locked button color (foreground)
+    public Color lockedIconColor; // Locked button icon (e.g. species image) color (foreground)
+
+    public Color selectedColor; // Selected / toggled on button color
+    public Color deselectedColor; // Deselected / toggled off button color
+
+    public Color plantIconColor; // Plant icon color
+    public Color preyIconColor; // Prey icon color
+    // *************** //
+
+    private bool plantMenuActive = true; // Plant menu active status
 
     private GameObject mainObject;
 
@@ -61,11 +82,10 @@ public class BuildMenu : MonoBehaviour
 
     private DemMain main;
 
-    private int plantBiomass;
-
-    private int tier2Biomass;
-
-    private int tier3Biomass;
+    // Biomass levels:
+    private int tier1Biomass; // Plant
+    private int tier2Biomass; // Prey
+    private int tier3Biomass; // Predator
 
     public GameObject panelObject;
 
@@ -135,7 +155,18 @@ public class BuildMenu : MonoBehaviour
 
     //Loading Resources
     void Awake()
-    {
+    {   
+        // Define colors
+        activeColor = Color.white; // White @ 100% alpha
+        inactiveColor = new Color(0, 0, 0, 0.75f); // Black @ 75% alpha
+        inactiveIconColor = Color.black; // Black @ 100% alpha
+        lockedColor = new Color32(105, 50, 50, 255); // Dark earth red @ 100% alpha
+        lockedIconColor = new Color32(178, 34, 34, 100); // HTML "FIREBRICK" @ ~39% alpha
+        selectedColor = Color.yellow;
+        deselectedColor = new Color32(75, 75, 75, 255); // Dark gray @ 100% alpha
+        plantIconColor = new Color32(46, 139, 87, 255); // HTML "SEAGREEN" @ 100% alpha
+        preyIconColor = new Color32(220, 20, 60, 255); // HTML "CRIMSON" @ 100% alpha
+
         infoWidget = Resources.Load<Sprite>("DontEatMe/Sprites/infoWidget");
         popupBackground = Resources.Load<Sprite>("DontEatMe/Sprites/popup");
         fontFamily = Resources.Load<Font>("Fonts/Chalkboard");
@@ -152,11 +183,11 @@ public class BuildMenu : MonoBehaviour
         canvasObject = GameObject.Find("Canvas");
         mainUIObject = GameObject.Find("Canvas/mainUI");
         mainUIObject.transform.SetParent(canvasObject.transform);
-        mainUIObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-        mainUIObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
-        mainUIObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
-        mainUIObject.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
-        mainUIObject.GetComponent<RectTransform>().offsetMin = new Vector2(0, 0);
+        mainUIObject.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        mainUIObject.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+        mainUIObject.GetComponent<RectTransform>().anchorMax = Vector2.one;
+        mainUIObject.GetComponent<RectTransform>().offsetMax = Vector2.zero;
+        mainUIObject.GetComponent<RectTransform>().offsetMin = Vector2.zero;
 
         panelObject = GameObject.Find("Canvas/Panel");
         //panelObject = GameObject.Find("Canvas/mainUI/Panel");
@@ -220,10 +251,14 @@ public class BuildMenu : MonoBehaviour
 
 
 
-    // Use this for initialization
-    void Start()
+    /**
+        Used to initialize game objects and data..
+        This method is invoked automatically.
+    */
+    void Start ()
     {
-        plantBiomass = 12000;
+        // Initialize biomass levels
+        tier1Biomass = 12000;
         tier2Biomass = 0;
         tier3Biomass = 0;
 
@@ -256,6 +291,9 @@ public class BuildMenu : MonoBehaviour
 
 
         // Constructing the plants and prey the player can use
+        // NOTE: this should NOT be hard-coded!
+        // Use the SpeciesConstants script methods for dynamic creation (local).
+        // Further development should see the integration of a remote database to replace and/or augment SpeciesConstants.
         plants = new DemAnimalFactory[6];
         plants[0] = new DemAnimalFactory("Acacia");
         plants[1] = new DemAnimalFactory("Baobab");
@@ -278,52 +316,51 @@ public class BuildMenu : MonoBehaviour
         // To use old buttons comment out the following lines (until line 287) and uncomment OnGUI()
 
 
-        // Building the buttons
-        gameObject.AddComponent<DemButton>();
-        demButton = gameObject.GetComponent<DemButton>();
+        // Initialize the button factory
+        gameObject.AddComponent<DemButtonFactory>();
+        demButtonFactory = gameObject.GetComponent<DemButtonFactory>();
 
-        // building the RectUI
+        // Initialize the DemRectUI object
         gameObject.AddComponent<DemRectUI>();
         demRectUI = gameObject.GetComponent<DemRectUI>();
 
-
-        // Toggle button to switch between plant and prey menu
-        demButton.setSize(Screen.width * 0.1f, Screen.height / 14);
-        GameObject toggleButton = demButton.CreateButton(0, 0, "Toggle");
-        demButton.SetButtonText(toggleButton, "Plants");
-
-
-        // Creates a buttons for plant/prey menu
-        demButton.setSize(Screen.width * 0.1f, Screen.height / 7);
-        menuButtons = new GameObject[6];
-        for (int i = 0; i < 6; i++)
-        {
-
-            GameObject button = demButton.CreateButton(0, 0 - ((Screen.height / 14) + 10 + i * (demButton.getYSize() - 2)), i.ToString());
-
-            // Set the button images
-            demButton.SetButtonImage(plants[i], button);
-            demButton.SetButtonImage(prey[i], button);
-
-            // Set the images of the untoggled menu to inactive
-            button.transform.Find(prey[i].GetName()).gameObject.SetActive(false);
-
-            // Add an onClick listener to detect button clicks
-            button.GetComponent<Button>().onClick.AddListener(() => { selectSpecies(button); });
-            button.AddComponent<DemButton>();
-
-            menuButtons[i] = button;
-        }
-
-        // Add an onClick listener to dectect button clicks
-        toggleButton.GetComponent<Button>().onClick.AddListener(() => { selectMenu(toggleButton, menuButtons); });
+        // NEW TOGGLE BUTTON INTERFACE //
+        // 
+        // Set menu selector button parameters
+        demButtonFactory.setSize(Screen.width * 0.075f, Screen.height / 14);
+        //
+        // Create plant menu selector button
+        plantMenuButton = demButtonFactory.CreateButton(0, 0, "plantmenu");
+        demButtonFactory.SetButtonIcon(plantMenuButton, "DontEatMe/Sprites/plant_icon", plantIconColor);
+        demButtonFactory.SetButtonText(plantMenuButton, "Plant");
+        demButtonFactory.SetButtonHighlightedColor(plantMenuButton, plantIconColor);
+        plantMenuButton.GetComponent<Button>().onClick.AddListener(() => { SetBuildButtonCategory(0); });
+        //
+        // Create prey menu selector button
+        preyMenuButton = demButtonFactory.CreateButton(demButtonFactory.getXSize() + 7, 0, "preymenu");
+        demButtonFactory.SetButtonIcon(preyMenuButton, "DontEatMe/Sprites/prey_icon", preyIconColor);
+        demButtonFactory.SetButtonText(preyMenuButton, "Prey");
+        demButtonFactory.SetButtonHighlightedColor(preyMenuButton, preyIconColor);
+        preyMenuButton.GetComponent<Button>().onClick.AddListener(() => { SetBuildButtonCategory(1); });
+        //
+        // Set initial color schemes for plant (active) and prey (inactive) buttons
+        plantMenuButton.GetComponentInChildren<Image>().color = selectedColor;
+        plantMenuButton.GetComponentsInChildren<Image>()[1].color = plantIconColor;
+        demButtonFactory.SetButtonTextColor(plantMenuButton, Color.white);
+        //...
+        preyMenuButton.GetComponentInChildren<Image>().color = deselectedColor;
+        preyMenuButton.GetComponentsInChildren<Image>()[1].color = deselectedColor;
+        demButtonFactory.SetButtonTextColor(preyMenuButton, Color.gray);
+        //
+        // Initialize plant and prey buttons (build)
+        InitializeBuildMenu();
 
         //quit button 
         float qBX = Screen.width / 10.0f;
         float qBY = Screen.height / 10.0f;
-        demButton.setSize(qBX, qBY);
-        GameObject quitButton = demButton.CreateButton(Screen.width - qBX, 0, "Quit");
-        demButton.SetButtonText(quitButton, "Quit");
+        demButtonFactory.setSize(qBX, qBY);
+        GameObject quitButton = demButtonFactory.CreateButton(Screen.width - qBX, 0, "Quit");
+        demButtonFactory.SetButtonText(quitButton, "Quit");
         quitButton.GetComponent<Button>().onClick.AddListener(() => { selectQuit(); });
         // quitButton.transform.SetParent(menuPanel.transform); 
 
@@ -340,9 +377,9 @@ public class BuildMenu : MonoBehaviour
         //statistic button 
         float sBX = Screen.width / 10.0f;
         float sBY = Screen.height / 15.0f;
-        demButton.setSize(sBX, sBY);
-        GameObject statButton = demButton.CreateButton(Screen.width - qBX * 2, 0, "statistic");
-        demButton.SetButtonText(statButton, "Statistic");
+        demButtonFactory.setSize(sBX, sBY);
+        GameObject statButton = demButtonFactory.CreateButton(Screen.width - qBX * 2, 0, "statistic");
+        demButtonFactory.SetButtonText(statButton, "Statistic");
         statButton.GetComponent<Button>().onClick.AddListener(() => { selectStatistic(); });
         // quitButton.transform.SetParent(menuPanel.transform); 
 
@@ -357,11 +394,12 @@ public class BuildMenu : MonoBehaviour
 
 
         // Instructions button
+        // TODO: consistent naming convention ("instruction" vs "how to play")
         float iBX = Screen.width / 20.0f;
         float iBY = Screen.height / 10.0f;
-        demButton.setSize(iBX, iBY);
-        GameObject instructionButton = demButton.CreateButton(Screen.width - iBX, 10, "How to Play");
-        demButton.SetButtonText(instructionButton, "?");
+        demButtonFactory.setSize(iBX, iBY);
+        GameObject instructionButton = demButtonFactory.CreateButton(Screen.width - iBX, 10, "How to Play");
+        demButtonFactory.SetButtonText(instructionButton, "?");
 
         instructionButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/buttonBackgroundRound");
         instructionButton.GetComponent<Button>().onClick.AddListener(() => { selectInstruction(); });
@@ -376,17 +414,135 @@ public class BuildMenu : MonoBehaviour
         instructionButton.GetComponent<RectTransform>().sizeDelta = new Vector2(30, 30);
 
         // Reset sizes for quit popup buttons
-        demButton.setSize(qBX, qBY);
-        UpdatePlantBiomass();
-        UpdateBuildableAnimals();
+        demButtonFactory.setSize(qBX, qBY);
+        //UpdatePlantBiomass();
+        UpdateTier1Biomass();
+        UpdateMenuLocks();
+    }
+    // END Start() //
+
+    /**
+        Initializes the build menu buttons for plants and prey.
+
+        Plant and prey buttons may be toggled between using the Toggle button; the active button set will remain on top
+        while the inactive will move behind the active.
+    */
+    void InitializeBuildMenu ()
+    {        
+        // Creates a buttons for plant/prey menu
+        demButtonFactory.setSize(Screen.width * 0.1f, Screen.height / 7);
+        plantBuildButtons = new GameObject[6];
+        preyBuildButtons = new GameObject[6];
+
+        for (int i = 0; i < plantBuildButtons.Length; i++)
+        {
+            // Create plant button
+            GameObject plantButton = demButtonFactory.CreateButton
+            (
+                0, // x-position (relative to upper left)
+                0 - ((Screen.height / 14) + 10 + i * (demButtonFactory.getYSize() - 2)), // y-position (relative to upper left)
+                i.ToString() // name
+            );
+            // Create prey button
+            GameObject preyButton = demButtonFactory.CreateButton
+            (
+                demButtonFactory.getXSize()/3, // x-position (relative to upper left)
+                0 - demButtonFactory.getYSize()/3 - ((Screen.height / 14) + 10 + i * (demButtonFactory.getYSize() - 2)), // y-position (relative to upper left)
+                i.ToString() // name
+            );
+
+            // Set the button images
+            demButtonFactory.SetButtonImage(plants[i], plantButton);
+            demButtonFactory.SetButtonImage(prey[i], preyButton);
+
+            // Set the images of the plant menu activ
+            plantButton.transform.Find(plants[i].GetName()).gameObject.SetActive(true);
+            preyButton.transform.Find(prey[i].GetName()).gameObject.SetActive(true);
+
+            // Add an onClick listener to detect button clicks
+            plantButton.GetComponent<Button>().onClick.AddListener(() => { selectSpecies(plantButton); });
+            preyButton.GetComponent<Button>().onClick.AddListener(() => { selectSpecies(preyButton); });
+            plantButton.AddComponent<DemButtonFactory>();
+            preyButton.AddComponent<DemButtonFactory>();
+
+            plantBuildButtons[i] = plantButton;
+            preyBuildButtons[i] = preyButton;
+        }
+        // Place prey buttons behind plant buttons and lock them
+        for (byte i = 0; i < preyBuildButtons.Length; i++)
+            preyBuildButtons[i].transform.SetAsFirstSibling();
+
+        LockPreyMenuItems(false);
     }
 
+    /**
+        Sets the active build button category (plant or prey).
+        If the respective menu is active, the call is ignored.
+
+        @param  type    0 for plant, 1 for prey
+    */
+    void SetBuildButtonCategory (int type)
+    {
+        // Currently active: prey
+        if (type == 0 && !plantMenuActive)
+        {
+            // Swap plant and prey button positions (plants in front)
+            for (byte i = 0; i < preyBuildButtons.Length; i++)
+            {
+                preyBuildButtons[i].transform.SetAsFirstSibling();
+                plantBuildButtons[i].transform.SetAsLastSibling();
+                Vector3 origPos = plantBuildButtons[i].transform.position;
+                plantBuildButtons[i].GetComponent<RectTransform>().position = preyBuildButtons[i].transform.position;
+                preyBuildButtons[i].GetComponent<RectTransform>().position = origPos;
+            }
+            // Toggle plant active boolean to true, set button locks
+            plantMenuActive = true;
+            UnlockPlantMenuItems();
+            LockPreyMenuItems(false);
+            // Set color schemes for plant (active) and prey (inactive) buttons
+            plantMenuButton.GetComponentInChildren<Image>().color = selectedColor;
+            plantMenuButton.GetComponentsInChildren<Image>()[1].color = plantIconColor;
+            demButtonFactory.SetButtonTextColor(plantMenuButton, Color.white);
+
+            preyMenuButton.GetComponentInChildren<Image>().color = deselectedColor;
+            preyMenuButton.GetComponentsInChildren<Image>()[1].color = deselectedColor;
+            demButtonFactory.SetButtonTextColor(preyMenuButton, Color.gray);
+        }
+        // Currently active: plant
+        else if (type == 1 && plantMenuActive)
+        {
+            // Swap plant and prey button positions (prey in front)
+            for (byte i = 0; i < plantBuildButtons.Length; i++)
+            {
+                plantBuildButtons[i].transform.SetAsFirstSibling();
+                preyBuildButtons[i].transform.SetAsLastSibling();
+                Vector3 origPos = preyBuildButtons[i].transform.position;
+                preyBuildButtons[i].GetComponent<RectTransform>().position = plantBuildButtons[i].transform.position;
+                plantBuildButtons[i].GetComponent<RectTransform>().position = origPos;
+            }
+            // Toggle plant active boolean to false, set button locks
+            plantMenuActive = false;
+            UnlockPreyMenuItems();
+            LockPlantMenuItems(false);
+            // Set color schemes for prey (active) and plant (inactive) buttons
+            preyMenuButton.GetComponentInChildren<Image>().color = selectedColor;
+            preyMenuButton.GetComponentsInChildren<Image>()[1].color = preyIconColor;
+            demButtonFactory.SetButtonTextColor(preyMenuButton, Color.white);
+
+            plantMenuButton.GetComponentInChildren<Image>().color = deselectedColor;
+            plantMenuButton.GetComponentsInChildren<Image>()[1].color = deselectedColor;
+            demButtonFactory.SetButtonTextColor(plantMenuButton, Color.gray);
+        }
+        UpdateMenuLocks();
+    }
 
     // Toggle between plant and prey menu when the toggle button is clicked
+    /*
     void selectMenu(GameObject tButton, GameObject[] mButtons)
     {
         Debug.Log("Clicked " + tButton.name);
 
+        // TODO: replace with simple boolean (e.g. toggleCount = !toggleCount) to reduce superfluous arithmetic ops
         toggleCount = (toggleCount + 1) % 2;
 
         if (toggleCount == 0)
@@ -411,38 +567,32 @@ public class BuildMenu : MonoBehaviour
 
         UpdateMenuLocks();
     }
-
+    */
 
     /**
-     * Use this method To set animals that go over the resource limit to not be buildable
-     */
-
-    public void UpdateMenuLocks()
+        Updates the menu item locks for active build buttons.
+        Menu items are locked if their resource cost exceeds the current respective resource level available.
+    */
+    public void UpdateMenuLocks ()
     {
-        UnlockAllMenuItems();
-        UpdateBuildableAnimals();
-    }
-
-    public void UpdateBuildableAnimals()
-    {
-        for (int i = 0; i < 6; i++)
+        byte i; // Iterator
+        // On active PLANT menu button pane
+        if (plantMenuActive)
         {
-            if (toggleCount == 0)
+            for (i = 0; i < plants.Length; i++)
             {
-                if (SpeciesConstants.Biomass(plants[i].GetName()) > plantBiomass)
-                {
-                    LockMenuButton(i);
-                }
-
+                if (SpeciesConstants.Biomass(plants[i].GetName()) > tier1Biomass) LockMenuButton(plantBuildButtons, i);
+                else UnlockMenuButton(plantBuildButtons, i);
             }
-            else
+        }
+        // On active PREY menu button pane
+        else
+        {
+            for (i = 0; i < prey.Length; i++)
             {
-                if (SpeciesConstants.Biomass(prey[i].GetName()) > tier2Biomass)
-                {
-                    LockMenuButton(i);
-                }
+                if (SpeciesConstants.Biomass(prey[i].GetName()) > tier2Biomass) LockMenuButton(preyBuildButtons, i);
+                else UnlockMenuButton(preyBuildButtons, i);
             }
-
         }
     }
 
@@ -456,13 +606,9 @@ public class BuildMenu : MonoBehaviour
         DemAnimalFactory[] species;
         short speciesType = 0;
 
-        if (toggleCount % 2 == 0)
-        {
+        //if (toggleCount % 2 == 0)
+        if (plantMenuActive)
             species = plants;
-            speciesType = 0;
-        }
-
-
         else
         {
             species = prey;
@@ -477,6 +623,7 @@ public class BuildMenu : MonoBehaviour
         if (main.currentSelection)
         {
             // Ignore button click if for the same species
+            //if (currentAnimalFactory == species[int.Parse(button.name)])
             if (currentAnimalFactory == species[int.Parse(button.name)])
                 return;
             // Otherwise, destroy the current selection before continuing
@@ -531,21 +678,21 @@ public class BuildMenu : MonoBehaviour
                 + GameState.player.credits);
 
             //Quit Button on Quit UI
-            GameObject yesButton = demButton.CreateButton(0, 0, "Yes");
+            GameObject yesButton = demButtonFactory.CreateButton(0, 0, "Yes");
             yesButton.transform.SetParent(quitUI.transform);
             yesButton.GetComponent<RectTransform>().anchoredPosition =
                 new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f,
                             -quitUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
-            demButton.SetButtonText(yesButton, "Quit");
+            demButtonFactory.SetButtonText(yesButton, "Quit");
             yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("World"); });
 
             //back button on Quit UI
-            GameObject noButton = demButton.CreateButton(0, 0, "No");
+            GameObject noButton = demButtonFactory.CreateButton(0, 0, "No");
             noButton.transform.SetParent(quitUI.transform);
             noButton.GetComponent<RectTransform>().anchoredPosition =
                 new Vector2(quitUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f * 3.0f,
                     -quitUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
-            demButton.SetButtonText(noButton, "Back");
+            demButtonFactory.SetButtonText(noButton, "Back");
             //noButton.GetComponent<Button> ().onClick.AddListener (()=>{quitUI.SetActive(false);});
             noButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); quitUI.SetActive(false); mainUIObject.SetActive(true); });
 
@@ -584,16 +731,16 @@ public class BuildMenu : MonoBehaviour
             demRectUI.setUIText(instructionUI, "These are the instructions");
 
             // OK button on Instruction UI
-            GameObject okButton = demButton.CreateButton(0, 0, "Next");
+            GameObject okButton = demButtonFactory.CreateButton(0, 0, "Next");
             okButton.transform.SetParent(instructionUI.transform);
             okButton.GetComponent<RectTransform>().anchoredPosition =
                 new Vector2(instructionUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f * 3.4f,
                     - instructionUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.3f);
-            demButton.SetButtonText(okButton, "Next");
+            demButtonFactory.SetButtonText(okButton, "Next");
             okButton.GetComponent<Button>().onClick.AddListener(() => { CloseInstructionWindow(); });
 
 
-            GameObject closeButton = demButton.CreateButton(0, 0, "Close");
+            GameObject closeButton = demButtonFactory.CreateButton(0, 0, "Close");
             closeButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/closeButton");
             closeButton.transform.SetParent(instructionUI.transform);
             closeButton.GetComponent<Button>().onClick.AddListener(() => { CloseInstructionWindow(); });
@@ -716,12 +863,12 @@ public class BuildMenu : MonoBehaviour
             t5 = demRectUI.setUIText(statUI, "turns: " + statistic.getTurnCount(), 2, 0);
 			t6 = demRectUI.setUIText(statUI, "your total credits: " + GameState.player.credits , 2, 1);
 
-            GameObject backButton = demButton.CreateButton(0, 0, "back");
+            GameObject backButton = demButtonFactory.CreateButton(0, 0, "back");
             backButton.transform.SetParent(statUI.transform);
             backButton.GetComponent<RectTransform>().anchoredPosition =
                 new Vector2(statUI.GetComponent<RectTransform>().sizeDelta.x / 2.0f - backButton.GetComponent<RectTransform>().sizeDelta.x / 2.0f,
                     -statUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f - backButton.GetComponent<RectTransform>().sizeDelta.y);
-            demButton.SetButtonText(backButton, "Back");
+            demButtonFactory.SetButtonText(backButton, "Back");
             backButton.GetComponent<Button>().onClick.AddListener(() =>
             {
                 DemAudioManager.audioClick.Play();
@@ -749,7 +896,7 @@ public class BuildMenu : MonoBehaviour
 
     }
 
-
+    // TODO: documentation............
     public void EndGame()
     {
         gameOverUI = demRectUI.createRectUI("quitUI", 0, 0, Screen.width / 2.0f, Screen.height / 2.0f);
@@ -757,21 +904,21 @@ public class BuildMenu : MonoBehaviour
         demRectUI.setUIText(gameOverUI, "Game Over! Play Again?");
 
         //Quit Button on Quit UI
-        GameObject yesButton = demButton.CreateButton(0, 0, "Yes");
+        GameObject yesButton = demButtonFactory.CreateButton(0, 0, "Yes");
         yesButton.transform.SetParent(gameOverUI.transform);
         yesButton.GetComponent<RectTransform>().anchoredPosition =
           new Vector2(gameOverUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f,
         -gameOverUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
-        demButton.SetButtonText(yesButton, "Yes");
+        demButtonFactory.SetButtonText(yesButton, "Yes");
         yesButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("DontEatMe"); });
 
         //back button on Quit UI
-        GameObject noButton = demButton.CreateButton(0, 0, "No");
+        GameObject noButton = demButtonFactory.CreateButton(0, 0, "No");
         noButton.transform.SetParent(gameOverUI.transform);
         noButton.GetComponent<RectTransform>().anchoredPosition =
         new Vector2(gameOverUI.GetComponent<RectTransform>().sizeDelta.x / 5.0f * 3.0f,
         -gameOverUI.GetComponent<RectTransform>().sizeDelta.y / 5.0f * 3.0f);
-        demButton.SetButtonText(noButton, "No");
+        demButtonFactory.SetButtonText(noButton, "No");
         //noButton.GetComponent<Button> ().onClick.AddListener (()=>{quitUI.SetActive(false);});
         noButton.GetComponent<Button>().onClick.AddListener(() => { DemAudioManager.audioClick.Play(); Game.SwitchScene("World"); });
 
@@ -780,7 +927,7 @@ public class BuildMenu : MonoBehaviour
 
 
     // Updates player's credits
-    public void ProcessEndGame(NetworkResponse response)
+    public void ProcessEndGame (NetworkResponse response)
     {
         ResponsePlayGame args = response as ResponsePlayGame;
 
@@ -795,71 +942,149 @@ public class BuildMenu : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
-    {
+    //void Update()
+    //{
+        // NOTHING TO DO HERE... //
+    //}
 
-    }
-
+    // TODO: documentation....
     public DemAnimalFactory GetCurrentAnimalFactory()
     {
         return currentAnimalFactory;
     }
 
+    // TODO: or not TODO...
     public void SetCurrentAnimalFactory(DemAnimalFactory newAnimalFactory)
     {
         currentAnimalFactory = newAnimalFactory;
     }
 
+
+    // TODO: bake some cookies
     public void ToggleButtonLocks()
     {
-        turnSystemText.GetComponent<Text>().text = "Your Turn!";
         if (turnSystem.IsTurnLocked())
         {
-            for (int i = 0; i < 6; i++)
-            {
-                menuButtons[i].GetComponent<Button>().interactable = true;
-                foreach (Image image in menuButtons[i].GetComponentsInChildren<Image>())
-                {
-                    image.color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
-                }
-            }
+            turnSystemText.GetComponent<Text>().text = "Your Turn!";
+            //UnlockAllMenuItems();
         }
         else
         {
             turnSystemText.GetComponent<Text>().text = "Predator Turn!";
-            for (int i = 0; i < 6; i++)
-            {
-                menuButtons[i].GetComponent<Button>().interactable = false;
-                foreach (Image image in menuButtons[i].GetComponentsInChildren<Image>())
-                {
-                    image.color = new Color(1.0F, 1.0F, 1.0F, 0.8F);
-                }
-            }
+            //LockAllMenuItems();
         }
 
     }
 
-    public void UnlockAllMenuItems()
+    // BUTTON LOCKING METHODS
+    //
+    /**
+        Locks a single menu button by disabling interactivity and dimming its color.
+        An optional boolean value may be specified to denote whether a button is in the foreground (true by default) or
+        background; this will determine the dimmed color values as determined by 'lockedColor' for foreground and
+        'inactiveColor' for background; the former is, by default, brighter with 100% alpha while the latter is darker
+        with an alpha below 100%.
+
+        @param  menu        a GameObject array comprising menu buttons (plant or prey)
+        @param  index       index offset of menu button to lock
+        @param  foreground  [optional] true if button is in the foreground, false if in background
+    */
+    public void LockMenuButton (GameObject[] menu, int index, bool foreground = true)
     {
-        for (int i = 0; i < 6; i++)
-        {
-            menuButtons[i].GetComponent<Button>().interactable = true;
-            foreach (Image image in menuButtons[i].GetComponentsInChildren<Image>())
-            {
-                image.color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
-            }
-        }
+        menu[index].GetComponent<Button>().interactable = false;
+        menu[index].GetComponentsInChildren<Image>()[0].color = foreground ? lockedColor : inactiveColor;
+        menu[index].GetComponentsInChildren<Image>()[1].color = foreground ? lockedIconColor : inactiveIconColor;
     }
 
+    /**
+        Locks all PLANT menu items (i.e. build buttons).
+        Buttons are subsequently non-interactive and dimmed in color.
 
-    public void LockMenuButton(int buttonNum)
+        @param  foreground  [optional] true if button is in the foreground, false if in background
+    */
+    public void LockPlantMenuItems (bool foreground = true)
     {
-        menuButtons[buttonNum].GetComponent<Button>().interactable = false;
-        foreach (Image image in menuButtons[buttonNum].GetComponentsInChildren<Image>())
-        {
-            image.color = new Color(1.0F, 1.0F, 1.0F, 0.8F);
-        }
+        for (byte i = 0; i < plantBuildButtons.Length; i++)
+            LockMenuButton(plantBuildButtons, i, foreground);
     }
+
+    /**
+        Locks all PREY menu items (i.e. build buttons).
+        Buttons are subsequently non-interactive and dimmed in color.
+
+        @param  foreground  [optional] true if button is in the foreground, false if in background
+    */    
+    public void LockPreyMenuItems (bool foreground = true)
+    {
+        for (byte i = 0; i < preyBuildButtons.Length; i++)
+            LockMenuButton(preyBuildButtons, i, foreground);
+    }
+
+    /**
+        Locks all menu items for both plants and prey.
+
+        @param  foreground  [optional] true if button is in the foreground, false if in background
+
+        @see    BuildMenu.LockPlantMenuItems
+        @see    BuildMenu.LockPreyMenuItems
+    */
+    public void LockAllMenuItems (bool foreground = true)
+    {
+        LockPlantMenuItems(foreground);
+        LockPreyMenuItems(foreground);
+    }
+
+    // BUTTON UNLOCKING METHODS //
+    //
+    /**
+        Unlocks a single menu button by enabling interactivity and restoring its color.
+
+        @param  menu    a GameObject array comprising menu buttons (plant or prey)
+        @param  index   index offset of menu button to unlock
+    */    
+    public void UnlockMenuButton (GameObject[] menu, int index)
+    {
+        menu[index].GetComponent<Button>().interactable = true;
+        foreach (Image image in menu[index].GetComponentsInChildren<Image>())
+            image.color = activeColor;
+    }
+
+    /**
+        Unlocks all PLANT menu items (i.e. build buttons).
+        Buttons are subsequently interactive and undimmed in color.
+    */
+    public void UnlockPlantMenuItems ()
+    {
+        for (byte i = 0; i < plantBuildButtons.Length; i++)
+            UnlockMenuButton(plantBuildButtons, i);
+    }
+
+    /**
+        Unlocks all PREY menu items (i.e. build buttons).
+        Buttons are subsequently interactive and undimmed in color.
+    */
+    public void UnlockPreyMenuItems ()
+    {
+        for (byte i = 0; i < preyBuildButtons.Length; i++)
+            UnlockMenuButton(preyBuildButtons, i);
+    }
+
+    /**
+        Unlocks all menu items for both plants and prey.
+
+        @see    BuildMenu.UnlockPlantMenuItems
+        @see    BuildMenu.UnlockPreyMenuItems
+    */
+    public void UnlockAllMenuItems ()
+    {
+        UnlockPlantMenuItems();
+        UnlockPreyMenuItems();
+    }
+
+
+
+
+    // TOOD: documentation, etc., etc., etc.... 
 
 
     public void UpdateLives(int lives)
@@ -877,22 +1102,22 @@ public class BuildMenu : MonoBehaviour
 
     }
 
-    public void UpdatePlantBiomass()
+    public void UpdateTier1Biomass()
     {
-        plantBioText.GetComponent<Text>().text = plantBiomass.ToString();
+        plantBioText.GetComponent<Text>().text = tier1Biomass.ToString();
     }
 
-    public void UpdatePlantBiomass(int biomass)
+    public void UpdateTier1Biomass(int biomass)
     {
-        plantBiomass = biomass;
-        UpdatePlantBiomass();
+        tier1Biomass = biomass;
+        UpdateTier1Biomass();
 
     }
 
-    public int getPlantBiomass()
+    public int GetTier1Biomass()
     {
 
-        return plantBiomass;
+        return tier1Biomass;
 
     }
 
@@ -965,11 +1190,11 @@ public class BuildMenu : MonoBehaviour
 
     }
 
-    public void AddPlantBiomass(int biomass)
+    public void AddTier1Biomass(int biomass)
     {
 
-        plantBiomass += biomass;
-        UpdatePlantBiomass();
+        tier1Biomass += biomass;
+        UpdateTier1Biomass();
 
     }
 
@@ -982,10 +1207,10 @@ public class BuildMenu : MonoBehaviour
 
     }
 
-    public void SubtractPlantBiomass(int biomass)
+    public void SubtractTier1Biomass(int biomass)
     {
-        plantBiomass -= biomass;
-        UpdatePlantBiomass();
+        tier1Biomass -= biomass;
+        UpdateTier1Biomass();
     }
 
 }
