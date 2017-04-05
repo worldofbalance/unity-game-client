@@ -80,6 +80,7 @@ public class Graph : MonoBehaviour {
 	private int lastGridX;
 	private float yMaxValueES;
 	private bool esFlag;
+	private int cDay, fDay, lDay;
 	
 	void Awake() {
 		title = "Graph";
@@ -442,10 +443,6 @@ public class Graph : MonoBehaviour {
 				DrawMarker(series.label, new Rect(xPos - 7, yPos - 7, 14, 14), color, text);
 			}
 
-
-
-
-
 			if (values [xMin + Mathf.Min(series.values.Count, (xNumMarkers-1) *zoom)] >= 0) {
 				// Draw Last Point
 				float xPos = hStart.x + xUnitLength * (Mathf.Min(series.values.Count, xNumMarkers));
@@ -772,14 +769,27 @@ public class Graph : MonoBehaviour {
 		speciesIds = new List<int> ();
 		biomassHistory = new List<Dictionary<int,int>> ();
 		minDay = 1000000;
-		maxDay = 0;
+		// maxDay = 0;
 		minMonth = NUM_YEARS * 12;
 		maxMonth = 0;
+
+		Debug.Log("Graph: Send SpeciesActionProtocol, action = 6, gets current day");
+		Game.networkManager.Send(SpeciesActionProtocol.Prepare((short) 6), processDayInfo);
+	}
+
+	public void processDayInfo(NetworkResponse response)
+	{
+		ResponseSpeciesAction args = response as ResponseSpeciesAction;
+		cDay = args.cDay;
+		fDay = args.fDay;
+		lDay = args.lDay;
+		maxDay = cDay;
+		Debug.Log ("Graph: c,f,lDay = " + cDay + " " + fDay + " " + lDay);
 		Debug.Log("Graph: Send SpeciesActionProtocol, action = 2");
 		int action = 2;
 		Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action), ProcessSpeciesAction);
 	}
-		
+
 	public void ProcessSpeciesAction (NetworkResponse response)
 	{
 		ResponseSpeciesAction args = response as ResponseSpeciesAction;
@@ -822,16 +832,32 @@ public class Graph : MonoBehaviour {
 		Dictionary<int, int> speciesList = args.speciesHistoryList;
 		Debug.Log ("Graph: ProcessSpeciesHistory, species_id = " + species_id);
 		// Debug.Log ("Graph: ProcessSpeciesHistory, size = " + speciesList.Count);  // null pointer in some cases 
+		int spMin = 10000000;
+		// int spMax = 0;
 		if (speciesList.Count > 0) {
 			foreach (KeyValuePair<int, int> entry in speciesList) {
 				Debug.Log ("day, biomass change = " + entry.Key + " " + entry.Value);
+				spMin = Mathf.Min (spMin, entry.Key);
+				// spMax = Mathf.Max (spMax, entry.Key);
 				keys.Add (entry.Key);
 				values.Add (entry.Key, entry.Value);
+			}
+			for (int i = spMin + 1; i <= maxDay; i++) {
+				if (!keys.Contains (i)) {
+					keys.Add (i);
+					values.Add (i, 0);
+				}
 			}
 			keys.Sort ();
 			for (int i = 0; i < keys.Count; i++) {
 				Debug.Log ("species_id, i, keys[i], biomass change: " + species_id + " " + i + " " + keys [i] + " " + values[keys[i]]);
 			}
+			/*
+			for (int i = keys [keys.Count - 1] + 1; i <= maxDay; i++) {
+				keys.Add (i);
+				values.Add (i, 0);
+			}
+			*/
 			int size = keys.Count;
 			int[] day = new int[size];
 			int[] dayValue = new int[size];
@@ -845,9 +871,11 @@ public class Graph : MonoBehaviour {
 			for (idx = 0; idx < size; idx++) {
 				Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
 			}
+			/*
 			if (day [0] > maxDay) {
 				maxDay = day [0];
 			}
+			*/
 			if (day [size - 1] < minDay) {
 				minDay = day [size - 1];
 			}
