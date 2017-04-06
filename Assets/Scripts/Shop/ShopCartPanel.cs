@@ -30,7 +30,7 @@ public class ShopCartPanel : MonoBehaviour {
 	private Rect purchaseCompleteRect;
 	private Rect entryRect;
 	private int purWindowWidth = 300;
-	private int purWindowHeight = 200;
+	private int purWindowHeight = 210;
 	private int purErrWindowWidth = 240;
 	private int purErrWindowHeight = 140;
 	private Texture2D bgTexture;
@@ -52,7 +52,7 @@ public class ShopCartPanel : MonoBehaviour {
 				purErrWindowWidth, purErrWindowHeight);
 		purchaseCompleteRect = new Rect ((Screen.width - purErrWindowWidth) / 2, (Screen.height - purErrWindowHeight) / 2, 
 			purErrWindowWidth, purErrWindowHeight);
-		entryRect = new Rect ((purWindowWidth - 45)/2, 90, 50, 25);
+		entryRect = new Rect ((purWindowWidth - 45)/2, 75, 50, 25);
 		bgTexture = Resources.Load<Texture2D> (Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
 		purStr = "0";
 		isInitial = true;
@@ -220,10 +220,19 @@ public class ShopCartPanel : MonoBehaviour {
 		GUI.SetNextControlName("biomassEntry");
 		purStr = GUI.TextField(entryRect, purStr);
 
+		int purBiomass, purCost;
+
+		if (!Int32.TryParse(purStr, out purBiomass)) {
+			purBiomass = 0;
+		}
+
+		purCost = (int) (purBiomass * (speciesToBuy_cost / speciesToBuy_biomassServer));
+
+		GUI.Label(new Rect((purWindowWidth - 200)/2, 120, 200, 30), "Cost: " + purCost + " credits", style);
+
 		if (GUI.Button(new Rect(40, purWindowHeight - 50, 80, 30), "Purchase")) {
 			showPurchase = false;
 
-			int purBiomass;
 			if (!Int32.TryParse(purStr, out purBiomass)) {
 				purBiomass = -1;
 			}
