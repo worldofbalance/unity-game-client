@@ -849,9 +849,11 @@ public class Graph : MonoBehaviour {
 				}
 			}
 			keys.Sort ();
+			/*
 			for (int i = 0; i < keys.Count; i++) {
 				Debug.Log ("species_id, i, keys[i], biomass change: " + species_id + " " + i + " " + keys [i] + " " + values[keys[i]]);
 			}
+			*/
 			/*
 			for (int i = keys [keys.Count - 1] + 1; i <= maxDay; i++) {
 				keys.Add (i);
@@ -868,9 +870,11 @@ public class Graph : MonoBehaviour {
 				dayValue [idx] = dayValue [idx - 1] - values [keys[size - idx]];
 			}
 			Debug.Log ("Sorted values, species_id = " + species_id);
+			/*
 			for (idx = 0; idx < size; idx++) {
 				Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
 			}
+			*/
 			/*
 			if (day [0] > maxDay) {
 				maxDay = day [0];
@@ -904,7 +908,7 @@ public class Graph : MonoBehaviour {
 			Debug.Log ("Sorted month values, species_id = " + species_id);
 			for (idx = 0; idx < size; idx++) {
 				values.Add (day[idx], dayValue [idx]);
-				Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
+				// Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
 			}			
 			speciesIds.Add(species_id);
 			biomassHistory.Add(values);
