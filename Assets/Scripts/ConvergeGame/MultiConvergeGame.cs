@@ -1535,11 +1535,11 @@ public class MultiConvergeGame : MonoBehaviour
 		if ((roundComplete != 1) || (round != curRound)) {
 			return;
 		}
-		Debug.Log ("#1 Winning player id: " + playerWinner);
 		curRound++;
 		won = args.winStatus;
 		wonAmount = args.wonAmount; 
 		playerWinner = args.playerWinner;
+		Debug.Log ("#1 Winning player id: " + playerWinner);
 		if (playerNames.Contains (playerWinner)) {
 			playerWinnerName = playerNames [playerWinner] as string;
 		} else {

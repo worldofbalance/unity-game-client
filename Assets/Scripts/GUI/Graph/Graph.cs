@@ -1,8 +1,10 @@
 using UnityEngine;
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 
 public class Graph : MonoBehaviour {
 
@@ -17,6 +19,8 @@ public class Graph : MonoBehaviour {
 	private Dictionary<int,int> biomassValues;
 	private List<int> speciesIds;
 	private List<Dictionary<int,int>> biomassHistory;
+	private Dictionary<int, List<int>> fSp;
+	// private Dictionary<int, Dictionary<int, int>> fSpOut;
 	int minDay, maxDay;
 	int maxMonth, minMonth;
 	int speciesCount;
@@ -80,7 +84,10 @@ public class Graph : MonoBehaviour {
 	private int lastGridX;
 	private float yMaxValueES;
 	private bool esFlag;
-	private int cDay, fDay, lDay;
+	private int cDay, fDay, lDay, aDay;
+	private string fileName;
+	private string bufLine;
+	private bool redraw;
 	
 	void Awake() {
 		title = "Graph";
@@ -119,6 +126,8 @@ public class Graph : MonoBehaviour {
 		font = Resources.Load<Font>("Fonts/" + "Chalkboard");
 		MakeDayCounts ();
 		yMaxValueES = -1;
+		fileName = "graph_" + GameState.player.GetID () + ".txt";
+		redraw = true;
 	}
 
 	// Use this for initialization
@@ -427,7 +436,8 @@ public class Graph : MonoBehaviour {
 					GUIStyle style = new GUIStyle(GUI.skin.label);
 					style.normal.textColor = Color.white;
 					// style.richText = true;
-					GUI.Label(new Rect(xPosNext + xUnitLength - 42, yPosNext + 10, 80, 70), ("last"), style);
+					String tStr = "" + maxDay;
+					GUI.Label(new Rect(xPosNext + xUnitLength - 42, yPosNext + 10, 80, 70), tStr, style);
 					// yPosNext = hStart.y - 5;
 					// Drawing.DrawLine(new Vector2(xPosNext, yPosNext), new Vector2(xPosNext, yPosNext + 10), color, thickness, false);
 				}
@@ -635,7 +645,7 @@ public class Graph : MonoBehaviour {
 				xAxisLabels.Add(name);
 			}
 			*/
-			Debug.Log("Graph: i, xAxisLabels[i] = " + (i-minDay) + " " + xAxisLabels[i-minDay]);
+			// Debug.Log("Graph: i, xAxisLabels[i] = " + (i-minDay) + " " + xAxisLabels[i-minDay]);
 		}
 		
 		// Update Values
@@ -648,13 +658,13 @@ public class Graph : MonoBehaviour {
 		// foreach (KeyValuePair<string, List<string>> entry in csv.csvList) 
 			string name;
 			float localMax;
-			Debug.Log ("Graph: UpdateData(): idx2, speciesIds [idx2] = " + idx2 + " " + speciesIds [idx2]);
+			// Debug.Log ("Graph: UpdateData(): idx2, speciesIds [idx2] = " + idx2 + " " + speciesIds [idx2]);
 			if (speciesIds [idx2] == -1) {
 				name = ES_LABEL;
 			} else {
 				name = speciesTable[speciesIds[idx2]].name;            // entry.Key;
 			}
-			Debug.Log ("Graph: UpdateData(): name = " + name);
+			// Debug.Log ("Graph: UpdateData(): name = " + name);
 			List<string> values = new List<string>();    // entry.Value;
 
 			for (int idx = minDay; idx <= maxDay; idx++) {
@@ -665,10 +675,10 @@ public class Graph : MonoBehaviour {
 				}
 			}
 				
-			Debug.Log("Graph: KeyValuePair, key = " + name);
-			for (int i2 = 0; i2 < values.Count; i2++) {
-				Debug.Log("Graph: KeyValuePair, i, value[i] = " + i2 + " :" + values[i2] + ":");
-			}
+			// Debug.Log("Graph: KeyValuePair, key = " + name);
+			// for (int i2 = 0; i2 < values.Count; i2++) {
+			// 	Debug.Log("Graph: KeyValuePair, i, value[i] = " + i2 + " :" + values[i2] + ":");
+			// }
 				
 			if (name == ".xLabels") {
 				continue;
@@ -676,7 +686,8 @@ public class Graph : MonoBehaviour {
 
 			if (!seriesList.ContainsKey(name)) {
 				Rect seriesRect = new Rect(0, 0, 0, graphRect.height);
-				Color color = new Color(Random.Range(0.5f, 0.9f), Random.Range(0.5f, 0.9f), Random.Range(0.5f, 0.9f));
+				Color color = new Color(UnityEngine.Random.Range(0.5f, 0.9f), UnityEngine.Random.Range(0.5f, 0.9f), 
+						UnityEngine.Random.Range(0.5f, 0.9f));
 				if (speciesIds [idx2] == -1) {
 					color = Color.magenta;
 				}
@@ -712,7 +723,7 @@ public class Graph : MonoBehaviour {
 					
 			}
 			seriesList [name].values = temp;
-			Debug.Log ("Graph, UpdateData: seriesList[name].values.Count = " + seriesList [name].values.Count);
+			// Debug.Log ("Graph, UpdateData: seriesList[name].values.Count = " + seriesList [name].values.Count);
 		}
 
 		seriesLabels.Sort();
@@ -763,7 +774,7 @@ public class Graph : MonoBehaviour {
 		return result;
 	}
 		
-	void GetData() {
+	void GetData() {		
 		isReady = false;
 		biomassValues = new Dictionary<int,int> ();
 		speciesIds = new List<int> ();
@@ -773,7 +784,50 @@ public class Graph : MonoBehaviour {
 		minMonth = NUM_YEARS * 12;
 		maxMonth = 0;
 
-		Debug.Log("Graph: Send SpeciesActionProtocol, action = 6, gets current day");
+		if (File.Exists (fileName)) {
+			fSp = new Dictionary<int, List<int>> ();
+			int spId, cnt = 0;
+			List<int> tList;
+			Dictionary<int,int> tDict;
+			string inLine;
+			using(StreamReader sr = new StreamReader(fileName))
+			{
+				inLine = sr.ReadLine();
+				aDay = Int32.Parse(inLine);
+				maxDay = aDay;
+
+				while (!sr.EndOfStream) {
+					inLine = sr.ReadLine();
+					tDict = new Dictionary<int,int> ();
+					bufLine = inLine;
+					spId = NextValue ();
+					// Debug.Log ("Sorted month values, species_id = " + spId);
+					cnt = NextValue ();
+					minDay = Math.Min (minDay, aDay - cnt + 1);
+					for (int idx = 0; idx < cnt; idx++) {
+						int val = NextValue ();
+						tDict.Add (aDay - idx, val);
+						// Debug.Log ("idx, day, value: " + idx + " " + (aDay - idx) + " " + val);
+					}
+					speciesIds.Add (spId);
+					biomassHistory.Add (tDict);
+				}
+				sr.Close ();
+
+				// zoom = 1;
+				// xMin = 0;
+				UpdateData ();
+				biomassHistory = new List<Dictionary<int,int>> ();
+				biomassValues = new Dictionary<int,int> ();
+				speciesIds = new List<int> ();
+				minDay = 1000000;
+			}
+		} else {
+			aDay = 0;
+		}
+		aDay = 0;
+
+		// Debug.Log("Graph: Send SpeciesActionProtocol, action = 6, gets current day");
 		Game.networkManager.Send(SpeciesActionProtocol.Prepare((short) 6), processDayInfo);
 	}
 
@@ -785,7 +839,10 @@ public class Graph : MonoBehaviour {
 		lDay = args.lDay;
 		maxDay = cDay;
 		Debug.Log ("Graph: c,f,lDay = " + cDay + " " + fDay + " " + lDay);
-		Debug.Log("Graph: Send SpeciesActionProtocol, action = 2");
+		// Debug.Log("Graph: Send SpeciesActionProtocol, action = 2");
+
+		// fSpOut = new Dictionary<int, Dictionary<int,int>> ();
+
 		int action = 2;
 		Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action), ProcessSpeciesAction);
 	}
@@ -801,15 +858,15 @@ public class Graph : MonoBehaviour {
 		}
 		Dictionary<int, int> speciesList = args.speciesList;
 		speciesCount = speciesList.Count + 1;  // Add 1 for Environment score
-		Debug.Log ("Graph, ProcessSpeciesAction, size = " + speciesCount);
-		int action2 = 4;
+		// Debug.Log ("Graph, ProcessSpeciesAction, size = " + speciesCount);
+		int action2 = 7;
 		foreach (KeyValuePair<int, int> entry in speciesList) {
-			Debug.Log ("Graph: species, biomass = " + entry.Key + " " + entry.Value);
+			// Debug.Log ("Graph: species, biomass = " + entry.Key + " " + entry.Value);
 			biomassValues.Add (entry.Key, entry.Value);
-			Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, entry.Key), ProcessSpeciesHistory);
+			Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, entry.Key, 0), ProcessSpeciesHistory);
 		}
 		// Get environment score changeS
-		Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, -1), ProcessSpeciesHistory);
+		Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, -1, 0), ProcessSpeciesHistory);
 		biomassValues.Add (-1, GameState.envScore);
 		if (speciesCount == 0) {
 			UpdateData ();
@@ -819,41 +876,60 @@ public class Graph : MonoBehaviour {
 	public void ProcessSpeciesHistory (NetworkResponse response)
 	{
 		List<int> keys = new List<int> ();
+		List<int> keysS = new List<int> ();
+		List<int> valuesF;
 		int idx;
 		Dictionary<int, int> values = new Dictionary<int, int> ();
+		Dictionary<int, int> valuesS;
+
 		ResponseSpeciesAction args = response as ResponseSpeciesAction;
 		int action = args.action;
 		int status = args.status;
 		int species_id = args.species_id;
-		if ((action != 4) || (status != 0)) {
-			Debug.Log ("Graph: ResponseSpeciesAction unexpected result4");
+		if ((action != 7) || (status != 0)) {
+			Debug.Log ("Graph: ResponseSpeciesAction unexpected result7");
 			Debug.Log ("action, status = " + action + " " + status);
 		}
 		Dictionary<int, int> speciesList = args.speciesHistoryList;
-		Debug.Log ("Graph: ProcessSpeciesHistory, species_id = " + species_id);
+		// Debug.Log ("Graph: ProcessSpeciesHistory, species_id = " + species_id);
 		// Debug.Log ("Graph: ProcessSpeciesHistory, size = " + speciesList.Count);  // null pointer in some cases 
 		int spMin = 10000000;
 		// int spMax = 0;
-		if (speciesList.Count > 0) {
+		if (true) {  // was speciesList.Count > 0
 			foreach (KeyValuePair<int, int> entry in speciesList) {
-				Debug.Log ("day, biomass change = " + entry.Key + " " + entry.Value);
+				// Debug.Log ("day, biomass change = " + entry.Key + " " + entry.Value);
 				spMin = Mathf.Min (spMin, entry.Key);
 				// spMax = Mathf.Max (spMax, entry.Key);
-				keys.Add (entry.Key);
+				keysS.Add (entry.Key);
 				values.Add (entry.Key, entry.Value);
 			}
 			for (int i = spMin + 1; i <= maxDay; i++) {
-				if (!keys.Contains (i)) {
-					keys.Add (i);
+				if (!keysS.Contains (i)) {
+					keysS.Add (i);
 					values.Add (i, 0);
 				}
 			}
-			keys.Sort ();
-			/*
-			for (int i = 0; i < keys.Count; i++) {
-				Debug.Log ("species_id, i, keys[i], biomass change: " + species_id + " " + i + " " + keys [i] + " " + values[keys[i]]);
+			// Debug.Log ("species_id / spMin: " + species_id + " " + spMin);
+			keysS.Sort ();
+
+			if ((aDay > 0) && (fSp.ContainsKey(species_id))) {
+				valuesF = fSp [species_id];
+				for (idx = 0; idx < valuesF.Count; idx++) {
+					keys.Add (idx + (aDay - valuesF.Count));
+					values.Add (idx + (aDay - valuesF.Count), valuesF [idx]);
+				}
 			}
-			*/
+
+			keys.AddRange (keysS);
+
+			// valuesS = values;
+			// fSpOut.Add (species_id, valuesS);
+
+			// Debug.Log ("species_id: " + species_id);
+			// for (int i = 0; i < keys.Count; i++) {
+			//	Debug.Log ("i, keys[i], biomass change: " + i + " " + keys [i] + " " + values[keys[i]]);
+			//}
+
 			/*
 			for (int i = keys [keys.Count - 1] + 1; i <= maxDay; i++) {
 				keys.Add (i);
@@ -869,7 +945,8 @@ public class Graph : MonoBehaviour {
 				day [idx] = keys [size - idx - 1];
 				dayValue [idx] = dayValue [idx - 1] - values [keys[size - idx]];
 			}
-			Debug.Log ("Sorted values, species_id = " + species_id);
+			// Debug.Log ("species_id, day[0]: " + species_id + " " + day [0]);
+			// Debug.Log ("Sorted values, species_id = " + species_id);
 			/*
 			for (idx = 0; idx < size; idx++) {
 				Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
@@ -905,19 +982,55 @@ public class Graph : MonoBehaviour {
 			}
 			*/
 			values = new Dictionary<int, int> ();				
-			Debug.Log ("Sorted month values, species_id = " + species_id);
+			// Debug.Log ("Sorted month values, species_id = " + species_id);
 			for (idx = 0; idx < size; idx++) {
 				values.Add (day[idx], dayValue [idx]);
 				// Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
 			}			
 			speciesIds.Add(species_id);
+			// Debug.Log ("values.Count = " + values.Count);
 			biomassHistory.Add(values);
 		}
 		speciesCount--;
 		if (speciesCount == 0) {
 			Debug.Log ("Graph: Processed last species history");
+			WriteFile ();
 			UpdateData ();
+			if (redraw) {
+				redraw = false;
+				// GetData ();
+			}
 		}
 	}
-		
+
+
+	void WriteFile() {
+		string outLine;
+		Dictionary<int,int> sDict;
+		using (StreamWriter fs = new StreamWriter (fileName, false)) {
+			fs.WriteLine ("" + cDay);
+			for (int idx = 0; idx < speciesIds.Count; idx++) {
+				sDict = biomassHistory[idx];
+				outLine = "" + speciesIds [idx] + "," + sDict.Count;
+				for (int idx2 = 0; idx2 <= cDay; idx2++) {
+					if (sDict.ContainsKey(idx2)) {
+						outLine += ("," + sDict[idx2]);
+					}
+				}
+				fs.WriteLine (outLine);
+			}
+			fs.Close();
+		}
+	}
+
+
+	int NextValue() {
+		int idx1 = bufLine.IndexOf (',');
+		if (idx1 == -1) {
+			return Int32.Parse (bufLine);
+		}
+		string val = bufLine.Substring (0, idx1);
+		bufLine = bufLine.Substring (idx1 + 1);
+		return Int32.Parse (val);
+	}
 }
