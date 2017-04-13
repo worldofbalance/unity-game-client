@@ -54,7 +54,9 @@ public class DemTurnSystem : MonoBehaviour {
     foreach(KeyValuePair<int, GameObject> predator in activePredators)
     {
 
-      BuildInfo animal = predator.Value.GetComponent<BuildInfo> ();
+      //BuildInfo animal = predator.Value.GetComponent<BuildInfo> ();
+      //PredatorInfo animal = predator.Value.GetComponent<BuildInfo>() as PredatorInfo;
+      PredatorInfo animal = predator.Value.GetComponent<PredatorInfo>();
       int x = animal.GetTile ().GetIdX ();
       int y = animal.GetTile ().GetIdY ();
 	    
@@ -99,56 +101,61 @@ public class DemTurnSystem : MonoBehaviour {
   }
 
 
-  public  void PredatorFinishedMove (GameObject finishedPredator)
-  {
-    
-    BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
-    Boolean markForDeletion = false;
+    public  void PredatorFinishedMove (GameObject finishedPredator)
+    {
 
-    if( predator.GetNextTile().resident  != null){
-      
-      BuildInfo nextAnimal = predator.GetNextTile ().resident.GetComponent<BuildInfo> ();
+        //BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
+        PredatorInfo predator = finishedPredator.GetComponent<PredatorInfo>();
+        Boolean markForDeletion = false;
 
-      if(nextAnimal.isPrey() || nextAnimal.isPlant()){
-        predator.GetNextTile ().RemoveAnimal();
-      }
+        if( predator.GetNextTile().resident  != null)
+        {
+            BuildInfo nextAnimal = predator.GetNextTile().resident.GetComponent<BuildInfo>();
 
-      if(nextAnimal.isPrey()){
-        buildMenu.AddTier2Biomass (SpeciesConstants.Biomass (nextAnimal.name));
-        DemAudioManager.audioSelection.Play ();
-        credits++;
-        buildMenu.UpdateCredits (credits);
-        markForDeletion = true;
-      }else if (nextAnimal.isPlant()){
-        buildMenu.AddTier1Biomass (SpeciesConstants.Biomass (nextAnimal.name));
-        buildMenu.SubtractTier2Biomass ((int)(SpeciesConstants.Biomass (nextAnimal.name) * 0.5));
-      }
+            // TODO: check predator/prey relationship, ignore illegitimate prey
+            // FIXME: also, this check is redundant since the next two conditionals check for the same thing
+            if(nextAnimal.isPrey() || nextAnimal.isPlant())
+                predator.GetNextTile ().RemoveAnimal();
+
+            if(nextAnimal.isPrey())
+            {
+                buildMenu.AddTier2Biomass (SpeciesConstants.Biomass (nextAnimal.name));
+                DemAudioManager.audioSelection.Play ();
+                credits++;
+                buildMenu.UpdateCredits (credits);
+                markForDeletion = true;
+            }
+            else if (nextAnimal.isPlant())
+            {
+                buildMenu.AddTier1Biomass (SpeciesConstants.Biomass (nextAnimal.name));
+                buildMenu.SubtractTier2Biomass ((int)(SpeciesConstants.Biomass (nextAnimal.name) * 0.5));
+            }
+        }
+
+
+
+        predator.AdvanceTile ();
+
+        if(markForDeletion){
+        buildMenu.SubtractTier3Biomass (SpeciesConstants.Biomass (predator.name));
+        DemTile tempTile = predator.GetTile ();
+        activePredators.Remove(finishedPredator.GetInstanceID());
+        tempTile.RemoveAnimal ();
+
+
+        }
+
+
+        ProcessTweens ();
+
 
     }
-
-
-
-    predator.AdvanceTile ();
-
-    if(markForDeletion){
-      buildMenu.SubtractTier3Biomass (SpeciesConstants.Biomass (predator.name));
-      DemTile tempTile = predator.GetTile ();
-      activePredators.Remove(finishedPredator.GetInstanceID());
-      tempTile.RemoveAnimal ();
-
-
-    }
-
-      
-    ProcessTweens ();
-
-
-  }
 
 
   public void PredatorExit(GameObject finishedPredator){
 
-    BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
+    //BuildInfo predator = finishedPredator.GetComponent<BuildInfo> ();
+    PredatorInfo predator = finishedPredator.GetComponent<PredatorInfo>();
     predator.GetTile ().RemoveAnimal ();
     lives--;
     buildMenu.UpdateLives (lives);
@@ -177,7 +184,8 @@ public class DemTurnSystem : MonoBehaviour {
     int randomPredator = UnityEngine.Random.Range (0, main.predators.Length);
 
     GameObject newPredator = main.predators [randomPredator].Create ();
-    newPredator.GetComponent<BuildInfo> ().speciesType = 2;
+    // Redundant --> predators' PredatorInfo components automatically assign a speciesType of 2
+    //newPredator.GetComponent<BuildInfo> ().speciesType = 2; 
 
     //activePredators.Add (newPredator.GetInstanceID() , newPredator);
 
@@ -185,7 +193,7 @@ public class DemTurnSystem : MonoBehaviour {
     //board.AddNewPredator(8, random, newPredator );
 
     tweenList.Enqueue(new DemPredatorEnterTween (newPredator, 700));
-    buildMenu.AddTier3Biomass (SpeciesConstants.Biomass (newPredator.GetComponent<BuildInfo> ().name));
+    buildMenu.AddTier3Biomass (SpeciesConstants.Biomass (newPredator.GetComponent<PredatorInfo>().name));
     //tweenList.Clear ();
 
     //turnLock = false;
@@ -204,6 +212,7 @@ public class DemTurnSystem : MonoBehaviour {
       buildMenu.ToggleButtonLocks ();
       buildMenu.UpdateMenuLocks ();
     }
+
 
   }
 

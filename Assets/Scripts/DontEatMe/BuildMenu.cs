@@ -59,6 +59,9 @@ public class BuildMenu : MonoBehaviour
     public GameObject plantMenuButton;
     public GameObject preyMenuButton;
 
+    // Skip button (CONCEPTUAL)
+    public GameObject skipTurnButton;
+
     // COLOR CONSTANTS //
     public Color activeColor; // Active button color
     public Color inactiveColor; // Inactive / deactivated button color
@@ -72,6 +75,7 @@ public class BuildMenu : MonoBehaviour
 
     public Color plantIconColor; // Plant icon color
     public Color preyIconColor; // Prey icon color
+    public Color predatorIconColor; // Predator icon color
     // *************** //
 
     private bool plantMenuActive = true; // Plant menu active status
@@ -165,11 +169,13 @@ public class BuildMenu : MonoBehaviour
         selectedColor = Color.yellow;
         deselectedColor = new Color32(75, 75, 75, 255); // Dark gray @ 100% alpha
         plantIconColor = new Color32(46, 139, 87, 255); // HTML "SEAGREEN" @ 100% alpha
-        preyIconColor = new Color32(220, 20, 60, 255); // HTML "CRIMSON" @ 100% alpha
+        preyIconColor = new Color32(210, 105, 30, 255); // HTML "BROWN" @ 100% alpha
+        predatorIconColor = new Color32(178, 34, 34, 255); // HTML "FIREBRICK" @ 100% alpha
 
         infoWidget = Resources.Load<Sprite>("DontEatMe/Sprites/infoWidget");
         popupBackground = Resources.Load<Sprite>("DontEatMe/Sprites/popup");
-        fontFamily = Resources.Load<Font>("Fonts/Chalkboard");
+        //fontFamily = Resources.Load<Font>("Fonts/Chalkboard");
+        fontFamily = Resources.Load<Font>("Fonts/Dresden Elektronik");
 
         backgroundMaterial = Resources.Load<Material>("DontEatMe/Materials/DontEatMeBg");
 
@@ -253,7 +259,7 @@ public class BuildMenu : MonoBehaviour
 
     /**
         Used to initialize game objects and data..
-        This method is invoked automatically.
+        This method is invoked automatically and is called after the Awake method.
     */
     void Start ()
     {
@@ -305,8 +311,8 @@ public class BuildMenu : MonoBehaviour
 
         prey = new DemAnimalFactory[6];
         prey[0] = new DemAnimalFactory("Tree Mouse");
-        prey[1] = new DemAnimalFactory("Bat-Eared Fox");
-        prey[2] = new DemAnimalFactory("Kori Buskard");
+        prey[1] = new DemAnimalFactory("Bush Hyrax");
+        prey[2] = new DemAnimalFactory("Kori Bustard");
         prey[3] = new DemAnimalFactory("Crested Porcupine");
         prey[4] = new DemAnimalFactory("Oribi");
         prey[5] = new DemAnimalFactory("Buffalo");
@@ -324,36 +330,11 @@ public class BuildMenu : MonoBehaviour
         gameObject.AddComponent<DemRectUI>();
         demRectUI = gameObject.GetComponent<DemRectUI>();
 
-        // NEW TOGGLE BUTTON INTERFACE //
-        // 
-        // Set menu selector button parameters
-        demButtonFactory.setSize(Screen.width * 0.075f, Screen.height / 14);
-        //
-        // Create plant menu selector button
-        plantMenuButton = demButtonFactory.CreateButton(0, 0, "plantmenu");
-        demButtonFactory.SetButtonIcon(plantMenuButton, "DontEatMe/Sprites/plant_icon", plantIconColor);
-        demButtonFactory.SetButtonText(plantMenuButton, "Plant");
-        demButtonFactory.SetButtonHighlightedColor(plantMenuButton, plantIconColor);
-        plantMenuButton.GetComponent<Button>().onClick.AddListener(() => { SetBuildButtonCategory(0); });
-        //
-        // Create prey menu selector button
-        preyMenuButton = demButtonFactory.CreateButton(demButtonFactory.getXSize() + 7, 0, "preymenu");
-        demButtonFactory.SetButtonIcon(preyMenuButton, "DontEatMe/Sprites/prey_icon", preyIconColor);
-        demButtonFactory.SetButtonText(preyMenuButton, "Prey");
-        demButtonFactory.SetButtonHighlightedColor(preyMenuButton, preyIconColor);
-        preyMenuButton.GetComponent<Button>().onClick.AddListener(() => { SetBuildButtonCategory(1); });
-        //
-        // Set initial color schemes for plant (active) and prey (inactive) buttons
-        plantMenuButton.GetComponentInChildren<Image>().color = selectedColor;
-        plantMenuButton.GetComponentsInChildren<Image>()[1].color = plantIconColor;
-        demButtonFactory.SetButtonTextColor(plantMenuButton, Color.white);
-        //...
-        preyMenuButton.GetComponentInChildren<Image>().color = deselectedColor;
-        preyMenuButton.GetComponentsInChildren<Image>()[1].color = deselectedColor;
-        demButtonFactory.SetButtonTextColor(preyMenuButton, Color.gray);
-        //
-        // Initialize plant and prey buttons (build)
+        // Initialize plant and prey button menu
         InitializeBuildMenu();
+
+        // Create skip turn button
+        CreateSkipButton();
 
         //quit button 
         float qBX = Screen.width / 10.0f;
@@ -428,7 +409,37 @@ public class BuildMenu : MonoBehaviour
         while the inactive will move behind the active.
     */
     void InitializeBuildMenu ()
-    {        
+    {
+        // PLANT & PREY TOGGLE BUTTONS //
+        //
+        // Set menu selector button parameters
+        demButtonFactory.setSize(Screen.width * 0.075f, Screen.height / 14);
+        //
+        // Create plant menu selector button
+        plantMenuButton = demButtonFactory.CreateButton(0, 0, "plantmenu");
+        demButtonFactory.SetButtonIcon(plantMenuButton, "DontEatMe/Sprites/plant_icon", plantIconColor);
+        demButtonFactory.SetButtonText(plantMenuButton, "Plant");
+        demButtonFactory.SetButtonHighlightedColor(plantMenuButton, plantIconColor);
+        plantMenuButton.GetComponent<Button>().onClick.AddListener(() => { SetBuildButtonCategory(0); });
+        //
+        // Create prey menu selector button
+        preyMenuButton = demButtonFactory.CreateButton(demButtonFactory.getXSize() + 7, 0, "preymenu");
+        demButtonFactory.SetButtonIcon(preyMenuButton, "DontEatMe/Sprites/prey_icon", preyIconColor);
+        demButtonFactory.SetButtonText(preyMenuButton, "Prey");
+        demButtonFactory.SetButtonHighlightedColor(preyMenuButton, preyIconColor);
+        preyMenuButton.GetComponent<Button>().onClick.AddListener(() => { SetBuildButtonCategory(1); });
+        //
+        // Set initial color schemes for plant (active) and prey (inactive) buttons
+        plantMenuButton.GetComponentInChildren<Image>().color = selectedColor;
+        plantMenuButton.GetComponentsInChildren<Image>()[1].color = plantIconColor;
+        demButtonFactory.SetButtonTextColor(plantMenuButton, Color.white);
+        //...
+        preyMenuButton.GetComponentInChildren<Image>().color = deselectedColor;
+        preyMenuButton.GetComponentsInChildren<Image>()[1].color = deselectedColor;
+        demButtonFactory.SetButtonTextColor(preyMenuButton, Color.gray);
+
+        // PLANT & PREY BUILD BUTTONS //
+        //
         // Creates a buttons for plant/prey menu
         demButtonFactory.setSize(Screen.width * 0.1f, Screen.height / 7);
         plantBuildButtons = new GameObject[6];
@@ -536,38 +547,71 @@ public class BuildMenu : MonoBehaviour
         UpdateMenuLocks();
     }
 
-    // Toggle between plant and prey menu when the toggle button is clicked
-    /*
-    void selectMenu(GameObject tButton, GameObject[] mButtons)
-    {
-        Debug.Log("Clicked " + tButton.name);
-
-        // TODO: replace with simple boolean (e.g. toggleCount = !toggleCount) to reduce superfluous arithmetic ops
-        toggleCount = (toggleCount + 1) % 2;
-
-        if (toggleCount == 0)
-        {
-            tButton.GetComponentInChildren<Text>().text = "Plants";
-            for (int i = 0; i < 6; i++)
-            {
-                menuButtons[i].transform.Find(prey[i].GetName()).gameObject.SetActive(false);
-                menuButtons[i].transform.Find(plants[i].GetName()).gameObject.SetActive(true);
-            }
-        }
-
-        else
-        {
-            tButton.GetComponentInChildren<Text>().text = "Prey";
-            for (int i = 0; i < 6; i++)
-            {
-                menuButtons[i].transform.Find(plants[i].GetName()).gameObject.SetActive(false);
-                menuButtons[i].transform.Find(prey[i].GetName()).gameObject.SetActive(true);
-            }
-        }
-
-        UpdateMenuLocks();
-    }
+    /**
+        Skips the player's current turn after verification.
+        The method modifies the "Skip Turn" button, disabling it before creating confirm and cancel buttons.
     */
+    void SelectSkip ()
+    {
+        skipTurnButton.GetComponent<Button>().interactable = false;
+        GameObject cancelButton = demButtonFactory.CreateButton
+        (
+            (float)(skipTurnButton.transform.localPosition.x + skipTurnButton.GetComponent<RectTransform>().rect.width / 2f),
+            (float)(skipTurnButton.transform.localPosition.y - skipTurnButton.GetComponent<RectTransform>().rect.height / 1.5f),
+            "cancel"
+        );
+        GameObject confirmButton = demButtonFactory.CreateButton
+        (
+            //(float)(skipTurnButton.transform.localPosition.x - skipTurnButton.GetComponent<RectTransform>().rect.width / 2f), 
+            (float)(cancelButton.transform.localPosition.x - cancelButton.GetComponent<RectTransform>().rect.width * 0.75f),
+            (float)(skipTurnButton.transform.localPosition.y - skipTurnButton.GetComponent<RectTransform>().rect.height / 1.5f),
+            "confirm"
+        );
+        demButtonFactory.setSize(confirmButton, Screen.width * 0.075f, Screen.height / 20);
+        demButtonFactory.setSize(cancelButton, Screen.width * 0.075f, Screen.height / 20);
+        demButtonFactory.SetButtonHighlightedColor(confirmButton, new Color32(0, 250, 154, 255));
+        demButtonFactory.SetButtonNormalColor(confirmButton, new Color32(107, 142, 35, 255));
+        demButtonFactory.SetButtonHighlightedColor(cancelButton, new Color32(255, 20, 147, 255));
+        demButtonFactory.SetButtonNormalColor(cancelButton, predatorIconColor);
+        demButtonFactory.SetButtonText(confirmButton, "Skip");
+        demButtonFactory.SetButtonText(cancelButton, "Not now");
+        demButtonFactory.SetButtonTextFontSize(confirmButton, Screen.width / 80);
+        demButtonFactory.SetButtonTextFontSize(cancelButton, Screen.width / 80);
+        confirmButton.GetComponent<Button>().onClick.AddListener
+        (() => {
+            GameObject.Find ("MainObject").GetComponent<DemTurnSystem>().PredatorTurn();
+            Destroy(confirmButton);
+            Destroy(cancelButton);
+            skipTurnButton.GetComponent<Button>().interactable = true;
+        });
+        cancelButton.GetComponent<Button>().onClick.AddListener
+        (() => {
+            Destroy(confirmButton);
+            Destroy(cancelButton);
+            skipTurnButton.GetComponent<Button>().interactable = true;
+        });
+    }
+
+    /**
+        Creates the button allowing for the player to skip their current turn.
+    */
+    void CreateSkipButton ()
+    {
+        demButtonFactory.setSize(Screen.width * 0.1f, Screen.height / 12);
+        skipTurnButton = demButtonFactory.CreateButton
+        (
+            preyMenuButton.transform.localPosition.x + Screen.width / 1.75f,
+            -10,
+            "skipturn" 
+        );
+        skipTurnButton.GetComponent<RectTransform>().pivot = Vector2.up;
+        demButtonFactory.SetButtonIcon(skipTurnButton, "DontEatMe/Sprites/skip_turn_icon", predatorIconColor);
+        demButtonFactory.SetButtonText(skipTurnButton, "Skip");
+        demButtonFactory.SetButtonHighlightedColor(skipTurnButton, predatorIconColor);
+        //demButtonFactory.SetButtonTextColor(skipTurnButton, new Color32(255, 248, 220, 200));
+        demButtonFactory.SetButtonTextFontSize(skipTurnButton, Screen.height / 35);
+        skipTurnButton.GetComponent<Button>().onClick.AddListener(() => { SelectSkip(); });
+    }
 
     /**
         Updates the menu item locks for active build buttons.
@@ -596,65 +640,54 @@ public class BuildMenu : MonoBehaviour
         }
     }
 
-    // Specie selection based on the button clicked and setting down species on the gameboard
-    void selectSpecies(GameObject button)
+    /*
+        Selects the species (plant or prey) associated with a build button, creates the appropriate icon to prepare a
+        build, and displays the valid build tiles if such tiles exist.
+
+        @param  button  a GameObject representing a build button (created by an invocation of DemButtonFactory.Create)
+    */
+    public void selectSpecies(GameObject button)
     {
-        Debug.Log("Clicked " + button.name);
-        turnSystem.IsTurnLocked();
+        //Set button array and species type as plants or prey
+        DemAnimalFactory[] species = plantMenuActive ? plants : prey;
+        short speciesType = plantMenuActive ? (short)0 : (short)1;
 
-        //Sets button menu b/t plants and prey
-        DemAnimalFactory[] species;
-        short speciesType = 0;
-
-        //if (toggleCount % 2 == 0)
-        if (plantMenuActive)
-            species = plants;
-        else
-        {
-            species = prey;
-            speciesType = 1;
-        }
-
-
-
+        // Play button "click"
         DemAudioManager.audioClick.Play();
 
         // If a selection is currently in progress...
         if (main.currentSelection)
         {
             // Ignore button click if for the same species
-            //if (currentAnimalFactory == species[int.Parse(button.name)])
-            if (currentAnimalFactory == species[int.Parse(button.name)])
-                return;
+            if (currentAnimalFactory == species[int.Parse(button.name)]) return;
             // Otherwise, destroy the current selection before continuing
-            else
-                Destroy(main.currentSelection);
-
+            else Destroy(main.currentSelection);
+            // Clear buildable tiles
             main.boardController.ClearAvailableTiles();
-
         }
-        // Set / reset currentlyBuilding
 
-        //currentlyBuilding = info;
+        // Parse current build species
         currentAnimalFactory = species[int.Parse(button.name)];
 
-
-        // Create the current prey object
-        //GameObject currentPlant = plant.Create(); //DemAnimalFactory.Create(currentlyBuilding.name , 0 ,0) as GameObject;
-
         // Define the current prey's initial location relative to the world (i.e. NOT on a screen pixel basis)
-        Vector3 init_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
-        init_pos.z = -1.5f;
+        Vector3 initialBuildPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
+        initialBuildPosition.z = -1.5f;
 
-        // Instantiate the current prey
+        // Instantiate the current prey, set as last sibling (i.e. on top)
         main.currentSelection = species[int.Parse(button.name)].Create();
-        //main.currentSelection.GetComponent<BuildInfo>().isPlant = true;
-        main.currentSelection.GetComponent<BuildInfo>().speciesType = speciesType;
+        main.currentSelection.transform.SetAsLastSibling();
+        //if (speciesType == 1) main.currentSelection.GetComponent<PreyInfo>().speciesType = speciesType;
+        if (speciesType == 0) main.currentSelection.GetComponent<BuildInfo>().speciesType = speciesType;
 
 
-        // Set DemMain's preyOrigin as the center of the button
-        main.setBuildOrigin(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        // Set DemMain's preyOrigin as the center of the button; origin must be in world space (as with 'initialBuildPosition')
+        Vector3 buildOrigin = Camera.main.ScreenToWorldPoint(button.gameObject.transform.position);
+        // Button justified upper-left, shift half width and height to center origin
+        buildOrigin.x += button.gameObject.transform.lossyScale.x / 2;
+        buildOrigin.y -= button.gameObject.transform.lossyScale.y / 2;
+        main.setBuildOrigin(buildOrigin);
 
+        // Calculate and display available build tiles
         main.boardController.SetAvailableTiles();
     }
 
@@ -1081,7 +1114,10 @@ public class BuildMenu : MonoBehaviour
         UnlockPreyMenuItems();
     }
 
-
+    public bool PlantMenuActive ()
+    {
+        return plantMenuActive;
+    }
 
 
     // TOOD: documentation, etc., etc., etc.... 

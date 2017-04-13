@@ -5,7 +5,7 @@ using System.Collections;
 using System;
 
 /**
-	
+	TODO: documentation
 */
 public class DemAnimalFactory
 {
@@ -25,8 +25,10 @@ public class DemAnimalFactory
     /**
     	Default constructor.
     	Any additional data can be automatically parsed using the _speciesName parameter.
+
+        @param  _speciesName    a string containing a species name (must match with database!)
     */
-    public DemAnimalFactory(string _speciesName)
+    public DemAnimalFactory (string _speciesName)
     {
         this.speciesName = _speciesName;
         this.speciesId = SpeciesConstants.SpeciesID(this.speciesName);
@@ -55,49 +57,58 @@ public class DemAnimalFactory
 
     /**
     	Returns a GameObject instance as defined by this factory.
+     The GameObject represents a species instance of one of the following types, each attached a relevant BuildInfo script:
+     - Plant (BuildInfo)
+     - Prey (PreyInfo)
+     - Predator (PredatorInfo)
+                
+
+     @return a GameObject representing a species instance      
     */
-    public GameObject Create()
+    public GameObject Create ()
     {
-        //GameObject animal = PrefabUtility.CreateEmptyPrefab ("./" + name) as GameObject;
+        // Create a new animal using the factory's current settings
         GameObject animal = new GameObject(this.speciesName);
 
         // Add appropriate BuildInfo component type
-        BuildInfo info;
         switch (this.speciesType)
         {
-
         	// Prey
-        case 1:
-				  info = animal.AddComponent<PreyInfo>().Initialize(this.speciesId);
-				  break;
+            case 1:
+                PreyInfo preyinfo = animal.AddComponent<PreyInfo>().Initialize(this.speciesId);
+                preyinfo.SetParent(animal);
+                preyinfo.previewImage = Resources.Load("Textures/Species/" + this.speciesName) as Texture;
+				break;
         	// Predator
-		case 2:
-				info = animal.AddComponent<PredatorInfo> ().Initialize (this.speciesId);
+		    case 2:
+                PredatorInfo predinfo = animal.AddComponent<PredatorInfo>().Initialize(this.speciesId);
+                predinfo.SetParent(animal);
+                predinfo.previewImage = Resources.Load("Textures/Species/" + this.speciesName) as Texture;
         		break;
         	// Plant --> case 0 --> may need a PlantInfo class later (?)
         	// Omnivore --> case ? --> some prey may also be predators, so an OmnivoreInfo class would accommodate this (?)
         	// Default
         	default:
-        		info = animal.AddComponent<BuildInfo>();
+                BuildInfo info = animal.AddComponent<BuildInfo>();
+                info.SetParent(animal);
+                info.previewImage = Resources.Load("Textures/Species/" + this.speciesName) as Texture;
         		break;
-
         }
-        info.SetParent(animal);
-        info.previewImage = Resources.Load("Textures/Species/" + this.speciesName) as Texture;
 
         // TO USE OnGUI()
         // Uncomment line 42 and comment out line 43
 
+        // Attach a SpriteRenderer and define appropriate settings
         SpriteRenderer renderer = animal.AddComponent<SpriteRenderer>();
-        //renderer.sprite = Sprite.Create(info.previewImage as Texture2D, new Rect(0f, 0f, 256, 256), new Vector2(0.5f, 0.1f));
         renderer.sprite = this.image[0];
         renderer.transform.parent = animal.transform;
         animal.transform.localScale = new Vector3(0.4f, 0.4f, 0);
 
-
 		//predator indicator
+        // TODO: implement something useful
 		//start
 		if (this.speciesType == 2) { // if predator
+            /*
 			Sprite predatorRage = Resources.Load<Sprite>("DontEatMe/PredatorRage");
 			GameObject predatorIndicate = new GameObject ("predatorRage");
 			predatorIndicate.AddComponent<SpriteRenderer> ();
@@ -107,6 +118,7 @@ public class DemAnimalFactory
 			predatorIndicate.transform.localPosition = new Vector3 (-0.8f, 0.8f, 0);
 			predatorIndicate.GetComponent<SpriteRenderer>().sortingOrder = 1;
 			Debug.Log (predatorRage);
+            */
 		}
 		//end
         return animal;
@@ -151,5 +163,4 @@ public class DemAnimalFactory
     {
         return this.img;
     }
-
 }

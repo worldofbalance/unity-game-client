@@ -40,7 +40,7 @@ public class SpeciesConstants
         Buffalo             = 7,
         BushHyrax           = 48,
         CrestedPorcupine    = 72,
-        KoriBuskard         = 65,
+        KoriBustard         = 65,
         Oribi               = 73,
         TreeMouse           = 31,
         // Predators        
@@ -179,14 +179,15 @@ public class SpeciesConstants
         (
             "Acacia",                           // Name
             (int)SPECIES_ID.Acacia,             // Species ID
-            new int[1][]                        // Effect range
+            new int[4][]                        // Effect range
             {
                 // . * .
                 // * O *
                 // . * .
-          
-                new int[2]{0, -1}
-
+                new int[2]{0, 1},
+                new int[2]{1, 0},
+                new int[2]{0, -1},
+                new int[2]{-1, 0}
             },
             // Lore
             "Acacia is a genus of shrubs and trees belonging to the subfamily Mimosoideae of the family Fabaceae, " +
@@ -197,13 +198,15 @@ public class SpeciesConstants
         (
             "Big Tree",                         // Name
             (int)SPECIES_ID.BigTree,            // Species ID
-            new int[1][]                        // Effect range
+            new int[4][]                        // Effect range
             {
                 // * . *
                 // . O .
                 // * . *
-                new int[2]{0, 1},
-
+                new int[2]{-1, -1},
+                new int[2]{1, 1},
+                new int[2]{1, -1},
+                new int[2]{-1, 1}
             },
             // Lore
             "Trees are an important component of the natural landscape because of their prevention of erosion " +
@@ -216,16 +219,19 @@ public class SpeciesConstants
         (
             "Baobab",                           // Name
             (int)SPECIES_ID.Boabab,             // Species ID
-            new int[3][]                        // Effect range
+            new int[8][]                        // Effect range
             {
                 // * * *
                 // * O *
                 // * * *
-                new int[2]{1, 1},
-                new int[2]{-1, 1},
+                new int[2]{0, 1},
+                new int[2]{1, 0},
+                new int[2]{0, -1},
                 new int[2]{-1, 0},
-    
-
+                new int[2]{-1, -1},
+                new int[2]{1, 1},
+                new int[2]{1, -1},
+                new int[2]{-1, 1}
             },
             // Lore
             "Baobab is a genus of eight species of tree, six native to Madagascar, one native to mainland Africa " +
@@ -237,20 +243,12 @@ public class SpeciesConstants
         (
             "Grains And Seeds",                 // Name
             (int)SPECIES_ID.GrainsAndSeeds,     // Species ID
-            new int[8][]                        // Effect range
+            new int[1][]                        // Effect range
             {
                 // . . .
                 // . O *
                 // . . .
-                new int[2]{-1, 0},
-                new int[2]{-1, 1},
-                new int[2]{-1, 2},
-                new int[2]{-1, 3},
-                new int[2]{1, 0},
-                new int[2]{1, 1},
-                new int[2]{1, 2},
-                new int[2]{1, 3},
-
+                new int[2]{-1, 0}
             },
             // Lore
             "Special",
@@ -260,21 +258,13 @@ public class SpeciesConstants
         (
             "Grass And Herbs",                  // Name
             (int)SPECIES_ID.GrassAndHerbs,      // Species ID
-            new int[10][]                        // Effect range
+            new int[2][]                        // Effect range
             {
                 // . * .
                 // . O .
                 // . * .
                 new int[2]{0, 1},
-                new int[2]{0, -1},
-                new int[2]{1, 1},
-                new int[2]{1, -1},
-                new int[2]{0, 2},
-                new int[2]{0, -2},
-                new int[2]{1, 2},
-                new int[2]{1, -2},
-                new int[2]{1, 3},
-                new int[2]{1, -3}
+                new int[2]{0, -1}
             },
             // Lore
             "Grasses are among the most versatile life forms. They became widespread toward the end of the " +
@@ -286,17 +276,14 @@ public class SpeciesConstants
         (
             "Trees And Shrubs",                 // Name
             (int)SPECIES_ID.TreesAndShrubs,     // Species ID
-            new int[6][]                        // Effect range
+            new int[3][]                        // Effect range
             {
-                // . . * 
+                // . . *
                 // . O * 
-                // . . * 
+                // . . *
                 new int[2]{-1, 1},
                 new int[2]{-1, 0},
-                new int[2]{-1, -1},
-                new int[2]{-2, 1},
-                new int[2]{-2, 0},
-                new int[2]{-2, -1}
+                new int[2]{-1, -1}
             },
             // Lore
             "Special",
@@ -307,17 +294,13 @@ public class SpeciesConstants
         (
           "Fruits And Nectar",                 // Name
           (int)SPECIES_ID.FruitsAndNectar,     // Species ID
-          new int[6][]                        // Effect range
+          new int[2][]                        // Effect range
           {
-          // . . * 
-          // . O * 
-          // . . * 
-          new int[2]{1, 1},
-          new int[2]{-1, 0},
-          new int[2]{1, -1},
-          new int[2]{1, 3},
-          new int[2]{-3, 0},
-          new int[2]{1, -3},
+          // . . . .
+          // . O * * 
+          // . . . .
+              new int[2]{-1, 0},
+              new int[2]{-2, 0},
           },
           // Lore
           "Special",
@@ -384,8 +367,8 @@ public class SpeciesConstants
         ),
         new Prey
         (
-            "Kori Buskard",                     // Name
-            (int)SPECIES_ID.KoriBuskard,        // Species ID
+            "Kori Bustard",                     // Name
+            (int)SPECIES_ID.KoriBustard,        // Species ID
             20,                                 // Health
             new int[]                           // Predators
             {
@@ -526,7 +509,7 @@ public class SpeciesConstants
             new int[]                           // Prey
             {
                 (int)SPECIES_ID.Oribi,
-                (int)SPECIES_ID.KoriBuskard,
+                (int)SPECIES_ID.KoriBustard,
                 (int)SPECIES_ID.Buffalo
             },
             // Lore
@@ -886,18 +869,15 @@ public class SpeciesConstants
     */
     public static string SpeciesLore (string name)
     {
+        // Search plants
+        foreach (Plant plant in PLANTS)
+            if (plant.name == name) return plant.lore;
         // Search prey
         foreach (Prey prey in PREY)
-        {
-            if (prey.name == name)
-                return prey.lore;
-        }
+            if (prey.name == name) return prey.lore;
         // Search predators
         foreach (Predator predator in PREDATORS)
-        {
-            if (predator.name == name)
-                return predator.lore;
-        }
+            if (predator.name == name) return predator.lore;
         // Otherwise return default
         return DEFAULT_LORE;
     }
@@ -911,18 +891,15 @@ public class SpeciesConstants
     */
     public static string SpeciesLore (int id)
     {
+        // Search plants
+        foreach (Plant plant in PLANTS)
+            if (plant.speciesID == id) return plant.lore;
         // Search prey
         foreach (Prey prey in PREY)
-        {
-            if (prey.speciesID == id)
-                return prey.lore;
-        }
+            if (prey.speciesID == id) return prey.lore;
         // Search predators
         foreach (Predator predator in PREDATORS)
-        {
-            if (predator.speciesID == id)
-                return predator.lore;
-        }
+            if (predator.speciesID == id) return predator.lore;
         // Otherwise return default
         return DEFAULT_LORE;
     }

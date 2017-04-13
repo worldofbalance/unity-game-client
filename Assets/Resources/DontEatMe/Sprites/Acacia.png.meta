@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: d8b900cc0cf712f4a8c4c4ef6b993f78
-timeCreated: 1491222041
+timeCreated: 1491482432
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -57,13 +57,13 @@ TextureImporter:
       name: Acacia_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 256
-        height: 256
+        x: 13
+        y: 3
+        width: 238
+        height: 233
       alignment: 9
-      pivot: {x: 0.49827468, y: 0.19979292}
-      border: {x: 14, y: 3, z: 7, w: 35}
+      pivot: {x: 0.48673055, y: 0.124871165}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     outline: []

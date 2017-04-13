@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 6b64e6c56a407d8418e7db14d8ff8f47
-timeCreated: 1491222029
+timeCreated: 1491482369
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -57,12 +57,12 @@ TextureImporter:
       name: Big Tree_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 256
-        height: 256
+        x: 11
+        y: 7
+        width: 239
+        height: 237
       alignment: 9
-      pivot: {x: 0.5258799, y: 0.16528636}
+      pivot: {x: 0.5276053, y: 0.13250513}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1

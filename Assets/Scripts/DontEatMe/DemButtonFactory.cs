@@ -3,7 +3,20 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 using System.ComponentModel;
+using System.Security.Cryptography;
 
+/**
+    NOTES: the DemButtonFactory class needs an actual DemButton class; the current approach to button creation and
+    manipulation follows a paradigm very close to pure procedural rather than object-oriented. For instance, instead of
+    the Create method returning a new, say, DemButton object with its own respective accessors, mutators, etc., it
+    returns more or less a "generic" GameObject. Such objects can really only be manipulated after creation by using
+    C-like function calls to DemButtonFactory methods (for instance, "SetButtonText", "SetButtonImage", etc. must
+    contain a "button" object as an argument).
+    A suggestion to those who may be working on this in the future is to re-implement the DemButtonFactory class to
+    be object-oriented, and create a custom "DemButton" class whose objects contain any and all methods currently in
+    DemButtonFactory for which a "button" object must be passed as an argument.
+    Although not completely necessary, it will help to simplify individual button creation and manipulation.
+*/
 public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     // Button layer level
@@ -57,7 +70,7 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
 
     // Instantiate and place the buttons on the scene
-    public GameObject CreateButton(float xPos, float yPos, string name)
+    public GameObject CreateButton (float xPos, float yPos, string name)
     {
         GameObject button = Instantiate(buttonPrefab) as GameObject;
         button.name = name;
@@ -156,12 +169,34 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
         // Set anchor => justify left, keep icon proportionally correct
         rt.anchoredPosition = Vector2.left;
         rt.anchorMin = Vector2.zero;
-        rt.anchorMax = new Vector2
+
+        // Isolate button icon image
+        Image icon = buttonIcon.GetComponent<Image>();
+
+        Rect buttonRect = button.GetComponent<RectTransform>().rect;
+        float iconWtH = icon.sprite.rect.width/icon.sprite.rect.height;
+        float buttonWtH = buttonRect.width / buttonRect.height;
+
+
+
+
+        Debug.Log("iconWtH for '" + iconPath + "' = " + iconWtH);
+        //if (iconWtH > 1) rt.anchorMax = new Vector2(1/iconWtH, 1f);
+        if (iconWtH > buttonWtH) rt.anchorMax = new Vector2
         (
-            (float)(button.transform as RectTransform).sizeDelta.y /
-            (float)(button.transform as RectTransform).sizeDelta.x,
-            1
+            (buttonRect.width * icon.sprite.rect.height) / 
+            (buttonRect.height * icon.sprite.rect.width),
+            1f
         );
+        else if (iconWtH < buttonWtH) rt.anchorMax = new Vector2
+        (
+            (buttonRect.height * icon.sprite.rect.width) / 
+            (buttonRect.width * icon.sprite.rect.height),
+            1f
+        );
+        else rt.anchorMax = new Vector2(1/buttonWtH, 1f);
+
+        // Set offset
         rt.offsetMin = new Vector2(7, 7);
         rt.offsetMax = new Vector2(-7, -7);
     }
@@ -209,9 +244,13 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
     */
     public void SetButtonTextFontSize (GameObject button, int size)
     {
-        button.GetComponent<Text>().fontSize = size > 0 ? size : 1; 
+        button.GetComponentInChildren<Text>().fontSize = size > 0 ? size : 1; 
     }
 
+    /* TODO:    this tends to be confusing: two "setSize" methods, one for the actual DemButtonFactory instance for 
+                subsequent button creation, and the other for resizing an initialized button object.
+                Consider a name change for one of them (e.g. "setCreationSize" or "setButtonSize", etc.)
+    */
     // Change the size of the button
     public void setSize(float newSizeX, float newSizeY)
     {

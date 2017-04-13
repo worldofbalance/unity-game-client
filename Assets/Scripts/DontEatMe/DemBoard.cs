@@ -64,9 +64,10 @@ public class DemBoard : MonoBehaviour {
         }
     }*/
 	
-  public void Add(int x, int y){
+  public void Add (int x, int y)
+  {
 
-    Tiles[x, y] = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    Tiles[x,y] = GameObject.CreatePrimitive(PrimitiveType.Quad);
     //cube.tag = "Tile"; // Add a "Tile" tag to each cube
     Debug.Log(gameBoard);
     Tiles[x, y].transform.parent = gameBoard.transform;
@@ -87,7 +88,6 @@ public class DemBoard : MonoBehaviour {
 
     Tiles[x, y].AddComponent<DemTile>(); // Add the DemTile script to each cube
   }
-
 
     /**
         Determines which tiles are available for building.
