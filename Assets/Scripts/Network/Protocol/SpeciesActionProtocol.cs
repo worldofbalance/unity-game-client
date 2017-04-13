@@ -44,8 +44,7 @@ public class SpeciesActionProtocol {
 		foreach (KeyValuePair<int, int> entry in speciesList) {
 			request.AddInt32(entry.Key);
 			request.AddInt32(entry.Value);
-		}
-		
+		}		
 		return request;
 	}
 
@@ -57,6 +56,18 @@ public class SpeciesActionProtocol {
 		request.AddInt32(species_id);
 		return request;
 	}
+
+
+	// action = 7
+	// Obtains the history of changes to the biomass value, starting from a day
+	public static NetworkRequest Prepare(short action, int species_id, int startDay) {
+		NetworkRequest request = new NetworkRequest(NetworkCode.SPECIES_ACTION);
+		request.AddShort16(action);
+		request.AddInt32(species_id);
+		request.AddInt32(startDay);
+		return request;
+	}
+
 		
 	public static NetworkResponse Parse(MemoryStream dataStream) {
 		ResponseSpeciesAction response = new ResponseSpeciesAction();
@@ -83,7 +94,7 @@ public class SpeciesActionProtocol {
 			response.cost = DataReader.ReadInt (dataStream);
 			response.biomassServer = DataReader.ReadFloat (dataStream);
 			response.index = DataReader.ReadShort (dataStream);
-		} else if (response.action == 4) {
+		} else if ((response.action == 4) || (response.action == 7)) {
 			response.species_id = DataReader.ReadInt (dataStream);
 			int count = DataReader.ReadShort (dataStream);
 			response.speciesHistoryList = new Dictionary<int,int> ();

@@ -226,7 +226,7 @@ public class ShopCartPanel : MonoBehaviour {
 			purBiomass = 0;
 		}
 
-		purCost = (int) (purBiomass * (speciesToBuy_cost / speciesToBuy_biomassServer));
+		purCost = (int) (purBiomass * (speciesToBuy_cost / speciesToBuy_biomassServer) + 0.99);
 
 		GUI.Label(new Rect((purWindowWidth - 200)/2, 120, 200, 30), "Cost: " + purCost + " credits", style);
 
