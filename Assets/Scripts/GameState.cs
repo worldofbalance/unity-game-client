@@ -103,10 +103,10 @@ public class GameState : MonoBehaviour
 	public void ProcessSpeciesInfo (NetworkResponse response)
 	{
 		ResponseSpeciesInfo args = response as ResponseSpeciesInfo;
-		Debug.Log ("GameState, ProcessSpeciesInfo: received message");
-		Debug.Log ("ZoneX, ZoneY = " + args.zoneX + " " + args.zoneY);
+		// Debug.Log ("GameState, ProcessSpeciesInfo: received message");
+		// Debug.Log ("ZoneX, ZoneY = " + args.zoneX + " " + args.zoneY);
 		List<int> tList = args.speciesIds;
-		Debug.Log ("Species id count = " + tList.Count);
+		// Debug.Log ("Species id count = " + tList.Count);
 		SpData spData = null;
 		SpData spData2;
 		for (int idx = 0; idx < spDatas.Count; idx++) {
@@ -138,12 +138,12 @@ public class GameState : MonoBehaviour
 				Species.otherSpecie (args.zoneX, args.zoneY, tList [idx]);
 			}
 		}
-		Debug.Log ("");
+		// Debug.Log ("");
 	}
 
 
 	public static void UpdateSpDisplay() {
-		Debug.Log("Entered GameState: UpdateSpDisplay(), count = " + spDatas.Count);
+		// Debug.Log("Entered GameState: UpdateSpDisplay(), count = " + spDatas.Count);
 		if (spDatas.Count > 0) {
 			Species.zoneXLocs = new int[Species.zoneSize, Species.zoneSize];
 			Species.zoneYLocs = new int[Species.zoneSize, Species.zoneSize];

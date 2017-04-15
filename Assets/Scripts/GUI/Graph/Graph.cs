@@ -163,6 +163,7 @@ public class Graph : MonoBehaviour {
 			zoom /= 2;
 			monthSliderValue = 0;
 			xMin = 0;
+			UpdateData ();
 		}
 	}
 
@@ -172,6 +173,7 @@ public class Graph : MonoBehaviour {
 			zoom *= 2;
 			monthSliderValue = 0;
 			xMin = 0;
+			UpdateData ();
 		}
 	}
 		
@@ -784,8 +786,7 @@ public class Graph : MonoBehaviour {
 		minMonth = NUM_YEARS * 12;
 		maxMonth = 0;
 
-		if (File.Exists (fileName)) {
-			fSp = new Dictionary<int, List<int>> ();
+		if (File.Exists (fileName)) {			
 			int spId, cnt = 0;
 			List<int> tList;
 			Dictionary<int,int> tDict;
@@ -806,8 +807,8 @@ public class Graph : MonoBehaviour {
 					minDay = Math.Min (minDay, aDay - cnt + 1);
 					for (int idx = 0; idx < cnt; idx++) {
 						int val = NextValue ();
-						tDict.Add (aDay - idx, val);
-						// Debug.Log ("idx, day, value: " + idx + " " + (aDay - idx) + " " + val);
+						tDict.Add ((aDay - cnt + 1) + idx, val);
+						// Debug.Log ("idx, day, value: " + idx + " " + ((aDay - cnt + 1) + idx) + " " + val);
 					}
 					speciesIds.Add (spId);
 					biomassHistory.Add (tDict);
@@ -817,15 +818,29 @@ public class Graph : MonoBehaviour {
 				// zoom = 1;
 				// xMin = 0;
 				UpdateData ();
+
+				fSp = new Dictionary<int, List<int>> ();
+				for (int idx = 0; idx < speciesIds.Count; idx++) {
+					spId = speciesIds [idx];
+					tDict = biomassHistory [idx];
+					tList = new List<int> ();
+					int diff;
+					for (int idx2 = aDay - 1; idx2 >= aDay - tDict.Count + 2; idx2--) {
+						diff = tDict [idx2] - tDict [idx2 - 1];
+						tList.Add (diff);
+					}
+					diff = tDict [aDay - tDict.Count + 1] - 0;
+					tList.Add (diff);
+					fSp.Add (spId, tList);
+				}
+
 				biomassHistory = new List<Dictionary<int,int>> ();
-				biomassValues = new Dictionary<int,int> ();
 				speciesIds = new List<int> ();
-				minDay = 1000000;
+				// minDay = 1000000;
 			}
 		} else {
 			aDay = 0;
 		}
-		aDay = 0;
 
 		// Debug.Log("Graph: Send SpeciesActionProtocol, action = 6, gets current day");
 		Game.networkManager.Send(SpeciesActionProtocol.Prepare((short) 6), processDayInfo);
@@ -838,7 +853,7 @@ public class Graph : MonoBehaviour {
 		fDay = args.fDay;
 		lDay = args.lDay;
 		maxDay = cDay;
-		Debug.Log ("Graph: c,f,lDay = " + cDay + " " + fDay + " " + lDay);
+		Debug.Log ("Graph: c,f,l,aDay = " + cDay + " " + fDay + " " + lDay + " " + aDay);
 		// Debug.Log("Graph: Send SpeciesActionProtocol, action = 2");
 
 		// fSpOut = new Dictionary<int, Dictionary<int,int>> ();
@@ -860,13 +875,14 @@ public class Graph : MonoBehaviour {
 		speciesCount = speciesList.Count + 1;  // Add 1 for Environment score
 		// Debug.Log ("Graph, ProcessSpeciesAction, size = " + speciesCount);
 		int action2 = 7;
+		// Debug.Log ("aDay = " + aDay);
 		foreach (KeyValuePair<int, int> entry in speciesList) {
 			// Debug.Log ("Graph: species, biomass = " + entry.Key + " " + entry.Value);
 			biomassValues.Add (entry.Key, entry.Value);
-			Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, entry.Key, 0), ProcessSpeciesHistory);
+			Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, entry.Key, aDay), ProcessSpeciesHistory);
 		}
 		// Get environment score changeS
-		Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, -1, 0), ProcessSpeciesHistory);
+		Game.networkManager.Send (SpeciesActionProtocol.Prepare ((short) action2, -1, aDay), ProcessSpeciesHistory);
 		biomassValues.Add (-1, GameState.envScore);
 		if (speciesCount == 0) {
 			UpdateData ();
@@ -892,114 +908,116 @@ public class Graph : MonoBehaviour {
 		}
 		Dictionary<int, int> speciesList = args.speciesHistoryList;
 		// Debug.Log ("Graph: ProcessSpeciesHistory, species_id = " + species_id);
-		// Debug.Log ("Graph: ProcessSpeciesHistory, size = " + speciesList.Count);  // null pointer in some cases 
-		int spMin = 10000000;
+		// Debug.Log ("Graph: ProcessSpeciesHistory, size = " + speciesList.Count);  // null pointer in some cases 			
+		int spMin = 100000000;
+		if ((aDay > 0) && (fSp.ContainsKey (species_id))) {
+			spMin = aDay;
+		}
 		// int spMax = 0;
-		if (true) {  // was speciesList.Count > 0
-			foreach (KeyValuePair<int, int> entry in speciesList) {
-				// Debug.Log ("day, biomass change = " + entry.Key + " " + entry.Value);
-				spMin = Mathf.Min (spMin, entry.Key);
-				// spMax = Mathf.Max (spMax, entry.Key);
-				keysS.Add (entry.Key);
-				values.Add (entry.Key, entry.Value);
+
+		foreach (KeyValuePair<int, int> entry in speciesList) {
+			// Debug.Log ("day, biomass change = " + entry.Key + " " + entry.Value);
+			spMin = Mathf.Min (spMin, entry.Key);
+			// spMax = Mathf.Max (spMax, entry.Key);
+			keys.Add (entry.Key);
+			values.Add (entry.Key, entry.Value);
+		}
+		for (int i = spMin; i <= maxDay; i++) {
+			if (!keys.Contains (i)) {
+				keys.Add (i);
+				values.Add (i, 0);
+				// Debug.Log ("zero fill: " + i);
 			}
-			for (int i = spMin + 1; i <= maxDay; i++) {
-				if (!keysS.Contains (i)) {
-					keysS.Add (i);
-					values.Add (i, 0);
-				}
+		}
+		// Debug.Log ("species_id / spMin: " + species_id + " " + spMin);
+
+		if ((aDay > 0) && (fSp.ContainsKey(species_id))) {
+			valuesF = fSp [species_id];
+			for (idx = 0; idx < valuesF.Count; idx++) {
+				keys.Add (aDay - 1 - idx);
+				values.Add (aDay - 1 - idx, valuesF [idx]);
+				// Debug.Log ("file values: day, biomass change = " + (aDay - 1 - idx) + " " + valuesF [idx]);
 			}
-			// Debug.Log ("species_id / spMin: " + species_id + " " + spMin);
-			keysS.Sort ();
+		}
+		// Debug.Log ("Keys.Count = " + keys.Count);
+		keys.Sort ();
 
-			if ((aDay > 0) && (fSp.ContainsKey(species_id))) {
-				valuesF = fSp [species_id];
-				for (idx = 0; idx < valuesF.Count; idx++) {
-					keys.Add (idx + (aDay - valuesF.Count));
-					values.Add (idx + (aDay - valuesF.Count), valuesF [idx]);
-				}
-			}
+		// valuesS = values;
+		// fSpOut.Add (species_id, valuesS);
 
-			keys.AddRange (keysS);
+		// Debug.Log ("species_id: " + species_id);
+		// for (int i = 0; i < keys.Count; i++) {
+		//	Debug.Log ("i, keys[i], biomass change: " + i + " " + keys [i] + " " + values[keys[i]]);
+		//}
 
-			// valuesS = values;
-			// fSpOut.Add (species_id, valuesS);
-
-			// Debug.Log ("species_id: " + species_id);
-			// for (int i = 0; i < keys.Count; i++) {
-			//	Debug.Log ("i, keys[i], biomass change: " + i + " " + keys [i] + " " + values[keys[i]]);
-			//}
-
-			/*
+		/*
 			for (int i = keys [keys.Count - 1] + 1; i <= maxDay; i++) {
 				keys.Add (i);
 				values.Add (i, 0);
 			}
 			*/
-			int size = keys.Count;
-			int[] day = new int[size];
-			int[] dayValue = new int[size];
-			day [0] = keys [size - 1];
-			dayValue [0] = biomassValues [species_id];
-			for (idx = 1; idx < size; idx++) {
-				day [idx] = keys [size - idx - 1];
-				dayValue [idx] = dayValue [idx - 1] - values [keys[size - idx]];
-			}
-			// Debug.Log ("species_id, day[0]: " + species_id + " " + day [0]);
-			// Debug.Log ("Sorted values, species_id = " + species_id);
-			/*
+
+		int size = keys.Count;
+		int[] day = new int[size];
+		int[] dayValue = new int[size];
+		day [0] = keys [size - 1];
+		dayValue [0] = biomassValues [species_id];
+		for (idx = 1; idx < size; idx++) {
+			day [idx] = keys [size - idx - 1];
+			dayValue [idx] = dayValue [idx - 1] - values [keys[size - idx]];
+		}
+
+		// Debug.Log ("species_id, day[0]: " + species_id + " " + day [0]);
+		// Debug.Log ("Sorted values, species_id = " + species_id);
+		/*
 			for (idx = 0; idx < size; idx++) {
 				Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
 			}
 			*/
-			/*
-			if (day [0] > maxDay) {
-				maxDay = day [0];
-			}
-			*/
-			if (day [size - 1] < minDay) {
-				minDay = day [size - 1];
-			}
-
-			/*
-			List<int> mKeys = new List<int> ();
-			List<int> mValues = new List<int> ();
-			int month = GetMonth(day [0]);
-			mKeys.Add (month);
-			mValues.Add (dayValue [0]);
-			for (idx = 1; idx < size; idx++) {
-				if (GetMonth (day [idx]) < month) {
-					month = GetMonth (day [idx]);
-					mKeys.Add (month);
-					mValues.Add (dayValue [idx]);
-				}
-			}
-			if (mKeys [0] > maxMonth) {
-				maxMonth = mKeys [0];
-			}
-			if (mKeys [mKeys.Count - 1] < minMonth) {
-				minMonth = mKeys [mKeys.Count - 1];
-			}
-			*/
-			values = new Dictionary<int, int> ();				
-			// Debug.Log ("Sorted month values, species_id = " + species_id);
-			for (idx = 0; idx < size; idx++) {
-				values.Add (day[idx], dayValue [idx]);
-				// Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
-			}			
-			speciesIds.Add(species_id);
-			// Debug.Log ("values.Count = " + values.Count);
-			biomassHistory.Add(values);
+		/*
+		if (day [0] > maxDay) {
+			maxDay = day [0];
 		}
+		*/
+
+		if (day [size - 1] < minDay) {
+			minDay = day [size - 1];
+		}
+		/*
+		List<int> mKeys = new List<int> ();
+		List<int> mValues = new List<int> ();
+		int month = GetMonth(day [0]);
+		mKeys.Add (month);
+		mValues.Add (dayValue [0]);
+		for (idx = 1; idx < size; idx++) {
+			if (GetMonth (day [idx]) < month) {
+				month = GetMonth (day [idx]);
+				mKeys.Add (month);
+				mValues.Add (dayValue [idx]);
+			}
+		}
+		if (mKeys [0] > maxMonth) {
+			maxMonth = mKeys [0];
+		}
+		if (mKeys [mKeys.Count - 1] < minMonth) {
+			minMonth = mKeys [mKeys.Count - 1];
+		}
+		*/
+
+		values = new Dictionary<int, int> ();				
+		// Debug.Log ("Sorted month values, species_id = " + species_id);
+		for (idx = 0; idx < size; idx++) {
+			values.Add (day[idx], dayValue [idx]);
+			// Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
+		}			
+		speciesIds.Add(species_id);
+		// Debug.Log ("values.Count = " + values.Count);
+		biomassHistory.Add(values);
 		speciesCount--;
 		if (speciesCount == 0) {
 			Debug.Log ("Graph: Processed last species history");
 			WriteFile ();
 			UpdateData ();
-			if (redraw) {
-				redraw = false;
-				// GetData ();
-			}
 		}
 	}
 
