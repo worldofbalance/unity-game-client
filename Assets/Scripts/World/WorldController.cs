@@ -10,8 +10,13 @@ public class WorldController : MonoBehaviour {
 	private GameObject globalObject;
 	private GameState gs;
 	private Graph graph;
+	private Rect logoutConfirmRect;
+	private int confirmWidth = 300;
+	private int confirmHeight = 200;
 	private Dictionary<int, int> results = new Dictionary<int, int>();
 	public static bool speciesLocCurrent = false;
+	private Texture2D bgTexture;
+	private bool confirmPopUp = false;
 
 
   void Awake() {
@@ -22,7 +27,10 @@ public class WorldController : MonoBehaviour {
 
     globalObject = GameObject.Find ("Global Object");
 	gs = globalObject.GetComponent<GameState> ();
-
+	logoutConfirmRect = new Rect ((Screen.width - confirmWidth) / 2, 
+			(Screen.height - confirmHeight) / 2, confirmWidth, confirmHeight);
+	bgTexture = Resources.Load<Texture2D> (Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
+	confirmPopUp = false;
   }
   
   // Use this for initialization
@@ -39,11 +47,54 @@ public class WorldController : MonoBehaviour {
   }
 
   void OnGUI() {
-		if (!speciesLocCurrent) {
-			UpdateSpeciesLoc ();
-		}
+	if (!speciesLocCurrent) {
+	  UpdateSpeciesLoc ();
+	}
+			
+	if (GUI.Button (new Rect (200, Screen.height - 65f, 80, 30), "Logout")) {
+	  confirmPopUp = true;
+	}
+
+	if (confirmPopUp) {
+	  GUI.Window (Constants.CONFIRM_LOGOUT, logoutConfirmRect, MakeConfirmDeleteWindow, "confirm logout", GUIStyle.none);
+	}
   }
   
+
+	void MakeConfirmDeleteWindow(int id) {
+		Functions.DrawBackground(new Rect(0, 0, confirmWidth, confirmHeight), bgTexture);
+		GUIStyle style = new GUIStyle(GUI.skin.label);
+		style.alignment = TextAnchor.UpperCenter;
+		style.fontSize = 16;
+
+		GUI.Label(new Rect((confirmWidth - 200)/2, 50, 200, 30), "Confirm Logout", style);
+
+		if (GUI.Button (new Rect (40, confirmHeight - 70, 60, 30), "YES")) {
+			Game.networkManager.Send (LogoutProtocol.Prepare ((short) 1), ProcessLogout);
+			Debug.Log ("sent logout message");
+		}
+
+		if (GUI.Button (new Rect (confirmWidth - 100, confirmHeight - 70, 60, 30), "NO")) {
+			confirmPopUp = false;
+		}			
+	}
+
+
+	public void ProcessLogout (NetworkResponse response)
+	{
+		ResponseLogout args = response as ResponseLogout;
+		Debug.Log ("inside process logout");
+		Debug.Log ("Logout details: type, status, playerId: " + args.type + " " + args.status + " " + args.playerId);
+		if (args.status == 0) {
+			Debug.Log ("logout successful");
+		} else {
+			Debug.Log ("login failed, server message = " + args.status);
+		}
+
+		Game.SwitchScene("Login");
+	}
+
+
   public void ProcessWorld(NetworkResponse response) {
     ResponseWorld args = response as ResponseWorld;
 

@@ -104,8 +104,8 @@ public class ShopPanel : MonoBehaviour {
 		speciesData.biomassServer = args.biomassServer;
 		itemList [args.index].cost = args.cost;
 		itemList [args.index].biomassServer = args.biomassServer;
-		Debug.Log ("ResponseSpeciesAction, id/c/b/index: " 
-				+ args.species_id + " " + args.cost + " " + args.biomassServer + " " + args.index);
+		// Debug.Log ("ResponseSpeciesAction, id/c/b/index: " 
+		// 		+ args.species_id + " " + args.cost + " " + args.biomassServer + " " + args.index);
 	}
 
 	/*
