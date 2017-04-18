@@ -36,7 +36,7 @@ public class Login : MonoBehaviour
         bgTexture = Resources.Load<Texture2D> (Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
         font = Resources.Load<Font> ("Fonts/" + "Chalkboard");
 
-		RR.RRMessageQueue.getInstance ().AddCallback (RR.Constants.SMSG_AUTH, RR_ResponseLogin);
+		// RR.RRMessageQueue.getInstance ().AddCallback (RR.Constants.SMSG_AUTH, RR_ResponseLogin);
 	}
 	
     // Use this for initialization
