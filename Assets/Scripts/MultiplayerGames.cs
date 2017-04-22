@@ -398,6 +398,7 @@ public class MultiplayerGames : MonoBehaviour {
     if (activeGame.name == "Running Rhino") {
       if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Host Running Rhino")) {
         Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_RUNNING_RHINO, -1));
+		Game.networkManager.Send(ChatProtocol.Prepare (GameState.player.GetName(), "I just hosted Running Rhino. Do you want to join?"));
       }
     }
 
@@ -405,6 +406,7 @@ public class MultiplayerGames : MonoBehaviour {
     if (activeGame.name == "Cards of Wild") {
       if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Host Cards of Wild")) {
         Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_CARDS_OF_WILD, -1));
+		Game.networkManager.Send(ChatProtocol.Prepare (GameState.player.GetName(), "I just hosted Cards of Wild. Do you want to join?"));
       }      
     }
     
@@ -412,6 +414,7 @@ public class MultiplayerGames : MonoBehaviour {
     if (activeGame.name == "Sea Divided") {
       if (GUI.Button(new Rect(10, windowRect.height - 40, 140, 30), "Host Sea Divided")) {
         Game.networkManager.Send (PairProtocol.Prepare (Constants.MINIGAME_SEA_DIVIDED, -1));
+		Game.networkManager.Send(ChatProtocol.Prepare (GameState.player.GetName(), "I just hosted Sea Divided. Do you want to join?"));
       }
     }
 
@@ -736,6 +739,8 @@ public class MultiplayerGames : MonoBehaviour {
       hostEntryError = false;
       Game.networkManager.Send (MCSetupProtocol.Prepare (Constants.MINIGAME_MULTI_CONVERGENCE, numPlayers, numRounds,
         timeWindow, betAmount, ecoNumber, allowSliders));
+	  Game.networkManager.Send(ChatProtocol.Prepare (GameState.player.GetName(), 
+				"I just hosted Multiplayer Convergence. Do you want to join?"));
     }
   }
 
