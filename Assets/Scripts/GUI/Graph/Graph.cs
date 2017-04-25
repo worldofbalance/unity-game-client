@@ -196,6 +196,7 @@ public class Graph : MonoBehaviour {
 			GameObject.Find ("MenuScript").GetComponent<MenuScript> ().menuOpen = true;
 			GameObject.Find ("MenuScript").GetComponent<MenuScript> ().disableDropDown ();
 			GameObject.Find ("Local Object").GetComponent<WorldMouse> ().popOversEnabled = false;
+			excludeList.Clear ();
 			GetData ();
 		} else {
 			GameObject.Find ("MenuScript").GetComponent<MenuScript> ().menuOpen = false;
@@ -255,6 +256,7 @@ public class Graph : MonoBehaviour {
 		GameObject.Find("MenuScript").GetComponent<MenuScript>().menuOpen = true;
 		GameObject.Find("MenuScript").GetComponent<MenuScript>().disableDropDown();
 		GameObject.Find("Local Object").GetComponent<WorldMouse>().popOversEnabled = false;
+		excludeList.Clear ();
 		GetData ();
 	}
 	
@@ -576,6 +578,7 @@ public class Graph : MonoBehaviour {
 
 						if (GUI.Button(new Rect(0, 0, itemRect.width, itemRect.height), "", GUIStyle.none)) {
 							SetSeriesActive(label, excludeList.Contains(label));
+							UpdateData ();
 						}
 					GUI.EndGroup();
 				}
@@ -588,12 +591,14 @@ public class Graph : MonoBehaviour {
 					foreach (string label in seriesLabels) {
 						if (!excludeList.Contains(label)) {
 							excludeList.Add(label);
+							UpdateData ();
 						}
 					}
 				} else {
 					foreach (string label in new List<string>(excludeList)) {
 						SetSeriesActive(label, true);
 					}
+					UpdateData ();
 				}
 			}
 
@@ -633,21 +638,9 @@ public class Graph : MonoBehaviour {
 
 	public void UpdateData() {
 		// Update X-Axis Labels
-		// List<string> labels = GameState.csvList.xLabels;
 		xAxisLabels.Clear();
 		for (int i = minDay; i <= maxDay; i++) {
-			// Debug.Log("Graph: i, labels[i] = " + i + " " + labels[i]);
-			// int month = i + 1 + 14*12;   // int.Parse(labels[i]);
-			// string name = DateTimeFormatInfo.CurrentInfo.GetMonthName((month - 1) % 12 + 1).Substring(0, 3);
 			xAxisLabels.Add("" + i);      // .ToString("00"));
-			/*
-			if ((i == minMonth) || (((month - 1) % 12) == 0) ) {
-				xAxisLabels.Add(name + "\n'" + (month / 12 + 1).ToString("00"));
-			} else {
-				xAxisLabels.Add(name);
-			}
-			*/
-			// Debug.Log("Graph: i, xAxisLabels[i] = " + (i-minDay) + " " + xAxisLabels[i-minDay]);
 		}
 		
 		// Update Values
@@ -660,13 +653,16 @@ public class Graph : MonoBehaviour {
 		// foreach (KeyValuePair<string, List<string>> entry in csv.csvList) 
 			string name;
 			float localMax;
-			// Debug.Log ("Graph: UpdateData(): idx2, speciesIds [idx2] = " + idx2 + " " + speciesIds [idx2]);
 			if (speciesIds [idx2] == -1) {
 				name = ES_LABEL;
 			} else {
 				name = speciesTable[speciesIds[idx2]].name;            // entry.Key;
 			}
-			// Debug.Log ("Graph: UpdateData(): name = " + name);
+
+			if (excludeList.Contains(name)) {
+				continue;
+			}
+				
 			List<string> values = new List<string>();    // entry.Value;
 
 			for (int idx = minDay; idx <= maxDay; idx++) {
@@ -676,11 +672,6 @@ public class Graph : MonoBehaviour {
 					values.Add ("");
 				}
 			}
-				
-			// Debug.Log("Graph: KeyValuePair, key = " + name);
-			// for (int i2 = 0; i2 < values.Count; i2++) {
-			// 	Debug.Log("Graph: KeyValuePair, i, value[i] = " + i2 + " :" + values[i2] + ":");
-			// }
 				
 			if (name == ".xLabels") {
 				continue;
@@ -967,13 +958,6 @@ public class Graph : MonoBehaviour {
 			dayValue [idx] = dayValue [idx - 1] - values [keys[size - idx]];
 		}
 
-		// Debug.Log ("species_id, day[0]: " + species_id + " " + day [0]);
-		// Debug.Log ("Sorted values, species_id = " + species_id);
-		/*
-			for (idx = 0; idx < size; idx++) {
-				Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
-			}
-			*/
 		/*
 		if (day [0] > maxDay) {
 			maxDay = day [0];
@@ -983,32 +967,10 @@ public class Graph : MonoBehaviour {
 		if (day [size - 1] < minDay) {
 			minDay = day [size - 1];
 		}
-		/*
-		List<int> mKeys = new List<int> ();
-		List<int> mValues = new List<int> ();
-		int month = GetMonth(day [0]);
-		mKeys.Add (month);
-		mValues.Add (dayValue [0]);
-		for (idx = 1; idx < size; idx++) {
-			if (GetMonth (day [idx]) < month) {
-				month = GetMonth (day [idx]);
-				mKeys.Add (month);
-				mValues.Add (dayValue [idx]);
-			}
-		}
-		if (mKeys [0] > maxMonth) {
-			maxMonth = mKeys [0];
-		}
-		if (mKeys [mKeys.Count - 1] < minMonth) {
-			minMonth = mKeys [mKeys.Count - 1];
-		}
-		*/
-
+			
 		values = new Dictionary<int, int> ();				
-		// Debug.Log ("Sorted month values, species_id = " + species_id);
 		for (idx = 0; idx < size; idx++) {
 			values.Add (day[idx], dayValue [idx]);
-			// Debug.Log ("idx, day[idx], dayValue[idx]: " + idx + " " + day [idx] + " " + dayValue [idx]);
 		}			
 		speciesIds.Add(species_id);
 		// Debug.Log ("values.Count = " + values.Count);
