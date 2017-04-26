@@ -29,48 +29,63 @@ public class DemTile : MonoBehaviour
     private DemTurnSystem turnSystem;
 
     // StatsBox objects (static --> no two instances required)
-    public static GameObject statsBox;                 // Parent object
-    public static GameObject nameStat;                 // Species name
-    public static GameObject iconStat;                 // Species type icon
-    public static GameObject trait1Stat;               // Species trait (primary)
-    public static GameObject trait2Stat;               // Species trait (secondary)
-    public static GameObject traitIcon1;               // Species trait icon (primary)
-    public static GameObject traitIcon2;               // Species trait icon (secondary)
-    public static GameObject infoPopup;                // Info popup object
-    public static Color statsBoxBaseColor;             // Base color for the statsBox object
-    public static Vector3 statsBoxBaseScale;           // Base localScale for the statsBox object
-    public static Vector3 statsBoxBaseRotation;        // Base localEulersAngles for the statsBox object 
-    public static ColorBlock infoPopupBaseColors;      // Base ColorBlock for the infoPopup Button
+    public static GameObject statsBox;                  // Parent object
+    public static GameObject nameStat;                  // Species name
+    public static GameObject iconStat;                  // Species type icon
+    public static GameObject trait1Stat;                // Species trait (primary)
+    public static GameObject trait2Stat;                // Species trait (secondary)
+    public static GameObject traitIcon1;                // Species trait icon (primary)
+    public static GameObject traitIcon2;                // Species trait icon (secondary)
+    public static GameObject infoPopup;                 // Info popup object
+    public static GameObject removeBuildButton;         // Popup with "remove build" feature
+    public static Color statsBoxBaseColor;              // Base color for the statsBox object
+    public static Vector3 statsBoxBaseScale;            // Base localScale for the statsBox object
+    public static Vector3 statsBoxBaseRotation;         // Base localEulersAngles for the statsBox object 
+    public static ColorBlock infoPopupBaseColors;       // Base ColorBlock for the infoPopup Button
+    public static ColorBlock removeButtonBaseColors;    // Base ColorBlock for the removeBuildButton
 
     // InfoBox objects
-    public static GameObject infoBox;                  // Parent object
-    public static GameObject infoSpeciesName;          // Species name
-    public static GameObject infoSpeciesType;          // Species type (plant/prey/predator)
-    public static GameObject infoSpeciesTypeIcon;      // " " icon
-    public static GameObject infoBiomass;              // Species biomass
-    public static GameObject infoBiomassIcon;          // " " icon
-    public static GameObject infoSpeciesTrait1;        // Species trait (primary)
-    public static GameObject infoSpeciesTrait2;        // Species trait (secondary)
-    public static GameObject infoSpeciesTrait1Icon;    // " " (primary) icon
-    public static GameObject infoSpeciesTrait2Icon;    // " " (secondary) icon
-    public static GameObject infoPredPreyHeader;       // Predator / prey list header
-    public static GameObject infoPredPreyList;         // " " list grid
-    public static GameObject infoPredPreyIcon;         // " " header icon
-    public static GameObject infoPredPreyDivider;      // " " header divider
-    public static GameObject infoLore;                 // Species lore
-    public static GameObject infoCloseButton;          // Close button for infoBox
+    public static GameObject infoBox;                   // Parent object
+    public static GameObject infoSpeciesName;           // Species name
+    public static GameObject infoSpeciesType;           // Species type (plant/prey/predator)
+    public static GameObject infoSpeciesTypeIcon;       // " " icon
+    public static GameObject infoBiomass;               // Species biomass
+    public static GameObject infoBiomassTier;           // " " tier level
+    public static GameObject infoBiomassIcon;           // " " icon
+    public static GameObject infoSpeciesTrait1;         // Species trait (primary)
+    public static GameObject infoSpeciesTrait2;         // Species trait (secondary)
+    public static GameObject infoSpeciesTrait1Icon;     // " " (primary) icon
+    public static GameObject infoSpeciesTrait2Icon;     // " " (secondary) icon
+    public static GameObject infoPredPreyHeader;        // Predator / prey list header
+    public static GameObject infoPredPreyList;          // " " list grid
+    public static GameObject infoPredPreyIcon;          // " " header icon
+    public static GameObject infoPredPreyDivider;       // " " header divider
+    public static GameObject infoLore;                  // Species lore
+    public static GameObject infoCloseButton;           // Close button for infoBox
 
     // InfoLegendTooltip objects
-    public static GameObject infoLegendTooltip;        // Parent object
-    public static GameObject infoLegendName;           // Attribute name
-    public static GameObject infoLegendIcon;           // Attribute icon
-    public static GameObject infoLegendLore;           // Attribute lore
+    public static GameObject infoLegendTooltip;         // Parent object
+    public static GameObject infoLegendName;            // Attribute name
+    public static GameObject infoLegendIcon;            // Attribute icon
+    public static GameObject infoLegendLore;            // Attribute lore
 
-    public static Color infoPopupBaseNormalColor;      // Base Color for the infoPopup's Button normal state
-    public static Color infoPopupBaseHighlightColor;   // Base Color for the infoPopup's Button highlighted state
+    public static Color infoPopupBaseNormalColor;       // Base Color for the infoPopup's Button normal state
+    public static Color infoPopupBaseHighlightColor;    // Base Color for the infoPopup's Button highlighted state
+
+    // SimpleTooltip objects
+    public static GameObject simpleTooltip;             // Parent object
+    public static Color simpleTooltipBaseColor;         // Base Color for the simpleTooltip
+    public static Color simpleTooltipIconFrameBaseColor;// Base color for the simpleTooltip icon frame
+
+    // RemoveBuildButton attributes
+    private static Vector3 removeBuildButtonBaseScale;
 
     private IEnumerator easeEnumerator;     // Enumerator for statsBox easing routine
+    private IEnumerator easeSimpleTooltip;  // Enumerator for simpleTooltip easing routine
     private Coroutine easeCoroutine;        // Easing coroutine for the statsBox object
+    private Coroutine easeSimpleCoroutine;  // Easing coroutine for the statsBox object
+    private bool easeFinished;              // True if easeCoroutine has finished
+
 
     private IEnumerator pulse; // Called as a coroutine to start/stop pulsing of tile colors
     private bool hasPulse; // Denotes if tile has currently active pulse
@@ -111,12 +126,14 @@ public class DemTile : MonoBehaviour
         traitIcon1 = GameObject.Find("Canvas/StatsBox/TraitIcon1");
         traitIcon2 = GameObject.Find("Canvas/StatsBox/TraitIcon2");
         infoPopup = GameObject.Find("Canvas/StatsBox/InfoPopup");
+        removeBuildButton = GameObject.Find("Canvas/StatsBox/RemoveBuildButton");
         // ...InfoBox objects
         infoBox = GameObject.Find("Canvas/InfoBox");
         infoSpeciesName = GameObject.Find("Canvas/InfoBox/InfoSpeciesName");
         infoSpeciesType = GameObject.Find("Canvas/InfoBox/InfoSpeciesType");
         infoSpeciesTypeIcon= GameObject.Find("Canvas/InfoBox/InfoSpeciesTypeIcon");
         infoBiomass = GameObject.Find("Canvas/InfoBox/InfoBiomass");
+        infoBiomassTier = GameObject.Find("Canvas/InfoBox/InfoBiomassTier");
         infoBiomassIcon = GameObject.Find("Canvas/InfoBox/InfoBiomassIcon");
         infoSpeciesTrait1 = GameObject.Find("Canvas/InfoBox/InfoSpeciesTrait1");
         infoSpeciesTrait2 = GameObject.Find("Canvas/InfoBox/InfoSpeciesTrait2");
@@ -133,6 +150,8 @@ public class DemTile : MonoBehaviour
         infoLegendName = GameObject.Find("Canvas/InfoLegendTooltip/InfoLegendName");
         infoLegendIcon = GameObject.Find("Canvas/InfoLegendTooltip/InfoLegendIcon");
         infoLegendLore = GameObject.Find("Canvas/InfoLegendTooltip/InfoLegendLore");
+        // ...SimpleTooltip object
+        simpleTooltip = GameObject.Find("Canvas/SimpleTooltip");
         // ...Other objects
         statsBoxBaseColor = statsBox.GetComponent<Image>().color;
         statsBoxBaseScale = statsBox.transform.localScale;
@@ -140,8 +159,14 @@ public class DemTile : MonoBehaviour
         infoPopupBaseColors = infoPopup.GetComponent<Button>().colors;
         infoPopupBaseNormalColor = infoPopup.GetComponent<Button>().colors.normalColor;
         infoPopupBaseHighlightColor = infoPopup.GetComponent<Button>().colors.highlightedColor;
+        simpleTooltipBaseColor = simpleTooltip.GetComponent<Image>().color;
+        removeButtonBaseColors = removeBuildButton.GetComponent<Button>().colors;
+        removeBuildButtonBaseScale = removeBuildButton.transform.localScale;
         easeEnumerator = null;
+        easeSimpleTooltip = null;
         easeCoroutine = null;
+        easeSimpleCoroutine = null;
+        easeFinished = true;
 
         // Initialize resident
         resident = null;
@@ -151,7 +176,7 @@ public class DemTile : MonoBehaviour
         pulseTick = 0;
         pulseFactor = defaultPulseFactor;
         masterPulseFrequency = defaultPulseFrequency;
-        rangeColor = new Color(40f/255f, 170f/255f, 220f/255f);
+        rangeColor = new Color32(40, 170, 220, 255);
 
         // Initialize additional components
         center = this.GetComponent<Renderer>().bounds.center;
@@ -191,10 +216,11 @@ public class DemTile : MonoBehaviour
 
         // Set z-offset for center
         center.z = -1.5f;
-
+        
         // Add OnPointerEnter and OnPointerExit events for all infoBox icons (for use with infoLegendTooltip)
         foreach (Image image in infoBox.GetComponentsInChildren<Image>())
         {
+            if (image.gameObject.GetComponent<EventTrigger>() != null) break;
             // Add event triggers to show tooltip
             EventTrigger showTrigger = image.gameObject.AddComponent<EventTrigger>();
             EventTrigger.Entry showEntry = new EventTrigger.Entry();
@@ -210,7 +236,25 @@ public class DemTile : MonoBehaviour
             hideTrigger.triggers.Add(hideEntry);
         }
 
+        if (removeBuildButton.GetComponent<EventTrigger>() == null)
+        {
+            // Define OnPointerEnter and OnPointerExti events for the StatsBox InfoPopup and RemoveBuildButton objects
+            EventTrigger.Entry simpleTooltipShowEntry = new EventTrigger.Entry();
+            EventTrigger.Entry simpleTooltipHideEntry = new EventTrigger.Entry();
+            simpleTooltipShowEntry.eventID = EventTriggerType.PointerEnter;
+            simpleTooltipHideEntry.eventID = EventTriggerType.PointerExit;
+            // Add listeners
+            simpleTooltipShowEntry.callback.AddListener((data) => { ShowSimpleToolTip(data as PointerEventData); });
+            simpleTooltipHideEntry.callback.AddListener((data) => { HideSimpleToolTip(data as PointerEventData); });
+            // Add trigger entry to objects
+            removeBuildButton.AddComponent<EventTrigger>().triggers.Add(simpleTooltipShowEntry);
+            removeBuildButton.GetComponent<EventTrigger>().triggers.Add(simpleTooltipHideEntry);
+            infoPopup.AddComponent<EventTrigger>().triggers.Add(simpleTooltipShowEntry);
+            infoPopup.AddComponent<EventTrigger>().triggers.Add(simpleTooltipHideEntry);
+        }
+
         // Set infoBox close button onClick
+        infoCloseButton.GetComponent<Button>().onClick.RemoveAllListeners();
         infoCloseButton.GetComponent<Button>().onClick.AddListener(
         () =>
         {
@@ -220,19 +264,25 @@ public class DemTile : MonoBehaviour
             foreach (Button button in FindObjectsOfType<Button>())
                 button.enabled = true;
             infoBox.SetActive(false);
+            StartCoroutine(turnSystem.ResumeSpawn());
         });
+
         // Set infoPopup button onClick
+        infoPopup.GetComponent<Button>().onClick.RemoveAllListeners();
         infoPopup.GetComponent<Button>().onClick.AddListener(
         () =>
         {
+            StartCoroutine(turnSystem.PauseSpawn());
             // Deactivate current statsBox
             if (easeCoroutine != null) StopCoroutine(easeCoroutine);
+            if (easeSimpleCoroutine != null) StopCoroutine(easeSimpleCoroutine);
             // Set all variable components inactive
             statsBox.SetActive(false);
             trait1Stat.SetActive(false);
             traitIcon1.SetActive(false);
             trait2Stat.SetActive(false);
             traitIcon2.SetActive(false);
+            simpleTooltip.SetActive(false);
             // Set location of infoBox
             infoBox.transform.position = new Vector3
             (
@@ -249,6 +299,28 @@ public class DemTile : MonoBehaviour
             // Re-enable infoCloseButton
             infoCloseButton.GetComponent<Button>().enabled = true;
         });
+
+        // Set removeBuildButton button onClick
+        removeBuildButton.GetComponent<Button>().onClick.RemoveAllListeners();
+        removeBuildButton.GetComponent<Button>().onClick.AddListener(
+        () =>
+        {
+            // If resident is prey, add Tier2 biomass back to the pool
+            if(main.boardController.HoveredTile.resident.GetComponent<BuildInfo>().isPrey())
+                buildMenu.AddTier2Biomass (SpeciesConstants.Biomass(main.boardController.HoveredTile.resident.name));
+            // If resident is plant, update Tier1 and Tier2 biomass levels
+            else if (main.boardController.HoveredTile.resident.GetComponent<BuildInfo>().isPlant())
+            {
+                buildMenu.AddTier1Biomass(SpeciesConstants.Biomass(main.boardController.HoveredTile.resident.name));
+                buildMenu.SubtractTier2Biomass((int)(SpeciesConstants.Biomass(main.boardController.HoveredTile.resident.name) * 0.5));
+            }
+            // Pause predator spawn and invoke animated removal
+            StartCoroutine(turnSystem.PauseSpawn());
+            StartCoroutine(AnimatedRemove(main.boardController.HoveredTile, turnSystem));
+        });
+
+        // Start simpleTooltip icon frame pulse coroutine
+        StartCoroutine(PulseSimpleTooltipIcon());
 
         // Set up pulse
         ResetPulse();
@@ -425,7 +497,6 @@ public class DemTile : MonoBehaviour
         }
     }
 
-
     /**
         Callback method meant for infoBox tooltip OnPointerEnter event triggers.
         The function is called when the cursor hovers over a valid infoBox icon, causing a tooltip to appear.
@@ -532,7 +603,7 @@ public class DemTile : MonoBehaviour
     }
 
     /**
-        Callback method meant for infoBox tooltip OnPointerEnter event triggers.
+        Callback method meant for infoBox tooltip OnPointerExit event triggers.
         The function is called when the cursor moves away from a valid infoBox icon, causing any tooltip to vanish.
 
         Note that this method adheres to the format as defined by EventTrigger.Entry.callback.
@@ -545,6 +616,63 @@ public class DemTile : MonoBehaviour
         // Deactivate current statsBox
         if (easeCoroutine != null) StopCoroutine(easeCoroutine);
         infoLegendTooltip.SetActive(false);
+    }
+
+    /**
+        Callback method meant for the simpleTooltip OnPointerEnter event trigger.
+        The function is called when the cursor hovers over a valid calling object, causing a tooltip to appear.
+
+        Note that this method adheres to the format as defined by EventTrigger.Entry.callback.
+
+        @param  eventData   a PointerEventData object
+        @see    EventTrigger.Entry.callback
+    */
+    void ShowSimpleToolTip (PointerEventData eventData)
+    {
+        // Parse calling object
+        GameObject callingObject = eventData.pointerEnter;
+
+        // Set text
+        // NOTE: for now, it will only activate on select items
+        switch (callingObject.name)
+        {
+            // StatsBox RemoveBuildButton
+            case "RemoveBuildButton":   simpleTooltip.GetComponentInChildren<Text>().text = "Destroy this build.";
+                                        break;
+            // StatsBox InfoPopup
+            case "InfoPopup":           simpleTooltip.GetComponentInChildren<Text>().text = "Display this species' data.";
+                                        break;
+            // Default
+            default:                    simpleTooltip.GetComponentInChildren<Text>().text = "Something-something plants and animals.";
+                                        break;
+        }
+
+        // Deactivate and set position
+        simpleTooltip.SetActive(false);
+        simpleTooltip.transform.position = callingObject.transform.position;
+
+        // Define and begin easing coroutine
+        if (easeSimpleCoroutine != null) StopCoroutine(easeSimpleTooltip);
+        easeSimpleTooltip = EaseInSimpleTooltip(0.15f);
+        easeSimpleCoroutine = StartCoroutine(easeSimpleTooltip);
+    }
+
+    /**
+        Callback method meant for the simpleTooltip OnPointerExit event trigger.
+        The function is called when the cursor moves away from a valid calling object, causing any tooltip to vanish.
+
+        Note that this method adheres to the format as defined by EventTrigger.Entry.callback.
+
+        @param  eventData   a PointerEventData object
+        @see    EventTrigger.Entry.callback
+    */
+    void HideSimpleToolTip (PointerEventData eventData)
+    {
+        // Deactivate current simpleTooltip
+        if (easeSimpleCoroutine != null) StopCoroutine(easeSimpleCoroutine);
+        simpleTooltip.SetActive(false);
+        // Re-enable all tiles
+        foreach (DemTile tile in allTiles) tile.enabled = true;
     }
 
     /**
@@ -593,12 +721,223 @@ public class DemTile : MonoBehaviour
     }
 
     /**
+        Eases in the simpleTooltip object.
+        The color alpha channel and y-axis rotation are modified each iteration to create the effect.
+        
+        @param  easing  a floating point value denoting the step size of each iteration
+    */
+    IEnumerator EaseInSimpleTooltip (float easing = 0.15f)
+    {
+        
+        // Delay start for one second
+        yield return new WaitForSeconds(1.0f);
+        while (!easeFinished) yield return null;
+        if (statsBox.activeSelf)
+        {
+            // Set simpleTooltip as active
+            simpleTooltip.SetActive(true);
+            // Set final states (use same attributes as infoLegendTooltip)
+            Vector3 finalRotation = statsBoxBaseRotation;
+            float finalAlpha = simpleTooltipBaseColor.a;
+            float finalTextAlpha = 0;
+            // Initialize transitional variables
+            Vector3 tooltipRotation = statsBoxBaseRotation;
+            Color tooltipColor = simpleTooltip.GetComponent<Image>().color;
+            float rotation = -45f;
+            float alpha = 0;
+            tooltipRotation.y = rotation;
+            tooltipColor.a = alpha;
+            simpleTooltip.transform.localEulerAngles = tooltipRotation;
+            simpleTooltip.GetComponent<Image>().color = tooltipColor;
+
+            // Ease until threshold reached
+            while (rotation < finalRotation.y - 0.1f && statsBox.activeSelf)
+            {
+                // Update transitional variables
+                rotation += (finalRotation.y - rotation) * easing;
+                tooltipRotation.y = rotation;
+                alpha += (finalAlpha - alpha) * easing;
+                tooltipColor.a = alpha;
+                // Apply changes to simpleTooltip
+                simpleTooltip.transform.localEulerAngles = tooltipRotation;
+                simpleTooltip.GetComponent<Image>().color = tooltipColor;
+                // Stall for next iteration
+                yield return new WaitForSeconds(0.01f);
+            }
+            // Post-threshold states set to base
+            simpleTooltip.transform.localEulerAngles = statsBoxBaseRotation;
+            simpleTooltip.GetComponent<Image>().color = simpleTooltipBaseColor;
+        }
+    }
+
+    /**
+        Pulses the simpleTooltip icon frame, both alpha and local scale.
+        The color alpha channel and x and y axes are modified each iteration to create the effect.
+        
+        @param  easing  a floating point value denoting the step size of each iteration
+    */
+    static IEnumerator PulseSimpleTooltipIcon (float easing = 0.025f)
+    {
+        Color baseColor = simpleTooltip.transform.GetChild(1).GetComponent<Image>().color;
+        Color currentColor = baseColor;
+        float alpha = 0.25f;
+
+        int k = 0;
+        while (true)
+        {
+            if (simpleTooltip.activeSelf)
+            {
+                // Define and set current alpha
+                currentColor.a = alpha;
+                simpleTooltip.transform.GetChild(1).GetComponent<Image>().color = currentColor;
+                // Iterate next alpha value
+                alpha = 0.25f + Mathf.PingPong(k * easing, 0.75f);
+                k++;
+            }
+            // Otherwise reset alpha to base
+            else alpha = 0.25f;
+
+            yield return new WaitForSeconds(0.05f);
+        }
+
+    }
+
+    /**
+        Eases in the statsBox object.
+        The color alpha channel and y-axis rotation are modified each iteration to create the effect.
+        The infoPopup also flashes from highlighted state to normal state (@ zero alpha) as a visual hint of its
+        existence.
+        
+        @param  easing  a floating point value denoting the step size of each iteration
+    */
+    IEnumerator EaseInStatsBox (float easing = 0.1f)
+    {
+        // Delay a fraction of a second to start
+        yield return new WaitForSeconds(0.15f);
+        // Set statsBox active
+        statsBox.SetActive(true);
+        // Set final states
+        Vector3 finalRotation = statsBoxBaseRotation;
+        float finalAlpha = statsBoxBaseColor.a;
+        float finalIconAlpha = infoPopupBaseColors.normalColor.a; // Both infoPopup and removeBuildButton use the same values
+
+        // Initialize transitional variables
+        Vector3 statRotation = statsBoxBaseRotation;
+        Color statsColor = statsBox.GetComponent<Image>().color;
+        ColorBlock iconColors = infoPopupBaseColors;
+        Color iconColor = iconColors.normalColor;
+        ColorBlock removeBuildColors = removeButtonBaseColors;
+        Color removeBuildColor = removeBuildColors.normalColor;
+        float rotation = -45f;
+        float alpha = 0;
+        float iconAlpha = iconColors.highlightedColor.a;
+        statRotation.y = rotation;
+        statsColor.a = alpha;
+        iconColor.a = iconAlpha;
+        iconColors.normalColor = iconColor;
+        statsBox.transform.localEulerAngles = statRotation;
+        statsBox.GetComponent<Image>().color = statsColor;
+        infoPopup.GetComponent<Button>().colors = iconColors;
+        if (removeBuildButton.activeSelf) 
+        {
+            removeBuildColor.a = iconAlpha;
+            removeBuildColors.normalColor = removeBuildColor;
+            removeBuildButton.GetComponent<Button>().colors = removeBuildColors;
+        }
+
+        // Ease until threshold reached
+        while (rotation < finalRotation.y - 0.1f)
+        {
+            // Update transitional variables
+            rotation += (finalRotation.y - rotation) * easing;
+            statRotation.y = rotation;
+            alpha += (finalAlpha - alpha) * easing;
+            statsColor.a = alpha;
+            // ..infoPopup
+            iconAlpha += (finalIconAlpha - iconAlpha) * easing;
+            iconColor.a = iconAlpha;
+            iconColors.normalColor = iconColor;
+
+            // Apply changes to statsBox
+            statsBox.transform.localEulerAngles = statRotation;
+            statsBox.GetComponent<Image>().color = statsColor;
+            infoPopup.GetComponent<Button>().colors = iconColors;
+            if (removeBuildButton.activeSelf)
+            {
+                removeBuildColor.a = iconAlpha;
+                removeBuildColors.normalColor = removeBuildColor;
+                removeBuildButton.GetComponent<Button>().colors = removeBuildColors;
+            }
+
+            // Stall for next iteration
+            yield return new WaitForSeconds(0.01f);
+        }
+        // Post-threshold states set to base
+        statsBox.transform.localEulerAngles = statsBoxBaseRotation;
+        statsBox.GetComponent<Image>().color = statsBoxBaseColor;
+        infoPopup.GetComponent<Button>().colors = infoPopupBaseColors;
+        if (removeBuildButton.activeSelf) 
+            removeBuildButton.GetComponent<Button>().colors = removeButtonBaseColors;
+        easeFinished = true;
+    }
+
+
+    /**
+        Coroutine invoked to animate a tile's current build (plant or prey).
+
+        @param  tile        a DemTile object from which to remove a build
+        @param  turnSystem  the responsible DemTurnSystem object
+    */
+    IEnumerator AnimatedRemove (DemTile tile, DemTurnSystem turnSystem)
+    {
+        // Find animation object, set position and scale
+        GameObject ripSprite = GameObject.Find("Canvas/mainUI/RIPAnimation");
+        ripSprite.SetActive(false);
+        ripSprite.GetComponent<RectTransform>().localScale = new Vector3(0.4f, 0.4f, 1f);
+        Vector3 newpos = tile.resident.transform.position;
+        ripSprite.GetComponent<RectTransform>().position = newpos;
+
+        // Define transitional and final colors
+        Color _color = Color.white;
+        Color _baseColor = _color;
+        ripSprite.GetComponent<SpriteRenderer>().color = _baseColor;
+
+        // Remove build, replace with animation and fade its alpha
+        tile.RemoveAnimal();
+        ripSprite.SetActive(true);
+        while (_color.a > 0)
+        {
+            _color.a -= 0.05f;
+            _color.r -= 0.05f;
+            _color.g -= 0.05f;
+            _color.b -= 0.05f;
+            ripSprite.GetComponent<SpriteRenderer>().color = _color;
+            yield return new WaitForSeconds(0.05f);
+        }
+        // Deactivate animation and reset its color
+        ripSprite.SetActive(false);
+        ripSprite.GetComponent<SpriteRenderer>().color = _baseColor;
+        // Resume predator spawn timer
+        StartCoroutine(turnSystem.ResumeSpawn());
+    }
+
+    /**
+        Public method to explicitly call OnMouseEnter.
+        Used for updating tiles in realtime.
+    */
+    public void UpdateOnMouseEnter ()
+    {
+        this.OnMouseEnter();
+    }
+
+    /**
         Activates on mouse enter.
     */
     void OnMouseEnter ()
     {
         // Ignore if disabled
         if (!enabled) return;
+        else main.boardController.HoveredTile = (DemTile)this;
 
         // Set tile pulse
         // If building...
@@ -617,13 +956,18 @@ public class DemTile : MonoBehaviour
                     foreach (int[] coord in range)
                     {
                         // Skip tiles that are out of range
-                        if (idX + coord[0] < 0 || idX + coord[0] > 8 || idY + coord[1] < 0 || idY + coord[1] > 4)
+                        if
+                        (
+                            idX + coord[0] < 0 || 
+                            idX + coord[0] > main.boardController.numColumns - 1 || 
+                            idY + coord[1] < 0 || 
+                            idY + coord[1] > main.boardController.numRows - 1
+                        )
                             continue;
 
                         // If tile is free, set pulse
                         DemTile tile =  main.boardController.Tiles[idX + coord[0], idY + coord[1]].GetComponent<DemTile>();
-                        if (!tile.resident)
-                            tile.SetPulse(rangeColor, Color.white);
+                        if (!tile.resident) tile.SetPulse(rangeColor, Color.white);
                     }
                 }
 
@@ -646,6 +990,9 @@ public class DemTile : MonoBehaviour
             // If tile occupied, output some stats
             if (resident)
             {
+                // Disable all tiles
+                foreach (DemTile tile in allTiles) tile.enabled = false;
+                this.enabled = true;
                 //Debug.Log(resident.name + " is here");
                 // Parse resident info, set name
                 BuildInfo info = resident.GetComponent<BuildInfo>();
@@ -655,21 +1002,26 @@ public class DemTile : MonoBehaviour
                 infoBiomass.GetComponent<Text>().text = SpeciesConstants.Biomass(resident.name).ToString();
                 infoLore.GetComponent<Text>().text = SpeciesConstants.SpeciesLore(resident.name);
                 // Set species type-specific statsBox and infoBox output data
-                switch (SpeciesConstants.SpeciesType(resident.GetComponent<BuildInfo>().speciesId))
+                switch (SpeciesConstants.SpeciesType(resident.name))
                 {
                     // Plant: 
                     case 0 :    // STATSBOX //
                                 //
                                 // Set species type icon and color
                                 iconStat.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/plant_icon");
-                                iconStat.GetComponent<Image>().color = new Color32(46, 139, 87, 200);
+                                iconStat.GetComponent<Image>().color = buildMenu.plantIconColor;
 
                                 // INFOBOX //
                                 //
                                 // Set species type and icon
                                 infoSpeciesType.GetComponent<Text>().text = "Plant";
                                 infoSpeciesTypeIcon.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/plant_icon");
-                                infoSpeciesTypeIcon.GetComponent<Image>().color = new Color32(46, 139, 87, 200);
+                                infoSpeciesTypeIcon.GetComponent<Image>().color = buildMenu.plantIconColor;
+                                // Set biomass tier level and icon
+                                infoBiomassTier.GetComponent<Text>().text = "1";
+                                infoBiomassIcon.GetComponent<Image>().color = buildMenu.tier1BiomassIconColor;
+                                // Set remove button icon as active
+                                removeBuildButton.SetActive(true);
                                 // Set species traits and predator/prey objects as inactive
                                 infoSpeciesTrait1.SetActive(false);
                                 infoSpeciesTrait1Icon.SetActive(false);
@@ -686,7 +1038,7 @@ public class DemTile : MonoBehaviour
                                 //
                                 // Set species type icon and color
                                 iconStat.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/prey_icon");
-                                iconStat.GetComponent<Image>().color = new Color32(210, 105, 30, 200);
+                                iconStat.GetComponent<Image>().color = buildMenu.preyIconColor;
                                 // Set primary trait as prey health
                                 trait1Stat.GetComponent<Text>().text = resident.GetComponent<PreyInfo>().GetHealth() + 
                                     "/" + SpeciesConstants.Health(resident.name);
@@ -705,7 +1057,7 @@ public class DemTile : MonoBehaviour
                                 // Set species type and icon in infoBox
                                 infoSpeciesType.GetComponent<Text>().text = "Prey";
                                 infoSpeciesTypeIcon.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/prey_icon");
-                                infoSpeciesTypeIcon.GetComponent<Image>().color = new Color32(210, 105, 30, 200);
+                                infoSpeciesTypeIcon.GetComponent<Image>().color = buildMenu.preyIconColor;
                                 // Set species health in infoBox
                                 infoSpeciesTrait1.GetComponent<Text>().text = trait1Stat.GetComponent<Text>().text;
                                 infoSpeciesTrait1Icon.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/health_icon");
@@ -733,8 +1085,12 @@ public class DemTile : MonoBehaviour
                                     predObject.transform.SetParent(infoPredPreyList.transform, false);
                                     predObject.SetActive(true);
                                 }
+                                // Set biomass tier level and icon
+                                infoBiomassTier.GetComponent<Text>().text = "2";
+                                infoBiomassIcon.GetComponent<Image>().color = buildMenu.tier2BiomassIconColor;
                                 //
-                                // Activate species trait 1, deactivate species trait2
+                                // Activate remove button icon, species trait 1; deactivate species trait2
+                                removeBuildButton.SetActive(true);
                                 infoSpeciesTrait1.SetActive(true);
                                 infoSpeciesTrait1Icon.SetActive(true);
                                 infoSpeciesTrait2.SetActive(false);
@@ -751,7 +1107,7 @@ public class DemTile : MonoBehaviour
                                 //
                                 // Set species type icon and color
                                 iconStat.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/carnivore_icon");
-                                iconStat.GetComponent<Image>().color = new Color32(178, 34, 34, 200);
+                                iconStat.GetComponent<Image>().color = buildMenu.predatorIconColor;
                                 // Set primary trait as predator hunger
                                 trait1Stat.GetComponent<Text>().text = resident.GetComponent<PredatorInfo>().GetHunger() + 
                                     "/" + SpeciesConstants.Hunger(resident.name);
@@ -782,7 +1138,7 @@ public class DemTile : MonoBehaviour
                                 // Set species type and icon in infoBox
                                 infoSpeciesType.GetComponent<Text>().text = "Predator";
                                 infoSpeciesTypeIcon.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/carnivore_icon");
-                                infoSpeciesTypeIcon.GetComponent<Image>().color = new Color32(178, 34, 34, 200);
+                                infoSpeciesTypeIcon.GetComponent<Image>().color = buildMenu.predatorIconColor;
                                 // Set species hunger as trait 1 in infoBox
                                 infoSpeciesTrait1.GetComponent<Text>().text = trait1Stat.GetComponent<Text>().text;
                                 infoSpeciesTrait1Icon.GetComponent<Image>().sprite = Resources.Load<Sprite>("DontEatMe/Sprites/hunger_icon");
@@ -820,8 +1176,12 @@ public class DemTile : MonoBehaviour
                                     preyObject.transform.SetParent(infoPredPreyList.transform, false);
                                     preyObject.SetActive(true);
                                 }
+                                // Set biomass tier level and icon
+                                infoBiomassTier.GetComponent<Text>().text = "3";
+                                infoBiomassIcon.GetComponent<Image>().color = buildMenu.tier3BiomassIconColor;
                                 //
-                                // Activate species trait 1 and 2
+                                // Activate species trait 1 and 2, deactivate remove button icon
+                                removeBuildButton.SetActive(false);
                                 infoSpeciesTrait1.SetActive(true);
                                 infoSpeciesTrait1Icon.SetActive(true);
                                 infoSpeciesTrait2.SetActive(true);
@@ -845,69 +1205,14 @@ public class DemTile : MonoBehaviour
                 statsBox.SetActive(false);
                 statsBox.transform.position = Camera.main.WorldToScreenPoint(resident.gameObject.transform.position);
                 // Define and begin easing coroutine
+                if (easeCoroutine != null) StopCoroutine(easeCoroutine);
+                if (easeSimpleCoroutine != null) StopCoroutine(easeSimpleCoroutine);
+                simpleTooltip.SetActive(false);
                 easeEnumerator = EaseInStatsBox();
+                easeFinished = false;
                 easeCoroutine = StartCoroutine(easeEnumerator);
             }
         }
-    }
-
-    /**
-        Eases in the statsBox object.
-        The color alpha channel and y-axis rotation are modified each iteration to create the effect.
-        The infoPopup also flashes from highlighted state to normal state (@ zero alpha) as a visual hint of its
-        existence.
-        
-        @param  easing  a floating point value denoting the step size of each iteration
-    */
-    IEnumerator EaseInStatsBox (float easing = 0.15f)
-    {
-        // Delay one tenth second to start
-        yield return new WaitForSeconds(0.1f);
-        // Set statsBox active
-        statsBox.SetActive(true);
-        // Set final states
-        Vector3 finalRotation = statsBoxBaseRotation;
-        float finalAlpha = statsBoxBaseColor.a;
-        float finalIconAlpha = 0;
-        // Initialize transitional variables
-        Vector3 statRotation = statsBoxBaseRotation;
-        Color statsColor = statsBox.GetComponent<Image>().color;
-        //Color iconColor = infoPopupBaseNormalColor;
-        ColorBlock iconColors = infoPopupBaseColors;
-        Color iconColor = iconColors.normalColor;
-        float rotation = -45f;
-        float alpha = 0;
-        float iconAlpha = iconColors.highlightedColor.a;
-        statRotation.y = rotation;
-        statsColor.a = alpha;
-        iconColor.a = iconAlpha;
-        iconColors.normalColor = iconColor;
-        statsBox.transform.localEulerAngles = statRotation;
-        statsBox.GetComponent<Image>().color = statsColor;
-        infoPopup.GetComponent<Button>().colors = iconColors;
-
-        // Ease until threshold reached
-        while (rotation < finalRotation.y - 0.1f)
-        {
-            // Update transitional variables
-            rotation += (finalRotation.y - rotation) * easing;
-            statRotation.y = rotation;
-            alpha += (finalAlpha - alpha) * easing;
-            statsColor.a = alpha;
-            iconAlpha += (finalIconAlpha - iconAlpha) * easing;
-            iconColor.a = iconAlpha;
-            iconColors.normalColor = iconColor;
-            // Apply changes to statsBox
-            statsBox.transform.localEulerAngles = statRotation;
-            statsBox.GetComponent<Image>().color = statsColor;
-            infoPopup.GetComponent<Button>().colors = iconColors;
-            // Stall for next iteration
-            yield return new WaitForSeconds(0.01f);
-        }
-        // Post-threshold states set to base
-        statsBox.transform.localEulerAngles = statsBoxBaseRotation;
-        statsBox.GetComponent<Image>().color = statsBoxBaseColor;
-        infoPopup.GetComponent<Button>().colors = infoPopupBaseColors;
     }
 
     /**
@@ -915,6 +1220,8 @@ public class DemTile : MonoBehaviour
     */
     void OnMouseExit ()
     {
+        // Clear board controller's HoveredTile
+        main.boardController.HoveredTile = null;
         // Ignore if disabled
         if (!enabled) return;
 
@@ -931,7 +1238,13 @@ public class DemTile : MonoBehaviour
                 foreach (int[] coord in range)
                 {
                     // Skip tiles that are out of range
-                    if (idX + coord[0] > 8 || idX + coord[0] < 0 || idY + coord[1] > 4 || idY + coord[1] < 0)
+                    if
+                    (
+                        idX + coord[0] > main.boardController.numColumns - 1 || 
+                        idX + coord[0] < 0 || 
+                        idY + coord[1] > main.boardController.numRows - 1 || 
+                        idY + coord[1] < 0
+                    )
                         continue;
 
                     DemTile tile =  main.boardController.Tiles[idX + coord[0], idY + coord[1]].GetComponent<DemTile>();
@@ -945,14 +1258,18 @@ public class DemTile : MonoBehaviour
         }
         else
         {
+            // Re-enable all tiles
+            foreach (DemTile tile in allTiles) tile.enabled = true;
+
             SignalPulse(false);
             this.GetComponent<Renderer>().material.color = currentColor;
         }
 
-        // Stop any EaseInStatsBox coroutine in progress        
-        //try { StopCoroutine(easeCoroutine); }
-        //catch (NullReferenceException e) { Debug.Log("EaseInStatsBox not in progress --> " + e.Message); }
+        // Stop any EaseInStatsBox coroutine in progress
+        if (easeSimpleCoroutine != null) StopCoroutine(easeSimpleCoroutine);
         if (easeCoroutine != null) StopCoroutine(easeCoroutine);
+        easeFinished = true;
+        simpleTooltip.SetActive(false);
         // Set all variable components inactive
         statsBox.SetActive(false);
         trait1Stat.SetActive(false);
@@ -978,41 +1295,42 @@ public class DemTile : MonoBehaviour
             // If tile is empty...
             if (available)
             {
-                DemAudioManager.audioUiLoad.Play ();
-                //resident = DemMain.currentSelection;
-                
-                //resident.transform.position = center;
+                DemAudioManager.audioUiLoad.Play();
+
                 AddAnimal(main.currentSelection);
 
                 // If building a plant:
-                if (buildMenu.currentAnimalFactory.isPlant ())
+                if (buildMenu.currentAnimalFactory.isPlant())
                 {
                     int currentBiomass = buildMenu.GetTier1Biomass ();
                     int newBiomass = SpeciesConstants.Biomass (main.currentSelection.name);
-                    buildMenu.UpdateTier1Biomass (currentBiomass - newBiomass);
+                    //buildMenu.UpdateTier1Biomass (currentBiomass - newBiomass);
+                    buildMenu.SubtractTier1Biomass(newBiomass);
                     buildMenu.AddTier2Biomass ((int)(newBiomass * 0.5));
-
+                    buildMenu.UpdateTier1Biomass();
+                    buildMenu.UpdateTier2Biomass();
                 }
                 // If building a prey:
-                else
+                else if (buildMenu.currentAnimalFactory.isPrey())
                 {
                     int currentBiomass = buildMenu.GetTier2Biomass();
                     buildMenu.SubtractTier2Biomass (SpeciesConstants.Biomass (main.currentSelection.name));
                 }
-
-                // Set BuildMenu.currentlyBuilding to null after successful placement
+                // Update build menu locks, set BuildMenu.currentlyBuilding to null after successful placement
+                buildMenu.UpdateMenuLocks();
                 buildMenu.currentAnimalFactory = null;
                 main.currentSelection = null;
                 main.boardController.ClearAvailableTiles();
-                turnSystem.PredatorTurn();
+
+                turnSystem.StallSpawn(1.0f);
 
                 // DEBUG 
-                if (resident)
-                    Debug.Log("Placed " + resident.name + " @ " + resident.GetComponent<Transform>().position);
-           }
-           // Play fail sound on invalid build attempt
-           else
-              DemAudioManager.audioFail2.Play ();
+                //if (resident)
+                //    Debug.Log("Placed " + resident.name + " @ " + resident.GetComponent<Transform>().position);
+            }
+            // Play fail sound on invalid build attempt
+            else
+            DemAudioManager.audioFail2.Play ();
         }
     }
 
@@ -1046,29 +1364,26 @@ public class DemTile : MonoBehaviour
   public bool ResidentIsPredator(){
     
     if (resident) {
-      return resident.GetComponent<BuildInfo> ().isPredator ();
-    } else if(nextPredator){
+      return resident.GetComponent<BuildInfo>().isPredator ();
+    } 
+    else if(nextPredator){
       return true;
     }
-    else
+    return false;
+  }
+
+    public void SetResident (GameObject newResident)
     {
-      return false;
+        resident = newResident;
     }
-
-  }
-
-  public void SetResident(GameObject newResident){
-    resident = newResident;
-  }
 
 
   public void AddAnimal(GameObject animal){
 
     this.resident = animal;
-
     this.resident.GetComponent<BuildInfo> ().tile = this;
-
     this.resident.transform.position = this.center;
+
 
 		//add statistic to tree place down, and prey place down
 		if (this.resident.GetComponent<BuildInfo> ().isPlant ()) {
@@ -1085,7 +1400,7 @@ public class DemTile : MonoBehaviour
 
     this.nextPredator = animal;
 
-    this.nextPredator.GetComponent<BuildInfo> ().tile = this;
+    this.nextPredator.GetComponent<BuildInfo>().tile = this;
 
     Vector3 newPosition = new Vector3();
     newPosition.x = this.center.x+2;
@@ -1093,7 +1408,6 @@ public class DemTile : MonoBehaviour
     newPosition.z = this.center.z;
 
     this.nextPredator.transform.position = newPosition;
-
   }
 
   public void UpdateNewPredator(){
@@ -1101,19 +1415,15 @@ public class DemTile : MonoBehaviour
     nextPredator = null;
   }
 
-  public void RemoveAnimal(){
-
-		//add statistic to tree destroy, and prey eaten
-		if (this.resident.GetComponent<BuildInfo> ().isPlant ()) {
-			buildMenu.statistic.setTreeDestroy (1);
-		} else if (this.resident.GetComponent<BuildInfo> ().isPrey ()) {
-			buildMenu.statistic.setPreyEaten (1);
-		}
-    
-    Destroy (resident);
-    this.resident = null;
-  
-  }
+    public void RemoveAnimal ()
+    {
+        //add statistic to tree destroy, and prey eaten
+        if (this.resident.GetComponent<BuildInfo> ().isPlant())
+            buildMenu.statistic.setTreeDestroy (1);
+        else if (this.resident.GetComponent<BuildInfo>().isPrey())
+            buildMenu.statistic.setPreyEaten (1);
+        Destroy (resident);
+    }
 
   public int GetIdX(){
     return idX;
@@ -1126,5 +1436,4 @@ public class DemTile : MonoBehaviour
   public Vector3 GetCenter(){
     return center;
   }
-
 }

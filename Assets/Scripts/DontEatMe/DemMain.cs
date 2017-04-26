@@ -23,39 +23,46 @@ public class DemMain : MonoBehaviour
 
   private DemTurnSystem turnSystem;
 
-
+    private bool easeEnd;
+    private KeyCode[] hotkeys;
 
 
     // Use this for initialization
     void Awake()
     {
 
-      mainObject = GameObject.Find ("MainObject");
-      tweenManager = mainObject.GetComponent<DemTweenManager> ();
-      buildMenu = mainObject.GetComponent<BuildMenu> ();
-      // Setup Play board
-      //boardGroup = new GameObject("GameBoard");
-      gameBoard = GameObject.Find("GameBoard");
-      //Keep track of our tiles
-      boardController = gameBoard.GetComponent<DemBoard> ();
+        mainObject = GameObject.Find ("MainObject");
+        tweenManager = mainObject.GetComponent<DemTweenManager> ();
+        buildMenu = mainObject.GetComponent<BuildMenu> ();
+        // Setup Play board
+        //boardGroup = new GameObject("GameBoard");
+        gameBoard = GameObject.Find("GameBoard");
+        //Keep track of our tiles
+        boardController = gameBoard.GetComponent<DemBoard> ();
 
-      turnSystem = mainObject.GetComponent<DemTurnSystem> ();
+        turnSystem = mainObject.GetComponent<DemTurnSystem> ();
 
-
-      //Pick predators
-      // FIXME: Swap hard-coded predators for dynamically-generated;
-      // also, Bat-Eared Fox is in both the predator and the prey selections, so there's some cannibalism going on
-      // (Yes, it's been tested and verified: the "predator" version eats the "prey" version... no bueno.)
-    
+        //Pick predators
     	currentSelection = null;
 
-      predators = new DemAnimalFactory[6];
-      predators [0] = new DemAnimalFactory ("Bat-Eared Fox"); 
-      predators [1] =  new DemAnimalFactory ("Black Mamba"); 
-      predators [2] =  new DemAnimalFactory ("Serval Cat"); 
-      predators [3] =  new DemAnimalFactory ("African Wild Dog"); 
-      predators [4] =  new DemAnimalFactory ("Leopard"); 
-      predators [5] =  new DemAnimalFactory ("Lion"); 
+        predators = new DemAnimalFactory[6];
+        predators [0] = new DemAnimalFactory ("Bat-Eared Fox"); 
+        predators [1] =  new DemAnimalFactory ("Black Mamba"); 
+        predators [2] =  new DemAnimalFactory ("Serval Cat"); 
+        predators [3] =  new DemAnimalFactory ("African Wild Dog"); 
+        predators [4] =  new DemAnimalFactory ("Leopard"); 
+        predators [5] =  new DemAnimalFactory ("Lion");
+
+        easeEnd = true;
+        hotkeys = new KeyCode[6]
+        {
+            KeyCode.Alpha1,
+            KeyCode.Alpha2,
+            KeyCode.Alpha3,
+            KeyCode.Alpha4,
+            KeyCode.Alpha5,
+            KeyCode.Alpha6
+        };
         
         // "Trust me guys, we need all these empty lines."
  
@@ -75,10 +82,10 @@ public class DemMain : MonoBehaviour
   {
     DemAudioManager.audioBg.Play();
 
-    for (int x = 0; x < 9; x++)
+    for (int x = 0; x < boardController.numColumns; x++)
     {
 
-      for (int y = 0; y < 5; y++)
+      for (int y = 0; y < boardController.numRows; y++)
       {
         boardController.Add (x, y );
 
@@ -92,97 +99,85 @@ public class DemMain : MonoBehaviour
     {
         tweenManager.Update ();
     	// If a species is currently selected for building, update its position to the cursor
-        if (buildMenu.GetCurrentAnimalFactory() != null) {
-    		if (currentSelection) {
-          
-    			Vector3 world_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
-    			world_pos.z = -1.5f;
-    			currentSelection.transform.position = world_pos;
- 
+        if (buildMenu.GetCurrentAnimalFactory() != null)
+        {
+    		//if (currentSelection && easeEnd)
+            if (easeEnd)
+            {
+                Vector3 world_pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
+                world_pos.z = -1.5f;
+                currentSelection.transform.position = world_pos;
     		}
 
     		// Cancel currently selected species on Escape key press
     		if (Input.GetKeyDown(KeyCode.Escape))
             {
-                //BuildMenu.currentAnimalFactory = null;
-                buildMenu.SetCurrentAnimalFactory (null);         
-    			// Start easing animation
-    			StartCoroutine(easeReturn());
+                buildMenu.SetCurrentAnimalFactory(null);         
+                // Start easing animation
+                StartCoroutine(easeReturn());
                 boardController.ClearAvailableTiles();
     		}
 		}
-        else
+
+        // Hotkeys for build menus //
+        for (byte i = 0; i < hotkeys.Length; i++)
         {
-            // Hotkeys for build menus //
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (Input.GetKeyDown(hotkeys[i]))
             {
-                if (buildMenu.PlantMenuActive())
+                Debug.Log("plantBuildButtons.Length = " + buildMenu.plantBuildButtons.Length);
+                if (easeEnd)
                 {
-                    if (buildMenu.plantBuildButtons[0].GetComponent<Button>().interactable)
-                        buildMenu.selectSpecies(buildMenu.plantBuildButtons[0]);
+                    // Plant
+                    if (buildMenu.PlantMenuActive())
+                    {
+                        if (buildMenu.plantBuildButtons[i].GetComponent<Button>().interactable)
+                        {
+                            // If currently building, return currentSelection and reset board
+                            if (buildMenu.GetCurrentAnimalFactory() != null)
+                            {
+                                buildMenu.SetCurrentAnimalFactory(null);
+                                byte k = i;
+                                StartCoroutine(easeReturn(0.05f, done => 
+                                {
+                                    done = true;
+                                    buildMenu.selectSpecies(buildMenu.plantBuildButtons[k]);
+                                }));
+                                boardController.ClearAvailableTiles();
+
+                            }
+                            // Else set build immediately
+                            else buildMenu.selectSpecies(buildMenu.plantBuildButtons[i]);
+                        }
+                    }
+                    // Prey
+                    else if (buildMenu.preyBuildButtons[i].GetComponent<Button>().interactable)
+                    {
+                        // If currently building, return currentSelection and reset board
+                        if (buildMenu.GetCurrentAnimalFactory() != null)
+                        {
+                                buildMenu.SetCurrentAnimalFactory(null);
+                                byte k = i;
+                                StartCoroutine(easeReturn(0.05f, done => 
+                                {
+                                    done = true;
+                                    buildMenu.selectSpecies(buildMenu.plantBuildButtons[k]);
+                                }));
+                                boardController.ClearAvailableTiles();
+                        }
+                        // Set build
+                        else buildMenu.selectSpecies(buildMenu.preyBuildButtons[i]);
+                    }
                 }
-                else if (buildMenu.preyBuildButtons[0].GetComponent<Button>().interactable)
-                    buildMenu.selectSpecies(buildMenu.preyBuildButtons[0]);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                if (buildMenu.PlantMenuActive())
-                {
-                    if (buildMenu.plantBuildButtons[1].GetComponent<Button>().interactable)
-                        buildMenu.selectSpecies(buildMenu.plantBuildButtons[1]);
-                }
-                else if (buildMenu.preyBuildButtons[1].GetComponent<Button>().interactable)
-                    buildMenu.selectSpecies(buildMenu.preyBuildButtons[1]);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                if (buildMenu.PlantMenuActive())
-                {
-                    if (buildMenu.plantBuildButtons[2].GetComponent<Button>().interactable)
-                        buildMenu.selectSpecies(buildMenu.plantBuildButtons[2]);
-                }
-                else if (buildMenu.preyBuildButtons[2].GetComponent<Button>().interactable)
-                    buildMenu.selectSpecies(buildMenu.preyBuildButtons[2]);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                if (buildMenu.PlantMenuActive())
-                {
-                    if (buildMenu.plantBuildButtons[3].GetComponent<Button>().interactable)
-                        buildMenu.selectSpecies(buildMenu.plantBuildButtons[3]);
-                }
-                else if (buildMenu.preyBuildButtons[3].GetComponent<Button>().interactable)
-                    buildMenu.selectSpecies(buildMenu.preyBuildButtons[3]);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha5))
-            {
-                if (buildMenu.PlantMenuActive())
-                {
-                    if (buildMenu.plantBuildButtons[4].GetComponent<Button>().interactable)
-                        buildMenu.selectSpecies(buildMenu.plantBuildButtons[4]);
-                }
-                else if (buildMenu.preyBuildButtons[4].GetComponent<Button>().interactable)
-                    buildMenu.selectSpecies(buildMenu.preyBuildButtons[4]);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha6))
-            {
-                if (buildMenu.PlantMenuActive())
-                {
-                    if (buildMenu.plantBuildButtons[5].GetComponent<Button>().interactable)
-                        buildMenu.selectSpecies(buildMenu.plantBuildButtons[5]);
-                }
-                else if (buildMenu.preyBuildButtons[5].GetComponent<Button>().interactable)
-                    buildMenu.selectSpecies(buildMenu.preyBuildButtons[5]);
             }
         }
 
-		// DEBUGGING STUFF
-		if (Input.GetKeyDown(KeyCode.Space)) {
-			Vector3 wp = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -1.5f));
-			Debug.Log("Cursor at (" + wp.x + ", " + wp.y + ")");
-			if (currentSelection != null)
-				Debug.Log("currentSelection at (" + currentSelection.transform.position.x + ", " + currentSelection.transform.position.y + ")");
-		}
+		// Toggle build button categories
+		if (Input.GetKeyDown(KeyCode.Space))
+            buildMenu.SetBuildButtonCategory(buildMenu.PlantMenuActive() ? 1 : 0);
+
+        // Invoke skip function
+        if (Input.GetKeyDown(KeyCode.S))
+            buildMenu.SelectSkip();
     }
 
     /**
@@ -202,11 +197,14 @@ public class DemMain : MonoBehaviour
 
         @param  easing  a floating point value in the range (0, 1]
     */
-    IEnumerator easeReturn (float easing = 0.05f)
+    IEnumerator easeReturn (float easing = 0.05f, Action<bool> onComplete = null)
     {
+        // Set easeEnd to false
+        easeEnd = false;
         // Keep easing coefficient in range, define starting distance
         easing = (float)Math.Min(Math.Max(1e-12, easing), 1.0f);
-		float startDistance = Vector3.Distance(buildOrigin, currentSelection.transform.position);
+
+        float startDistance = Vector3.Distance(buildOrigin, currentSelection.transform.position);
         // Ease until within one tenth the starting distance
     	while (Vector3.Distance(buildOrigin, currentSelection.transform.position) > startDistance / 10)
         {
@@ -218,7 +216,9 @@ public class DemMain : MonoBehaviour
 			);
 			yield return new WaitForSeconds(0.01f);
     	}
-        // Destroy current selection upon arrival
-    	Destroy(currentSelection);
+        // Destroy current selection upon arrival, flag easeEnd as true
+        Destroy(currentSelection);
+        easeEnd = true;
+        if (onComplete != null) onComplete(easeEnd);
     }
 }

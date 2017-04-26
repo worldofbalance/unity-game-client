@@ -24,13 +24,30 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     //Button prefab
     public GameObject buttonPrefab;
+    public GameObject buttonImage;
 
-    //Canvas Object
-    //public GameObject canvasObject;
+    // Main objects
+    public GameObject mainObject;
     public GameObject mainUIObject;
 
     //Panel Object
     public GameObject panelObject;
+
+    // Stats popup object (supersedes panelObject)
+    private GameObject buttonStatsBox;
+    private Text statsSpeciesName;
+    private Text statsBiomassTier;
+    private Text statsBiomassText;
+    private Text statsMetabolismText;
+    private Image statsSpeciesIcon;
+    private Image statsBiomassIcon;
+    private Image statsMetabolismIcon;
+    // Stats popup easing components
+    private Color statsBoxBaseColor;
+    private Vector3 statsBoxBaseScale;
+    private Vector3 statsBoxBaseRotation;
+    private IEnumerator easeEnumerator;
+    private Coroutine easeCoroutine;
 
 
     //width of button
@@ -50,15 +67,36 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
     Color highlightedColor = new Color32(218, 165, 32, 255); // Custom "highlighted" button color
     Color pressedColor = new Color32(173, 255, 47, 255); // Custom "pressed" button color
 
-    // Loading Resources and initialize button size
+    /**
+        Called on script load as a precursor to all other methods.
+        Use for inializing objects.
+    */
     void Awake()
     {
         buttonPrefab = Resources.Load<GameObject>("DontEatMe/Prefabs/Button");
 
         //canvasObject = GameObject.Find("Canvas");
         panelObject = GameObject.Find("Canvas/Panel");
+        //panelObject.SetActive(false);
+        mainObject = GameObject.Find("MainObject");
         mainUIObject = GameObject.Find("Canvas/mainUI");
         //panelObject = GameObject.Find("Canvas/mainUI/Panel");
+
+        // Initialize stats popup and its components
+        buttonStatsBox = GameObject.Find("Canvas/BuildButtonStatsBox");
+        statsSpeciesName = GameObject.Find("Canvas/BuildButtonStatsBox/SpeciesName").GetComponent<Text>();
+        statsBiomassTier = GameObject.Find("Canvas/BuildButtonStatsBox/BiomassTier").GetComponent<Text>();
+        statsBiomassText = GameObject.Find("Canvas/BuildButtonStatsBox/BiomassText").GetComponent<Text>();
+        statsMetabolismText = GameObject.Find("Canvas/BuildButtonStatsBox/MetabolismText").GetComponent<Text>();
+        statsSpeciesIcon = GameObject.Find("Canvas/BuildButtonStatsBox/StatsIcon").GetComponent<Image>();
+        statsBiomassIcon = GameObject.Find("Canvas/BuildButtonStatsBox/BiomassIcon").GetComponent<Image>();
+        statsMetabolismIcon = GameObject.Find("Canvas/BuildButtonStatsBox/MetabolismIcon").GetComponent<Image>();
+        // Initialize easing components (colors, rotations)
+        statsBoxBaseColor = buttonStatsBox.GetComponent<Image>().color;
+        statsBoxBaseScale = buttonStatsBox.transform.localScale;
+        statsBoxBaseRotation = buttonStatsBox.transform.localEulerAngles;
+        easeEnumerator = null;
+        easeCoroutine = null;
 
         xSize = buttonPrefab.GetComponent<RectTransform>().sizeDelta.x;
         ySize = buttonPrefab.GetComponent<RectTransform>().sizeDelta.y;
@@ -68,11 +106,22 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
         width = Screen.width;
     }
 
+    /**
+        Called after Awake on script start.
+        Use to set properties of object initialized in Awake.
+    */
+    void Start ()
+    {
+        buttonStatsBox.SetActive(false);
+    }
+
 
     // Instantiate and place the buttons on the scene
     public GameObject CreateButton (float xPos, float yPos, string name)
     {
-        GameObject button = Instantiate(buttonPrefab) as GameObject;
+        //GameObject button = Instantiate(buttonPrefab) as GameObject;
+        GameObject button = Instantiate<GameObject>(buttonPrefab);
+
         button.name = name;
         buttonId += 1;
 
@@ -123,12 +172,39 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
         button.GetComponent<Button>().colors = cb;
     }
 
+    /**
+        Sets the pressed color for a specified button.
+        The highlighted color is defined by the Button component's ColorBlock.pressedColor variable.
+
+        @param  button  a GameObject representing a button
+        @param  color   a new Color or Color32 object
+    */
+    public void SetButtonPressedColor (GameObject button, Color color)
+    {
+        ColorBlock cb = button.GetComponent<Button>().colors;
+        cb.pressedColor = color;
+        button.GetComponent<Button>().colors = cb;
+    }
+
+    /**
+        Sets the disabled color for a specified button.
+        The highlighted color is defined by the Button component's ColorBlock.disabledColor variable.
+
+        @param  button  a GameObject representing a button
+        @param  color   a new Color or Color32 object
+    */
+    public void SetButtonDisabledColor (GameObject button, Color color)
+    {
+        ColorBlock cb = button.GetComponent<Button>().colors;
+        cb.disabledColor = color;
+        button.GetComponent<Button>().colors = cb;
+    }
 
     // Create image for the button
     // TODO: consider swapping order of parameters to match SetButtonText and SetButtonIcon methods
-    public void SetButtonImage(DemAnimalFactory species, GameObject button)
+    public void SetButtonImage (DemAnimalFactory species, GameObject button)
     {
-        GameObject buttonImage = new GameObject(species.GetName());
+        buttonImage = new GameObject(species.GetName());
         buttonImage.transform.SetParent(button.transform);
 
         // Set the layer to UI layer
@@ -137,28 +213,29 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
         // Sets image and its position on the button 
         buttonImage.AddComponent<Image>();
         buttonImage.GetComponent<Image>().sprite = species.GetImage();
+        buttonImage.GetComponent<Image>().preserveAspect = true;
         buttonImage.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         buttonImage.GetComponent<RectTransform>().anchorMin = Vector2.zero;
         buttonImage.GetComponent<RectTransform>().anchorMax = Vector2.one;
 
         buttonImage.GetComponent<RectTransform>().offsetMax = new Vector2(-7, -7);
         buttonImage.GetComponent<RectTransform>().offsetMin = new Vector2(7, 7);
-
     }
 
     /** Sets the icon image for the button.
         This method is similar in outcome to SetButtonImage but allows for an arbitrary icon to be specified.
 
-        @param  button      a GameObject representing a button
-        @param  iconPath    path to the desired icon image relative to 'Assets/Resources/' (string)
-                            Note: the image texture type must be set to "Sprite (2D and UI)"
+        @param  button          a GameObject representing a button
+        @param  iconPath        path to the desired icon image relative to 'Assets/Resources/' (string)
+                                Note: the image texture type must be set to "Sprite (2D and UI)"
+        @param  colorOverlay    a Color object to overlay the icon
     */
-    public void SetButtonIcon (GameObject button, string iconPath, Color colorOverlay)
+    public void SetButtonIcon (GameObject button, string iconPath, Color colorOverlay, Vector2 anchor)
     {
         // Create icon image, set parent
         GameObject buttonIcon = new GameObject("buttonIcon");
         buttonIcon.transform.SetParent(button.transform);
-        // Place on button layer
+        // Place on button (UI) layer
         buttonIcon.layer = DemButtonFactory.BUTTON_LAYER;
 
         // Position icon on button
@@ -166,44 +243,44 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
         buttonIcon.GetComponent<Image>().sprite = Resources.Load<Sprite>(iconPath);
         buttonIcon.GetComponent<Image>().color = colorOverlay;
         RectTransform rt = buttonIcon.GetComponent<RectTransform>();
-        // Set anchor => justify left, keep icon proportionally correct
-        rt.anchoredPosition = Vector2.left;
+        // Set anchor
+        rt.anchoredPosition = anchor;
         rt.anchorMin = Vector2.zero;
 
         // Isolate button icon image
         Image icon = buttonIcon.GetComponent<Image>();
 
+        // Perform Rect transformations
         Rect buttonRect = button.GetComponent<RectTransform>().rect;
+        
         float iconWtH = icon.sprite.rect.width/icon.sprite.rect.height;
         float buttonWtH = buttonRect.width / buttonRect.height;
 
-
-
-
-        Debug.Log("iconWtH for '" + iconPath + "' = " + iconWtH);
-        //if (iconWtH > 1) rt.anchorMax = new Vector2(1/iconWtH, 1f);
+        // Maintain aspet ratio: icon width-to-height > button width-to-height
         if (iconWtH > buttonWtH) rt.anchorMax = new Vector2
         (
             (buttonRect.width * icon.sprite.rect.height) / 
             (buttonRect.height * icon.sprite.rect.width),
             1f
         );
+        // Maintain aspet ratio: icon width-to-height < button width-to-height
         else if (iconWtH < buttonWtH) rt.anchorMax = new Vector2
         (
             (buttonRect.height * icon.sprite.rect.width) / 
             (buttonRect.width * icon.sprite.rect.height),
             1f
         );
+        // Maintain aspet ratio: icon width-to-height == button width-to-height
         else rt.anchorMax = new Vector2(1/buttonWtH, 1f);
 
-        // Set offset
+        // Set screen offset
         rt.offsetMin = new Vector2(7, 7);
         rt.offsetMax = new Vector2(-7, -7);
     }
 
 
     // Create text for the button
-    public void SetButtonText(GameObject button, string text)
+    public void SetButtonText (GameObject button, string text, bool relativeToParent = false)
     {
         GameObject buttonText = new GameObject("buttonTxt");
         buttonText.transform.SetParent(button.transform);
@@ -214,11 +291,13 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
         //Set text and its position on the button
         buttonText.AddComponent<Text>();
         buttonText.GetComponent<Text>().font = Resources.Load<Font>("Fonts/Dresden Elektronik");
-		buttonText.GetComponent<Text> ().fontSize = (int)(Screen.width/45);
+
+        buttonText.GetComponent<Text> ().fontSize = (int)(Screen.width/45);
         buttonText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
         buttonText.GetComponent<Text>().color = Color.white;
         buttonText.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-		buttonText.GetComponent<RectTransform> ().sizeDelta = button.GetComponent<RectTransform>().sizeDelta;
+        buttonText.GetComponent<RectTransform> ().sizeDelta = button.GetComponent<RectTransform>().sizeDelta;
+
         // Apply button text
         buttonText.GetComponent<Text>().text = text;
     }
@@ -231,7 +310,6 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
     */
     public void SetButtonTextColor (GameObject button, Color color)
     {
-        //button.GetComponent<Text>().color = color;
         button.transform.GetComponentInChildren<Text>().color = color;
     }
 
@@ -263,7 +341,6 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
         button.GetComponent<RectTransform>().sizeDelta = new Vector2(newSizeX, newSizeY);
     }
 
-
     // Return the button id
     public int getButtonId()
     {
@@ -284,32 +361,60 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
         return ySize;
     }
 
-
     // When mouse cursor is over an object
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // Set the tooltip as active when mouse cursor is over a button
-        panelObject.SetActive(true);
-        panelObject.transform.position = new Vector3(Input.mousePosition.x + 180, Input.mousePosition.y);
-        if (this.gameObject.transform.GetChild(0).gameObject.activeSelf)
+        string speciesName = this.gameObject.transform.GetChild(0).gameObject.name;
+        // Parse associated species type, return if neither plant nor prey
+        int speciesType = SpeciesConstants.SpeciesType(speciesName); // Parse species type (0 = plant, 1 = prey)
+        if (speciesType != 0 && speciesType != 1) return;
+
+        // Set species name and icon
+        statsSpeciesName.text = speciesName;
+
+        // Set supplementary data
+        // For Plant buttons:
+        if (speciesType == 0 && mainObject.GetComponent<BuildMenu>().PlantMenuActive())
         {
-      panelObject.transform.GetChild (1).GetComponent<Text> ().text = 
-        this.gameObject.transform.GetChild (0).gameObject.name;
-            //panelObject.transform.GetChild(2).GetComponent<Text>().text = ;
-      panelObject.transform.GetChild (3).GetChild (0).GetComponent<Text> ().text = "Biomass : " +
-        SpeciesConstants.Biomass (this.gameObject.transform.GetChild (0).gameObject.name).ToString();
-        }
+            // Set main icon
+            statsSpeciesIcon.sprite = Resources.Load<Sprite>("DontEatMe/Sprites/plant_icon");
+            statsSpeciesIcon.color = mainObject.GetComponent<BuildMenu>().plantIconColor; //new Color32(46, 139, 87, 255);
+            // Set Biomass tier level, text, and icon color
+            statsBiomassTier.text = "1";
+            statsBiomassText.text = SpeciesConstants.Biomass(speciesName).ToString();
+            statsBiomassIcon.color = new Color32(146, 200, 120, 203);
+            // Disable metabolism components
+            statsMetabolismText.gameObject.SetActive(false);
+            statsMetabolismIcon.gameObject.SetActive(false);
 
-        else
+            // Set buttonStatsBox active and position it over the button
+            buttonStatsBox.SetActive(false);
+            buttonStatsBox.transform.position = this.gameObject.transform.position;
+            easeEnumerator = EaseInButtonStatsBox();
+            easeCoroutine = StartCoroutine(easeEnumerator);
+            //buttonStatsBox.SetActive(true);
+        }
+        // For Prey buttons
+        else if (speciesType == 1 && !mainObject.GetComponent<BuildMenu>().PlantMenuActive())
         {
-            //panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(1).gameObject.name;
-            panelObject.transform.GetChild(1).GetComponent<Text>().text = this.gameObject.transform.GetChild(1).gameObject.name;
+            // Set main icon
+            statsSpeciesIcon.sprite = Resources.Load<Sprite>("DontEatMe/Sprites/prey_icon");
+            statsSpeciesIcon.color = mainObject.GetComponent<BuildMenu>().preyIconColor; //new Color32(210, 105, 30, 255);
+            // Set Biomass tier level, text, and icon color
+            statsBiomassTier.text = "2";
+            statsBiomassText.text = SpeciesConstants.Biomass(speciesName).ToString();
+            statsBiomassIcon.color = new Color32(200, 175, 120, 203);
+            // Enable and set metabolism components
+            statsMetabolismText.gameObject.SetActive(true);
+            statsMetabolismIcon.gameObject.SetActive(true);
+            statsMetabolismText.text = SpeciesConstants.Metabolism(speciesName).ToString();
 
-      panelObject.transform.GetChild (3).GetChild (0).GetComponent<Text> ().text =  "Biomass : " +
-                SpeciesConstants.Biomass (this.gameObject.transform.GetChild(1).gameObject.name).ToString();
+            // Set buttonStatsBox active and position it over the button
+            buttonStatsBox.SetActive(false);
+            buttonStatsBox.transform.position = this.gameObject.transform.position;
+            easeEnumerator = EaseInButtonStatsBox();
+            easeCoroutine = StartCoroutine(easeEnumerator);
         }
-
-        panelObject.transform.GetChild(1).gameObject.SetActive(true);
     }
 
 
@@ -317,9 +422,52 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public void OnPointerExit(PointerEventData eventData)
     {
         // Sets tooltip as inactive
-        panelObject.SetActive(false);
+        if (easeCoroutine != null) StopCoroutine(easeCoroutine);
+        buttonStatsBox.SetActive(false);
     }
 
+    /**
+        Eases in the buttonStatsBox object.
+        The color alpha channel and y-axis rotation are modified each iteration to create the effect.
+        
+        @param  easing  a floating point value denoting the step size of each iteration
+    */
+    IEnumerator EaseInButtonStatsBox (float easing = 0.15f)
+    {
+        // Delay one tenth second to start
+        yield return new WaitForSeconds(0.1f);
+        // Set statsBox active
+        buttonStatsBox.SetActive(true);
+        // Set final states
+        Vector3 finalRotation = statsBoxBaseRotation;
+        float finalAlpha = statsBoxBaseColor.a;
 
+        // Initialize transitional variables
+        Vector3 statRotation = statsBoxBaseRotation;
+        Color statsColor = buttonStatsBox.GetComponent<Image>().color;
+        float rotation = -30f;
+        float alpha = 0;
+        statRotation.x = rotation;
+        statsColor.a = alpha;
+        buttonStatsBox.transform.localEulerAngles = statRotation;
+        buttonStatsBox.GetComponent<Image>().color = statsColor;
+
+        // Ease until threshold reached
+        while (rotation < finalRotation.x - 0.1f)
+        {
+            // Update transitional variables
+            rotation += (finalRotation.x - rotation) * easing;
+            statRotation.x = rotation;
+            alpha += (finalAlpha - alpha) * easing;
+            statsColor.a = alpha;
+            // Apply changes to statsBox
+            buttonStatsBox.transform.localEulerAngles = statRotation;
+            buttonStatsBox.GetComponent<Image>().color = statsColor;
+            // Stall for next iteration
+            yield return new WaitForSeconds(0.01f);
+        }
+        // Post-threshold states set to base
+        buttonStatsBox.transform.localEulerAngles = statsBoxBaseRotation;
+        buttonStatsBox.GetComponent<Image>().color = statsBoxBaseColor;
+    }
 }
-

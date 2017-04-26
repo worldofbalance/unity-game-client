@@ -101,7 +101,18 @@ public class PreyInfo : BuildInfo {
     */
     public bool IsPreyOf (int predID)
     {
-        return SpeciesConstants.PreyIDList(this.speciesId).AsEnumerable().Contains(predID);
+        return SpeciesConstants.PredatorIDList(this.speciesId).AsEnumerable().Contains(predID);
+    }
+
+    /**
+        Returns true if a species is a natural predator.
+        Search by a predator's BuildInfo / PreyInfo component.
+
+        @param  predator    a BuildInfo or child object
+    */
+    public bool IsPreyOf (BuildInfo predator)
+    {
+        return SpeciesConstants.PredatorIDList(this.speciesId).AsEnumerable().Contains(predator.speciesId);
     }
 
 	/**

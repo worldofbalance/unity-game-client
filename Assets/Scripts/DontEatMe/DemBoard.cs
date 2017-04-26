@@ -2,9 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Remoting;
+using System;
+using UnityEngine.UI;
 
 public class DemBoard : MonoBehaviour {
-  public GameObject[,] Tiles = new GameObject[9 , 5];
+  public GameObject[,] Tiles;
+  public int numRows;
+  public int numColumns;
 
   private float rightEdge ;
 
@@ -21,8 +25,18 @@ public class DemBoard : MonoBehaviour {
 
   private DemMain main;
 
+    private DemTile hoveredTile;
+    public DemTile HoveredTile
+    { 
+        get { return hoveredTile; }
+        set { hoveredTile = value; }
+    }
+
 	// Use this for initialization
 	void Awake () {
+    numRows = 5;
+    numColumns = 9;
+    Tiles = new GameObject[numColumns, numRows];
 
     grass1 = (Material)Resources.Load("DontEatMe/Materials/tile_1_border", typeof(Material));
     grass2 = (Material)Resources.Load("DontEatMe/Materials/tile_2_border", typeof(Material));
@@ -44,50 +58,32 @@ public class DemBoard : MonoBehaviour {
     highlightColor1 = Color.white;
     highlightColor2 = Color.Lerp(Color.blue, Color.white, 0.25f);
 
+    hoveredTile = null;
+
 	}
-
-    /**
-        Coroutine for pulsing DemTile highlight colors from one value to another.
-        Pulsing is implemented as a repeating linear tween between color1 and color2; the frequency is in the familiar
-        Hertz unit, with a single cycle represented by the transition from one color to the next and back again.
-        For example, if color1 was pure red and color2 was pure blue, one cycle would be defined as the transition from
-        pure red to pure blue back to pure red, and a frequency of 1.0 would complete this transition in 1 second.
-    */
-    /*public IEnumerator PulseTileColors (Color color1, Color color2, float frequency)
-    {
-        // Initialize tween color as color1
-        Color tweenColor = color1;
-
-        while (true)
-        {
-            tweenColor = Color.Lerp(color1, color2, Mathf.PingPong(1.0f, 1.0f));
-        }
-    }*/
 	
-  public void Add (int x, int y)
-  {
-
-    Tiles[x,y] = GameObject.CreatePrimitive(PrimitiveType.Quad);
-    //cube.tag = "Tile"; // Add a "Tile" tag to each cube
-    Debug.Log(gameBoard);
-    Tiles[x, y].transform.parent = gameBoard.transform;
-
-    Tiles[x, y].transform.position = new Vector3(rightEdge - 1 - x, bottomEdge + 1 + y, -1);
-
-    Tiles[x, y].name = x + "," + y;
-
-    if ((x % 2) == (y % 2))
+    public void Add (int x, int y)
     {
-      Tiles[x, y].GetComponent<Renderer>().material = grass1;
+        Tiles[x,y] = GameObject.CreatePrimitive(PrimitiveType.Quad);
 
-    }
-    else
-    {
-      Tiles[x, y].GetComponent<Renderer>().material = grass2;
-    }
+        Tiles[x, y].transform.parent = gameBoard.transform;
 
-    Tiles[x, y].AddComponent<DemTile>(); // Add the DemTile script to each cube
-  }
+        Tiles[x, y].transform.position = new Vector3(rightEdge - 1 - x, bottomEdge + 1 + y, -1);
+
+        Tiles[x, y].name = x + "," + y;
+
+        if ((x % 2) == (y % 2))
+        {
+            Tiles[x, y].GetComponent<Renderer>().material = grass1;
+
+        }
+        else
+        {
+            Tiles[x, y].GetComponent<Renderer>().material = grass2;
+        }
+
+        Tiles[x, y].AddComponent<DemTile>(); // Add the DemTile script to each cube
+    }
 
     /**
         Determines which tiles are available for building.
@@ -192,30 +188,23 @@ public class DemBoard : MonoBehaviour {
 
   }
 
-  public Dictionary<int, GameObject> GetPredators(){
-    
-    Dictionary<int, GameObject> activePredators = new Dictionary<int, GameObject> ();
-
-
-
-
-     for (int x = 8; x >= 0; x--){
-
-        for (int y = 0; y < 5; y++){
-        if (Tiles [x, y].GetComponent<DemTile> ().ResidentIsPredator() ) {
-          
-          activePredators.Add (Tiles [x, y].GetComponent<DemTile> ().resident.GetInstanceID (), Tiles [x, y].GetComponent<DemTile> ().resident);
-
+    public Dictionary<int, GameObject> GetPredators()
+    {
+        Dictionary<int, GameObject> activePredators = new Dictionary<int, GameObject>();
+        for (int x = numColumns - 1; x >= 0; x--)
+        {
+            for (int y = 0; y < numRows; y++)
+            {
+                if (Tiles[x, y].GetComponent<DemTile>().ResidentIsPredator())
+                {
+                    try
+                    {
+                        activePredators.Add (Tiles [x, y].GetComponent<DemTile> ().resident.GetInstanceID (), Tiles [x, y].GetComponent<DemTile> ().resident);
+                    }
+                    catch (NullReferenceException e) { Debug.Log("resident is NULL @ GetPredators()"); }
+                }
+            }
         }
-
-      }
-
+        return activePredators;
     }
-    // Random empty line's pen pal
-
-    return activePredators;
-  }
-
-
-
 }
