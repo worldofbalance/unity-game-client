@@ -378,11 +378,17 @@ public class DemTurnSystem : MonoBehaviour
 
     /**
         Skips to the next predator turn.
+        An optional time offset in seconds may be specified to delay the stop.
+
+        @param  timeOffset  a time offset in seconds (default = 0)
+        @param  onComplete  an Action to execute on completion (default = null)
     */
-    public IEnumerator Skip ()
+    public IEnumerator Skip (float timeOffset = 0, Action onComplete = null)
     {
-        while (!timerMutex) yield return null;
+        yield return (timeOffset <= 0 ? null : new WaitForSeconds(timeOffset));
+        yield return new WaitUntil(() => timerMutex);
         skip = true;
+        if (onComplete != null) onComplete();
     }
 	
     /*

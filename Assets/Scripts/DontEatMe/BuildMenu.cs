@@ -561,51 +561,74 @@ public class BuildMenu : MonoBehaviour
 
     /**
         Skips the player's current turn after verification.
+
+        @param  prompt  (bool) set true to create a confirm/cancel prompt, false to bypass
+        @param  delay   a time offset in seconds to delay the skip action
     */
-    public void SelectSkip ()
+    public void SelectSkip (bool prompt = true, float delay = 0)
     {
         // Disable skipTurnButton to prevent duplicate cancel/confirm button creation, return if already disabled
         if (!skipTurnButton.GetComponent<Button>().enabled) return;
         skipTurnButton.GetComponent<Button>().enabled = false;
-        // Create cancel button
-        GameObject cancelButton = demButtonFactory.CreateButton
-        (
-            (float)(skipTurnButton.transform.localPosition.x + skipTurnButton.GetComponent<RectTransform>().rect.width / 2f),
-            (float)(skipTurnButton.transform.localPosition.y - skipTurnButton.GetComponent<RectTransform>().rect.height / 1.5f),
-            "cancel"
-        );
-        // Create confirm button
-        GameObject confirmButton = demButtonFactory.CreateButton
-        (
-            (float)(cancelButton.transform.localPosition.x - cancelButton.GetComponent<RectTransform>().rect.width * 0.75f),
-            (float)(skipTurnButton.transform.localPosition.y - skipTurnButton.GetComponent<RectTransform>().rect.height / 1.5f),
-            "confirm"
-        );
-        // Set button attributes
-        demButtonFactory.setSize(confirmButton, Screen.width * 0.075f, Screen.height / 20);
-        demButtonFactory.setSize(cancelButton, Screen.width * 0.075f, Screen.height / 20);
-        demButtonFactory.SetButtonHighlightedColor(confirmButton, new Color32(0, 250, 154, 255));
-        demButtonFactory.SetButtonNormalColor(confirmButton, new Color32(107, 142, 35, 255));
-        demButtonFactory.SetButtonHighlightedColor(cancelButton, new Color32(255, 20, 147, 255));
-        demButtonFactory.SetButtonNormalColor(cancelButton, predatorIconColor);
-        demButtonFactory.SetButtonText(confirmButton, "Skip");
-        demButtonFactory.SetButtonText(cancelButton, "Not now");
-        demButtonFactory.SetButtonTextFontSize(confirmButton, Screen.width / 80);
-        demButtonFactory.SetButtonTextFontSize(cancelButton, Screen.width / 80);
-        // Define onClick listener for the confirm button
-        confirmButton.GetComponent<Button>().onClick.AddListener
-        (() => {
-            StartCoroutine(GameObject.Find("MainObject").GetComponent<DemTurnSystem>().Skip());
-            Destroy(confirmButton);
-            Destroy(cancelButton);
-        });
-        // Define onClick listener for the cancel button
-        cancelButton.GetComponent<Button>().onClick.AddListener
-        (() => {
-            Destroy(confirmButton);
-            Destroy(cancelButton);
+
+        // If prompting...
+        if (prompt)
+        {
+            // Create cancel button
+            GameObject cancelButton = demButtonFactory.CreateButton
+            (
+                (float)(skipTurnButton.transform.localPosition.x + skipTurnButton.GetComponent<RectTransform>().rect.width / 2f),
+                (float)(skipTurnButton.transform.localPosition.y - skipTurnButton.GetComponent<RectTransform>().rect.height / 1.5f),
+                "cancel"
+            );
+            // Create confirm button
+            GameObject confirmButton = demButtonFactory.CreateButton
+            (
+                (float)(cancelButton.transform.localPosition.x - cancelButton.GetComponent<RectTransform>().rect.width * 0.75f),
+                (float)(skipTurnButton.transform.localPosition.y - skipTurnButton.GetComponent<RectTransform>().rect.height / 1.5f),
+                "confirm"
+            );
+            // Set button attributes
+            demButtonFactory.setSize(confirmButton, Screen.width * 0.075f, Screen.height / 20);
+            demButtonFactory.setSize(cancelButton, Screen.width * 0.075f, Screen.height / 20);
+            demButtonFactory.SetButtonHighlightedColor(confirmButton, new Color32(0, 250, 154, 255));
+            demButtonFactory.SetButtonNormalColor(confirmButton, new Color32(107, 142, 35, 255));
+            demButtonFactory.SetButtonHighlightedColor(cancelButton, new Color32(255, 20, 147, 255));
+            demButtonFactory.SetButtonNormalColor(cancelButton, predatorIconColor);
+            demButtonFactory.SetButtonText(confirmButton, "Skip");
+            demButtonFactory.SetButtonText(cancelButton, "Not now");
+            demButtonFactory.SetButtonTextFontSize(confirmButton, Screen.width / 80);
+            demButtonFactory.SetButtonTextFontSize(cancelButton, Screen.width / 80);
+            // Define onClick listener for the confirm button
+            confirmButton.GetComponent<Button>().onClick.AddListener
+            (() => {
+                StartCoroutine(GameObject.Find("MainObject").GetComponent<DemTurnSystem>().Skip
+                (
+                    delay,
+                    () => { DemAudioManager.audioTickTock.Play(); }
+                ));
+                Destroy(confirmButton);
+                Destroy(cancelButton);
+            });
+            // Define onClick listener for the cancel button
+            cancelButton.GetComponent<Button>().onClick.AddListener
+            (() => {
+                Destroy(confirmButton);
+                Destroy(cancelButton);
+                skipTurnButton.GetComponent<Button>().enabled = true;
+            });
+        }
+        // Else skip immediately and re-enable skip button
+        else
+        {
+            //StartCoroutine(GameObject.Find("MainObject").GetComponent<DemTurnSystem>().Skip(delay));
+            StartCoroutine(GameObject.Find("MainObject").GetComponent<DemTurnSystem>().Skip
+            (
+                delay,
+                () => { DemAudioManager.audioTickTock.Play(); }
+            ));
             skipTurnButton.GetComponent<Button>().enabled = true;
-        });
+        }
     }
 
     /**

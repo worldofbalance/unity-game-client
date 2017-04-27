@@ -137,11 +137,7 @@ public class DemMain : MonoBehaviour
                             {
                                 buildMenu.SetCurrentAnimalFactory(null);
                                 byte k = i;
-                                StartCoroutine(easeReturn(0.05f, done => 
-                                {
-                                    done = true;
-                                    buildMenu.selectSpecies(buildMenu.plantBuildButtons[k]);
-                                }));
+                                StartCoroutine(easeReturn(0.05f, () => { buildMenu.selectSpecies(buildMenu.plantBuildButtons[k]); }));
                                 boardController.ClearAvailableTiles();
 
                             }
@@ -157,11 +153,7 @@ public class DemMain : MonoBehaviour
                         {
                                 buildMenu.SetCurrentAnimalFactory(null);
                                 byte k = i;
-                                StartCoroutine(easeReturn(0.05f, done => 
-                                {
-                                    done = true;
-                                    buildMenu.selectSpecies(buildMenu.plantBuildButtons[k]);
-                                }));
+                                StartCoroutine(easeReturn(0.05f, () => { buildMenu.selectSpecies(buildMenu.plantBuildButtons[k]); }));
                                 boardController.ClearAvailableTiles();
                         }
                         // Set build
@@ -175,9 +167,11 @@ public class DemMain : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Space))
             buildMenu.SetBuildButtonCategory(buildMenu.PlantMenuActive() ? 1 : 0);
 
-        // Invoke skip function
+        // Invoke skip function (CAUTION! executes without confirm/cancel prompt!)
         if (Input.GetKeyDown(KeyCode.S))
-            buildMenu.SelectSkip();
+        {
+            buildMenu.SelectSkip(false, 0.25f);
+        }
     }
 
     /**
@@ -195,9 +189,10 @@ public class DemMain : MonoBehaviour
         An easing coefficient may be specified, which represents the ratio of the remaining distance to travel each time
         segment.
 
-        @param  easing  a floating point value in the range (0, 1]
+        @param  easing      a floating point value in the range (0, 1]
+        @param  onComplete  an Action<bool> to execute on completion
     */
-    IEnumerator easeReturn (float easing = 0.05f, Action<bool> onComplete = null)
+    IEnumerator easeReturn (float easing = 0.05f, Action onComplete = null)
     {
         // Set easeEnd to false
         easeEnd = false;
@@ -219,6 +214,6 @@ public class DemMain : MonoBehaviour
         // Destroy current selection upon arrival, flag easeEnd as true
         Destroy(currentSelection);
         easeEnd = true;
-        if (onComplete != null) onComplete(easeEnd);
+        if (onComplete != null) onComplete();
     }
 }

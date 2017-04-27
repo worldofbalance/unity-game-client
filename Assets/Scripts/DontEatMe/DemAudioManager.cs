@@ -10,6 +10,8 @@ public class DemAudioManager : MonoBehaviour {
   public static AudioSource audioFail;
   public static AudioSource audioFail2;
   public static AudioSource audioBg;
+  public static AudioSource audioSigh;
+  public static AudioSource audioTickTock;
 
 	// Use this for initialization
   public AudioSource AddAudio(AudioClip clip, bool loop, bool playAwake, float vol) { 
@@ -30,7 +32,8 @@ public class DemAudioManager : MonoBehaviour {
     audioFail = AddAudio(Resources.Load<AudioClip>("Audio/fail") as AudioClip, false, false, 0.1f);
     audioFail2 = AddAudio(Resources.Load<AudioClip>("Audio/fail2") as AudioClip, false, false, 0.1f);
     audioBg = AddAudio(Resources.Load<AudioClip>("Audio/dem_loop") as AudioClip, true, false, 0.1f);
-   
+    audioSigh = AddAudio(Resources.Load<AudioClip>("Audio/ghost_sigh"), false, false, 0.1f);
+    audioTickTock = AddAudio(Resources.Load<AudioClip>("Audio/ticktock"), false, false, 0.25f);
   } 
 
 }

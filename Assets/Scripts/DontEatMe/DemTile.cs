@@ -314,8 +314,9 @@ public class DemTile : MonoBehaviour
                 buildMenu.AddTier1Biomass(SpeciesConstants.Biomass(main.boardController.HoveredTile.resident.name));
                 buildMenu.SubtractTier2Biomass((int)(SpeciesConstants.Biomass(main.boardController.HoveredTile.resident.name) * 0.5));
             }
-            // Pause predator spawn and invoke animated removal
+            // Pause predator spawn, deactivate statsBox, and invoke animated removal
             StartCoroutine(turnSystem.PauseSpawn());
+            statsBox.SetActive(false);
             StartCoroutine(AnimatedRemove(main.boardController.HoveredTile, turnSystem));
         });
 
@@ -890,10 +891,11 @@ public class DemTile : MonoBehaviour
     */
     IEnumerator AnimatedRemove (DemTile tile, DemTurnSystem turnSystem)
     {
-        // Find animation object, set position and scale
+        // Find animation object, set position and scale, play audio clip
         GameObject ripSprite = GameObject.Find("Canvas/mainUI/RIPAnimation");
+        DemAudioManager.audioSigh.Play();
         ripSprite.SetActive(false);
-        ripSprite.GetComponent<RectTransform>().localScale = new Vector3(0.4f, 0.4f, 1f);
+        ripSprite.GetComponent<RectTransform>().localScale = new Vector3(0.35f, 0.35f, 1f);
         Vector3 newpos = tile.resident.transform.position;
         ripSprite.GetComponent<RectTransform>().position = newpos;
 
