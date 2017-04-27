@@ -48,7 +48,7 @@ public class DemTile : MonoBehaviour
     public static GameObject trait2Stat; 
     /** Species trait icon (primary) */               
     public static GameObject traitIcon1;     
-    /* Species trait icon (secondary) */
+    /** Species trait icon (secondary) */
     public static GameObject traitIcon2;
     /** Info popup object */     
     public static GameObject infoPopup;    

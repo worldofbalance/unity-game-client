@@ -54,9 +54,13 @@ public class BuildMenu : MonoBehaviour
     public DemAnimalFactory[] prey;
 
     // Menu buttons
+    /** Plant build buttons */
     public GameObject[] plantBuildButtons;
+    /** Prey build buttons */
     public GameObject[] preyBuildButtons;
+    /** Plant category menu selector button */
     public GameObject plantMenuButton;
+    /** Prey category menu selector button */
     public GameObject preyMenuButton;
 
     /** Button for skipping current turn */
