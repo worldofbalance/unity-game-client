@@ -9,8 +9,10 @@ using System.Linq; // AsEnumerable
 */
 public class PredatorInfo : BuildInfo
 {
-    private int currentHunger; // Current hunger of predator (<= 0 implies not hungry)
-    private int currentVoracity; // Current voracity of predator (<= 0 implies unable to consume)
+    /** Current hunger of predator (<= 0 implies not hungry) */
+    private int currentHunger;
+    /** Current voracity of predator (<= 0 implies unable to consume) */
+    private int currentVoracity;
 
     /**
 		Initializes predator data and returns this instance.

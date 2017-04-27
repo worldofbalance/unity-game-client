@@ -59,29 +59,40 @@ public class BuildMenu : MonoBehaviour
     public GameObject plantMenuButton;
     public GameObject preyMenuButton;
 
-    // Skip button (CONCEPTUAL)
+    /** Button for skipping current turn */
     public GameObject skipTurnButton;
 
-    // Remove / kill button
+    /** Button for removing a build */
     public GameObject removeBuildButton;
 
     // COLOR CONSTANTS //
-    public Color activeColor; // Active button color
-    public Color inactiveColor; // Inactive / deactivated button color
-    public Color inactiveIconColor; // Inactive / deactivated button icon (e.g. species image) color
+    /** Active button color */
+    public Color activeColor; 
+    /** Inactive / deactivated button color */
+    public Color inactiveColor;
+    /** Inactive / deactivated button icon (e.g. species image) color */
+    public Color inactiveIconColor;
+    /** Locked button color (foreground) */
+    public Color lockedColor;
+    /** Locked button icon (e.g. species image) color (foreground) */
+    public Color lockedIconColor;
+    /** Selected / toggled on button color */
+    public Color selectedColor;
+    /** Deselected / toggled off button color */
+    public Color deselectedColor;
 
-    public Color lockedColor; // Locked button color (foreground)
-    public Color lockedIconColor; // Locked button icon (e.g. species image) color (foreground)
+    /** Plant icon color */
+    public Color plantIconColor;
+    /** Prey icon color */
+    public Color preyIconColor;
+    /** Predator icon color */
+    public Color predatorIconColor;
 
-    public Color selectedColor; // Selected / toggled on button color
-    public Color deselectedColor; // Deselected / toggled off button color
-
-    public Color plantIconColor; // Plant icon color
-    public Color preyIconColor; // Prey icon color
-    public Color predatorIconColor; // Predator icon color
-
+    /** Tier 1 (plant) biomass icon color */
     public Color tier1BiomassIconColor;
+    /** Tier 2 (prey) biomass icon color */
     public Color tier2BiomassIconColor;
+    /** Tier 3 (predator) biomass icon color */
     public Color tier3BiomassIconColor;
     // *************** //
 

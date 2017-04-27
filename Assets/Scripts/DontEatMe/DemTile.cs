@@ -11,16 +11,23 @@ using System;
 */
 public class DemTile : MonoBehaviour
 {
-  	public int idX; // X-coord for DemTile
-  	public int idY; // Y-coord for DemTile
-    public Color currentColor; // Current tile color
-    public Color rangeColor; // Color for plant range indicator pulse
+    /** X-coord for DemTile */
+  	public int idX; 
+    /** Y-coord for DemTile */
+  	public int idY;
+    /** Current tile color */
+    public Color currentColor;
+    /** Color for plant range indicator pulse */
+    public Color rangeColor;
 
-    public bool available;  // True if tile available for building
+    /** True if tile available for building */
+    public bool available;
 
     private Vector3 center;
 
-  	public GameObject resident; // Resident object (HerbivoreObject or PlantObject) placed on tile
+    /** Resident object (HerbivoreObject or PlantObject) placed on tile */
+  	public GameObject resident; 
+
     private GameObject nextPredator;
     private BuildMenu buildMenu;
     public  GameObject mainObject;
@@ -29,53 +36,92 @@ public class DemTile : MonoBehaviour
     private DemTurnSystem turnSystem;
 
     // StatsBox objects (static --> no two instances required)
-    public static GameObject statsBox;                  // Parent object
-    public static GameObject nameStat;                  // Species name
-    public static GameObject iconStat;                  // Species type icon
-    public static GameObject trait1Stat;                // Species trait (primary)
-    public static GameObject trait2Stat;                // Species trait (secondary)
-    public static GameObject traitIcon1;                // Species trait icon (primary)
-    public static GameObject traitIcon2;                // Species trait icon (secondary)
-    public static GameObject infoPopup;                 // Info popup object
-    public static GameObject removeBuildButton;         // Popup with "remove build" feature
-    public static Color statsBoxBaseColor;              // Base color for the statsBox object
-    public static Vector3 statsBoxBaseScale;            // Base localScale for the statsBox object
-    public static Vector3 statsBoxBaseRotation;         // Base localEulersAngles for the statsBox object 
-    public static ColorBlock infoPopupBaseColors;       // Base ColorBlock for the infoPopup Button
-    public static ColorBlock removeButtonBaseColors;    // Base ColorBlock for the removeBuildButton
+    /** StatsBox parent object */
+    public static GameObject statsBox;
+    /** StatsBox species name */
+    public static GameObject nameStat;
+    /** StatsBox species icon */
+    public static GameObject iconStat;
+    /** Species trait (primary) */
+    public static GameObject trait1Stat;    
+    /** Species trait (secondary) */            
+    public static GameObject trait2Stat; 
+    /** Species trait icon (primary) */               
+    public static GameObject traitIcon1;     
+    /* Species trait icon (secondary) */
+    public static GameObject traitIcon2;
+    /** Info popup object */     
+    public static GameObject infoPopup;    
+    /** Popup with "remove build" feature */             
+    public static GameObject removeBuildButton;   
+    /** Base color for the statsBox object */      
+    public static Color statsBoxBaseColor;
+    /** Base localScale for the statsBox object */           
+    public static Vector3 statsBoxBaseScale;
+    /** Base localEulersAngles for the statsBox object */         
+    public static Vector3 statsBoxBaseRotation;    
+    /** Base ColorBlock for the infoPopup Button */      
+    public static ColorBlock infoPopupBaseColors;  
+    /** Base ColorBlock for the removeBuildButton */     
+    public static ColorBlock removeButtonBaseColors;    
 
     // InfoBox objects
-    public static GameObject infoBox;                   // Parent object
-    public static GameObject infoSpeciesName;           // Species name
-    public static GameObject infoSpeciesType;           // Species type (plant/prey/predator)
-    public static GameObject infoSpeciesTypeIcon;       // " " icon
-    public static GameObject infoBiomass;               // Species biomass
-    public static GameObject infoBiomassTier;           // " " tier level
-    public static GameObject infoBiomassIcon;           // " " icon
-    public static GameObject infoSpeciesTrait1;         // Species trait (primary)
-    public static GameObject infoSpeciesTrait2;         // Species trait (secondary)
-    public static GameObject infoSpeciesTrait1Icon;     // " " (primary) icon
-    public static GameObject infoSpeciesTrait2Icon;     // " " (secondary) icon
-    public static GameObject infoPredPreyHeader;        // Predator / prey list header
-    public static GameObject infoPredPreyList;          // " " list grid
-    public static GameObject infoPredPreyIcon;          // " " header icon
-    public static GameObject infoPredPreyDivider;       // " " header divider
-    public static GameObject infoLore;                  // Species lore
-    public static GameObject infoCloseButton;           // Close button for infoBox
+    /** InfoBox parent object */
+    public static GameObject infoBox;      
+    /** InfoBox species name */             
+    public static GameObject infoSpeciesName;   
+    /** InfoBox species type */                     
+    public static GameObject infoSpeciesType;           
+    /** InfoBox species icon */             
+    public static GameObject infoSpeciesTypeIcon;       
+    /** InfoBox species biomass */             
+    public static GameObject infoBiomass;
+    /** InfoBox species biomass tier level */             
+    public static GameObject infoBiomassTier; 
+    /** InfoBox species biomass icon */          
+    public static GameObject infoBiomassIcon;   
+    /** InfoBox species trait (primary) */        
+    public static GameObject infoSpeciesTrait1;       
+    /** InfoBox species trait (secondary) */  
+    public static GameObject infoSpeciesTrait2;
+    /** InfoBox species trait icon (primary) */
+    public static GameObject infoSpeciesTrait1Icon;   
+    /** InfoBox species trait icon (secondary) */  
+    public static GameObject infoSpeciesTrait2Icon;     
+    /** InfoBox predator / prey list header */
+    public static GameObject infoPredPreyHeader;        
+    /** InfoBox predator / prey list grid */
+    public static GameObject infoPredPreyList;          
+    /** InfoBox predator / prey list header icon */
+    public static GameObject infoPredPreyIcon;          
+    /** InfoBox predator / prey list header divider */
+    public static GameObject infoPredPreyDivider;       
+    /** InfoBox species lore */
+    public static GameObject infoLore;                  
+    /** InfoBox close button */
+    public static GameObject infoCloseButton;           
 
     // InfoLegendTooltip objects
-    public static GameObject infoLegendTooltip;         // Parent object
-    public static GameObject infoLegendName;            // Attribute name
-    public static GameObject infoLegendIcon;            // Attribute icon
-    public static GameObject infoLegendLore;            // Attribute lore
-
-    public static Color infoPopupBaseNormalColor;       // Base Color for the infoPopup's Button normal state
-    public static Color infoPopupBaseHighlightColor;    // Base Color for the infoPopup's Button highlighted state
+    /** InfoLegendTooltip parent object */
+    public static GameObject infoLegendTooltip;         
+    /** InfoLegendTooltip attribute name */
+    public static GameObject infoLegendName;            
+    /** InfoLegendTooltip attribute icon */
+    public static GameObject infoLegendIcon;    
+    /** InfoLegendTooltip attribute lore */        
+    public static GameObject infoLegendLore;            
+    /** Base Color for the infoPopup's Button normal state */
+    public static Color infoPopupBaseNormalColor;    
+    /** Base Color for the infoPopup's Button highlighted state */   
+    public static Color infoPopupBaseHighlightColor;    
 
     // SimpleTooltip objects
-    public static GameObject simpleTooltip;             // Parent object
-    public static Color simpleTooltipBaseColor;         // Base Color for the simpleTooltip
-    public static Color simpleTooltipIconFrameBaseColor;// Base color for the simpleTooltip icon frame
+    /** SimpleTooltip parent object */
+    public static GameObject simpleTooltip; 
+    /** Base color for the SimpleToolTip */            
+    public static Color simpleTooltipBaseColor;         
+    /** Base color for the SimpleTooltip icon frame */
+    public static Color simpleTooltipIconFrameBaseColor;
 
     // RemoveBuildButton attributes
     private static Vector3 removeBuildButtonBaseScale;
@@ -91,7 +137,8 @@ public class DemTile : MonoBehaviour
     private bool hasPulse; // Denotes if tile has currently active pulse
     private const float defaultPulseFrequency = 0.625f; // Default pulse frequency
     private const float defaultPulseFactor = 0.1f; // Default value for synchronizing pulse modulation with frequency
-    public float DefaultPulseFrequency { get { return defaultPulseFrequency; } } // Public accessor
+    /** Public accessor for defaultPulseFactor */
+    public float DefaultPulseFrequency { get { return defaultPulseFrequency; } }
 
     // Values for defining a restore point for pulse
     private Color restoreColor1;

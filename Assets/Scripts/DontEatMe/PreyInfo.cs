@@ -7,8 +7,10 @@ using System.Linq;      // AsEnumerable
 	@author Jeremy Erickson
     @see    BuildInfo.cs
 */
-public class PreyInfo : BuildInfo {
-	private int currentHealth; // Current health of prey (<=0 implies prey is dead / consumed)
+public class PreyInfo : BuildInfo
+{
+    /** Current health of prey (<=0 implies prey is dead / consumed) */
+	private int currentHealth;
     
 	/**
         Initializes prey data and returns this instance.

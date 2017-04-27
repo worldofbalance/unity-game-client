@@ -63,9 +63,9 @@ public class DemButtonFactory : MonoBehaviour, IPointerEnterHandler, IPointerExi
     private float width;
 
 
-    Color disabledColor = new Color32(120, 120, 120, 255); // Custom "disabled" button color
-    Color highlightedColor = new Color32(218, 165, 32, 255); // Custom "highlighted" button color
-    Color pressedColor = new Color32(173, 255, 47, 255); // Custom "pressed" button color
+    private Color disabledColor = new Color32(120, 120, 120, 255); // Custom "disabled" button color
+    private Color highlightedColor = new Color32(218, 165, 32, 255); // Custom "highlighted" button color
+    private Color pressedColor = new Color32(173, 255, 47, 255); // Custom "pressed" button color
 
     /**
         Called on script load as a precursor to all other methods.

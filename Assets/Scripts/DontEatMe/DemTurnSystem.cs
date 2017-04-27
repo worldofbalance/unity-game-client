@@ -24,13 +24,15 @@ public class DemTurnSystem : MonoBehaviour
     private int turnNumber;
 
     private bool paused; // Toggle for the PredatorSpawnRate coroutine
-    public bool Paused { get { return paused; } } // Public accessor
+    /** Public accessor for paused */
+    public bool Paused { get { return paused; } }
     private bool skip; // Circumvent PredatorSpawnRate delay for current iteration
     private bool resetTimer; // True if timer to be reset to countdownResetPoint
     private float countdown; // Current countdown in seconds
     private float countdownBaseResetPoint, countdownResetPoint; // Countdown reset values
     private bool timerMutex; // Mutex lock for predator turn / player build syncing
     private bool predatorTurnEnded; // True if the current predator move has ended, false otherwise
+    /** Public accessor for predatorTurnEnded */
     public bool PredatorTurnEnded
     {
         get { return predatorTurnEnded; }

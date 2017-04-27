@@ -38,7 +38,7 @@ public class SpeciesConstants
 /*  PRIVATE CONSTANTS : 
     Changes to these will populate the necessary changes in all public constants and methods
 */
-    /*
+    /**
          Static list of plant names.
          This should only be used for initial population of data; the dynamic readonly PLANT_NAMES array should be
          used for coding purposes external to this script.
@@ -53,7 +53,8 @@ public class SpeciesConstants
         "Grass And Herbs",
         "Trees And Shrubs"
     };
-    /*
+
+    /**
          Static list of prey names.
          This should only be used for initial population of data; the dynamic readonly PREY_NAMES array should be
          used for coding purposes external to this script.
@@ -67,7 +68,8 @@ public class SpeciesConstants
         "Oribi",
         "Tree Mouse"
     };
-    /*
+
+    /**
          Static list of predator names.
          This should only be used for initial population of data; the dynamic readonly PREDATOR_NAMES array should be
          used for coding purposes external to this script.
@@ -81,7 +83,8 @@ public class SpeciesConstants
         "Lion",
         "Serval Cat"
     };
-    // Reference for all species ID values (consistent with database)
+
+    /** Reference for all species ID values (consistent with database) */
     private enum SPECIES_ID
     {
         // Plants
@@ -107,7 +110,8 @@ public class SpeciesConstants
         Lion                = 86,
         ServalCat           = 69
     };
-    // Reference for all species biomass levels (consistent with database)
+
+    /** Reference for all species biomass levels (consistent with database) */
     private enum SPECIES_BIOMASS
     {
         // Plants
@@ -133,7 +137,8 @@ public class SpeciesConstants
         Lion                = 2500,
         ServalCat           = 15000
     };
-    // Reference for all species prices (consistent with database)
+
+    /** Reference for all species prices (consistent with database) */
     private enum SPECIES_PRICE
     {
         // Plants
@@ -159,7 +164,8 @@ public class SpeciesConstants
         Lion                = 50,
         ServalCat           = 50
     };
-    // Reference for all species trophic levels as <SPECIES_ID, TROPHIC_LEVEL> KeyValue pairs
+
+    /** Reference for all species trophic levels as <SPECIES_ID, TROPHIC_LEVEL> KeyValue pairs */
     private static Dictionary<int, float> TROPHIC_LEVEL = new Dictionary<int, float>()
     {
         // Plants
@@ -185,7 +191,8 @@ public class SpeciesConstants
         { (int)SPECIES_ID.Lion,              3.22409f },
         { (int)SPECIES_ID.ServalCat,         3.43754f }
     };
-    // Reference for prey / predator metabolism levels as <SPECIES_ID, METABOLISM> KeyValue pairs
+
+    /** Reference for prey / predator metabolism levels as <SPECIES_ID, METABOLISM> KeyValue pairs */
     private static Dictionary<int, float> METABOLISM = new Dictionary<int, float>()
     {
         // Prey
@@ -203,7 +210,8 @@ public class SpeciesConstants
         { (int)SPECIES_ID.Lion,              0.35f },
         { (int)SPECIES_ID.ServalCat,         0.61f }
     };
-    // Reference for all species trophic levels as <SPECIES_ID, CLASS> KeyValue pairs
+
+    /** Reference for all species trophic levels as <SPECIES_ID, CLASS> KeyValue pairs */
     private static Dictionary<int, string> SPECIES_CLASS = new Dictionary<int, string>()
     {
         // Plants
@@ -229,7 +237,8 @@ public class SpeciesConstants
         { (int)SPECIES_ID.Lion,             "Carnivore" },
         { (int)SPECIES_ID.ServalCat,        "Carnivore" }
     };
-    // Reference for all species trophic levels as <SPECIES_ID, CATEGORY> KeyValue pairs
+
+    /** Reference for all species trophic levels as <SPECIES_ID, CATEGORY> KeyValue pairs */
     private static Dictionary<int, string> SPECIES_CATEGORY = new Dictionary<int, string>()
     {
         // Plants
@@ -255,7 +264,8 @@ public class SpeciesConstants
         { (int)SPECIES_ID.Lion,             "Large Animal" },
         { (int)SPECIES_ID.ServalCat,        "Large Animal" }
     };
-    // Reference for all species trophic levels as <SPECIES_ID, LORE> KeyValue pairs
+
+    /** Reference for all species trophic levels as <SPECIES_ID, LORE> KeyValue pairs */
     private static Dictionary<int, string> SPECIES_LORE = new Dictionary<int, string>()
     {
         // Plants
@@ -300,7 +310,8 @@ public class SpeciesConstants
                                             "is a medium-sized African wild cat. DNA studies have shown that the serval is closely related to the " +
                                             "African golden cat and the caracal." }
     };
-    // Reference plant effect ranges
+
+    /** Reference plant effect ranges */
     private static Dictionary<string, int[][]> PLANT_RANGES = new Dictionary<string, int[][]>()
     {
         {
@@ -395,8 +406,6 @@ public class SpeciesConstants
 
     /**
         Defines pertinent plant data for Plant object creation.
-
-        @author Jeremy Erickson
     */
     private struct Plant
     {
@@ -441,8 +450,6 @@ public class SpeciesConstants
 
     /**
         Defines all available prey data in the script.
-
-        @author Jeremy Erickson
     */
 	private struct Prey
 	{
@@ -491,8 +498,6 @@ public class SpeciesConstants
 
     /**
         Defines pertinent predator data for Predator object creation.
-
-        @author Jeremy Erickson
     */
 	private struct Predator
 	{
@@ -546,7 +551,8 @@ public class SpeciesConstants
         // Return populated array
         return _plants;
     }
-    // Define the PLANTS array
+
+    /** Define the PLANTS array */
     private static Plant[] PLANTS = SpeciesConstants.CreatePlants();
 
 
@@ -768,7 +774,6 @@ public class SpeciesConstants
 
 	// Default values (self-descriptive)
 	private static short DEFAULT_TYPE = -1;
-
     private static int DEFAULT_SPECIES_ID = 0;
     private static string DEFAULT_SPECIES_NAME = "[ No name ]";
     private static int[][] DEFAULT_RANGE = new int[1][]{ new int[2]{-1, 0} };
@@ -776,10 +781,11 @@ public class SpeciesConstants
 	private static int DEFAULT_HUNGER = 25;
 	private static int DEFAULT_VORACITY = 25;
     private static float DEFAULT_METABOLISM = 0.5f;
-
     private static string DEFAULT_LORE = "[ No description available ]";
 
-    // Contains (species name, species ID) pairs
+    /**
+        Contains all <SPECIES_NAME, SPECIES_ID> pairs
+    */
     private static Dictionary<string, int> NAME_TO_ID =
         (from plant in PLANTS select new KeyValuePair<string, int>(plant.name, plant.speciesID))
         .Concat
@@ -803,15 +809,23 @@ public class SpeciesConstants
 	/* PUBLIC CONSTANTS */
 
     // Number of available plants, prey, predators, and total species, respectively
+    /** Number of species in the PLANTS array */
     public static readonly int NUM_PLANTS = PLANTS.Length;
+    /** Number of species in the PREY array */
 	public static readonly int NUM_PREY = PREY.Length;
+    /** Number of species in the PREDATORS array */
 	public static readonly int NUM_PREDATORS = PREDATORS.Length;
+    /** Total number of species in the PLANTS, PREY, and PREDATORS arrays */
 	public static readonly int NUM_SPECIES = NUM_PLANTS + NUM_PREY + NUM_PREDATORS;
 
     // Names of all available plants, prey, predators, and total species, respectively
+    /** Array containing all Plant names in the PLANTS array */
     public static readonly string[] PLANT_NAMES = (from plant in PLANTS select plant.name).ToArray();
+    /** Array containing all Prey names in the PREY array */
     public static readonly string[] PREY_NAMES = (from prey in PREY select prey.name).ToArray();
+    /** Array containing all Predator names in the PREDATORS array */
     public static readonly string[] PREDATOR_NAMES = (from predator in PREDATORS select predator.name).ToArray();
+    /** Array containing all species names in the PLANTS, PREY, and PREDATORS arrays */
     public static readonly string[] SPECIES_NAMES = PLANT_NAMES.Concat(PREY_NAMES).Concat(PREDATOR_NAMES).ToArray();
 
 	/* PUBLIC METHODS */

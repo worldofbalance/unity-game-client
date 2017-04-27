@@ -7,7 +7,9 @@ using UnityEngine.UI;
 
 public class DemBoard : MonoBehaviour {
   public GameObject[,] Tiles;
+  /** Number of tile rows on board */
   public int numRows;
+  /** Number of tile columns on board */
   public int numColumns;
 
   private float rightEdge ;
@@ -25,7 +27,8 @@ public class DemBoard : MonoBehaviour {
 
   private DemMain main;
 
-    private DemTile hoveredTile;
+    private DemTile hoveredTile; // Tile with current OnMouseEnter capture
+    /** Public modifiers for hoveredTile */
     public DemTile HoveredTile
     { 
         get { return hoveredTile; }

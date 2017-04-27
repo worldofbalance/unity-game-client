@@ -23,8 +23,8 @@ public class DemMain : MonoBehaviour
 
   private DemTurnSystem turnSystem;
 
-    private bool easeEnd;
-    private KeyCode[] hotkeys;
+    private bool easeEnd; // True if easing ended
+    private KeyCode[] hotkeys; // Numeric hotkey KeyCodes
 
 
     // Use this for initialization
@@ -114,7 +114,7 @@ public class DemMain : MonoBehaviour
             {
                 buildMenu.SetCurrentAnimalFactory(null);         
                 // Start easing animation
-                StartCoroutine(easeReturn());
+                StartCoroutine(EaseReturn());
                 boardController.ClearAvailableTiles();
     		}
 		}
@@ -137,7 +137,7 @@ public class DemMain : MonoBehaviour
                             {
                                 buildMenu.SetCurrentAnimalFactory(null);
                                 byte k = i;
-                                StartCoroutine(easeReturn(0.05f, () => { buildMenu.selectSpecies(buildMenu.plantBuildButtons[k]); }));
+                                StartCoroutine(EaseReturn(0.05f, () => { buildMenu.selectSpecies(buildMenu.plantBuildButtons[k]); }));
                                 boardController.ClearAvailableTiles();
 
                             }
@@ -153,7 +153,7 @@ public class DemMain : MonoBehaviour
                         {
                                 buildMenu.SetCurrentAnimalFactory(null);
                                 byte k = i;
-                                StartCoroutine(easeReturn(0.05f, () => { buildMenu.selectSpecies(buildMenu.plantBuildButtons[k]); }));
+                                StartCoroutine(EaseReturn(0.05f, () => { buildMenu.selectSpecies(buildMenu.plantBuildButtons[k]); }));
                                 boardController.ClearAvailableTiles();
                         }
                         // Set build
@@ -179,7 +179,7 @@ public class DemMain : MonoBehaviour
 
         @param  origin  a Vector3 object
     */
-    public  void setBuildOrigin (Vector3 origin)
+    public void setBuildOrigin (Vector3 origin)
     {
     	buildOrigin = origin;
     }
@@ -192,7 +192,7 @@ public class DemMain : MonoBehaviour
         @param  easing      a floating point value in the range (0, 1]
         @param  onComplete  an Action<bool> to execute on completion
     */
-    IEnumerator easeReturn (float easing = 0.05f, Action onComplete = null)
+    IEnumerator EaseReturn (float easing = 0.05f, Action onComplete = null)
     {
         // Set easeEnd to false
         easeEnd = false;

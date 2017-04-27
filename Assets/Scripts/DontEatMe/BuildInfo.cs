@@ -8,8 +8,8 @@ public class BuildInfo : MonoBehaviour {
 
   public GameObject parent;
 
-	// Species ID
 	// NOTE: this is made public for the time being to allow assignment of species ID to GameObject instances
+    /** Species ID of build */
 	public int speciesId;
 
 	// the cost to build the item
