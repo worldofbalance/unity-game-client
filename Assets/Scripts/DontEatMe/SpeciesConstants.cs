@@ -43,13 +43,12 @@ public class SpeciesConstants
          This should only be used for initial population of data; the dynamic readonly PLANT_NAMES array should be
          used for coding purposes external to this script.
     */
-    private static string[] STATIC_PLANT_NAMES = new string[7]
+    private static string[] STATIC_PLANT_NAMES = new string[6]
     {
         "Acacia",
         "Baobab",
         "Big Tree",
         "Fruits And Nectar",
-        "Grains And Seeds",
         "Grass And Herbs",
         "Trees And Shrubs"
     };
@@ -92,7 +91,6 @@ public class SpeciesConstants
         Baobab              = 1009,
         BigTree             = 1008,
         FruitsAndNectar     = 1003,
-        GrainsAndSeeds      = 1004,
         GrassAndHerbs       = 1005,
         TreesAndShrubs      = 1001,
         // Prey
@@ -119,7 +117,6 @@ public class SpeciesConstants
         Baobab              = 4400,
         BigTree             = 3200,
         FruitsAndNectar     = 20,
-        GrainsAndSeeds      = 20,
         GrassAndHerbs       = 40,
         TreesAndShrubs      = 40,
         // Prey
@@ -146,7 +143,6 @@ public class SpeciesConstants
         Baobab              = 75,
         BigTree             = 50,
         FruitsAndNectar     = 5,
-        GrainsAndSeeds      = 5,
         GrassAndHerbs       = 9,
         TreesAndShrubs      = 5,
         // Prey
@@ -172,8 +168,7 @@ public class SpeciesConstants
         { (int)SPECIES_ID.Acacia,            1f },
         { (int)SPECIES_ID.Baobab,            1f }, 
         { (int)SPECIES_ID.BigTree,           1f }, 
-        { (int)SPECIES_ID.FruitsAndNectar,   1f }, 
-        { (int)SPECIES_ID.GrainsAndSeeds,    1f }, 
+        { (int)SPECIES_ID.FruitsAndNectar,   1f },
         { (int)SPECIES_ID.GrassAndHerbs,     1f },
         { (int)SPECIES_ID.TreesAndShrubs,    1f },
         // Prey
@@ -218,8 +213,7 @@ public class SpeciesConstants
         { (int)SPECIES_ID.Acacia,           "Producer" },
         { (int)SPECIES_ID.Baobab,           "Producer" }, 
         { (int)SPECIES_ID.BigTree,          "Producer" }, 
-        { (int)SPECIES_ID.FruitsAndNectar,  "Producer" }, 
-        { (int)SPECIES_ID.GrainsAndSeeds,   "Producer" }, 
+        { (int)SPECIES_ID.FruitsAndNectar,  "Producer" },
         { (int)SPECIES_ID.GrassAndHerbs,    "Producer" },
         { (int)SPECIES_ID.TreesAndShrubs,   "Producer" },
         // Prey
@@ -245,8 +239,7 @@ public class SpeciesConstants
         { (int)SPECIES_ID.Acacia,           "Plant" },
         { (int)SPECIES_ID.Baobab,           "Plant" }, 
         { (int)SPECIES_ID.BigTree,          "Plant" }, 
-        { (int)SPECIES_ID.FruitsAndNectar,  "Plant" }, 
-        { (int)SPECIES_ID.GrainsAndSeeds,   "Plant" }, 
+        { (int)SPECIES_ID.FruitsAndNectar,  "Plant" },
         { (int)SPECIES_ID.GrassAndHerbs,    "Plant" },
         { (int)SPECIES_ID.TreesAndShrubs,   "Plant" },
         // Prey
@@ -278,8 +271,7 @@ public class SpeciesConstants
                                             "and the provision of a weather-sheltered ecosystem in and under their foliage. " +
                                             "They also play an important role in producing oxygen and reducing carbon dioxide in the atmosphere, " +
                                             "as well as moderating ground temperatures." }, 
-        { (int)SPECIES_ID.FruitsAndNectar,  "Special" }, 
-        { (int)SPECIES_ID.GrainsAndSeeds,   "Special" }, 
+        { (int)SPECIES_ID.FruitsAndNectar,  "Special" },
         { (int)SPECIES_ID.GrassAndHerbs,    "Grasses are among the most versatile life forms. They became widespread toward the end of the " +
                                             "Cretaceous period, and fossilized dinosaur dung have been found containing phytoliths of a variety of " +
                                             "grasses that include grasses that are related to modern rice and bamboo." },
@@ -367,17 +359,7 @@ public class SpeciesConstants
               new int[2]{-1, 0},
               new int[2]{-2, 0},
           }
-        }, 
-        {
-            "Grains And Seeds",
-            new int[1][]
-            {
-                // . . .
-                // . O *
-                // . . .
-                new int[2]{-1, 0}
-            }
-        }, 
+        },
         {
             "Grass And Herbs",
             new int[2][]
