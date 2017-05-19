@@ -3,8 +3,8 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
-//1/28/15 - this protocol is not active.  Data read in from text file in ConvergeGame.cs
 public class ConvergeEcosystemsProtocol
 {
 	
@@ -20,12 +20,37 @@ public class ConvergeEcosystemsProtocol
 		ResponseConvergeEcosystems response = new ResponseConvergeEcosystems ();
 		
 		List<ConvergeEcosystem> ecosystemList = new List<ConvergeEcosystem> ();
-		
-		int size = DataReader.ReadShort (dataStream);
 
-		//TODO: Read converge-ecosystems data
+	    using (BinaryReader br = new BinaryReader(dataStream, Encoding.UTF8)) {
+            int size = br.ReadInt16 ();
+            int responseId = br.ReadInt16 ();
+            int ecosystemCnt = br.ReadInt16 ();
 
-		response.ecosystemList = ecosystemList;
+            for (int i = 0; i < ecosystemCnt; i++) {
+                int ecosystem_id = br.ReadInt32 ();
+
+                ConvergeEcosystem ecosystem = new ConvergeEcosystem (ecosystem_id);
+                int fldSize = br.ReadInt16 ();
+                ecosystem.description = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                ecosystem.timesteps = br.ReadInt32 ();
+                fldSize = br.ReadInt16 ();
+                ecosystem.config_default = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                fldSize = br.ReadInt16 ();
+                ecosystem.config_target = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                fldSize = br.ReadInt16 ();
+                ecosystem.csv_default_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+                fldSize = br.ReadInt16 ();
+                ecosystem.csv_target_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+
+                ecosystemList.Add (ecosystem);
+            }
+	    }
+
+        if (ecosystemList.Count == 0) {
+            Debug.LogError ("No converge ecosystems found.");
+        }
+
+	    response.ecosystemList = ecosystemList;
 		
 		return response;
 	}
