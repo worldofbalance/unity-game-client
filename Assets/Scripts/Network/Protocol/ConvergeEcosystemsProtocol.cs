@@ -17,31 +17,44 @@ public class ConvergeEcosystemsProtocol
 	
 	public static NetworkResponse Parse (MemoryStream dataStream)
 	{
+		var dataStreamLength = dataStream.Length;
+		long bytesRead = 0;
+		
 		ResponseConvergeEcosystems response = new ResponseConvergeEcosystems ();
 		
 		List<ConvergeEcosystem> ecosystemList = new List<ConvergeEcosystem> ();
 
 	    using (BinaryReader br = new BinaryReader(dataStream, Encoding.UTF8)) {
-            int size = br.ReadInt16 ();
-            int responseId = br.ReadInt16 ();
             int ecosystemCnt = br.ReadInt16 ();
+		    bytesRead += 2;
 
             for (int i = 0; i < ecosystemCnt; i++) {
                 int ecosystem_id = br.ReadInt32 ();
+	            bytesRead += 4;
 
                 ConvergeEcosystem ecosystem = new ConvergeEcosystem (ecosystem_id);
+	            
                 int fldSize = br.ReadInt16 ();
-                ecosystem.description = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+	            bytesRead += 2;
+	            var bytes = br.ReadBytes(fldSize);
+	            bytesRead += bytes.Length;
+                ecosystem.description = System.Text.Encoding.UTF8.GetString (bytes);
+	            
                 ecosystem.timesteps = br.ReadInt32 ();
+	            bytesRead += 4;
+	            
                 fldSize = br.ReadInt16 ();
-                ecosystem.config_default = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+	            bytesRead += 2;
+	            bytes = br.ReadBytes(fldSize);
+	            bytesRead += bytes.Length;
+                ecosystem.config_default = System.Text.Encoding.UTF8.GetString (bytes);
+	            
                 fldSize = br.ReadInt16 ();
-                ecosystem.config_target = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-                fldSize = br.ReadInt16 ();
-                ecosystem.csv_default_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-                fldSize = br.ReadInt16 ();
-                ecosystem.csv_target_string = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
-
+	            bytesRead += 2;
+	            bytes = br.ReadBytes(fldSize);
+	            bytesRead += bytes.Length;
+                ecosystem.config_target = System.Text.Encoding.UTF8.GetString (bytes);
+	            
                 ecosystemList.Add (ecosystem);
             }
 	    }
