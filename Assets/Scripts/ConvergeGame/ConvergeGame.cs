@@ -9,6 +9,7 @@ using System.Text;
 public class ConvergeGame : MonoBehaviour
 {
 	private int player_id;
+	private int max_ecos = 20;   // Maximum # of ecosystems due to buttons on screen 
 	// Window Properties
 	private int window_id = Constants.CONVERGE_WIN;
 	private float left;
@@ -34,11 +35,13 @@ public class ConvergeGame : MonoBehaviour
 	private int ecosystem_idx;
 	private int new_ecosystem_id;
 	private int new_ecosystem_idx;
+	private int temp_ecosystem_idx;
 	private List<ConvergeEcosystem> ecosystemList = null;
 	private string[] ecosysDescripts;
 	//attempts
 	private int referenceAttemptIdx;
 	private ConvergeAttempt currAttempt = null;
+	private ConvergeAttempt currAttemptTarget = null;
 	private List<ConvergeAttempt> attemptList = null;
 	private int attemptCount = 0;
 	private String config_field_default;
@@ -62,6 +65,9 @@ public class ConvergeGame : MonoBehaviour
 	private bool isResetSliderInitialized = false;
 	private int resetSliderValue = 0;
 	private int maxResetSliderValue = 0;
+	CSVObject graph1CSV, graph2CSV;
+	private bool ecosRcvd = false;
+	private int init_idx;
 
 	void Awake ()
 	{
@@ -88,10 +94,12 @@ public class ConvergeGame : MonoBehaviour
 		Game.StartEnterTransition ();
 		//to generate converge-ecosystem.txt, remove comments and let protocol run;
 		//server will generate txt from sql table
-		//NetworkManager.Send(ConvergeEcosystemsProtocol.Prepare(),ProcessConvergeEcosystems);
+		Game.networkManager.Send(ConvergeEcosystemsProtocol.Prepare(),ProcessConvergeEcosystems);
 
+		/* This code move to ProcessConvergeEcosystems
+		
 		//get list of ecosystems
-		ReadConvergeEcosystemsFile ();
+		// ReadConvergeEcosystemsFile ();
 		//set default ecosystem values
 		new_ecosystem_id = Constants.ID_NOT_SET;
 		ecosystem_idx = 0;
@@ -103,6 +111,7 @@ public class ConvergeGame : MonoBehaviour
 			ecosysDescripts = ConvergeEcosystem.GetDescriptions (ecosystemList);
 		}
 		GetHints ();
+		*/
 
 	}
 	
@@ -121,7 +130,7 @@ public class ConvergeGame : MonoBehaviour
 		GUI.Label (new Rect (Screen.width - 75, Screen.height - 30, 65, 20), "v" + Constants.CLIENT_VERSION + " Beta");
 		
 		// Converge Game Interface
-		if (isActive) {
+		if (isActive && ecosRcvd) {
 			windowRect = GUI.Window (window_id, windowRect, MakeWindow, "Converge", GUIStyle.none);
 			
 			//if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Return) {
@@ -130,7 +139,7 @@ public class ConvergeGame : MonoBehaviour
 		}
 		GUI.skin.label.fontSize = 12;  //for legend series labels
 
-		if (showPopup) {
+		if (showPopup && ecosRcvd) {
 			GUI.Window (Constants.CONVERGE_POPUP_WIN, popupRect, ShowPopup, "Error", GUIStyle.none);
 		}
 
@@ -169,7 +178,12 @@ public class ConvergeGame : MonoBehaviour
 			SetIsProcessing (true);
 			new_ecosystem_idx = new_idx;
 			new_ecosystem_id = GetEcosystemId (new_ecosystem_idx);
-			GetPriorAttempts ();
+
+			if (ecosystemList [new_ecosystem_idx].csv_default_string.Length == 0) {
+				SubmitTargetInit ();
+			} else {
+				GetPriorAttempts ();
+			}
 		}
 		if (graphs != null) {
 			graphs.DrawGraphs ();
@@ -479,9 +493,56 @@ public class ConvergeGame : MonoBehaviour
 		if (GUI.Button (new Rect ((popupRect.width - 80) / 2, popupRect.height - 30 - bufferBorder, 80, 30), "OK")) {
 			showPopup = false;
 		}
-		
 	}
 
+	/* This is the Multiplayer Convergence implementation. Doesn't work for single player Convergence 
+	public void SubmitTarget ()
+	{
+		int attempt_id = 0;
+		currAttemptTarget = new ConvergeAttempt (
+			player_id,
+			ecosystem_id, 
+			attempt_id,
+			allowHintsMaster,
+			Constants.ID_NOT_SET,
+			ecosystemList [ecosystem_idx].config_target,
+			ecosystemList [ecosystem_idx].csv_target_string
+		);
+
+		Game.networkManager.Send (
+			ConvergeNewAttemptProtocol.Prepare (
+				player_id, 
+				ecosystem_id + 1000,    // Offset by 1000 to seperate from player's turn This is only for DB     
+				currAttemptTarget.attempt_id,
+				currAttemptTarget.allow_hints,
+				currAttemptTarget.hint_id,
+				ecosystemList [ecosystem_idx].timesteps,
+				currAttemptTarget.config),
+			ProcessConvergeNewAttemptTarget
+		);
+		Debug.Log ("Submit RequestConvergeNewAttemptTarget");
+	}
+		
+	public void ProcessConvergeNewAttemptTarget (NetworkResponse response)
+	{
+		Debug.Log ("ProcessConvergeNewAttemptTarget");
+		ConvergeAttempt attempt;
+		ResponseConvergeNewAttempt args = response as ResponseConvergeNewAttempt;
+		attempt = args.attempt;
+
+		//if the submission resulted in a valid attempt, add to attempt list and reinitialize 
+		//currAttempt for next attempt.  Otherwise, keep current attempt
+		if (attempt != null) {
+			currAttemptTarget.attempt_id = attempt.attempt_id;
+			currAttemptTarget.SetCSV (attempt.csv_string);
+			graph2CSV = currAttemptTarget.csv_object;
+			graphs.UpdateGraph2Data (graph2CSV);	
+		} else {
+			Debug.LogError ("Submission of new attempt failed to produce results for target.");
+		}
+	}
+	*/
+		
 	public void Submit ()
 	{
 		Game.networkManager.Send (
@@ -496,8 +557,6 @@ public class ConvergeGame : MonoBehaviour
 			ProcessConvergeNewAttempt
 		);
 		//Debug.Log ("Submit RequestConvergeNewAttempt");
-
-
 	}
 
 	private void GetPriorAttempts ()
@@ -516,10 +575,147 @@ public class ConvergeGame : MonoBehaviour
 	
 	public void ProcessConvergeEcosystems (NetworkResponse response)
 	{
+		ecosystemList = new List<ConvergeEcosystem> ();
+		Debug.Log("Inside ProcessConvergeEcosystems");
 		ResponseConvergeEcosystems args = response as ResponseConvergeEcosystems;
-		ecosystemList = args.ecosystemList;
+		// ecosystemList = args.ecosystemList;
+		int size = args.ecosystemList.Count;
+		Debug.Log("DB Ecosystem list size: " + size);
+		size = Math.Min (size, max_ecos);
+		for (int i = 0; i < size; i++) {
+			Debug.Log ("Eco #" + i + " id: " + args.ecosystemList[i].ecosystem_id);
+			Debug.Log ("Description: " + args.ecosystemList [i].description);
+			Debug.Log ("Timesteps: " + args.ecosystemList [i].timesteps);
+			Debug.Log ("Config_default: " + args.ecosystemList [i].config_default);
+			Debug.Log ("Config_target: " + args.ecosystemList [i].config_target);
+			args.ecosystemList [i].description = "Eco #" + args.ecosystemList [i].ecosystem_id;  // Description is too long for buttons 
+			args.ecosystemList [i].csv_default_string = "";
+			args.ecosystemList [i].csv_target_string = "";
+			ecosystemList.Add (args.ecosystemList [i]);
+		}
+
+		//set default ecosystem values
+		new_ecosystem_id = Constants.ID_NOT_SET;
+		ecosystem_idx = 0;
+		SubmitTargetInit ();
+
+		/* Moved after ProcessConvergeNewAttemptTargetInitT
+		ecosystem_id = GetEcosystemId (ecosystem_idx);
+		//get player's most recent prior attempts 
+		GetPriorAttempts ();
+		//create array of ecosystem descriptions
+		if (ecosystemList != null) {
+			ecosysDescripts = ConvergeEcosystem.GetDescriptions (ecosystemList);
+		}
+		GetHints ();
+		ecosRcvd = true;
+		*/
+	}
+		
+	public void SubmitTargetInit ()
+	{
+		init_idx = ecosRcvd ? new_ecosystem_idx : ecosystem_idx;
+		int attempt_id = 0;
+		currAttemptTarget = new ConvergeAttempt (
+			player_id,
+			ecosystemList [init_idx].ecosystem_id,
+			attempt_id,
+			allowHintsMaster,
+			Constants.ID_NOT_SET,
+			ecosystemList [init_idx].config_default,
+			""
+			//ecosystemList [ecosystem_idx].csv_target_string
+		);
+
+		Game.networkManager.Send (
+			ConvergeNewAttemptProtocol.Prepare (
+				player_id, 
+				ecosystem_id + 1000,    // Offset by 1000 to seperate from player's turn This is only for DB     
+				currAttemptTarget.attempt_id,
+				currAttemptTarget.allow_hints,
+				currAttemptTarget.hint_id,
+				ecosystemList [init_idx].timesteps,
+				currAttemptTarget.config),
+			ProcessConvergeNewAttemptTargetInitD
+		);
+		Debug.Log ("Submit RequestConvergeNewAttemptTargetInitD");
 	}
 
+	public void ProcessConvergeNewAttemptTargetInitD (NetworkResponse response)
+	{
+		Debug.Log ("ProcessConvergeNewAttemptTargetInitD");
+		ConvergeAttempt attempt;
+		ResponseConvergeNewAttempt args = response as ResponseConvergeNewAttempt;
+		attempt = args.attempt;
+
+		//if the submission resulted in a valid attempt, add to attempt list and reinitialize 
+		//currAttempt for next attempt.  Otherwise, keep current attempt
+		if (attempt != null) {
+			currAttemptTarget.attempt_id = attempt.attempt_id;
+			currAttemptTarget.SetCSV (attempt.csv_string);
+			ecosystemList [init_idx].csv_default_string = attempt.csv_string;
+		} else {
+			Debug.LogError ("Submission of new attempt failed to produce results for target init default.");
+		}
+			
+		int attempt_id = 1;
+		currAttemptTarget = new ConvergeAttempt (
+			player_id,
+			ecosystemList [init_idx].ecosystem_id,
+			attempt_id,
+			allowHintsMaster,
+			Constants.ID_NOT_SET,
+			ecosystemList [init_idx].config_target,
+			""
+			//ecosystemList [ecosystem_idx].csv_target_string
+		);
+
+		Game.networkManager.Send (
+			ConvergeNewAttemptProtocol.Prepare (
+				player_id, 
+				ecosystem_id + 1000,    // Offset by 1000 to seperate from player's turn This is only for DB     
+				currAttemptTarget.attempt_id,
+				currAttemptTarget.allow_hints,
+				currAttemptTarget.hint_id,
+				ecosystemList [init_idx].timesteps,
+				currAttemptTarget.config),
+			ProcessConvergeNewAttemptTargetInitT
+		);
+		Debug.Log ("Submit RequestConvergeNewAttemptTargetInitT");
+	}
+		
+	public void ProcessConvergeNewAttemptTargetInitT (NetworkResponse response)
+	{
+		Debug.Log ("ProcessConvergeNewAttemptTargetInitT");
+		ConvergeAttempt attempt;
+		ResponseConvergeNewAttempt args = response as ResponseConvergeNewAttempt;
+		attempt = args.attempt;
+
+		//if the submission resulted in a valid attempt, add to attempt list and reinitialize 
+		//currAttempt for next attempt.  Otherwise, keep current attempt
+		if (attempt != null) {
+			currAttemptTarget.attempt_id = attempt.attempt_id;
+			currAttemptTarget.SetCSV (attempt.csv_string);
+			ecosystemList [init_idx].csv_target_string = attempt.csv_string;
+		} else {
+			Debug.LogError ("Submission of new attempt failed to produce results for target init default.");
+		}
+
+		if (ecosRcvd) {
+			GetPriorAttempts ();
+		} else {
+			ecosystem_id = GetEcosystemId (ecosystem_idx);
+			//get player's most recent prior attempts 
+			GetPriorAttempts ();
+			//create array of ecosystem descriptions
+			if (ecosystemList != null) {
+				ecosysDescripts = ConvergeEcosystem.GetDescriptions (ecosystemList);
+			}
+			GetHints ();
+			ecosRcvd = true;
+		}
+	}
+		
 	public void ProcessConvergeNewAttemptScore (NetworkResponse response)
 	{
 		ResponseConvergeNewAttemptScore args = response as ResponseConvergeNewAttemptScore;
@@ -581,7 +777,6 @@ public class ConvergeGame : MonoBehaviour
 			Debug.LogError ("Submission of new attempt failed to produce results.");
 			SetIsProcessing (false);
 		}
-
 	}
 
 	public void ProcessConvergePriorAttemptCount (NetworkResponse response)
@@ -592,6 +787,78 @@ public class ConvergeGame : MonoBehaviour
 		priorHintIdList = new List<int>();
 		isResetSliderInitialized = false;
 
+		temp_ecosystem_idx = ecosystemList.FindIndex (entry => entry.ecosystem_id == new_ecosystem_id);
+
+		if ((temp_ecosystem_idx >= 0) && (ecosystemList [temp_ecosystem_idx].csv_target_string.Length == 0)) {
+			int attempt_id = 2;
+			currAttemptTarget = new ConvergeAttempt (
+				player_id,
+				ecosystemList [temp_ecosystem_idx].ecosystem_id,
+				attempt_id,
+				allowHintsMaster,
+				Constants.ID_NOT_SET,
+				ecosystemList [temp_ecosystem_idx].config_target,
+				""
+				//ecosystemList [ecosystem_idx].csv_target_string
+			);
+
+			Game.networkManager.Send (
+				ConvergeNewAttemptProtocol.Prepare (
+					player_id, 
+					ecosystem_id + 1000,    // Offset by 1000 to seperate from player's turn This is only for DB     
+					currAttemptTarget.attempt_id,
+					currAttemptTarget.allow_hints,
+					currAttemptTarget.hint_id,
+					ecosystemList [temp_ecosystem_idx].timesteps,
+					currAttemptTarget.config),
+				ProcessConvergeNewAttemptTarget
+			);
+			Debug.Log ("Submit RequestConvergeNewAttemptTarget");
+		} else {
+			ProcessConvergePriorAttemptCount2 ();
+		}
+			
+		/*  Moved to ProcessConvergePriorAttemptCount2()
+		// once count of attempts has been received, send requests for individual attempt's data
+		for (int attemptOffset = 0; attemptOffset < attemptCount; attemptOffset++) {
+			Game.networkManager.Send (
+				ConvergePriorAttemptProtocol.Prepare (player_id, new_ecosystem_id, attemptOffset),
+				ProcessConvergePriorAttempt
+			);
+			//Debug.Log ("Send RequestConvergePriorAttempt");
+		}
+
+		UpdateEcosystemIds ();
+
+		//if no prior attempts found create new curAttempt based on default config
+		//of curr ecosystem
+		if (attemptCount == 0) {
+			FinalizeLoadPriorAttempts ();
+		}
+		*/
+	}
+		
+
+	public void ProcessConvergeNewAttemptTarget (NetworkResponse response)
+	{
+		Debug.Log ("ProcessConvergeNewAttemptTarget");
+		ConvergeAttempt attempt;
+		ResponseConvergeNewAttempt args = response as ResponseConvergeNewAttempt;
+		attempt = args.attempt;
+
+		//if the submission resulted in a valid attempt, add to attempt list and reinitialize 
+		//currAttempt for next attempt.  Otherwise, keep current attempt
+		if (attempt != null) {
+			currAttemptTarget.attempt_id = attempt.attempt_id;
+			currAttemptTarget.SetCSV (attempt.csv_string);
+			ecosystemList [temp_ecosystem_idx].csv_target_string = attempt.csv_string;
+			ProcessConvergePriorAttemptCount2 ();
+		} else {
+			Debug.LogError ("Submission of new attempt failed to produce results for target init default.");
+		}
+	}
+
+	public void ProcessConvergePriorAttemptCount2 () {
 		//once count of attempts has been received, send requests for individual attempt's data
 		for (int attemptOffset = 0; attemptOffset < attemptCount; attemptOffset++) {
 			Game.networkManager.Send (
@@ -609,6 +876,7 @@ public class ConvergeGame : MonoBehaviour
 			FinalizeLoadPriorAttempts ();
 		}
 	}
+
 
 	public void ProcessConvergePriorAttempt (NetworkResponse response)
 	{
@@ -783,6 +1051,7 @@ public class ConvergeGame : MonoBehaviour
 						ConvergeEcosystem ecosystem = new ConvergeEcosystem (ecosystem_id);
 						int fldSize = br.ReadInt16 ();
 						ecosystem.description = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
+						ecosystem.description = "Eco #" + ecosystem_id;  // Description is too long for buttons 
 						ecosystem.timesteps = br.ReadInt32 ();
 						fldSize = br.ReadInt16 ();
 						ecosystem.config_default = System.Text.Encoding.UTF8.GetString (br.ReadBytes (fldSize));
@@ -816,7 +1085,7 @@ public class ConvergeGame : MonoBehaviour
 			String.Format ("Attempt #{0}", referenceAttemptIdx + 1)
 			);  //hide 0 start from user
 
-		CSVObject graph1CSV = (referenceAttemptIdx == Constants.ID_NOT_SET) ? 
+		graph1CSV = (referenceAttemptIdx == Constants.ID_NOT_SET) ? 
 			ecosystemList [ecosystem_idx].csv_default_object : 
 				attemptList [referenceAttemptIdx].csv_object;
 		
@@ -833,6 +1102,7 @@ public class ConvergeGame : MonoBehaviour
 			graphs = new GraphsCompare (
 				graph1CSV, 
 				ecosystemList [ecosystem_idx].csv_target_object, 
+				// graph1CSV,
 				leftGraph, 
 				topGraph, 
 				widthGraph,
@@ -843,6 +1113,8 @@ public class ConvergeGame : MonoBehaviour
 				foodWeb,
 				manager
 			);
+
+			// SubmitTarget ();
 
 		} else {
 			graphs.UpdateGraph1Data (graph1CSV, title);
@@ -860,6 +1132,7 @@ public class ConvergeGame : MonoBehaviour
 	{
 		if (barGraph == null) {
 			barGraph = gameObject.AddComponent<BarGraph> ().GetComponent<BarGraph> ();
+			barGraph.SetLegendActive (true);
 
 			//first object must be target, then default 
 			barGraph.InputToCSVObject (ecosystemList [ecosystem_idx].csv_target_string, manager);
