@@ -68,6 +68,17 @@ public class SpeciesActionProtocol {
 		return request;
 	}
 
+
+	// action = 8
+	// Obtains the history of changes to the biomass value, starting from a day
+	public static NetworkRequest Prepare(short action, string spStr) {
+		NetworkRequest request = new NetworkRequest(NetworkCode.SPECIES_ACTION);
+		request.AddShort16(action);
+		request.AddString(spStr);
+		return request;
+	}
+
+
 		
 	public static NetworkResponse Parse(MemoryStream dataStream) {
 		ResponseSpeciesAction response = new ResponseSpeciesAction();

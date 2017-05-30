@@ -17,6 +17,10 @@ public class WorldController : MonoBehaviour {
 	public static bool speciesLocCurrent = false;
 	private Texture2D bgTexture;
 	private bool confirmPopUp = false;
+	private Dictionary<int, int> speciesList = new Dictionary<int, int> ();
+	private List<int> keyList;
+
+
 
 
   void Awake() {
@@ -50,8 +54,15 @@ public class WorldController : MonoBehaviour {
 	if (!speciesLocCurrent) {
 	  UpdateSpeciesLoc ();
 	}
+	
+	/*
+	if (GUI.Button (new Rect (200, Screen.height - 145f, 80, 30), "FoodWeb")) {
+		short action = 2;
+		Game.networkManager.Send (SpeciesActionProtocol.Prepare (action), ProcessSpeciesAction2);		
+	}
+	*/
 			
-	if (GUI.Button (new Rect (200, Screen.height - 65f, 80, 30), "Logout")) {
+	if (GUI.Button (new Rect (200, Screen.height - 45f, 80, 30), "Logout")) {
 	  confirmPopUp = true;
 	}
 
@@ -93,6 +104,34 @@ public class WorldController : MonoBehaviour {
 
 		Game.SwitchScene("Login");
 	}
+
+
+	public void ProcessSpeciesAction2 (NetworkResponse response)
+	{
+		ResponseSpeciesAction args = response as ResponseSpeciesAction;
+		short action = args.action;
+		short status = args.status;
+		if ((action != 2) || (status != 0)) {
+			Debug.Log ("ResponseSpeciesAction2 unexpected result");
+			Debug.Log ("action, status = " + action + " " + status);
+		}
+		speciesList = args.speciesList;
+		Debug.Log ("WorldController, ProcessSpeciesAction2, size = " + speciesList.Count);
+		if (speciesList.Count == 0) {
+			return;
+		}
+
+		keyList = new List<int>(speciesList.Keys);
+		string spStr = "" + keyList [0];
+		keyList.Sort();
+		for (int i = 1; i < keyList.Count; i++) {
+			spStr += " " + keyList [i];
+		}
+		action = 8;
+		Debug.Log ("WorldController, spStr = :" + spStr + ":");
+		Game.networkManager.Send (SpeciesActionProtocol.Prepare (action, spStr));
+	}
+		
 
 
   public void ProcessWorld(NetworkResponse response) {

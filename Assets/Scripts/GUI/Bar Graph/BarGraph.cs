@@ -765,6 +765,10 @@ public class BarGraph : MonoBehaviour
 		return left;
 	}
 
+	public void SetLegendActive(bool value) {
+		isLegendActive = value;
+	}
+		
 	void calcOppValues() {
 		// yRangeO is max of Opponent score values
 		yRangeO = oppScores[0];
