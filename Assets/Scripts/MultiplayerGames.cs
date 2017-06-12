@@ -120,8 +120,9 @@ public class MultiplayerGames : MonoBehaviour {
   // Use this for initialization
   void Start() {
     Game.StartEnterTransition ();
-    // DH
-    ReadConvergeEcosystemsFileCount();
+    // ReadConvergeEcosystemsFileCount();
+	Game.networkManager.Send(ConvergeEcosystemsProtocol.Prepare(),ProcessConvergeEcosystems);
+
     windowRect = new Rect ((Screen.width - width) / 2, Screen.height - height - heightOffset, width, height);
 
     heightMC = Screen.height - height - heightOffset - heightMCSpaceTop - heightMCSpaceBot;
@@ -135,6 +136,13 @@ public class MultiplayerGames : MonoBehaviour {
     setActiveGame(games["Multiplayer Convergence"]);
   }
 
+  public void ProcessConvergeEcosystems (NetworkResponse response)
+  {
+    Debug.Log("Inside ProcessConvergeEcosystems");
+	ResponseConvergeEcosystems args = response as ResponseConvergeEcosystems;
+	ecoCount = (short) args.ecosystemList.Count;
+  }
+		
   void OnGUI() {
 
     /*
@@ -937,6 +945,7 @@ public class MultiplayerGames : MonoBehaviour {
     return request;
   }
     
+  /*
   private void ReadConvergeEcosystemsFileCount ()
   {
     // string filename = "converge-ecosystems-Ben";  // Problem with file
@@ -956,6 +965,8 @@ public class MultiplayerGames : MonoBehaviour {
 			}
 		}			    
   }
+  */
+
   public void SDProcessPlayInit(NetworkResponse response) {
       SD.ResponseSDPlayInit args = response as SD.ResponseSDPlayInit;
       /* Modified by Rupal 2017-31-3. We are now assigning the player number based on the host player info. */

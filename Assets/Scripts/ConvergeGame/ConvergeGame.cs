@@ -9,7 +9,6 @@ using System.Text;
 public class ConvergeGame : MonoBehaviour
 {
 	private int player_id;
-	private int max_ecos = 20;   // Maximum # of ecosystems due to buttons on screen 
 	// Window Properties
 	private int window_id = Constants.CONVERGE_WIN;
 	private float left;
@@ -581,13 +580,12 @@ public class ConvergeGame : MonoBehaviour
 		// ecosystemList = args.ecosystemList;
 		int size = args.ecosystemList.Count;
 		Debug.Log("DB Ecosystem list size: " + size);
-		size = Math.Min (size, max_ecos);
 		for (int i = 0; i < size; i++) {
-			Debug.Log ("Eco #" + i + " id: " + args.ecosystemList[i].ecosystem_id);
-			Debug.Log ("Description: " + args.ecosystemList [i].description);
-			Debug.Log ("Timesteps: " + args.ecosystemList [i].timesteps);
-			Debug.Log ("Config_default: " + args.ecosystemList [i].config_default);
-			Debug.Log ("Config_target: " + args.ecosystemList [i].config_target);
+			// Debug.Log ("Eco #" + i + " id: " + args.ecosystemList[i].ecosystem_id);
+			// Debug.Log ("Description: " + args.ecosystemList [i].description);
+			// Debug.Log ("Timesteps: " + args.ecosystemList [i].timesteps);
+			// Debug.Log ("Config_default: " + args.ecosystemList [i].config_default);
+			// Debug.Log ("Config_target: " + args.ecosystemList [i].config_target);
 			args.ecosystemList [i].description = "Eco #" + args.ecosystemList [i].ecosystem_id;  // Description is too long for buttons 
 			args.ecosystemList [i].csv_default_string = "";
 			args.ecosystemList [i].csv_target_string = "";
