@@ -67,9 +67,11 @@ public class ConvergeGame : MonoBehaviour
 	CSVObject graph1CSV, graph2CSV;
 	private bool ecosRcvd = false;
 	private int init_idx;
+	String inputEcoStr = "";
 
 	void Awake ()
 	{
+		
 		DontDestroyOnLoad (gameObject.GetComponent ("Login"));
 		player_id = GameState.player.GetID ();
 
@@ -166,11 +168,28 @@ public class ConvergeGame : MonoBehaviour
 		GUI.BeginGroup (new Rect (bufferBorder, 0, windowRect.width, 100));
 		style.alignment = TextAnchor.LowerLeft;
 		style.fontSize = 14;
-		GUI.Label (new Rect (0, 0, 300, 30), "Select Ecosystem:", style);
+		GUI.Label (new Rect (0, 0, 300, 30), "Enter Ecosystem Number: (Valid range: 1 to " 
+			+ ecosystemList.Count + ")", style);
 		GUI.SetNextControlName ("ecosystem_idx_field");
-		int new_idx;
-		new_idx = GUI.SelectionGrid (new Rect (0, 35, windowRect.width - 20, 30), ecosystem_idx, 
-                        ecosysDescripts, ecosysDescripts.Length);
+		int new_idx = ecosystem_idx;
+		// new_idx = GUI.SelectionGrid (new Rect (0, 35, windowRect.width - 20, 30), ecosystem_idx, 
+        //                 ecosysDescripts, ecosysDescripts.Length);
+
+		inputEcoStr = GUI.TextField(new Rect (0, 35, 35, 25), inputEcoStr, 3);
+		GUI.Label (new Rect (50, 30, 360, 30), "To change Ecosystem, enter new value, press 'OK'", style);
+		if (GUI.Button (new Rect (410, 35, 35, 25), "OK")) {
+			if (Int32.TryParse (inputEcoStr, out new_idx)) {
+				new_idx--;
+				if ((new_idx < 0) || (new_idx > ecosystemList.Count - 1)) {
+					new_idx = ecosystem_idx;
+				}
+				inputEcoStr = "" + (new_idx + 1);
+			} else {
+				new_idx = ecosystem_idx;
+				inputEcoStr = "" + (new_idx + 1);
+			}
+		}
+			
 		GUI.EndGroup ();
 		if (!isProcessing && new_idx != ecosystem_idx) {
 			//Debug.Log ("Updating selected ecosystem.");
@@ -710,6 +729,7 @@ public class ConvergeGame : MonoBehaviour
 				ecosysDescripts = ConvergeEcosystem.GetDescriptions (ecosystemList);
 			}
 			GetHints ();
+			inputEcoStr = "" + (ecosystem_idx + 1);
 			ecosRcvd = true;
 		}
 	}
