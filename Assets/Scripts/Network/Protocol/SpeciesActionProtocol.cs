@@ -70,16 +70,31 @@ public class SpeciesActionProtocol {
 
 
 	// action = 8
-	// Obtains the history of changes to the biomass value, starting from a day
-	public static NetworkRequest Prepare(short action, string spStr) {
+	// Used to generate Ben's food web graph. configStr has the parameter settings and 
+	// spStr is the species string. This routine returns the count of bytes
+	public static NetworkRequest Prepare(short action, string configStr, string speciesStr) {
 		NetworkRequest request = new NetworkRequest(NetworkCode.SPECIES_ACTION);
 		request.AddShort16(action);
-		request.AddString(spStr);
+		request.AddString(configStr);
+		request.AddString(speciesStr);
 		return request;
 	}
 
-
+	// action = 9
+	// Used to generate Ben's food web graph. configStr has the parameter settings and 
+	// spStr is the species string. The byte to start the transfer is specified. The transfer
+	// is done in segments to stay under the 32K limit
+	public static NetworkRequest Prepare(short action, string configStr, string speciesStr, 
+				int startByte) {
+		NetworkRequest request = new NetworkRequest(NetworkCode.SPECIES_ACTION);
+		request.AddShort16(action);
+		request.AddString(configStr);
+		request.AddString(speciesStr);
+		request.AddInt32(startByte);
+		return request;
+	}
 		
+
 	public static NetworkResponse Parse(MemoryStream dataStream) {
 		ResponseSpeciesAction response = new ResponseSpeciesAction();
 		response.action = DataReader.ReadShort(dataStream);
@@ -123,8 +138,17 @@ public class SpeciesActionProtocol {
 			response.cDay = DataReader.ReadInt (dataStream);
 			response.fDay = DataReader.ReadInt (dataStream);
 			response.lDay = DataReader.ReadInt (dataStream);
-			Debug.Log ("SpeciesAction Response, action = 6, the 3 days are = " + 
-				response.cDay + " " + response.fDay + " " + response.lDay);	
+			Debug.Log ("SpeciesAction Response, action = 6, the 3 days are = " +
+			response.cDay + " " + response.fDay + " " + response.lDay);	
+		} else if (response.action == 8) {
+			response.byteCount = DataReader.ReadInt (dataStream);
+			Debug.Log ("SpeciesAction Response, action = 8, byteCount = " + response.byteCount);
+		} else if (response.action == 9) {
+			response.startByte = DataReader.ReadInt (dataStream);
+			response.fileContents = DataReader.ReadBytes (dataStream);
+			response.byteCount = response.fileContents.Length;
+			Debug.Log ("SpeciesAction Response, action = 9, byteCount, startByte = " 
+				+ response.byteCount + " " + response.startByte);
 		}
 			
 		return response;
@@ -147,6 +171,9 @@ public class ResponseSpeciesAction : NetworkResponse {
 	public string selectionList { get; set; }
 	public Dictionary<int, int> speciesList;
 	public Dictionary<int, int> speciesHistoryList;
+	public int byteCount { get; set; }
+	public int startByte { get; set; }
+	public byte[] fileContents;
 	
 	public ResponseSpeciesAction() {
 		protocol_id = NetworkCode.SPECIES_ACTION;

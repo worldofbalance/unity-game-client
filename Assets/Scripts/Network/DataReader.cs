@@ -36,4 +36,11 @@ public class DataReader {
 		buffer = Encoding.Convert(Encoding.GetEncoding("iso-8859-1"), Encoding.UTF8, buffer);
         return Encoding.UTF8.GetString(buffer, 0, length);
 	}
+
+	public static byte[] ReadBytes(MemoryStream dataStream) {
+		int length = ReadInt(dataStream);
+		byte[] buffer = new byte[length];
+		dataStream.Read(buffer, 0, length);
+		return buffer;
+	}
 }
