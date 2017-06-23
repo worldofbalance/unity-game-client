@@ -84,6 +84,7 @@ public class Constants
 	public static readonly int SHOP_PURCHASE_COMPLETE = 20;
 	public static readonly int GRAPH_WIN2 = 21;
 	public static readonly int CONFIRM_LOGOUT = 22;
+	public static readonly int FOOD_WEB_VIEW = 23;
 
     public static readonly float ECO_HEX_SCALE = 3;
 

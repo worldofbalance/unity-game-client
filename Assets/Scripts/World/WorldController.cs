@@ -4,13 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System;
+using System.IO;
 
 public class WorldController : MonoBehaviour {
 
 	private GameObject globalObject;
 	private GameState gs;
 	private Graph graph;
-	private Rect logoutConfirmRect;
+	private Rect logoutConfirmRect, foodWebRect;
 	private int confirmWidth = 300;
 	private int confirmHeight = 200;
 	private Dictionary<int, int> results = new Dictionary<int, int>();
@@ -19,8 +20,15 @@ public class WorldController : MonoBehaviour {
 	private bool confirmPopUp = false;
 	private Dictionary<int, int> speciesList = new Dictionary<int, int> ();
 	private List<int> keyList;
-
-
+	private int foodWebWidth, foodWebHeight, foodWebWidthP, foodWebHeightP, foodWebDPI;
+	private int FWWWidth, FWWHeight;
+	private int imageByteCount, segCount, segCounter;
+	private int FOOD_WEB_BLOCK_SIZE = 32000; // Must match value in GameServer 
+	private float FOOD_WEB_FRACTION = 0.5f;  // Fraction of screen w,h taken by food web image
+	private string speciesStr, configStr;
+	private byte[] imageContents;
+	private bool foodWebImageExists;
+	private Texture2D fwTexture = null;
 
 
   void Awake() {
@@ -35,10 +43,23 @@ public class WorldController : MonoBehaviour {
 			(Screen.height - confirmHeight) / 2, confirmWidth, confirmHeight);
 	bgTexture = Resources.Load<Texture2D> (Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
 	confirmPopUp = false;
+	foodWebImageExists = false;
   }
   
   // Use this for initialization
   void Start() {
+		foodWebWidth = (int) ((Screen.width / Screen.dpi) * FOOD_WEB_FRACTION);
+		foodWebHeight = (int) ((Screen.height / Screen.dpi) * FOOD_WEB_FRACTION);
+		foodWebDPI = (int)Screen.dpi; 
+		foodWebWidthP = foodWebWidth * foodWebDPI;
+		foodWebHeightP = foodWebHeight * foodWebDPI;
+		FWWWidth = foodWebWidthP + 140;
+		FWWHeight = foodWebHeightP + 120;
+		foodWebRect = new Rect ((Screen.width - FWWWidth) / 2, 
+			(Screen.height - FWWHeight) / 2, FWWWidth, FWWHeight);
+		Debug.Log ("WorldController: foodWebWidth, foodWebHeight = " + foodWebWidth + " " + foodWebHeight);
+		Debug.Log ("WorldController: Screen.dpi, foodWebDPI = " + Screen.dpi + " " + foodWebDPI);
+
     Game.StartEnterTransition ();
     if (GameState.world != null) {
       LoadComponents();
@@ -55,22 +76,41 @@ public class WorldController : MonoBehaviour {
 	  UpdateSpeciesLoc ();
 	}
 	
-	/*
-	if (GUI.Button (new Rect (200, Screen.height - 145f, 80, 30), "FoodWeb")) {
-		short action = 2;
-		Game.networkManager.Send (SpeciesActionProtocol.Prepare (action), ProcessSpeciesAction2);		
+	if (GUI.Button (new Rect (200, Screen.height - 145f, 80, 30), "Food Web") && !foodWebImageExists) {
+	  short action = 2;
+	  Game.networkManager.Send (SpeciesActionProtocol.Prepare (action), ProcessSpeciesAction2);		
 	}
-	*/
 			
 	if (GUI.Button (new Rect (200, Screen.height - 45f, 80, 30), "Logout")) {
 	  confirmPopUp = true;
 	}
 
 	if (confirmPopUp) {
-	  GUI.Window (Constants.CONFIRM_LOGOUT, logoutConfirmRect, MakeConfirmDeleteWindow, "confirm logout", GUIStyle.none);
+	  GUI.Window (Constants.CONFIRM_LOGOUT, logoutConfirmRect, 
+			MakeConfirmDeleteWindow, "confirm logout", GUIStyle.none);
+	}
+
+	if (foodWebImageExists) {
+	  GUI.Window (Constants.FOOD_WEB_VIEW, foodWebRect, MakeFoodWebWindow, "food Web view", GUIStyle.none);
 	}
   }
   
+
+	void MakeFoodWebWindow(int id) {
+		Functions.DrawBackground(new Rect(0, 0, FWWWidth, FWWHeight), bgTexture);
+		GUIStyle style = new GUIStyle(GUI.skin.label);
+		style.alignment = TextAnchor.UpperCenter;
+		style.fontSize = 18;
+
+		GUI.DrawTexture(new Rect(70, 60, foodWebWidthP, foodWebHeightP), fwTexture, ScaleMode.ScaleToFit);
+
+		GUI.Label(new Rect((FWWWidth - 150)/2, 40, 150, 30), "Food Web Display", style);
+
+		if (GUI.Button (new Rect (FWWWidth/2 - 50, FWWHeight - 60, 100, 30), "Close")) {
+			foodWebImageExists = false;
+		}			
+	}
+
 
 	void MakeConfirmDeleteWindow(int id) {
 		Functions.DrawBackground(new Rect(0, 0, confirmWidth, confirmHeight), bgTexture);
@@ -122,16 +162,73 @@ public class WorldController : MonoBehaviour {
 		}
 
 		keyList = new List<int>(speciesList.Keys);
-		string spStr = "" + keyList [0];
-		keyList.Sort();
-		for (int i = 1; i < keyList.Count; i++) {
-			spStr += " " + keyList [i];
+		// If the player has no species, cannot generate food web graph
+		if (keyList.Count == 0) {
+			return;
 		}
+		keyList.Sort();
+		speciesStr = "" + keyList [0];
+		for (int i = 1; i < keyList.Count; i++) {
+			speciesStr += " " + keyList [i];
+		}
+
+		string fileName = "foodweb_" + speciesStr.Replace (" ", "-") + ".png";
+		if (File.Exists (fileName)) {
+			DrawTexture (fileName);
+			return;
+		}
+		configStr = " --figsize " + foodWebWidth + " " + foodWebHeight + " "
+				+ " --dpi " + foodWebDPI;
 		action = 8;
-		Debug.Log ("WorldController, spStr = :" + spStr + ":");
-		Game.networkManager.Send (SpeciesActionProtocol.Prepare (action, spStr));
+		Debug.Log ("WorldController, :config:species: = :" + configStr + ":" + speciesStr + ":");
+		Game.networkManager.Send (SpeciesActionProtocol.Prepare 
+			(action, configStr, speciesStr), ProcessFWImage);
 	}
-		
+
+
+  public void ProcessFWImage(NetworkResponse response) {
+	ResponseSpeciesAction args = response as ResponseSpeciesAction;
+	Debug.Log ("WorldController, ProcessFWImage, byteCount = " + args.byteCount);
+	imageByteCount = args.byteCount;
+	if (imageByteCount > 0) {
+	  short action = 9;
+	  imageContents = new byte[imageByteCount];
+	  segCounter = 0;
+	  segCount = ((imageByteCount - 1) / FOOD_WEB_BLOCK_SIZE) + 1;
+	  for (int i = 0; i < segCount; i++) {
+		Game.networkManager.Send (SpeciesActionProtocol.Prepare 
+				(action, configStr, speciesStr, i * FOOD_WEB_BLOCK_SIZE), ProcessFWImage2);
+	  }
+    }
+  }
+
+  public void ProcessFWImage2(NetworkResponse response) {
+	ResponseSpeciesAction args = response as ResponseSpeciesAction;
+	Debug.Log ("WorldController, ProcessFWImage2, startByte, byteCount = " 
+		+ args.startByte + " " + args.byteCount);
+	for (int i = 0; i < args.byteCount; i++) {
+	  imageContents [i + args.startByte] = args.fileContents [i];
+	}
+	segCounter++;
+	if (segCount == segCounter) {
+	  string fileName = "foodweb_" + speciesStr.Replace (" ", "-") + ".png";
+	  using (BinaryWriter writer = new BinaryWriter(File.Open(fileName, FileMode.Create))) {
+		writer.Write(imageContents);
+	  }
+	  DrawTexture (fileName);
+	}
+  }
+  
+
+  void DrawTexture(String filePath) {
+	byte[] fileData;
+	if (File.Exists(filePath)) {
+	  fileData = File.ReadAllBytes(filePath);
+	  fwTexture = new Texture2D(2, 2);
+	  fwTexture.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+	  foodWebImageExists = true;
+	}
+  }
 
 
   public void ProcessWorld(NetworkResponse response) {

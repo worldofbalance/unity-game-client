@@ -71,7 +71,6 @@ public class ConvergeGame : MonoBehaviour
 
 	void Awake ()
 	{
-		
 		DontDestroyOnLoad (gameObject.GetComponent ("Login"));
 		player_id = GameState.player.GetID ();
 
@@ -92,6 +91,10 @@ public class ConvergeGame : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+		// int sw = Screen.width;
+		// int sh = Screen.height;
+		// float sDpi = Screen.dpi;
+		// Debug.Log ("sw/sh/sDpi: " + sw + " " + sh + " " + sDpi);
 		Game.StartEnterTransition ();
 		//to generate converge-ecosystem.txt, remove comments and let protocol run;
 		//server will generate txt from sql table
