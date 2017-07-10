@@ -68,6 +68,16 @@ public class ConvergeGame : MonoBehaviour
 	private bool ecosRcvd = false;
 	private int init_idx;
 	String inputEcoStr = "";
+	private List<int> keyList;
+	private int foodWebWidth, foodWebHeight, foodWebWidthP, foodWebHeightP, foodWebDPI;
+	private int FWWWidth, FWWHeight;
+	private int imageByteCount, segCount, segCounter;
+	private string speciesStr, configStr;
+	private byte[] imageContents;
+	private bool foodWebImageExists;
+	private Texture2D fwTexture = null;
+	private Rect foodWebRect, foodWebButtonRect;
+	private GUI.WindowFunction winFunction;
 
 	void Awake ()
 	{
@@ -80,17 +90,27 @@ public class ConvergeGame : MonoBehaviour
 		windowRect = new Rect (left, top, width, height);
 		widthGraph = windowRect.width - (bufferBorder * 2);
 		heightGraph = windowRect.height / 2;
-		popupRect = new Rect ((Screen.width / 2) - 250, (Screen.height / 2) - 125,
-		                        500, 200);
-
+		popupRect = new Rect ((Screen.width / 2) - 250, (Screen.height / 2) - 125, 500, 200);
 		bgTexture = Resources.Load<Texture2D> (Constants.THEME_PATH + Constants.ACTIVE_THEME + "/gui_bg");
 		font = Resources.Load<Font> ("Fonts/" + "Chalkboard");
 		SetIsProcessing (true);
+		foodWebImageExists = false;
 	}
 	
 	// Use this for initialization
 	void Start ()
 	{
+		foodWebWidth = (int) ((Screen.width / Screen.dpi) * WorldController.FOOD_WEB_FRACTION);
+		foodWebHeight = (int) ((Screen.height / Screen.dpi) * WorldController.FOOD_WEB_FRACTION);
+		foodWebDPI = (int)Screen.dpi; 
+		foodWebWidthP = foodWebWidth * foodWebDPI;
+		foodWebHeightP = foodWebHeight * foodWebDPI;
+		FWWWidth = foodWebWidthP + 140;
+		FWWHeight = foodWebHeightP + 120;
+		foodWebButtonRect = new Rect (windowRect.width - 220 - bufferBorder, 0, 100, 30);
+		Debug.Log ("ConvergeGame: foodWebWidth, foodWebHeight = " + foodWebWidth + " " + foodWebHeight);
+		Debug.Log ("ConvergeGame: Screen.dpi, foodWebDPI = " + Screen.dpi + " " + foodWebDPI);
+
 		// int sw = Screen.width;
 		// int sh = Screen.height;
 		// float sDpi = Screen.dpi;
@@ -126,13 +146,13 @@ public class ConvergeGame : MonoBehaviour
 	}
 	
 	void OnGUI ()
-	{
+	{		
 		// Background
 		//GUI.DrawTexture (new Rect (0, 0, Screen.width, Screen.height), background, ScaleMode.ScaleAndCrop);
 		
 		// Client Version Label
 		GUI.Label (new Rect (Screen.width - 75, Screen.height - 30, 65, 20), "v" + Constants.CLIENT_VERSION + " Beta");
-		
+
 		// Converge Game Interface
 		if (isActive && ecosRcvd) {
 			windowRect = GUI.Window (window_id, windowRect, MakeWindow, "Converge", GUIStyle.none);
@@ -145,9 +165,73 @@ public class ConvergeGame : MonoBehaviour
 
 		if (showPopup && ecosRcvd) {
 			GUI.Window (Constants.CONVERGE_POPUP_WIN, popupRect, ShowPopup, "Error", GUIStyle.none);
-		}
+		}			
 
+		if (foodWebImageExists) {
+			foodWebRect = GUI.Window (Constants.FOOD_WEB_VIEW, foodWebRect, MakeFoodWebWindow, "food Web view", GUIStyle.none);
+		}
 	}
+
+	void MakeFoodWebWindow(int id) {
+		Functions.DrawBackground(new Rect(0, 0, FWWWidth, FWWHeight), bgTexture);
+		GUIStyle style = new GUIStyle(GUI.skin.label);
+		style.alignment = TextAnchor.UpperCenter;
+		style.fontSize = 18;
+
+		GUI.DrawTexture(new Rect(70, 60, foodWebWidthP, foodWebHeightP), fwTexture, ScaleMode.ScaleToFit);
+
+		GUI.Label(new Rect((FWWWidth - 150)/2, 40, 150, 30), "Food Web Display", style);
+
+		if (GUI.Button (new Rect (FWWWidth/2 - 50, FWWHeight - 60, 100, 30), "Close")) {
+			foodWebImageExists = false;
+		}			
+		GUI.DragWindow (new Rect(0, 0, Screen.width, Screen.height));
+	}
+
+	public void ProcessFWImage(NetworkResponse response) {
+		ResponseSpeciesAction args = response as ResponseSpeciesAction;
+		Debug.Log ("ConvergeGame: ProcessFWImage, byteCount = " + args.byteCount);
+		imageByteCount = args.byteCount;
+		if (imageByteCount > 0) {
+			short action = 9;
+			imageContents = new byte[imageByteCount];
+			segCounter = 0;
+			segCount = ((imageByteCount - 1) / WorldController.FOOD_WEB_BLOCK_SIZE) + 1;
+			for (int i = 0; i < segCount; i++) {
+				Game.networkManager.Send (SpeciesActionProtocol.Prepare 
+					(action, configStr, speciesStr, i * WorldController.FOOD_WEB_BLOCK_SIZE), ProcessFWImage2);
+			}
+		}
+	}
+
+	public void ProcessFWImage2(NetworkResponse response) {
+		ResponseSpeciesAction args = response as ResponseSpeciesAction;
+		Debug.Log ("ConvergeGame: ProcessFWImage2, startByte, byteCount = " 
+			+ args.startByte + " " + args.byteCount);
+		for (int i = 0; i < args.byteCount; i++) {
+			imageContents [i + args.startByte] = args.fileContents [i];
+		}
+		segCounter++;
+		if (segCount == segCounter) {
+			string fileName = "foodweb_" + speciesStr.Replace (" ", "-") + ".png";
+			using (BinaryWriter writer = new BinaryWriter(File.Open(fileName, FileMode.Create))) {
+				writer.Write(imageContents);
+			}
+			DrawTexture (fileName);
+		}
+	}
+
+
+	void DrawTexture(String filePath) {
+		byte[] fileData;
+		if (File.Exists(filePath)) {
+			fileData = File.ReadAllBytes(filePath);
+			fwTexture = new Texture2D(2, 2);
+			fwTexture.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+			foodWebImageExists = true;
+		}
+	}
+
 	
 	void MakeWindow (int id)
 	{
@@ -283,6 +367,29 @@ public class ConvergeGame : MonoBehaviour
 		}
 
 		DrawResetButtons (screenOffset, style);
+
+		if (GUI.Button (foodWebButtonRect, "Food Web") && !foodWebImageExists) {
+			foodWebRect = new Rect ((Screen.width - FWWWidth) / 2, (Screen.height - FWWHeight) / 2, FWWWidth, FWWHeight);
+			string fileName = "foodweb_" + speciesStr.Replace (" ", "-") + ".png";
+			if (File.Exists (fileName)) {
+				DrawTexture (fileName);
+				return;
+			}
+			configStr = " --figsize " + foodWebWidth + " " + foodWebHeight + " "
+				+ " --dpi " + foodWebDPI;
+			short action = 8;
+			Debug.Log ("ConvergeGame: :config:species: = :" + configStr + ":" + speciesStr + ":");
+			Game.networkManager.Send (SpeciesActionProtocol.Prepare 
+				(action, configStr, speciesStr), ProcessFWImage);
+		}	
+			
+		Event e = Event.current;
+		if((e.type == EventType.MouseDown) && !foodWebRect.Contains(e.mousePosition) && !foodWebButtonRect.Contains(e.mousePosition))
+		{
+			Debug.Log ("mouse click outside foodweb");
+			foodWebImageExists = false;
+		}
+
 	}
 
 	private void DrawParameterFields (GUIStyle style)
@@ -1173,6 +1280,7 @@ public class ConvergeGame : MonoBehaviour
 		//reset gamestate for new ecosystem
 		GameState gs = GameObject.Find ("Global Object").GetComponent<GameState> ();
 		gs.speciesList = new Dictionary<int, Species> ();
+		keyList = new List<int> ();
 
 		//loop through species in ecosystem and add to gamestate species list
 		List <string> ecosystemSpecies = new List<string> (currAttempt.csv_object.csvList.Keys);
@@ -1185,8 +1293,9 @@ public class ConvergeGame : MonoBehaviour
 			}
 
 			gs.CreateSpecies (Constants.ID_NOT_SET, species.biomass, species.name, species);
+			keyList.Add (species.species_id);
 		}
-
+			
 		//generate foodWeb if not present
 		if (foodWeb == null) {
 			foodWeb = Database.NewDatabase (
@@ -1197,8 +1306,14 @@ public class ConvergeGame : MonoBehaviour
 		} else {
 			foodWeb.manager = manager;
 		}
+			
+		keyList.Sort();
+		speciesStr = "" + keyList [0];
+		for (int i = 1; i < keyList.Count; i++) {
+			speciesStr += " " + keyList [i];
+		}
 
-		
+		Debug.Log ("speciesStr = :" + speciesStr + ":");
 	}
 
 	private void SetIsProcessing (bool isProc)
