@@ -23,8 +23,8 @@ public class WorldController : MonoBehaviour {
 	private int foodWebWidth, foodWebHeight, foodWebWidthP, foodWebHeightP, foodWebDPI;
 	private int FWWWidth, FWWHeight;
 	private int imageByteCount, segCount, segCounter;
-	private int FOOD_WEB_BLOCK_SIZE = 32000; // Must match value in GameServer 
-	private float FOOD_WEB_FRACTION = 0.5f;  // Fraction of screen w,h taken by food web image
+	public static int FOOD_WEB_BLOCK_SIZE = 32000; // Must match value in GameServer 
+	public static float FOOD_WEB_FRACTION = 0.5f;  // Fraction of screen w,h taken by food web image
 	private string speciesStr, configStr;
 	private byte[] imageContents;
 	private bool foodWebImageExists;
